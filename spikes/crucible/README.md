@@ -41,12 +41,35 @@ load a key from `.env`, `../../.env`, or `../agenotype/.env` if present.
 ./demo --debaters 4 --turns 3           # force room size + more turns
 ./demo --no-spawner                     # use the default roster (no spawner call)
 ./demo --cap 5 --json-out trace.json    # cap spawncidences, dump full trace
-./demo --local --html                   # run on a local model (Gemma 4 via Ollama/LM Studio)
 ./demo --turns 2 --dissent 0.6 --html   # raise the anti-herding floor across the room
 ```
 
 After an `--html` run, the root **Agarden hub** (`../../index.html`) is auto-refreshed so the
 new trace is navigable. Rebuild it manually any time with `python ../../build_index.py --open`.
+
+## Models & substrates — who's in the room
+
+Every harness role (spawner, each debater, judge) is backed by a model you can swap.
+Diversity is the asset here: prefer **one strong model per lab** over many near-identical ones.
+
+```bash
+./demo --pool                                          # list the curated cross-lab pool + judge candidates, then exit
+./demo                                                 # default cross-lab cheap roster (no Gemini, by decision)
+./demo --models deepseek/deepseek-v4-flash,z-ai/glm-5.2,moonshotai/kimi-k2.7-code   # manual "dropdown"
+./demo --random-models --seed 7                        # semi-random, diversity-aware (round-robin across labs); seed = reproducible
+./demo --premium --html                                # frontier cross-lab roster for foundational runs
+./demo --composer-judge                                # held-out judge = local Cursor Composer (via cursor-agent CLI)
+./demo --composer-fusant                               # inject ONE Composer debater for cross-lab variety
+./demo --local --html                                  # one local model for every role (Ollama/LM Studio)
+```
+
+- **Default roster** is cross-lab and cheap: debaters `deepseek-v4-flash` + `nemotron-3-ultra:free` + `qwen3.7-plus`; spawner `deepseek-v4-flash`; **held-out judge `xiaomi/mimo-v2.5-pro`** (a lab kept *out* of the debate).
+- **`--models`** is the explicit dropdown: pass any comma-separated OpenRouter slugs (cycled if fewer than debaters).
+- **`--random-models` + `--seed`** samples from `MODEL_POOL` but round-robins across *shuffled labs*, so picks are lab-diverse, not pure-random. The seed makes a run reproducible / re-witnessable.
+- **`--composer-*`** routes a role through the local `cursor-agent` CLI — see [COMPOSER_SPIKE_FINDINGS.md](./COMPOSER_SPIKE_FINDINGS.md). Best as the **judge** (one slow call/run; no temperature knob, so it ignores the disagreeableness dial — fine for a judge, lossy for a Fusant).
+- The substrate choice and **why** are stashed into the spawner plan (`substrate_selection`, `substrate_models`) and printed per-debater (`Falsifier·glm-5.2`), so it's witnessable in console + trace JSON + HTML.
+
+To **add a model option**, append a `ModelOption(id, lab, note)` to `MODEL_POOL` (or `JUDGE_POOL`) near the top of `crucible.py`. Verify the slug on the OpenRouter dashboard first.
 
 ## Flags
 
@@ -58,17 +81,28 @@ new trace is navigable. Rebuild it manually any time with `python ../../build_in
 | `--no-spawner` | Skip the spawner; use the default roster (transfer-hunter, feasibility-hawk, falsifier) |
 | `--dissent F` | Anti-herding floor `0..1` — raises every Fusant's disagreeableness to at least this (counter-mutation to consensus-grading) |
 | `--cap N` | Metabolism cap on spawncidences (default 5) |
+| `--models a,b,c` | Manual substrate "dropdown": comma-separated OpenRouter slugs for debaters (cycled) |
+| `--random-models` | Semi-random, diversity-aware substrate insertion from `MODEL_POOL` (round-robin across labs) |
+| `--seed N` | Seed for `--random-models` so the run is reproducible / re-witnessable |
+| `--pool` | Print the curated `MODEL_POOL` + `JUDGE_POOL` and exit |
+| `--premium` | Frontier cross-lab roster (GPT-5.4 / DeepSeek V4 Pro / Grok 4.3; Claude Opus judge, held out) |
+| `--composer-judge` | Held-out judge = local Cursor Composer via `cursor-agent` (per-role; opt-in) |
+| `--composer-fusant` | Inject ONE Composer debater via `cursor-agent` (per-role; opt-in) |
+| `--composer-model ID` | Which `cursor-agent` model id to use for Composer roles (default `composer-2.5`) |
 | `--json-out PATH` | Write the full trace JSON |
 | `--html` | Write a witnessable HTML trace (extended aphenome) and open it |
 | `--html-out PATH` | HTML output path (default `crucible_trace.html`) |
 | `--no-open` | With `--html`, don't open the browser |
-| `--local` | Use a local OpenAI-compatible model (Gemma 4 / Hermes / Pi via Ollama/LM Studio); honors `LOCAL_BASE_URL` + `LOCAL_MODEL` |
+| `--local` | Use a local OpenAI-compatible model for *every* role (Ollama/LM Studio); honors `LOCAL_BASE_URL` + `LOCAL_MODEL` |
 
 ## Local / open-source models
 
 Set `LOCAL_BASE_URL` (e.g. `http://localhost:11434/v1` for Ollama) and `LOCAL_MODEL`
-(e.g. `gemma4`) in `.env`, then `./demo --local`. No API key needed for most local
-servers. This lets anyone on the team with Gemma 4 run a stronger-than-Flash room for free.
+(e.g. `qwen3.6:35b-a3b` or `gemma4`) in `.env`, then `./demo --local`. No API key needed for
+most local servers. **Caveat:** `--local` forces *one* model for every role (spawner + debaters +
+judge), which collapses cross-lab diversity — good for a free smoke test, but for a real run prefer
+`--models` / `--random-models` (hosted) or mix a local debater with a hosted held-out judge. See
+`MEMORY.md` "Spawner selects the substrate".
 
 ## Cost (metabolism)
 

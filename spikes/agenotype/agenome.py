@@ -78,7 +78,7 @@ SEED_AGENOMES: dict[str, Agenome] = {
     "contrarian": Agenome(
         id="contrarian",
         name="Contrarian",
-        model="qwen/qwen3.7-max",
+        model="qwen/qwen3.7-plus",
         personas=[
             "skeptical product designer who rejects the obvious direction",
             "red-team thinker who asks what everyone is assuming wrong",

@@ -59,8 +59,8 @@ PANEL_MODELS = [
     "nvidia/nemotron-3-ultra-550b-a55b:free",
 ]
 
-JUDGE_MODEL = "deepseek/deepseek-v4-pro"
-FINAL_MODEL = "qwen/qwen3.7-max"
+JUDGE_MODEL = "xiaomi/mimo-v2.5-pro"   # held out from the panel (different lab)
+FINAL_MODEL = "qwen/qwen3.7-plus"
 CRITIC_MODEL = "deepseek/deepseek-v4-pro"
 
 JUDGE_SYSTEM = """You are a fusion judge. You receive answers from multiple AI models on the same prompt.

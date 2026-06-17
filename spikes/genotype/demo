@@ -3,9 +3,13 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Prefer a spike-local venv; fall back to the shared repo-root venv (../../.venv)
 if [[ -f .venv/bin/activate ]]; then
   # shellcheck disable=SC1091
   source .venv/bin/activate
+elif [[ -f ../../.venv/bin/activate ]]; then
+  # shellcheck disable=SC1091
+  source ../../.venv/bin/activate
 fi
 
 if [[ ! -f .env ]] && [[ -z "${OPENROUTER_API_KEY:-}" ]]; then

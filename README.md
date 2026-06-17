@@ -1,56 +1,42 @@
-# Fusion Demo
+# Doppl — Idearganism Spike Ecology
 
-Parent agenomes → fusion judge → decision → critic → **breed child on blind spots** → offspring run. Then opens the trace in your browser.
+A self-replicating idea organism: a population of agents under selection pressure that evolves toward non-obvious, verifiable ideas. This repo is the **ecology** — meta-narrative and lineage logs at the root, mortal experiments (spikes) below.
 
-## First time only
+> **Lα lives here.** The root is the witness layer — the conversation *about* the organism. Spikes are mortal; the lineage log survives.
 
-```bash
-cd doppl-test
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # add OPENROUTER_API_KEY
-chmod +x demo
+## Layout
+
+```
+doppl-test/
+  TREATISE.md                  ← living meta-narrative (philosophy + architecture)
+  LESSONS_AND_BANGERS.md       ← meta-concepts that reframe the problem
+  MEMORY.md                    ← fork register (paths chosen / deferred)
+  BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
+  AGENTS.md                    ← capture/routing rules for this spike
+  Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
+  render.yaml                  ← deploy (points at spikes/genotype)
+  spikes/
+    genotype/                  ← Gen-0 fusion demo: breed child on blind spots
+    # crucible/  (next)        ← belief-revision sibling spawner
 ```
 
-## Run the demo (one command)
+## Read order
+
+1. [`Doppl_Capstone_Proposal_volume_2.txt`](./Doppl_Capstone_Proposal_volume_2.txt) — the seed bet
+2. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
+3. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
+4. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
+
+## Run a spike
+
+Each spike is self-contained with its own README, deps, and runner:
 
 ```bash
+cd spikes/genotype
+# follow that README
 ./demo
 ```
 
-That's it. Runs 2 generations (parents + offspring), writes `fusion_trace.html`, opens it.
+## The model in one breath
 
-Custom prompt:
-
-```bash
-./demo --prompt "Your vague question here"
-```
-
-Terminal only, no browser:
-
-```bash
-./demo --no-open
-```
-
-## What happens
-
-1. **Parent agenomes** — two Rule-of-Cool variants answer in parallel (Transfer Hunter × Feasibility Hawk)
-2. **Fusion judge** — consensus, contradictions, clarifying questions, **blind spots**
-3. **Decision** — grounded answer
-4. **Critic** — scores it, asks what it glossed over
-5. If critic fails → **breed a child agenome** on blind spots (not a prompt retry)
-6. **Gen 2 offspring** — child answers with a primary mandate, critic again
-7. **HTML opens** — full lineage + trace for the room / projector
-
-Default prompt ("Room Vitals" for "a new room") is vague on purpose so Gen 1 usually fails and the bred offspring improves.
-
-## Power-user flags
-
-| Flag | Effect |
-|------|--------|
-| `--rounds 3` | More generations (offspring only breeds once in this spike) |
-| `--no-html` | Skip HTML file |
-| `--no-open` | Write HTML but don't open browser |
-| `--mode official` | Also call OpenRouter's built-in Fusion API |
-
-Reference: [OpenRouter Fusion](https://openrouter.ai/docs/guides/features/plugins/fusion)
+Tree (L1–L4): ideation → deliberation → instrumentation → adjudication, with spawn/nurture flowing down and artifacts/maturation flowing up. **Lα** (this root, plus us) watches the whole thing, sifts lessons, and decides what replicates. Spikes spider out, collapse to lessons, and die. The lineage log is the genome that outlives any organism.

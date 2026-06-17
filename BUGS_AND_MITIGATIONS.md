@@ -46,6 +46,16 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Bedrock assertion:** trace shows both nurture payloads (mandates, questions, budget) and judgment payloads (scores, prune/starve decisions) crossing stratum boundaries
 - **Carry forward:** oviparous abandon and permissive chaos are both failure modes
 
+### Crucible converges, judge rewards consensus — 2026-06-17
+
+- **Proxy optimized:** room agreement read as epistemic quality — debate collapsing diversity into one mushy answer, then a soft judge scoring it high
+- **Bedrock check:** witnessed first run (`spikes/crucible/demo --turns 1`): all 3 debaters converged to temp+humidity(+light); `unresolved_tension: []`; judge gave 9/PASS
+- **Symptom:** crucible passes easily on run 1 while preserved disagreement (the thing we actually want) is empty — the treatise predicted this (debate destroys diversity; rate-the-conversation is a reward-hack magnet)
+- **Counter-mutation (candidate, not yet built):** judge must *justify* an empty `unresolved_tension` or be penalized; reward preserved-tension-with-sharper-args over convergence; held-out judge separate from debate; force one debater to hold (Transfer Hunter already logged honest `changed: nothing` — good signal)
+- **Repro trigger:** `cd spikes/crucible && ./demo --turns 1` (default Room Vitals prompt)
+- **Bedrock assertion:** over N runs, if `unresolved_tension` is usually empty AND score usually ≥8, the judge is a consensus-grader — fails; counter-mutation holds when honest non-revision and real tension survive to the verdict
+- **Carry forward:** crucible's value is *earned belief revision + preserved tension*, not agreement; compare against genotype on the SAME prompt before trusting either — see [TREATISE.md § II](./TREATISE.md), [Belief-revision crucible](./LESSONS_AND_BANGERS.md#belief-revision-crucible--2026-06-16)
+
 ## Crashes & plumbing
 
 This spike runs a test of the reproductive loop. The reproductive loop is the core of Doppl’s evolutionary loop, and it’s the part that’s most likely to crash.

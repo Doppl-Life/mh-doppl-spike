@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# One command: run the belief-revision crucible
+set -euo pipefail
+cd "$(dirname "$0")"
+
+# Prefer a spike-local venv; fall back to the shared repo-root venv (../../.venv)
+if [[ -f .venv/bin/activate ]]; then
+  # shellcheck disable=SC1091
+  source .venv/bin/activate
+elif [[ -f ../../.venv/bin/activate ]]; then
+  # shellcheck disable=SC1091
+  source ../../.venv/bin/activate
+fi
+
+# Load a key from a spike-local, repo-root, or sibling .env (in that order)
+if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+  for envfile in .env ../../.env ../genotype/.env; do
+    if [[ -f "$envfile" ]]; then
+      set -a; # shellcheck disable=SC1090
+      source "$envfile"; set +a
+      break
+    fi
+  done
+fi
+
+if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+  echo "Missing OPENROUTER_API_KEY — cp .env.example .env (then add your key), or set it in the environment."
+  exit 1
+fi
+
+exec python crucible.py "$@"

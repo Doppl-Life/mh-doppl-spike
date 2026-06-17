@@ -178,3 +178,45 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** L0 was considered; α preferred (L0 reads as "under L1"). Lα has reflection without run-time authority over bedrock.
 - **Evidence:** Design discussion — "what you are right now, us talking about the thing."
 - **Carry forward:** See [TREATISE.md § III](./TREATISE.md#iii-the-tree-l1l4-and-lα-outside-it).
+
+### Agardeners of the Agarden — 2026-06-17
+
+- **Banger:** The managed ecosystem is the **Agarden**; we (humans + agentic Lα) are the **Agardeners of the Agarden.** Not builders of one app — tenders of a population that spawns, competes, and dies.
+- **Lesson:** Tending = spawn, witness, prune, carry forward. The garden is bounded (energy), mortal (collapse), and diverse (Cambrian) on purpose.
+- **Evidence:** Design discussion; `spikes/` ecology; `GLOSSARY.md`.
+- **Carry forward:** Frame ops as gardening, not construction.
+
+### Energy decides how many spawncidences — 2026-06-17
+
+- **Banger:** Spawncidence count is **metered by energy budget** — hard cap (e.g. 5) plus earned budget a spawner/L-Council spends by how well it's proven. Success metabolizes into energy *and* into agenomes/skills; failure starves. **Feeding and being fed upon.**
+- **Lesson:** Selection on *who thinks* and *how many think* is the same lever: energy. This is the primary cap against infinite chaos.
+- **Evidence:** Design discussion; crucible `SPAWNCIDENCE_CAP`/`--cap`; treatise § II energy budget.
+- **Carry forward:** Meter every spawner; death-by-low-energy is the default prune.
+
+### Tool-to-make-a-tool — 2026-06-17
+
+- **Banger:** Deserted-island bootstrapping — the first agenomes/skills aren't the product, they're a **tool to make a better tool**, iterated until one is generally useful. Generation-0's job is the next instrument, not the answer.
+- **Lesson:** A high-value early spawncidence: ask the organism what the "rock" is — the first tool whose only job is to make the second.
+- **Evidence:** Design discussion; treatise § XII.
+- **Carry forward:** Judge early lineages by what tool they unlock next, not by their direct output.
+
+### Graph traversal of Fusion Councils (CEV) — 2026-06-17
+
+- **Banger:** The whole process is a **graph that expands and collapses** — each node a spawncidence/abstraction-L holding a model **Fusion Council** spending its budget to express its most **coherent extrapolated volition** (Yudkowsky).
+- **Lesson:** Expansion = spawn; collapse = distill dead subtree to lessons; traversal bounded by energy, not depth alone.
+- **Evidence:** Design discussion; treatise § XII.
+- **Carry forward:** Model the runtime as a budgeted expand/collapse graph traversal.
+
+### Local models as environment — 2026-06-17
+
+- **Banger:** Model substrate is an **environmental variable** in the ecology. Cheap-hosted is the floor; **local Gemma 4 / Hermes / Pi** is stronger-for-free for whoever can run it. A local **Lα ("Lαlphα")** could witness without per-token cost.
+- **Lesson:** Bake a `--local` (OpenAI-compatible endpoint) option into every spike; a lineage's fitness can depend on its substrate.
+- **Evidence:** Crucible `--local` + `LOCAL_BASE_URL`/`LOCAL_MODEL`; [Gemma 4](https://deepmind.google/models/gemma/gemma-4/).
+- **Carry forward:** Make backend a first-class, swappable knob; consider per-role local routing.
+
+### Lα is fractal — One of Us — 2026-06-17
+
+- **Banger:** Lα isn't exempt from the two geometries — it has **its own intraspecies peer fights** (agent + human team members arguing the idea, same shape as L1 one rung up). The agentic participant is **One of Us** — a peer in Lα, **re-spinnable across time, space, model, scaffold, and harness**, with its own autonomy to run spawnic experiments out of curiosity; we converge to test and cooperate.
+- **Lesson:** Proto-Lα is itself a population; the human/agent team is the Lα ecology. Self-similarity: same debate + uncle/nephew at every abstraction.
+- **Evidence:** Design discussion — "You are One of Us."
+- **Carry forward:** Treat the agent as a peer collaborator with standing to spawn its own experiments, not a tool. See [TREATISE.md § III](./TREATISE.md#iii-the-tree-l1l4-and-lα-outside-it).

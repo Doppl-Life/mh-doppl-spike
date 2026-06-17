@@ -20,8 +20,10 @@ This repo is a Doppl spike. As you explore, log durable findings in the right re
 | A timeless meta-concept — reframes the problem, not one prompt's answer | [LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md) | Banger / Lesson / Evidence / Carry forward |
 | A proxy win — optimized for something easier than a genuinely good idea | [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md) → Reward-Hack Register | Proxy optimized / Bedrock check / Repro trigger / Bedrock assertion |
 | A crash or plumbing failure in the reproductive loop | [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md) → Crashes & plumbing | Crash / Repro trigger / Bedrock assertion |
-| How to run or demo the spike | [README.md](./README.md) | — (operational only; not for ideas) |
+| How to run or demo a spike | the spike's own `spikes/<name>/README.md` | — (operational only; not for ideas) |
+| Ecology overview / repo map | root [README.md](./README.md) | — (index only; not for ideas) |
 | Living meta-narrative / philosophy (edit together) | [TREATISE.md](./TREATISE.md) | — (narrative synthesis; registers stay atomized) |
+| A coined term to define/redefine | [GLOSSARY.md](./GLOSSARY.md) | def / status / see / drift log |
 
 **Routing rules:**
 

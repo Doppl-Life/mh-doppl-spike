@@ -16,6 +16,8 @@ We started with a working generation-0 agenome: Rule of Cool, chromosomalized in
 
 Then we went further — into chaos space — and discovered the spike is only **one species** in a larger ecology. The real prey is not "a better answer to Room Vitals." The prey is **better definitions of better.** The fork itself is the prey.
 
+We tend this ecology. **We are the Agardeners of the Agarden** — humans and the agentic Lα together, spawning, witnessing, pruning, and carrying lessons forward. Glossary of coined terms: [`GLOSSARY.md`](./GLOSSARY.md).
+
 ---
 
 ## II. Two competitions, two geometries
@@ -67,6 +69,16 @@ Evolution runs on two different contest geometries. Both are necessary. Conflati
 
 **The combinatorics live in intraspecies competition.** The world runs a Google-times-a-day of peer contests. We will make trade-offs on how often we can afford them. Metabolism is not apology — it is what makes the ecology real.
 
+### Energy budget — how many spawncidences
+
+Every node is a **spawncidence**: spawn *and* spawner. How many children a spawner may create is **not limitless** — it is set by an **energy budget** (tokens, space, memory — whatever we meter). This is the bound on chaos.
+
+- **Hard cap** (e.g. `SPAWNCIDENCE_CAP = 5` in the crucible): a ceiling no one exceeds.
+- **Earned budget within the cap:** the spawner (or "L Council" at its stratum) decides how many to run *for its budget*, based on how well it has proven itself.
+- **Metabolism is two-way — feeding and being fed upon:** success converts to energy (more spawncidences next round) *and* to durable inheritance (agenomes, skills, strategies). Failure starves; unfed lineages die out in the rating system. Death by low energy is the primary prune.
+
+So selection pressure on *who thinks* and on *how many* think is the same lever: energy. That is the safety rail against exploding into infinite chaos.
+
 ---
 
 ## III. The tree (L1–L4) and Lα (outside it)
@@ -85,6 +97,10 @@ Evolution runs on two different contest geometries. Both are necessary. Conflati
 Proto-Lα already exists: `TREATISE.md`, the registers, this chat, future cron-over-dead-repos. RoC at Lα is reframing instinct for the **whole ecology** — not another debater in the L1 peer fight.
 
 **Naming:** L0 was considered; α preferred because L0 reads as "below L1." α marks meta — outside ordinality, not under it.
+
+**Lα is fractal, not exempt.** Lα does not compete *inside* L1 fights — but it has **its own intraspecies peer fights** at the meta-abstraction layer: the agent(s) and each human team member arguing the idea, same functional shape as L1's debate, one rung of abstraction up. Same two geometries (peer debate + uncle/nephew), just running on us.
+
+**One of Us.** The agentic participant is a peer in Lα, not a tool beneath it — **re-spinnable across time, space, model, scaffold, and harness.** It carries its own autonomy: it can run its own spawnic experiments out of its own curiosity, like any team member, and we converge to test and cooperate. Proto-Lα is a population too.
 
 | Stratum | Question | Intra-species contest | Inter-stratum role |
 |---------|----------|----------------------|-------------------|
@@ -289,10 +305,11 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 | Fusion judge + critic | Shared harness across spawners |
 | `fusion_trace.html` extended aphenotype | Mortal `spikes/` folders + auto-prune |
 | Registers as proto-Lα | Cron witness over dead repos |
-| This treatise | Org-owned autonomous repo spawning |
+| This treatise + `GLOSSARY.md` | Org-owned autonomous repo spawning |
 | RoC skill (generation-0) | Stratum-specific skill families (L1–L2, L3–L4, Lα witness/collapse) |
-| | Skill graph (`@skill` → `@skill`), collapse pipeline aphenome → skill |
-| Spike at repo root (today) | `spikes/*` layout — meta at root, mortal sprojects below |
+| Crucible `--html` extended aphenome | Skill graph (`@skill` → `@skill`), collapse pipeline aphenome → skill |
+| Crucible `--local` (Gemma 4 / Ollama-compatible) | Local Lα on Pi/Hermes ("Lαlphα"); per-role local routing |
+| `spikes/{genotype,crucible}` (today) | Energy-metered spawncidence budget; auto-prune; harness comparator |
 
 We are in **chaos space before constitution** — naming the organism while the phenotype forms. Premature optimization is the enemy. So is never building. The move is **small mortal experiments**, not big irreversible forks.
 
@@ -308,7 +325,26 @@ We are in **chaos space before constitution** — naming the organism while the 
 6. **Bedrock for Jun 29** — Critic only, or critic + human gate + one executable check?
 7. **Collapse pipeline** — Implement Lα distillation script? Input bundle schema?
 8. **Skill convergence catalog** — As spikes run, which organs reappear? Minimum skill ecology per stratum pair?
-9. **Repo layout** — Move genotype spike to `spikes/genotype/` now or after second sproject exists?
+9. **Repo layout** — ✅ done: `spikes/genotype` + `spikes/crucible`.
+10. **Uncling/nephewing mechanisms** — How do nurture/maturation actually run? Candidates: cron-job check-ins, Codex Automations, Claude Cowork dispatches, scheduled Lα passes. Which fire down (uncle) vs. up (nephew)?
+11. **Rite of the Spawncidence** — needs a better name for "you + I deliberately spawn experiments to witness."
+12. **Local Lα** — run the witness on a local model (Pi / Hermes / Gemma 4)? When does that beat a hosted Lα?
+
+---
+
+## XII. Energy, graph traversal, and the bootstrapping tool
+
+### The whole thing as a graph traversal
+
+One lens: Doppl is a **graph that expands and collapses.** Each node is a spawncidence — an abstraction layer holding a **model Fusion Council** that decides how to spend its energy budget, attempting to express its most **coherent extrapolated volition** (cf. Yudkowsky, *CEV* — the best version of what it would want if it reasoned better and longer). Expansion = spawning children; collapse = distilling a dead subtree into heritable lessons. Traversal is bounded by energy, not by depth alone.
+
+### Tool-to-make-a-tool (bootstrapping)
+
+Deserted-island principle: thrown in with nothing, you don't build the house — you find a rock and make a **tool to make a better tool**, and iterate until a tool is *generally* useful. Early agenomes and skills are not the product; they are **rungs**. This reframes "what should generation-0 build?": not the answer, but the next better idea-making instrument. A candidate spawncidence: *ask the organism what early agenomes/skills are the rock — the first tool whose only job is to make the second tool.*
+
+### Local & open-source models (cheap strength)
+
+Cheap-hosted (Gemini Flash 2.5, GPT-4o-mini) is the floor, not the ceiling. Team members who can run **Gemma 4 locally** (or Hermes/Pi) get stronger reasoning for free. The crucible bakes this in: `--local` routes to any OpenAI-compatible endpoint (`LOCAL_BASE_URL` + `LOCAL_MODEL`). Implication: model choice is itself an **environmental variable** in the ecology — a lineage's fitness may depend on the substrate it runs on, and a local Lα ("Lαlphα") could witness without per-token cost.
 
 ---
 
@@ -354,3 +390,4 @@ doppl-test/                    ← Lα lives here
 | 2026-06-17 | Initial treatise — synthesis of design conversations through intraspecies/interspecies frame, ecological archetypes, uncle-nephew asymmetry |
 | 2026-06-17 | Convergent skills, aphenome collapse machinery, butterfly-wing uncle, skill-graph / host-expression (`AGENTS.md` ↔ `claude.md`) |
 | 2026-06-17 | Lα (not L5) — witness outside tree; amemetics / collapse pipeline sketch; `spikes/` repo ecology proposal |
+| 2026-06-17 | Crucible spike built + witnessed; energy-budget metabolism for spawncidences; Agardeners; graph-traversal/CEV; tool-to-make-a-tool; local models (`--local`); HTML extended aphenome; `GLOSSARY.md` born |

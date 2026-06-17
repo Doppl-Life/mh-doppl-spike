@@ -5,6 +5,8 @@
 __pycache__/
 *.pyc
 fusion_trace.html
+crucible_trace*.html
+*trace*.json
 
 .codegraph/
 .DS_Store

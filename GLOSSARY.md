@@ -20,7 +20,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Idearganism
 
-- **Def:** idea + organism — the whole self-replicating system, not any single agent. `status: working`
+- **Def:** idea + organism — the whole self-replicating system, not any single agent. `status: stable`
 
 ### Agarden
 
@@ -49,7 +49,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 - **Def:** outside-the-body replication tools that help the recipe survive: HTML traces, harness, registers, spike folders, the GitHub org, team culture. `status: working`
 - **Why:** explains why markdown + HTML matter as much as Python. The crucible's `--html` trace is a deliberate extended aphenome.
-- **See:** Dawkins' extended phenotype; `[TREATISE.md](./TREATISE.md)` § VI, Bret Weinstein's extendsion and interpretation of Dawsin
+- **See:** Dawkins' extended phenotype; `[TREATISE.md](./TREATISE.md)` § VI; Bret Weinstein's extension and interpretation of Dawkins
 
 ### Amemetics
 

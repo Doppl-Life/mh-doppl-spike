@@ -235,9 +235,9 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Evidence:** Crucible `_dissent_clause`, `Debater.disagreeableness`, `--dissent`, `HOLD-OR-FOLD` turn move, judge `consensus_quality`; counter-mutation to [consensus-grader](./BUGS_AND_MITIGATIONS.md).
 - **Carry forward:** Personality is a knob, not a vibe. Tune dissent against the herding score; don't max it.
 
-### A-prefix, not Acological — 2026-06-17
+### A-prefix, not Ecological — 2026-06-17
 
-- **Banger:** The lexicon has a generative rule: **A + biological root**. Agenome (A+genome), Aphenome (A+phenome), **Acology** (A+ecology), Acological archetypes. "Acological" breaks the rhyme; the A-prefix keeps every coined word legibly mapped to its biology.
+- **Banger:** The lexicon has a generative rule: **A + biological root**. Agenome (A+genome), Aphenome (A+phenome), **Acology** (A+ecology), Acological archetypes. "Ecological" breaks the rhyme; the A-prefix keeps every coined word legibly mapped to its biology.
 - **Lesson:** When coining, apply the rule rather than freestyling — the consistency *is* the load-bearing part.
 - **Evidence:** Glossary `Acology / Acological archetypes`; user riff "Ecological…Acological?".
 - **Carry forward:** New biological metaphors get the A-prefix; log them in the glossary drift log.

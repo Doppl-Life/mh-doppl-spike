@@ -16,10 +16,10 @@ doppl-test/
   BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
   AGENTS.md                    ← capture/routing rules for this spike
   Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
-  render.yaml                  ← deploy (serves the root Agarden index.html)
+  render.yaml                  ← deploy (serves the agenotype fusion demo web app)
   spikes/
     agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
-    crucible/                   ← belief-revision sibling spawner
+    crucible/                   ← belief-revision sibling spawner (built)
 ```
 
 ## Read order
@@ -35,9 +35,9 @@ doppl-test/
 Each spike is self-contained with its own README, deps, and runner:
 
 ```bash
-cd spikes/agenotype
-# follow that README
-./demo
+cd spikes/agenotype && ./demo     # fusion demo: breed child on blind spots
+cd spikes/crucible  && ./demo     # belief-revision crucible (try --html, --dissent 0.6)
+# follow each spike's README for first-time setup
 ```
 
 ## The model in one breath

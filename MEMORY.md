@@ -49,7 +49,7 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 
 - **Chose:** stay in unbounded exploration — naming the organism (strata, uncle/nephew, witness, extended aphenotype) before locking spike implementation or demo story
 - **Over:** jumping to Jun 29 demo structure, harness specs, or `./crucible-demo` build order while still in embryology
-- **Because:** premature optimization is especially toxic when the product *is* meta-improvement; documenting bangers and forks *is* L5 witness work and valid spike output
+- **Because:** premature optimization is especially toxic when the product *is* meta-improvement; documenting bangers and forks *is* Lα witness work and valid spike output
 - **Revisit if:** team needs a shippable cut for showcase deadline — then apply [Explore the madness, cap the combinatorics](./LESSONS_AND_BANGERS.md#explore-the-madness-cap-the-combinatorics--2026-06-16) constitution
 - **Spirit note:** meta-phant first, demo second — witness layer writing notes while phenotype forms
 

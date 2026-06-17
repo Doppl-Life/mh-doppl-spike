@@ -336,22 +336,6 @@ We are in **chaos space before constitution** — naming the organism while the 
 
 ---
 
-## XII. Energy, graph traversal, and the bootstrapping tool
-
-### The whole thing as a graph traversal
-
-One lens: Doppl is a **graph that expands and collapses.** Each node is a spawncidence — an abstraction layer holding a **model Fusion Council** that decides how to spend its energy budget, attempting to express its most **coherent extrapolated volition** (cf. Yudkowsky, *CEV* — the best version of what it would want if it reasoned better and longer). Expansion = spawning children; collapse = distilling a dead subtree into heritable lessons. Traversal is bounded by energy, not by depth alone.
-
-### Tool-to-make-a-tool (bootstrapping)
-
-Deserted-island principle: thrown in with nothing, you don't build the house — you find a rock and make a **tool to make a better tool**, and iterate until a tool is *generally* useful. Early agenomes and skills are not the product; they are **rungs**. This reframes "what should generation-0 build?": not the answer, but the next better idea-making instrument. A candidate spawncidence: *ask the organism what early agenomes/skills are the rock — the first tool whose only job is to make the second tool.*
-
-### Local & open-source models (cheap strength)
-
-Cheap-hosted (Gemini Flash 2.5, GPT-4o-mini) is the floor, not the ceiling. Team members who can run **Gemma 4 locally** (or Hermes/Pi) get stronger reasoning for free. The crucible bakes this in: `--local` routes to any OpenAI-compatible endpoint (`LOCAL_BASE_URL` + `LOCAL_MODEL`). Implication: model choice is itself an **environmental variable** in the ecology — a lineage's fitness may depend on the substrate it runs on, and a local Lα ("Lαlphα") could witness without per-token cost.
-
----
-
 ## XI. Repo ecology — meta at root, spikes below
 
 **Intent:** top level = Lα + shared culture (treatise, registers, proposal, `AGENTS.md`, future `bedrock/`, `harness/`). Below = **mortal sprojects** (spikes) — each a mayfly organism with its own README, demo, requirements.
@@ -389,6 +373,22 @@ doppl-test/                    ← Lα lives here
 **Costs of moving now:** `demo` path, imports, root `README.md` → ecology index, `render.yaml` if `app.py` moves, one-time refactor. **Defer if** only one spike exists and chaos space still hot; **do if** crucible spike imminent or demo confusion hurts.
 
 **Minimal move:** `spikes/agenotype/` gets all runnable Python + spike README; root README becomes "ecology overview + how to run agenotype spike."
+
+---
+
+## XII. Energy, graph traversal, and the bootstrapping tool
+
+### The whole thing as a graph traversal
+
+One lens: Doppl is a **graph that expands and collapses.** Each node is a spawncidence — an abstraction layer holding a **model Fusion Council** that decides how to spend its energy budget, attempting to express its most **coherent extrapolated volition** (cf. Yudkowsky, *CEV* — the best version of what it would want if it reasoned better and longer). Expansion = spawning children; collapse = distilling a dead subtree into heritable lessons. Traversal is bounded by energy, not by depth alone.
+
+### Tool-to-make-a-tool (bootstrapping)
+
+Deserted-island principle: thrown in with nothing, you don't build the house — you find a rock and make a **tool to make a better tool**, and iterate until a tool is *generally* useful. Early agenomes and skills are not the product; they are **rungs**. This reframes "what should generation-0 build?": not the answer, but the next better idea-making instrument. A candidate spawncidence: *ask the organism what early agenomes/skills are the rock — the first tool whose only job is to make the second tool.*
+
+### Local & open-source models (cheap strength)
+
+Cheap-hosted (Gemini Flash 2.5, GPT-4o-mini) is the floor, not the ceiling. Team members who can run **Gemma 4 locally** (or Hermes/Pi) get stronger reasoning for free. The crucible bakes this in: `--local` routes to any OpenAI-compatible endpoint (`LOCAL_BASE_URL` + `LOCAL_MODEL`). Implication: model choice is itself an **environmental variable** in the ecology — a lineage's fitness may depend on the substrate it runs on, and a local Lα ("Lαlphα") could witness without per-token cost.
 
 ---
 

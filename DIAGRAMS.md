@@ -144,7 +144,7 @@ flowchart TB
   SP --> OP["Openings<br/>private structured positions"]
   OP --> TU["Turns ×T<br/>object · steal · change-test · HOLD-OR-FOLD"]
   TU --> FI["Finals + revision ledger<br/>held / changed / moved-me / still-reject"]
-  FI --> JU["Judge<br/>surviving idea · earned revision<br/>consensus_quality: resolved | herded"]
+  FI --> JU["Judge<br/>surviving idea · earned revision<br/>consensus_quality: resolved | herded | mixed"]
   JU --> V{"Verdict"}
   V -->|"pass"| KEEP["lesson + agenome patch"]
   V -->|"needs-revision"| BACK["re-spawn / re-tune"]

@@ -2,7 +2,7 @@
 
 ## CodeGraph
 
-- Run `codegraph sync /Users/michaelhabermas/repos/GAI/games/prumble-rompt` after meaningful edits or branch changes.
+- Run `codegraph sync /Users/michaelhabermas/repos/GAI/doppl-test` after meaningful edits or branch changes.
 - Use CodeGraph before broad semantic navigation: `query`, `context`, `callers`, `callees`, `impact`, `affected`.
 - Always use CodeGraph to understand the context of the codebase before making changes.
 

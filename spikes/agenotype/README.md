@@ -55,6 +55,7 @@ Default prompt ("Room Vitals" for "a new room") is vague on purpose so Gen 1 usu
 | `--rounds 3` | More generations (offspring only breeds once in this spike) |
 | `--no-html` | Skip HTML file |
 | `--no-open` | Write HTML but don't open browser |
+| `--html PATH` | HTML output path (default `fusion_trace.html`) |
 | `--mode official` | Also call OpenRouter's built-in Fusion API |
 
 Reference: [OpenRouter Fusion](https://openrouter.ai/docs/guides/features/plugins/fusion)

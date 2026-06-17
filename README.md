@@ -16,9 +16,9 @@ doppl-test/
   BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
   AGENTS.md                    ← capture/routing rules for this spike
   Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
-  render.yaml                  ← deploy (points at spikes/genotype)
+  render.yaml                  ← deploy (points at spikes/agenotype)
   spikes/
-    genotype/                  ← Gen-0 fusion demo: breed child on blind spots
+    agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
     # crucible/  (next)        ← belief-revision sibling spawner
 ```
 
@@ -35,7 +35,7 @@ doppl-test/
 Each spike is self-contained with its own README, deps, and runner:
 
 ```bash
-cd spikes/genotype
+cd spikes/agenotype
 # follow that README
 ./demo
 ```

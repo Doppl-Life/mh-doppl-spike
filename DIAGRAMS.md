@@ -191,7 +191,7 @@ flowchart TB
 ```mermaid
 flowchart TB
   Q["Same prompt suite"]
-  Q --> T1["Genotype topology<br/>breed child on blind spots"]
+  Q --> T1["Agenotype topology<br/>breed child on blind spots"]
   Q --> T2["Crucible topology<br/>belief revision"]
   Q --> T3["…future topology"]
   T1 --> TR["Comparable traces"]
@@ -245,7 +245,7 @@ flowchart TB
     IDX["index.html<br/>(the findable hub)"]
   end
   subgraph SPK["spikes/"]
-    G["genotype/<br/>*trace*.html"]
+    G["agenotype/<br/>*trace*.html"]
     C["crucible/<br/>*trace*.html"]
   end
 

@@ -1,6 +1,6 @@
 # Crucible Spike — Belief-Revision Loop
 
-A competing **L2 spawner** to the genotype path. Where `../genotype` breeds a child
+A competing **L2 spawner** to the agenotype path. Where `../agenotype` breeds a child
 on blind spots, the crucible puts cheap models in a **structured argument** and
 measures **belief revision under pressure**.
 
@@ -30,7 +30,7 @@ chmod +x demo
 ```
 
 The `demo` runner falls back to a shared repo-root `.venv` (`../../.venv`) and will
-load a key from `.env`, `../../.env`, or `../genotype/.env` if present.
+load a key from `.env`, `../../.env`, or `../agenotype/.env` if present.
 
 ## Run
 

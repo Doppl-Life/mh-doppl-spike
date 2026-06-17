@@ -1,4 +1,4 @@
-# Genotype Spike — Fusion Demo
+# Agenotype Spike — Fusion Demo
 
 Parent agenomes → fusion judge → decision → critic → **breed child on blind spots** → offspring run. Then opens the trace in your browser.
 
@@ -7,7 +7,7 @@ Parent agenomes → fusion judge → decision → critic → **breed child on bl
 ## First time only
 
 ```bash
-cd spikes/genotype
+cd spikes/agenotype
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # add OPENROUTER_API_KEY

@@ -26,13 +26,13 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Chose:** genomic reproduction — `breed_child()` splices parents and mutates on `blind_spots ∪ clarifying_questions`; offspring answers via `primary_mandate`
 - **Over:** transcript retry — feeding critic scores or “try harder” back into the same agent’s prompt
 - **Because:** critic feedback optimizes for fluency and rubric-surface pass, not coverage of what fusion actually missed; selection pressure belongs on *who* is thinking, not *how long* they talk
-- **Revisit if:** offspring quality plateaus while blind-spot signal stays rich — may need a second reproduction operator or richer genotype
-- **Spirit note:** evolution in the genotype, not the transcript — see [Genotype over transcript](./LESSONS_AND_BANGERS.md#genotype-over-transcript--2026-06-16)
+- **Revisit if:** offspring quality plateaus while blind-spot signal stays rich — may need a second reproduction operator or richer agenotype
+- **Spirit note:** evolution in the agenotype, not the transcript — see [Agenotype over transcript](./LESSONS_AND_BANGERS.md#agenotype-over-transcript--2026-06-16)
 
 ### Parallel spawners, not fork resolution — 2026-06-16
 
-- **Chose:** parallelize competing loop topologies (genotype spike + crucible spike + future spawners) under shared harness/bedrock — **the fork is the prey**
-- **Over:** resolving genotype vs. crucible in design discussion or MEMORY before a bedrock race; premature optimization toward Jun 29 demo structure while still in chaos/exploration space
+- **Chose:** parallelize competing loop topologies (agenotype spike + crucible spike + future spawners) under shared harness/bedrock — **the fork is the prey**
+- **Over:** resolving agenotype vs. crucible in design discussion or MEMORY before a bedrock race; premature optimization toward Jun 29 demo structure while still in chaos/exploration space
 - **Because:** capstone apex bet is searching for better definitions of “better”; closing the fork early optimizes for narrative coherence, not fitness; two-week spike can explore meta-architecture without picking one topology
 - **Revisit if:** one spawner consistently wins on held-out bedrock at lower cost — then promote it as default L2 topology, not before
 - **Spirit note:** spawn-spawners, don't settle spawners — see [The fork is the prey](./LESSONS_AND_BANGERS.md#the-fork-is-the-prey--2026-06-16), [Loop-topology crossover](./LESSONS_AND_BANGERS.md#loop-topology-crossover--2026-06-16)
@@ -56,7 +56,7 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 ### Meta at root, spikes below — 2026-06-17
 
 - **Chose:** (intent) Lα docs + registers at repo root; runnable spikes in `spikes/<name>/` as mortal sprojects
-- **Over:** monolithic repo where meta treatise and genotype demo share one flat directory
+- **Over:** monolithic repo where meta treatise and agenotype demo share one flat directory
 - **Because:** literal mortality — delete or archive a spike folder without touching culture; mirrors "lineage log survives, organism doesn't"
 - **Revisit if:** move cost outweighs benefit with only one spike and no crucible sibling yet — defer is valid
 - **Spirit note:** see [TREATISE.md § XI](./TREATISE.md#xi-repo-ecology--meta-at-root-spikes-below)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Belief-revision crucible — a competing L2 spawner to the genotype path.
+"""Belief-revision crucible — a competing L2 spawner to the agenotype path.
 
 Loop topology under test: instead of breeding on blind spots, put cheap models
 in a structured argument and measure *belief revision under pressure*.

@@ -29,23 +29,23 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Evidence:** `Agenome` dataclass + seed variants in `agenome.py`; HTML trace renders parent/child genomes as first-class objects.
 - **Carry forward:** Generation-0 is a genome file, not a skill invocation. Population dynamics plug into schema, not prompts.
 
-### Genotype over transcript — 2026-06-16
+### Agenotype over transcript — 2026-06-16
 
-- **Banger:** Put evolution in the genotype, not the transcript. When something fails scrutiny, don't patch the answer — breed a new agent. Selection pressure belongs on *who* is thinking, not *how long* they're allowed to talk.
+- **Banger:** Put evolution in the agenotype, not the transcript. When something fails scrutiny, don't patch the answer — breed a new agent. Selection pressure belongs on *who* is thinking, not *how long* they're allowed to talk.
 - **Lesson:** On critic fail, `breed_child()` splices parents and mutates on `blind_spots ∪ clarifying_questions` — not on critic tone or "try harder."
 - **Evidence:** Gen 1 (Transfer Hunter × Feasibility Hawk → fusion judge → critic) fails Room Vitals; offspring answers via `primary_mandate` in `agenome.py`; `fusion_trace.html` shows parent genomes, breeding mandate, and child genome.
 - **Carry forward:** Default reproduction operator is genomic splice, not transcript retry. **Revisit:** crucible path as competing spawner — see [Parallel spawners, not fork resolution](./MEMORY.md#parallel-spawners-not-fork-resolution--2026-06-16).
 
 ### The fork is the prey — 2026-06-16
 
-- **Banger:** You're not wavering on genotype vs. crucible — you're noticing that **the fork itself is the prey.** The scaffold is supposed to be under selection pressure, including *which scaffold*.
+- **Banger:** You're not wavering on agenotype vs. crucible — you're noticing that **the fork itself is the prey.** The scaffold is supposed to be under selection pressure, including *which scaffold*.
 - **Lesson:** Don't prematurely resolve design forks in MEMORY; race competing loop topologies under shared bedrock and let selection pressure flow up into "what does better mean?"
-- **Evidence:** Design discussion — genotype spike vs. belief-revision crucible as competing hypotheses about improvement for cheap models.
+- **Evidence:** Design discussion — agenotype spike vs. belief-revision crucible as competing hypotheses about improvement for cheap models.
 - **Carry forward:** The search for better definitions of better *is* the capstone apex bet — not a side debate to close before building.
 
 ### Loop-topology crossover — 2026-06-16
 
-- **Banger:** **Spawning-Spawners** — not just agenome crossover, but **loop-topology crossover.** Different reproductive strategies (genotype path, crucible path, fusion-only, tournament) compete under the same environment.
+- **Banger:** **Spawning-Spawners** — not just agenome crossover, but **loop-topology crossover.** Different reproductive strategies (agenotype path, crucible path, fusion-only, tournament) compete under the same environment.
 - **Lesson:** Every node is spawn *and* spawner by intent: L1 spawns ideas, L2 spawns L1 configs, L3 spawns L2 runs, L4 spawns L3 instrument rounds. Life flows up (artifacts) and down (pressure + nurture).
 - **Evidence:** Design discussion; maps to capstone "reproduction by Fusion" at agenome *and* output levels — extended to whole loop topologies.
 - **Carry forward:** Serialize spawner genotypes: `{loop topology + judge contracts + reproduction operator + energy budget}`.
@@ -105,7 +105,7 @@ These are not commandments — interesting ideas that surfaced while we poked at
   - **Aphenome** — expressed run (answers, debate, trace) — genome × environment
   - **Extended aphenotype** — outside-the-body replication tools: `fusion_trace.html`, harness, registers, spike folders, GitHub org, team process
   - **Culture / witness** — memetic layer; RoC + registers curate what replicates
-  - This conversation itself may be genotype trying to express and survive
+  - This conversation itself may be agenotype trying to express and survive
 - **Evidence:** Design discussion; markdown registers as proto-extended phenotype; capstone "fitness function evolves itself" with bedrock anchor.
 - **Carry forward:** Levels above agenome mutate *cultural machinery* (rubrics, harnesses, norms) — not prompt tokens alone.
 
@@ -119,7 +119,7 @@ These are not commandments — interesting ideas that surfaced while we poked at
 ### Belief-revision crucible — 2026-06-16
 
 - **Banger:** Don't build "a discussion" — build a **belief-revision crucible** where the first-class artifact is the **delta** (revision ledger: what I held, what changed, what evidence moved me, what I still reject).
-- **Lesson:** Fixed turn protocol with mandatory moves (objection, concession-or-rebuttal, steal-one-point). Judge scores final idea + revision quality + unresolved tension — not rhetorical victory. Competing L2 spawner to genotype path.
+- **Lesson:** Fixed turn protocol with mandatory moves (objection, concession-or-rebuttal, steal-one-point). Judge scores final idea + revision quality + unresolved tension — not rhetorical victory. Competing L2 spawner to agenotype path.
 - **Evidence:** Design discussion — cheap models need structure, not open-ended chat; crucible vs. fusion-only as loop-topology fork.
 - **Carry forward:** Sibling spike candidate; race under shared L3 harness + L4 bedrock — see [Parallel spawners](./MEMORY.md#parallel-spawners-not-fork-resolution--2026-06-16).
 

@@ -141,7 +141,7 @@ Sometimes they die young. Sometimes they take longer. Sometimes they become the 
 
 ## V. Acological archetypes (agent mandates, not people)
 
-> **Naming:** these are *Acological* archetypes — A-prefix (A+ecology), consistent with Agenome/Aphenome, not "Acological." The agents inside a spawncidence node are **Fusants**: the fusion entities whose response events get fused and contested. A Fusant is a `Debater` in the crucible, a council member in the genotype path.
+> **Naming:** these are *Acological* archetypes — A-prefix (A+ecology), consistent with Agenome/Aphenome, not "Acological." The agents inside a spawncidence node are **Fusants**: the fusion entities whose response events get fused and contested. A Fusant is a `Debater` in the crucible, a council member in the agenotype path.
 
 Real populations need incompatible strategies. Optimists are generally more successful and happier — but a ecology of only optimists goes blind. You need the unhappy ones, the mutations, the differences, or you cannot see the wolf in sheep's clothing. **Cooperation is the dominant strategy; dissent is what moves the ball.**
 
@@ -242,7 +242,7 @@ Sexual reproduction recombined traits across lineages. Doppl extends that upward
 
 - **Agenome crossover** — splice personas, rubrics, mandates (built)
 - **Output fusion** — judge synthesizes parent reasoning (built)
-- **Loop-topology crossover** — genotype path vs. belief-revision crucible vs. tournament vs. official Fusion API compete as **spawner-spawners**
+- **Loop-topology crossover** — agenotype path vs. belief-revision crucible vs. tournament vs. official Fusion API compete as **spawner-spawners**
 
 Every node is spawn **and** spawner. Life flows up (artifacts abstract) and down (pressure concretizes + uncle nurtures).
 
@@ -305,7 +305,7 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 | Built | Embryology |
 |-------|------------|
 | `Agenome` schema + seed personas | Uncle as first-class LLM role per stratum |
-| Genotype reproduction on blind spots | Crucible sibling spike |
+| Agenotype reproduction on blind spots | Crucible sibling spike |
 | Fusion judge + critic | Shared harness across spawners |
 | `fusion_trace.html` extended aphenotype | Mortal `spikes/` folders + auto-prune |
 | Registers as proto-Lα | Cron witness over dead repos |
@@ -313,7 +313,7 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 | RoC skill (generation-0) | Stratum-specific skill families (L1–L2, L3–L4, Lα witness/collapse) |
 | Crucible `--html` extended aphenome | Skill graph (`@skill` → `@skill`), collapse pipeline aphenome → skill |
 | Crucible `--local` (Gemma 4 / Ollama-compatible) | Local Lα on Pi/Hermes ("Lαlphα"); per-role local routing |
-| `spikes/{genotype,crucible}` (today) | Energy-metered spawncidence budget; auto-prune; harness comparator |
+| `spikes/{agenotype,crucible}` (today) | Energy-metered spawncidence budget; auto-prune; harness comparator |
 
 We are in **chaos space before constitution** — naming the organism while the phenotype forms. Premature optimization is the enemy. So is never building. The move is **small mortal experiments**, not big irreversible forks.
 
@@ -329,7 +329,7 @@ We are in **chaos space before constitution** — naming the organism while the 
 6. **Bedrock for Jun 29** — Critic only, or critic + human gate + one executable check?
 7. **Collapse pipeline** — Implement Lα distillation script? Input bundle schema?
 8. **Skill convergence catalog** — As spikes run, which organs reappear? Minimum skill ecology per stratum pair?
-9. **Repo layout** — ✅ done: `spikes/genotype` + `spikes/crucible`.
+9. **Repo layout** — ✅ done: `spikes/agenotype` + `spikes/crucible`.
 10. **Uncling/nephewing mechanisms** — How do nurture/maturation actually run? Candidates: cron-job check-ins, Codex Automations, Claude Cowork dispatches, scheduled Lα passes. Which fire down (uncle) vs. up (nephew)?
 11. **Rite of the Spawncidence** — needs a better name for "you + I deliberately spawn experiments to witness."
 12. **Local Lα** — run the witness on a local model (Pi / Hermes / Gemma 4)? When does that beat a hosted Lα?
@@ -370,7 +370,7 @@ doppl-test/                    ← Lα lives here
   bedrock/                     ← (embryology) shared prompts + assertions
   harness/                     ← (embryology) run all spikes, compare traces
   spikes/
-    genotype/                  ← fusion demo
+    agenotype/                  ← fusion demo
       fusion_demo.py
       agenome.py
       demo
@@ -388,7 +388,7 @@ doppl-test/                    ← Lα lives here
 
 **Costs of moving now:** `demo` path, imports, root `README.md` → ecology index, `render.yaml` if `app.py` moves, one-time refactor. **Defer if** only one spike exists and chaos space still hot; **do if** crucible spike imminent or demo confusion hurts.
 
-**Minimal move:** `spikes/genotype/` gets all runnable Python + spike README; root README becomes "ecology overview + how to run genotype spike."
+**Minimal move:** `spikes/agenotype/` gets all runnable Python + spike README; root README becomes "ecology overview + how to run agenotype spike."
 
 ---
 

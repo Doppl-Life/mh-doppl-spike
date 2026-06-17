@@ -14,7 +14,7 @@ fi
 
 # Load a key from a spike-local, repo-root, or sibling .env (in that order)
 if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
-  for envfile in .env ../../.env ../genotype/.env; do
+  for envfile in .env ../../.env ../agenotype/.env; do
     if [[ -f "$envfile" ]]; then
       set -a; # shellcheck disable=SC1090
       source "$envfile"; set +a

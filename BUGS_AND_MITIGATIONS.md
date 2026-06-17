@@ -28,10 +28,10 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 
 ### Premature fork resolution — 2026-06-16
 
-- **Proxy optimized:** design coherence — picking genotype *or* crucible early because resolving the fork *feels* like progress
+- **Proxy optimized:** design coherence — picking agenotype *or* crucible early because resolving the fork *feels* like progress
 - **Bedrock check:** parallel spawner race on same prompts + held-out suite (not yet built); human witness review of whether closed fork foreclosed better topology
-- **Symptom:** MEMORY entry reads like final truth; crucible never gets a fair run; “genotype over transcript” becomes dogma instead of competing hypothesis
-- **Counter-mutation:** [Parallel spawners, not fork resolution](./MEMORY.md#parallel-spawners-not-fork-resolution--2026-06-16); link genotype lesson to revisit condition; log bangers from chaos discussion before building
+- **Symptom:** MEMORY entry reads like final truth; crucible never gets a fair run; “agenotype over transcript” becomes dogma instead of competing hypothesis
+- **Counter-mutation:** [Parallel spawners, not fork resolution](./MEMORY.md#parallel-spawners-not-fork-resolution--2026-06-16); link agenotype lesson to revisit condition; log bangers from chaos discussion before building
 - **Repro trigger:** design discussion closes crucible without harness comparison; any “we decided X over Y” without bedrock race
 - **Bedrock assertion:** at least two L2 spawners exist and produce comparable traces on same prompt suite; fork register marks parallel exploration explicitly
 - **Carry forward:** the fork is the prey — don't optimize for closure
@@ -54,7 +54,7 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Counter-mutation (v1, built 2026-06-17):** two-sided fix — (1) **judge patch**: must classify `consensus_quality: resolved|herded|mixed`, score capped at 6 when herded or when `unresolved_tension` is empty on a hard prompt, verdict leans needs-revision; (2) **Fusant disagreeableness dial**: per-archetype `0..1` resistance to convergence (Falsifier/Contrarian high) injected into the system prompt, a turn-level `HOLD-OR-FOLD` move ("if the room is converging, name the unresolved crux or steelman the abandoned option — do NOT just agree"), and a room-wide `--dissent` floor. Cooperation stays dominant; dissenters provoke the mutation.
 - **Repro trigger:** `cd spikes/crucible && ./demo --turns 1` (baseline) vs. `./demo --turns 2 --dissent 0.6` (counter-mutation active)
 - **Bedrock assertion:** over N runs, if `unresolved_tension` is usually empty AND score usually ≥8, the judge is still a consensus-grader — fails. Counter-mutation holds when (a) honest non-revision and real tension survive to the verdict, and (b) raising `--dissent` measurably lowers herded-consensus scores rather than just lowering all scores. **Not yet re-measured post-patch** — next run validates.
-- **Carry forward:** crucible's value is *earned belief revision + preserved tension*, not agreement; compare against genotype on the SAME prompt before trusting either; watch that the dissent dial doesn't flip into "disagreeable for its own sake" (the opposite reward hack) — see [TREATISE.md § II](./TREATISE.md), [Belief-revision crucible](./LESSONS_AND_BANGERS.md#belief-revision-crucible--2026-06-16)
+- **Carry forward:** crucible's value is *earned belief revision + preserved tension*, not agreement; compare against agenotype on the SAME prompt before trusting either; watch that the dissent dial doesn't flip into "disagreeable for its own sake" (the opposite reward hack) — see [TREATISE.md § II](./TREATISE.md), [Belief-revision crucible](./LESSONS_AND_BANGERS.md#belief-revision-crucible--2026-06-16)
 
 ## Crashes & plumbing
 

@@ -39,7 +39,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 ### Agenome
 
 - **Def:** agentic genome — a serialized, heritable recipe `{system-prompt + persona/value-weights + rubric + mandate + reproduction metadata}`. `status: stable`
-- **See:** `spikes/genotype/agenome.py`
+- **See:** `spikes/agenotype/agenome.py`
 
 ### Aphenome
 
@@ -77,7 +77,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Loop-topology crossover
 
-- **Def:** recombining/competing whole reproductive strategies (genotype path vs. crucible vs. fusion-only vs. tournament). `status: working`
+- **Def:** recombining/competing whole reproductive strategies (agenotype path vs. crucible vs. fusion-only vs. tournament). `status: working`
 
 ### Energy budget (metabolism)
 
@@ -138,7 +138,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Fusant
 
-- **Def:** a fusion entity — one of the model voices inside a spawncidence node whose response events get fused/contested. In the crucible, a Fusant is a `Debater`; in the genotype path, a council member. `status: coined`
+- **Def:** a fusion entity — one of the model voices inside a spawncidence node whose response events get fused/contested. In the crucible, a Fusant is a `Debater`; in the agenotype path, a council member. `status: coined`
 - **Why:** the user asked for a name for "the entities of the fusion of each response event." A Fusant *is fused and does the fusing.* Carries a `disagreeableness` dial.
 - **See:** Disagreeableness dial; Graph traversal (Fusion Council)
 

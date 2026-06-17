@@ -1,79 +1,55 @@
-# Fusion Demo — two models, one decision
+# Fusion Demo
 
-Tiny demo of [OpenRouter Fusion](https://openrouter.ai/docs/guides/features/plugins/fusion) plus a **critic loop**:
+Panel → fusion judge → decision → critic → loop. Then opens the trace in your browser.
 
-```
-panel → fusion judge → decision → critic → (loop if rejected)
-```
-
-Two models fuse an answer; a red-team critic scores it and asks clarifying questions; if it fails, feedback feeds the next generation.
-
-Not tied to Doppl — just enough to feel the effect before building the real reproduction loop.
-
-## Setup
+## First time only
 
 ```bash
 cd doppl-test
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # add OPENROUTER_API_KEY
+chmod +x demo
 ```
 
-## Run
-
-**Transparent mode with critic loop** (default — 2 generations max):
+## Run the demo (one command)
 
 ```bash
-python fusion_demo.py
-python fusion_demo.py --rounds 3   # more generations
+./demo
 ```
 
-**Official OpenRouter Fusion** (same idea, server-side):
+That's it. Runs 2 generations (panel, judge, decision, critic each), writes `fusion_trace.html`, opens it.
+
+Custom prompt:
 
 ```bash
-python fusion_demo.py --mode official
+./demo --prompt "Your vague question here"
 ```
 
-**Compare both**:
+Terminal only, no browser:
 
 ```bash
-python fusion_demo.py --mode both
+./demo --no-open
 ```
 
-**HTML trace for live demo** (panel → judge → decision in the browser):
+## What happens
 
-```bash
-python fusion_demo.py --html --open
-```
+1. **Panel** — two models answer in parallel
+2. **Fusion judge** — consensus, contradictions, clarifying questions
+3. **Decision** — grounded answer
+4. **Critic** — scores it, asks what it glossed over
+5. If critic fails → **Gen 2** with feedback injected → repeat
+6. **HTML opens** — full trace for the room / projector
 
-Writes `fusion_trace.html` and opens it. Offline preview without API calls: open `trace_sample.html`.
+Default prompt ("Room Vitals" for "a new room") is vague on purpose so Gen 1 usually fails and Gen 2 improves.
 
-**Custom vague prompt**:
+## Power-user flags
 
-```bash
-python fusion_demo.py --prompt "Should we pivot the product? We have 2 weeks and \$500."
-```
+| Flag | Effect |
+|------|--------|
+| `--rounds 3` | More generations |
+| `--no-html` | Skip HTML file |
+| `--no-open` | Write HTML but don't open browser |
+| `--mode official` | Also call OpenRouter's built-in Fusion API |
 
-## What you'll see
-
-Each **generation**:
-
-1. **Panel** — two models answer in parallel (each may assume different things)
-2. **Fusion judge** — consensus, contradictions, blind spots, clarifying questions
-3. **Decision** — one direction, grounded in the fusion analysis
-4. **Critic** — scores the answer (1–10), lists weaknesses, asks clarifying questions the answer glossed over
-
-If the critic rejects (score &lt; 7 or `needs_revision`), its feedback is injected into the next round's prompt and fusion runs again. Stops early on pass.
-
-The default prompt ("Room Vitals" for "a new room") is intentionally vague so gen 1 usually fails the critic — gen 2 visibly improves.
-
-## How this maps to OpenRouter Fusion
-
-| OpenRouter Fusion | This demo |
-|---|---|
-| Panel (1–8 models, parallel) | `gemini-2.5-flash` + `gpt-4o-mini` |
-| Judge (structured analysis, not merge) | Same JSON schema as Fusion docs |
-| Final model writes answer | Grounded on judge output |
-| `openrouter/fusion` model alias | `--mode official` |
-
-Reference: [OpenRouter Fusion announcement](https://openrouter.ai/blog/announcements/fusion-beats-frontier/)
+Reference: [OpenRouter Fusion](https://openrouter.ai/docs/guides/features/plugins/fusion)

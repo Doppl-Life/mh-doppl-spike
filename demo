@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# One command: full fusion + critic loop → HTML → browser
+set -euo pipefail
+cd "$(dirname "$0")"
+
+if [[ -f .venv/bin/activate ]]; then
+  # shellcheck disable=SC1091
+  source .venv/bin/activate
+fi
+
+if [[ ! -f .env ]] && [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+  echo "Missing .env — run: cp .env.example .env  (then add OPENROUTER_API_KEY)"
+  exit 1
+fi
+
+exec python fusion_demo.py "$@"

@@ -399,14 +399,21 @@ def main() -> None:
         help=f"Max fusion+critic rounds (default {DEFAULT_ROUNDS})",
     )
     parser.add_argument(
-        "--html",
-        nargs="?",
-        const=str(DEFAULT_HTML),
-        default=None,
-        metavar="PATH",
-        help=f"Write trace HTML (default: {DEFAULT_HTML})",
+        "--no-html",
+        action="store_true",
+        help="Skip writing the HTML trace (default: write fusion_trace.html)",
     )
-    parser.add_argument("--open", action="store_true", help="Open HTML trace in browser")
+    parser.add_argument(
+        "--no-open",
+        action="store_true",
+        help="Don't open the trace in your browser (default: open after run)",
+    )
+    parser.add_argument(
+        "--html",
+        default=str(DEFAULT_HTML),
+        metavar="PATH",
+        help=f"HTML output path (default: {DEFAULT_HTML})",
+    )
     args = parser.parse_args()
     key = api_key()
 
@@ -438,10 +445,8 @@ def main() -> None:
             else:
                 trace["official"] = official
 
-    if args.html and trace is not None:
-        write_html_trace(trace, Path(args.html), args.open)
-    elif args.open and not args.html:
-        console.print("[yellow]--open requires --html[/yellow]")
+    if not args.no_html and trace is not None:
+        write_html_trace(trace, Path(args.html), open_browser=not args.no_open)
 
 
 if __name__ == "__main__":

@@ -9,6 +9,8 @@ A self-replicating idea organism: a population of agents under selection pressur
 ```
 doppl-test/
   TREATISE.md                  ← living meta-narrative (philosophy + architecture)
+  DIAGRAMS.md                  ← high-level visual map (how it all relates)
+  GLOSSARY.md                  ← the evolving lexicon
   LESSONS_AND_BANGERS.md       ← meta-concepts that reframe the problem
   MEMORY.md                    ← fork register (paths chosen / deferred)
   BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
@@ -24,8 +26,9 @@ doppl-test/
 
 1. [`Doppl_Capstone_Proposal_volume_2.txt`](./Doppl_Capstone_Proposal_volume_2.txt) — the seed bet
 2. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
-3. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
-4. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
+3. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
+4. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
+5. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
 
 ## Run a spike
 

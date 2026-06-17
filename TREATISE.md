@@ -4,7 +4,7 @@
 **Purpose:** the meta-narrative behind the spike — philosophy, ecology, and architecture in one place  
 **Not:** the proposal (see [Doppl_Capstone_Proposal_volume_2.txt](./Doppl_Capstone_Proposal_volume_2.txt)), not operational docs ([README.md](./README.md)), not the atomized registers
 
-This is the **piece of paper between us**. Conversation stays conversation. Bangers, forks, and falsifiable hacks still land in [LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md), [MEMORY.md](./MEMORY.md), and [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md). This file is the **compressed narrative** those registers point back to.
+This is the **piece of paper between us**. Conversation stays conversation. Bangers, forks, and falsifiable hacks still land in [LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md), [MEMORY.md](./MEMORY.md), and [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md). This file is the **compressed narrative** those registers point back to. For the same model drawn as pictures, see [DIAGRAMS.md](./DIAGRAMS.md).
 
 ---
 

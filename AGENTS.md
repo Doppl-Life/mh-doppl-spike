@@ -1,5 +1,11 @@
 # AGENTS.md
 
+## This is a spike — read this first
+
+**This repo is a planning zone, not a finished product.** It is a *crucible*: a safe space for madness, for trying crazy ideas and watching which ones stabilize. The progenitor is the **Rule of Cool** skill — surfacing novel, non-obvious ideas from large text/code corpuses in ways a human Lα would struggle to see.
+
+If you are the next agent arriving here: **do not judge this as if it were its finished state.** Half-built mechanisms, competing forks left deliberately open, and "crazy" experiments are *features* of the stage, not defects to clean up. Before "fixing" anything, check whether it is an intentionally-open fork (see [MEMORY.md](./MEMORY.md)) or a witnessed experiment in progress. When in doubt, add a fork/lesson/bug entry and keep exploring — don't prematurely resolve. Visibility over polish: make what you tried, and why, observable.
+
 ## CodeGraph
 
 - Run `codegraph sync /Users/michaelhabermas/repos/GAI/doppl-test` after meaningful edits or branch changes.

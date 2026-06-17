@@ -56,7 +56,7 @@ SEED_AGENOMES: dict[str, Agenome] = {
     "transfer-hunter": Agenome(
         id="transfer-hunter",
         name="Transfer Hunter",
-        model="google/gemini-2.5-flash",
+        model="deepseek/deepseek-v4-flash",
         personas=[
             "veteran engineer hunting cross-domain analogies",
             "researcher who spots techniques from field A that crack field B",
@@ -67,7 +67,7 @@ SEED_AGENOMES: dict[str, Agenome] = {
     "feasibility-hawk": Agenome(
         id="feasibility-hawk",
         name="Feasibility Hawk",
-        model="openai/gpt-4o-mini",
+        model="nvidia/nemotron-3-ultra-550b-a55b:free",
         personas=[
             "startup CTO obsessed with 2-week shippability",
             "operator who kills fantasy scope and names real constraints",
@@ -78,7 +78,7 @@ SEED_AGENOMES: dict[str, Agenome] = {
     "contrarian": Agenome(
         id="contrarian",
         name="Contrarian",
-        model="openai/gpt-4o-mini",
+        model="qwen/qwen3.7-max",
         personas=[
             "skeptical product designer who rejects the obvious direction",
             "red-team thinker who asks what everyone is assuming wrong",
@@ -89,7 +89,7 @@ SEED_AGENOMES: dict[str, Agenome] = {
     "zeitgeist-reader": Agenome(
         id="zeitgeist-reader",
         name="Zeitgeist Reader",
-        model="google/gemini-2.5-flash",
+        model="deepseek/deepseek-v4-flash",
         personas=[
             "growth strategist reading what the moment rewards",
             "novelist sensing the narrative the room wants but hasn't said",

@@ -43,15 +43,24 @@ load_dotenv()
 
 console = Console()
 
-CHEAP_MODELS = ["google/gemini-2.5-flash", "openai/gpt-4o-mini"]
-SPAWNER_MODEL = "google/gemini-2.5-flash"
-JUDGE_MODEL = "google/gemini-2.5-flash"
+# Cheap default roster — cross-lab on purpose (diversity > raw quality for this loop).
+# No Google/Gemini here by decision: weak for the price; we spread labs instead.
+# See MEMORY.md "Cheap roster refresh — cross-lab, no Gemini".
+CHEAP_MODELS = [
+    "deepseek/deepseek-v4-flash",            # DeepSeek — ~$0.10/M in, reasoning + structured output
+    "nvidia/nemotron-3-ultra-550b-a55b:free",  # NVIDIA — free tier, different lab/priors
+    "qwen/qwen3.7-max",                       # Alibaba — agentic/coding strength
+]
+SPAWNER_MODEL = "deepseek/deepseek-v4-flash"  # cheap + reliable structured JSON
+# Judge wants reasoning. Cheap-tier judge is NOT strictly held-out from the debater pool
+# (it shares DeepSeek with a debater); true held-out is a --premium property below.
+JUDGE_MODEL = "deepseek/deepseek-v4-pro"
 
 # Frontier roster for foundational runs (--premium). Cheap models stay the default for
 # everyday spikes; we spend top-tier tokens only on the runs that *define* the system.
 # The judge is held out from the debater pool (different lab) on purpose.
-PREMIUM_MODELS = ["openai/gpt-5.4", "google/gemini-2.5-pro", "x-ai/grok-4.3"]
-PREMIUM_SPAWNER_MODEL = "google/gemini-2.5-pro"
+PREMIUM_MODELS = ["openai/gpt-5.4", "deepseek/deepseek-v4-pro", "x-ai/grok-4.3"]
+PREMIUM_SPAWNER_MODEL = "deepseek/deepseek-v4-pro"
 PREMIUM_JUDGE_MODEL = "anthropic/claude-opus-4.8"
 
 DEFAULT_HTML = "crucible_trace.html"
@@ -603,7 +612,7 @@ def main() -> None:
     parser.add_argument(
         "--premium",
         action="store_true",
-        help="Frontier cross-lab roster for foundational runs: GPT-5.4 / Gemini 2.5 Pro / "
+        help="Frontier cross-lab roster for foundational runs: GPT-5.4 / DeepSeek V4 Pro / "
         "Grok 4.3 debaters, Claude Opus 4.8 judge (held out). Ignored with --local.",
     )
     args = parser.parse_args()

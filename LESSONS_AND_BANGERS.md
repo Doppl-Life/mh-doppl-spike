@@ -248,3 +248,10 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** Navigation is not chrome. Mortal traces need an immortal, regenerated hub so Agardeners can move to and from runs without hunting for files.
 - **Evidence:** `build_index.py` (scans `spikes/*/`, enriches from sibling `*.trace.json`); crucible `refresh_root_index` auto-rebuilds on `--html`; nav back-link in `crucible_html.py`.
 - **Carry forward:** Every spike that emits HTML should drop into the shared hub schema; keep one known entry point.
+
+### The spawner chooses the substrate, not just the structure — 2026-06-17
+
+- **Banger:** The `--local` monoculture bug ("spawner, all debaters, and the judge become the same single local model") exposes a deeper point: **which model backs each role is itself a gene the spawner should set** — substrate, not just count + archetype. A Falsifier on a stubborn 35B local model is a *different organism* than the same Falsifier on a cheap hosted reasoner.
+- **Lesson:** Promote model substrate into the spawn plan (per-role routing), and **make the choice and its reason as visible as the archetype choice already is** — same JSON, same Syntax dump, same HTML trace. Diversity beats raw quality for this loop, so a spawner that can *mix* labs/substrates per room is strictly more expressive than a hardcoded roster.
+- **Evidence:** `crucible.py` `resolve_backend` forces one `model_override` for all roles under `--local`; cross-lab cheap roster refresh (DeepSeek / NVIDIA / Alibaba, no Gemini); local `gemma4` + `qwen3.6:35b-a3b` available via Ollama.
+- **Carry forward:** Serialize substrate into the agenome/spawn plan alongside topology + judge contract + energy budget; observe whether substrate-as-gene changes debate quality before committing. See [MEMORY fork](./MEMORY.md#spawner-selects-the-substrate-not-just-the-structure--2026-06-17), builds on [Local models as environment](#local-models-as-environment--2026-06-17).

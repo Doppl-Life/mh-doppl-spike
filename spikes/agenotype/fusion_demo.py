@@ -53,14 +53,15 @@ What metrics should we track, and what's the one direction we should ship first?
 
 Keep it practical. We're a 2-person team with 2 weeks."""
 
+# Cross-lab cheap panel (no Gemini by decision — see MEMORY.md roster refresh).
 PANEL_MODELS = [
-    "google/gemini-2.5-flash",
-    "openai/gpt-4o-mini",
+    "deepseek/deepseek-v4-flash",
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
 ]
 
-JUDGE_MODEL = "google/gemini-2.5-flash"
-FINAL_MODEL = "openai/gpt-4o-mini"
-CRITIC_MODEL = "google/gemini-2.5-flash"
+JUDGE_MODEL = "deepseek/deepseek-v4-pro"
+FINAL_MODEL = "qwen/qwen3.7-max"
+CRITIC_MODEL = "deepseek/deepseek-v4-pro"
 
 JUDGE_SYSTEM = """You are a fusion judge. You receive answers from multiple AI models on the same prompt.
 

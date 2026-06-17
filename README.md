@@ -16,10 +16,10 @@ doppl-test/
   BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
   AGENTS.md                    ← capture/routing rules for this spike
   Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
-  render.yaml                  ← deploy (points at spikes/agenotype)
+  render.yaml                  ← deploy (serves the root Agarden index.html)
   spikes/
     agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
-    # crucible/  (next)        ← belief-revision sibling spawner
+    crucible/                   ← belief-revision sibling spawner
 ```
 
 ## Read order

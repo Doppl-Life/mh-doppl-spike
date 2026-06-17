@@ -71,3 +71,11 @@ Log each one so the next spike inherits the counter-mutation. Same falsifiabilit
 - **Repro trigger:** the one command or sequence that used to crash
 - **Bedrock assertion:** the pass/fail check that proves the fix held (e.g. exits 0, writes trace)
 - **Carry forward:** one line for the next spike/kernel owner
+
+#### Spike-folder path drift (`agenotype` vs. `genotype`) — 2026-06-17
+
+- **Crash:** the deploy (`render.yaml rootDir`) and onboarding paths referenced `spikes/agenotype/` while the folder on disk was `spikes/genotype/` — Render build fails, `cd spikes/agenotype` dead-ends, and the crucible's `../agenotype/.env` key-fallback silently misses.
+- **Counter-mutation:** resolved by renaming the folder `genotype → agenotype` to honor the A-prefix rule (commit `565d300`), so disk now matches prose; separately repointed [`render.yaml`](./render.yaml) at the root Agarden `index.html` per the deploy decision (see [MEMORY.md](./MEMORY.md)).
+- **Repro trigger:** `grep -rn "spikes/agenotype" .` resolving to a missing dir; any Render build whose `rootDir` doesn't exist on disk.
+- **Bedrock assertion:** *(prose for now)* every path in `render.yaml`, each `spikes/*/demo` env loop, and every `cd spikes/...` in a README resolves on disk. This is exactly the first executable check [`bedrock/`](./bedrock/README.md) should own.
+- **Carry forward:** the narrative drifted from the filesystem and the immune system was empty when it happened — bedrock check #1 should be repo integrity, not idea quality.

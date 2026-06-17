@@ -111,7 +111,8 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Bedrock
 
-- **Def:** the immovable anchor for "better" — executable checks, held-out judges, human judgment, falsifiable repro triggers. The objective may evolve; bedrock may not move. `status: working`
+- **Def:** the immovable anchor for "better" — executable checks, held-out judges, human judgment, falsifiable repro triggers. The objective may evolve; bedrock may not move. `status: working (concept) — no executable instance yet`
+- **Stub:** [`bedrock/README.md`](./bedrock/README.md) reserves the home; the first executable check is still to be defined.
 
 ---
 
@@ -133,7 +134,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 ### Acology / Acological archetypes
 
 - **Def:** *Acology* = the agentic ecology (A + ecology, following Agenome/Aphenome). *Acological archetypes* = agent mandates (not people): Transfer Hunter, Feasibility Hawk, Falsifier, Contrarian, Zeitgeist Reader… Niche partitioning for the room. `status: coined`
-- **Why:** "Ecological archetypes" was the working phrase; the A-prefix (rather than "Acological") keeps the lexicon consistent — A+genome, A+phenome, A+ecology. Each rhymes with its biological root.
+- **Why:** "Ecological archetypes" was the working phrase; the A-prefix (rather than "Ecological") keeps the lexicon consistent — A+genome, A+phenome, A+ecology. Each rhymes with its biological root.
 - **See:** crucible `ARCHETYPE_POOL`; `[TREATISE.md](./TREATISE.md)` § V
 
 ### Fusant
@@ -187,7 +188,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
 | 2026-06-17 | Lαlphα           | Widened: now names **agent AND human team members** as peers, not just the agent      |
-| 2026-06-17 | Acology         | Chose **A-prefix** (Acological) over "Acological" — consistent with Agenome/Aphenome |
+| 2026-06-17 | Acology         | Chose **A-prefix** (Acological) over "Ecological" — consistent with Agenome/Aphenome |
 | 2026-06-17 | Fusant           | Coined for the fusion entity inside a spawncidence node (crucible `Debater`)          |
 | 2026-06-17 | Disagreeableness | Coined the anti-herding dial as counter-mutation to consensus-grading                 |
 | 2026-06-17 | Witness          | Renamed **L5 → Lα** — moved outside the tree, not a fifth stratum                     |

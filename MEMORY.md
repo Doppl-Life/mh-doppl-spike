@@ -60,3 +60,11 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Because:** literal mortality — delete or archive a spike folder without touching culture; mirrors "lineage log survives, organism doesn't"
 - **Revisit if:** move cost outweighs benefit with only one spike and no crucible sibling yet — defer is valid
 - **Spirit note:** see [TREATISE.md § XI](./TREATISE.md#xi-repo-ecology--meta-at-root-spikes-below)
+
+### Deploy serves the root hub, not the interactive demo — 2026-06-17
+
+- **Chose:** point [`render.yaml`](./render.yaml) at the root Agarden `index.html` (static hub of whatever traces are live)
+- **Over:** keeping the `spikes/agenotype` FastAPI app (`app.py`) as the deployed service — the live "type a prompt, watch fusion run" demo
+- **Because:** the hub is the findable, always-valid entry point across every spike; the interactive app is one spike's surface and needs a running server + key. Early stage — favor the navigable index over a single live demo
+- **Revisit if:** we want a public live-run demo for the Jun 29 showcase — then redeploy `app.py` as a separate Render web service alongside the static hub
+- **Spirit note:** mortal traces come and go; the hub is the extended aphenotype that points at whatever still lives. (Folder naming `genotype → agenotype` was resolved in `565d300`; see [BUGS](./BUGS_AND_MITIGATIONS.md).)

@@ -141,7 +141,7 @@ Sometimes they die young. Sometimes they take longer. Sometimes they become the 
 
 ## V. Acological archetypes (agent mandates, not people)
 
-> **Naming:** these are *Acological* archetypes — A-prefix (A+ecology), consistent with Agenome/Aphenome, not "Acological." The agents inside a spawncidence node are **Fusants**: the fusion entities whose response events get fused and contested. A Fusant is a `Debater` in the crucible, a council member in the agenotype path.
+> **Naming:** these are *Acological* archetypes — A-prefix (A+ecology), consistent with Agenome/Aphenome, not "Ecological." The agents inside a spawncidence node are **Fusants**: the fusion entities whose response events get fused and contested. A Fusant is a `Debater` in the crucible, a council member in the agenotype path.
 
 Real populations need incompatible strategies. Optimists are generally more successful and happier — but a ecology of only optimists goes blind. You need the unhappy ones, the mutations, the differences, or you cannot see the wolf in sheep's clothing. **Cooperation is the dominant strategy; dissent is what moves the ball.**
 

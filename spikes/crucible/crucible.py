@@ -46,6 +46,14 @@ console = Console()
 CHEAP_MODELS = ["google/gemini-2.5-flash", "openai/gpt-4o-mini"]
 SPAWNER_MODEL = "google/gemini-2.5-flash"
 JUDGE_MODEL = "google/gemini-2.5-flash"
+
+# Frontier roster for foundational runs (--premium). Cheap models stay the default for
+# everyday spikes; we spend top-tier tokens only on the runs that *define* the system.
+# The judge is held out from the debater pool (different lab) on purpose.
+PREMIUM_MODELS = ["openai/gpt-5.4", "google/gemini-2.5-pro", "x-ai/grok-4.3"]
+PREMIUM_SPAWNER_MODEL = "google/gemini-2.5-pro"
+PREMIUM_JUDGE_MODEL = "anthropic/claude-opus-4.8"
+
 DEFAULT_HTML = "crucible_trace.html"
 
 
@@ -592,12 +600,28 @@ def main() -> None:
         help="Use a local OpenAI-compatible model (Gemma 4 via Ollama/LM Studio). "
         "Honors LOCAL_BASE_URL + LOCAL_MODEL env.",
     )
+    parser.add_argument(
+        "--premium",
+        action="store_true",
+        help="Frontier cross-lab roster for foundational runs: GPT-5.4 / Gemini 2.5 Pro / "
+        "Grok 4.3 debaters, Claude Opus 4.8 judge (held out). Ignored with --local.",
+    )
     args = parser.parse_args()
 
-    global _BACKEND
+    global _BACKEND, CHEAP_MODELS, SPAWNER_MODEL, JUDGE_MODEL
     _BACKEND = resolve_backend(args.local)
     if args.local:
         console.print(f"[dim]Local backend: {_BACKEND.base_url} · model={_BACKEND.model_override}[/dim]")
+    if args.premium and not args.local:
+        CHEAP_MODELS = PREMIUM_MODELS
+        SPAWNER_MODEL = PREMIUM_SPAWNER_MODEL
+        JUDGE_MODEL = PREMIUM_JUDGE_MODEL
+        console.print(
+            "[bold magenta]Premium roster[/bold magenta] — debaters: "
+            + ", ".join(PREMIUM_MODELS)
+            + f"; spawner: {PREMIUM_SPAWNER_MODEL}; judge: {PREMIUM_JUDGE_MODEL} "
+            + "[dim](held out from the debate)[/dim]"
+        )
 
     cap = max(2, min(args.cap, 8))
     dissent_floor = max(0.0, min(args.dissent, 1.0))

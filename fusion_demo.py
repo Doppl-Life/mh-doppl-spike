@@ -116,6 +116,18 @@ def api_key() -> str:
     return key
 
 
+def make_client() -> httpx.Client:
+    return httpx.Client(
+        headers={
+            "Authorization": f"Bearer {api_key()}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://github.com/doppl-test/fusion-demo",
+            "X-Title": "Doppl Fusion Demo",
+        },
+        timeout=180.0,
+    )
+
+
 def chat(
     client: httpx.Client,
     *,
@@ -415,20 +427,12 @@ def main() -> None:
         help=f"HTML output path (default: {DEFAULT_HTML})",
     )
     args = parser.parse_args()
-    key = api_key()
-
-    headers = {
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://github.com/doppl-test/fusion-demo",
-        "X-Title": "Doppl Fusion Demo",
-    }
 
     console.print(Panel(args.prompt, title="[bold]Prompt[/bold]", border_style="blue"))
 
     trace: dict[str, Any] | None = None
 
-    with httpx.Client(headers=headers, timeout=180.0) as client:
+    with make_client() as client:
         if args.mode in ("transparent", "both"):
             trace = run_loop(client, args.prompt, max(1, args.rounds))
         if args.mode == "both":

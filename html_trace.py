@@ -9,9 +9,13 @@ from pathlib import Path
 from typing import Any
 
 
+def render_trace_html(trace: dict[str, Any]) -> str:
+    return _render(trace)
+
+
 def write_trace_html(path: Path, trace: dict[str, Any]) -> Path:
     path = path.resolve()
-    path.write_text(_render(trace), encoding="utf-8")
+    path.write_text(render_trace_html(trace), encoding="utf-8")
     return path
 
 

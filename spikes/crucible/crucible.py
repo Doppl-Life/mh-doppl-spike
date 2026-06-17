@@ -101,7 +101,7 @@ class Debater:
         return asdict(self)
 
 
-# Ecological (Aecological) archetypes the spawner may draw from (treatise § V).
+# Ecological (Acological) archetypes the spawner may draw from (treatise § V).
 ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
     "transfer-hunter": {
         "name": "Transfer Hunter",

@@ -139,9 +139,13 @@ Sometimes they die young. Sometimes they take longer. Sometimes they become the 
 
 ---
 
-## V. Ecological archetypes (agent mandates, not people)
+## V. Acological archetypes (agent mandates, not people)
 
-Real populations need incompatible strategies. Optimists are generally more successful and happier — but a ecology of only optimists goes blind. You need the unhappy ones, the mutations, the differences, or you cannot see the wolf in sheep's clothing.
+> **Naming:** these are *Acological* archetypes — A-prefix (A+ecology), consistent with Agenome/Aphenome, not "Acological." The agents inside a spawncidence node are **Fusants**: the fusion entities whose response events get fused and contested. A Fusant is a `Debater` in the crucible, a council member in the genotype path.
+
+Real populations need incompatible strategies. Optimists are generally more successful and happier — but a ecology of only optimists goes blind. You need the unhappy ones, the mutations, the differences, or you cannot see the wolf in sheep's clothing. **Cooperation is the dominant strategy; dissent is what moves the ball.**
+
+Each Fusant carries a **disagreeableness dial** (`0..1`): how hard it resists convergence-for-its-own-sake. Falsifier and Contrarian run hot, synthesizers run cool, and a room-wide `--dissent` floor can raise everyone. This is the tunable counter-mutation to consensus-grading (§ II, [BUGS](./BUGS_AND_MITIGATIONS.md)) — personality is a *knob*, not a vibe, and over-tuning it is its own reward hack ("disagreeable for its own sake").
 
 These are **ecological roles in the organism** — serializable mandates in agenomes and critic councils. Working names from design conversation; not clinical labels, not judgments on humans.
 
@@ -358,20 +362,25 @@ doppl-test/                    ← Lα lives here
   LESSONS_AND_BANGERS.md
   MEMORY.md
   BUGS_AND_MITIGATIONS.md
+  GLOSSARY.md
   AGENTS.md
+  build_index.py               ← regenerates the Agarden hub
+  index.html                   ← the findable entry point (mortal, regenerated)
   Doppl_Capstone_Proposal_volume_2.txt
   bedrock/                     ← (embryology) shared prompts + assertions
   harness/                     ← (embryology) run all spikes, compare traces
   spikes/
-    genotype/                  ← current fusion demo (move target)
+    genotype/                  ← fusion demo
       fusion_demo.py
       agenome.py
       demo
       README.md
       ...
-    crucible/                  ← (embryology) belief-revision sibling
+    crucible/                  ← belief-revision sibling (built)
     ...
 ```
+
+**The Agarden hub.** `index.html` (built by `build_index.py`) is the single, findable entry point: it scans every spike for live HTML traces, enriches each with its `*.trace.json` (prompt, judge score/verdict, consensus quality, Fusant roster), and renders a reusable side menu. Each trace carries a back-link to the hub, so you navigate to and from runs across Agardens and spawncidences. The hub is itself an **extended aphenotype** — mortal traces come and go; the hub is regenerated and points at whatever still lives (the crucible auto-refreshes it on `--html`).
 
 **Why `spikes/` over `sprojects/`:** spike is already the vocabulary in registers and capstone. *Sproject* works as slang; folder name can stay `spikes/`.
 
@@ -391,3 +400,4 @@ doppl-test/                    ← Lα lives here
 | 2026-06-17 | Convergent skills, aphenome collapse machinery, butterfly-wing uncle, skill-graph / host-expression (`AGENTS.md` ↔ `claude.md`) |
 | 2026-06-17 | Lα (not L5) — witness outside tree; amemetics / collapse pipeline sketch; `spikes/` repo ecology proposal |
 | 2026-06-17 | Crucible spike built + witnessed; energy-budget metabolism for spawncidences; Agardeners; graph-traversal/CEV; tool-to-make-a-tool; local models (`--local`); HTML extended aphenome; `GLOSSARY.md` born |
+| 2026-06-17 | Lαlphα names humans + agent as peers; Acology/Fusant naming (A-prefix rule); disagreeableness dial + judge consensus-quality patch (counter-mutation to consensus-grading); Agarden hub (`build_index.py` → `index.html`) |

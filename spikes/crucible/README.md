@@ -42,7 +42,11 @@ load a key from `.env`, `../../.env`, or `../genotype/.env` if present.
 ./demo --no-spawner                     # use the default roster (no spawner call)
 ./demo --cap 5 --json-out trace.json    # cap spawncidences, dump full trace
 ./demo --local --html                   # run on a local model (Gemma 4 via Ollama/LM Studio)
+./demo --turns 2 --dissent 0.6 --html   # raise the anti-herding floor across the room
 ```
+
+After an `--html` run, the root **Agarden hub** (`../../index.html`) is auto-refreshed so the
+new trace is navigable. Rebuild it manually any time with `python ../../build_index.py --open`.
 
 ## Flags
 
@@ -52,6 +56,7 @@ load a key from `.env`, `../../.env`, or `../genotype/.env` if present.
 | `--turns N` | Number of argument turns (default 2) |
 | `--debaters N` | Force room size, overriding spawner latitude |
 | `--no-spawner` | Skip the spawner; use the default roster (transfer-hunter, feasibility-hawk, falsifier) |
+| `--dissent F` | Anti-herding floor `0..1` — raises every Fusant's disagreeableness to at least this (counter-mutation to consensus-grading) |
 | `--cap N` | Metabolism cap on spawncidences (default 5) |
 | `--json-out PATH` | Write the full trace JSON |
 | `--html` | Write a witnessable HTML trace (extended aphenome) and open it |

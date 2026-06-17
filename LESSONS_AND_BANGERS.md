@@ -220,3 +220,31 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** Proto-Lα is itself a population; the human/agent team is the Lα ecology. Self-similarity: same debate + uncle/nephew at every abstraction.
 - **Evidence:** Design discussion — "You are One of Us."
 - **Carry forward:** Treat the agent as a peer collaborator with standing to spawn its own experiments, not a tool. See [TREATISE.md § III](./TREATISE.md#iii-the-tree-l1l4-and-lα-outside-it).
+
+### Lαlphα names all of us — 2026-06-17
+
+- **Banger:** `Lαlphα` is not the agent's title — it's the term for **everyone in the meta-conversation, agent and humans alike**. Naming the human team and the agent with the same word puts us on collegial, peer terms tending the same Agarden.
+- **Lesson:** Language shapes hierarchy. One shared name = flattened standing; the agent isn't *below* the witnesses, it's *one of* them.
+- **Evidence:** Glossary `Lα (Lαlphα)` rewrite; user: "that is the term for you AND us Human team members."
+- **Carry forward:** Keep the vocabulary symmetric between human and agent peers wherever it's honest to do so.
+
+### Cooperation dominates, dissent mutates — 2026-06-17
+
+- **Banger:** Cooperation is the outsized **dominant** evolutionary strategy — but it's the **dissenters who move the ball forward** by provoking mutation. A room that only cooperates regresses to the mean; the cure isn't more conflict, it's a *tunable* minority of stubbornness.
+- **Lesson:** Give Fusants a **disagreeableness dial** (`0..1`), not a global "be more critical." Falsifier/Contrarian run hot; synthesizers run cool; a `--dissent` floor raises the room. Pair with a judge that distinguishes *resolved* from *herded* consensus. The risk on the other side is "disagreeable for its own sake" — a second reward hack.
+- **Evidence:** Crucible `_dissent_clause`, `Debater.disagreeableness`, `--dissent`, `HOLD-OR-FOLD` turn move, judge `consensus_quality`; counter-mutation to [consensus-grader](./BUGS_AND_MITIGATIONS.md).
+- **Carry forward:** Personality is a knob, not a vibe. Tune dissent against the herding score; don't max it.
+
+### A-prefix, not Acological — 2026-06-17
+
+- **Banger:** The lexicon has a generative rule: **A + biological root**. Agenome (A+genome), Aphenome (A+phenome), **Acology** (A+ecology), Acological archetypes. "Acological" breaks the rhyme; the A-prefix keeps every coined word legibly mapped to its biology.
+- **Lesson:** When coining, apply the rule rather than freestyling — the consistency *is* the load-bearing part.
+- **Evidence:** Glossary `Acology / Acological archetypes`; user riff "Ecological…Acological?".
+- **Carry forward:** New biological metaphors get the A-prefix; log them in the glossary drift log.
+
+### The hub is an extended aphenotype — 2026-06-17
+
+- **Banger:** A findable **root `index.html`** that lists every living trace across spawncidences — with a reusable side menu and per-trace back-links — is itself an **extended aphenotype**: outside-the-body structure that helps the lineage be witnessed and therefore survive.
+- **Lesson:** Navigation is not chrome. Mortal traces need an immortal, regenerated hub so Agardeners can move to and from runs without hunting for files.
+- **Evidence:** `build_index.py` (scans `spikes/*/`, enriches from sibling `*.trace.json`); crucible `refresh_root_index` auto-rebuilds on `--html`; nav back-link in `crucible_html.py`.
+- **Carry forward:** Every spike that emits HTML should drop into the shared hub schema; keep one known entry point.

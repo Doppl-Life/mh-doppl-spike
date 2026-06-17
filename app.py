@@ -125,11 +125,11 @@ LANDING_HTML = """<!DOCTYPE html>
     </header>
     <form id="run-form" method="post" action="/run">
       <label for="prompt">Prompt</label>
-      <textarea id="prompt" name="prompt" required>{default_prompt}</textarea>
+      <textarea id="prompt" name="prompt" required>__DEFAULT_PROMPT__</textarea>
       <div class="row">
         <div class="field">
           <label for="rounds">Max rounds</label>
-          <input id="rounds" name="rounds" type="number" min="1" max="5" value="{default_rounds}" />
+          <input id="rounds" name="rounds" type="number" min="1" max="5" value="__DEFAULT_ROUNDS__" />
         </div>
         <button type="submit">Run fusion</button>
       </div>
@@ -148,9 +148,9 @@ LANDING_HTML = """<!DOCTYPE html>
 
 
 def _landing_page() -> str:
-    return LANDING_HTML.format(
-        default_prompt=html.escape(DEFAULT_PROMPT.strip()),
-        default_rounds=DEFAULT_ROUNDS,
+    return (
+        LANDING_HTML.replace("__DEFAULT_PROMPT__", html.escape(DEFAULT_PROMPT.strip()))
+        .replace("__DEFAULT_ROUNDS__", str(DEFAULT_ROUNDS))
     )
 
 

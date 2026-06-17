@@ -5,6 +5,7 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 **Write here when:** a design choice could reasonably have gone another way, and the reason matters later.
 
 **Write elsewhere:**
+
 - Timeless insight → [LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md)
 - Proxy win / reward hack → [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md)
 

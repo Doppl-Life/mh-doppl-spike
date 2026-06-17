@@ -7,7 +7,7 @@ services:
   - type: web
     name: doppl-agarden
     runtime: python
-    repo: https://github.com/MichaelHabermas/doppl-test
+    repo: https://github.com/Doppl-Life/mh-doppl-spike
     branch: main
     plan: free
     buildCommand: python build_index.py

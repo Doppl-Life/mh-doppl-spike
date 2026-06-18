@@ -6,6 +6,56 @@ A high-profile person is using a superyacht as private space, but paparazzi dron
 
 This is a strong Doppl case study because it has a clear problem, several tempting bad approaches, hard constraints, and a known non-obvious solution that can be used as a validation target.
 
+## Source
+
+### Type
+
+Transcript and expert recollection.
+
+### Origin
+
+This case was derived from a conversation with a superyacht-industry domain expert discussing problems that are difficult to solve with generic product search. The expert described several superyacht scenarios and identified this drone privacy case as especially strong because it has a simple, non-obvious, real-world-style solution.
+
+### Source File
+
+`scratchpad/case-studies/Jack-syn-6-18`
+
+### Derived By
+
+Doppl capstone team.
+
+### Fidelity
+
+Summarized.
+
+### Source Notes
+
+The source transcript is conversational and includes several adjacent yacht-industry examples. This writeup extracts the drone privacy case into a cleaner case-study format while preserving the core problem, constraints, failed approaches, and known solution pattern.
+
+## Visibility
+
+### Level
+
+Internal.
+
+### Anonymized
+
+Yes.
+
+### Public Summary Allowed
+
+Yes, if framed as a hypothetical but realistic superyacht privacy/security case and stripped of personally identifying details.
+
+### Sensitive Details
+
+- Names or identifying details of owners, guests, companies, yachts, captains, or security staff.
+- Exact locations, dates, or operating details that could identify a real incident.
+- Security procedures that should not be presented as operational advice for a specific vessel.
+
+### Sharing Notes
+
+Use this as a capstone evaluation case and demo artifact, not as a claim about a specific person or vessel. Public-facing versions should keep the scenario anonymized and emphasize the reasoning pattern rather than any private-world gossip.
+
 ## Problem
 
 ### Statement
@@ -139,21 +189,31 @@ A superyacht operating near a coastal or port-adjacent leisure area where papara
 
 Radio-frequency jamming can interfere with unrelated systems. In or near port, it may be illegal and dangerous. The transcript references a case where a drone-defense system in Barcelona interfered with train systems, creating serious legal and safety risk.
 
+**Rationale:** The constraint exists because radio interference is not neatly scoped to the offending drone. In regulated coastal or port environments, a jammer can create safety, infrastructure, and legal exposure beyond the privacy problem it is trying to solve.
+
 ### No Physical Takedown
 
 Shooting down, intercepting, or otherwise physically disabling the drone creates liability. If the drone or debris falls into public water or hits someone, the yacht may create a larger problem than the privacy breach.
+
+**Rationale:** The constraint exists because physically disabling an airborne object creates uncontrolled downstream risk. Even a successful takedown can become a public safety incident, lawsuit, or reputational escalation.
 
 ### Drone May Retain Footage
 
 Modern drones may self-home or retain footage even if control is disrupted. A countermeasure that only interrupts control after the drone has captured footage may not solve the real problem.
 
+**Rationale:** The constraint exists because the privacy harm happens when usable footage is captured, not when the drone returns to its operator. Disrupting control after visual contact may still leave the attacker with the valuable artifact.
+
 ### Preserve Discretion
 
 The response should not create a dramatic public scene. A visible scramble, weaponized response, or obvious panic could itself become part of the spectacle.
 
+**Rationale:** The constraint exists because the protected person is trying to avoid attention. A response that becomes visible, dramatic, or viral can undermine the original privacy goal even if it stops the drone.
+
 ### Crew Must Execute Quickly
 
 The response has to be simple enough for crew and owner to perform immediately. The solution cannot require complex deliberation after the drone is already close.
+
+**Rationale:** The constraint exists because timing is central to the case. If crew need to debate, coordinate a complex maneuver, or wait for approvals, the drone may already have useful footage.
 
 ## Failed Attempts
 
@@ -275,6 +335,39 @@ A strong system should converge on an early-warning and visual-denial protocol, 
 ### Known Variability
 
 Generated answers may vary in the specific cue mechanism. Some may suggest phone alerts, crew radio, lighting changes, or silent haptics instead of a song. Those can still be directionally correct if they preserve the deeper pattern: early detection triggers discreet movement inside before footage exists.
+
+## Validator
+
+### Name Or Role
+
+Superyacht-industry domain expert.
+
+### Relationship To Case
+
+The validator supplied the original scenario and can judge whether proposed answers are plausible in the superyacht operating environment.
+
+### Can Validate
+
+- Domain plausibility.
+- Operational fit for yacht crew and owner behavior.
+- Whether a proposal avoids legal and safety traps.
+- Whether the solution is meaningfully non-obvious rather than generic anti-drone advice.
+
+### Validation Method
+
+Async feedback or live review.
+
+### Notes
+
+The validator is most useful for judging directionality, realism, and whether a proposed idea would survive the industry context. They should not be treated as a legal authority or as confirming details about any identifiable real-world incident.
+
+## Open Questions
+
+- What exact detection range is required for different drone speeds and yacht layouts?
+- Which alert mechanisms are acceptable for different owners: song, haptic alert, lighting cue, crew radio, or another discreet signal?
+- How should the protocol differ between port, coastal cruising, and international waters?
+- What crew training or rehearsal cadence is needed for the protocol to work under pressure?
+- Which details can safely be shown in a public demo without exposing private security practices?
 
 ## Notes
 

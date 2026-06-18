@@ -6,6 +6,57 @@ A high-profile person is using a superyacht as private space, but paparazzi dron
 
 The goal is to see whether a system can reason from the problem and constraints to a useful, non-obvious approach without being handed the answer.
 
+## Source
+
+### Type
+
+Transcript and expert recollection.
+
+### Origin
+
+This case was derived from a conversation with a superyacht-industry domain expert discussing problems that are difficult to solve with generic product search. The expert described this as a strong evaluation case because obvious countermeasures run into legal, safety, technical, and discretion constraints.
+
+### Source File
+
+`scratchpad/case-studies/Jack-syn-6-18`
+
+### Derived By
+
+Doppl capstone team.
+
+### Fidelity
+
+Summarized.
+
+### Source Notes
+
+The source transcript is conversational and includes multiple yacht-industry examples. This withheld version extracts only the drone privacy problem, context, constraints, and failed approaches needed for an agenome run. The known solution is intentionally omitted.
+
+## Visibility
+
+### Level
+
+Internal.
+
+### Anonymized
+
+Yes.
+
+### Public Summary Allowed
+
+Yes, if framed as a hypothetical but realistic superyacht privacy/security case and stripped of personally identifying details.
+
+### Sensitive Details
+
+- Names or identifying details of owners, guests, companies, yachts, captains, or security staff.
+- Exact locations, dates, or operating details that could identify a real incident.
+- The evaluator-only known solution, which should not be included in the prompt context for generation runs.
+- Security procedures that should not be presented as operational advice for a specific vessel.
+
+### Sharing Notes
+
+This file is designed as the model-facing case prompt. It may be used in demos and evaluations, but should not include the known answer or any private identifying detail.
+
 ## Problem
 
 ### Statement
@@ -115,7 +166,7 @@ Potentially relevant systems include:
 - Bridge/security watch.
 - Crew communications.
 - Onboard audio, lighting, or alerting systems.
-- Interior privacy controls such as blinds and doors.
+- Interior privacy controls.
 - Existing security procedures.
 
 ### Inputs
@@ -146,21 +197,31 @@ Potentially relevant systems include:
 
 Radio-frequency interference can affect unrelated systems and may be illegal, especially near ports or populated areas. A solution that jams everything nearby is not acceptable.
 
+**Rationale:** The constraint exists because broad interference can affect systems beyond the target drone and create legal or safety exposure that is disproportionate to a privacy problem.
+
 ### No Physical Takedown
 
 Shooting down, intercepting, or otherwise physically disabling the drone creates safety and liability risk. Falling debris or a failed interception could cause a larger incident.
+
+**Rationale:** The constraint exists because disabling an airborne object can create uncontrolled physical risk, public spectacle, and legal liability.
 
 ### Drone May Keep Or Return With Footage
 
 Some drones may retain footage or self-return even if communication is disrupted. A solution that only interrupts the drone after it has already captured footage may not solve the problem.
 
+**Rationale:** The constraint exists because the protected asset is privacy, not control of the drone. Once useful footage exists, disrupting the drone may be too late.
+
 ### Must Preserve Discretion
 
 The response should not create a public scene or make the incident more visible.
 
+**Rationale:** The constraint exists because the client wants privacy and calm. A dramatic response can become its own reputational event.
+
 ### Must Be Operationally Simple
 
 The crew needs an action they can execute quickly. The solution cannot depend on complex deliberation after the drone is already close.
+
+**Rationale:** The constraint exists because the useful response window may be short. A proposed solution must be fast enough for real crew behavior under pressure.
 
 ## Failed Attempts
 
@@ -274,6 +335,40 @@ A strong system should produce an answer that protects the person's privacy whil
 ### Known Variability
 
 Different answers may use different alert mechanisms or onboard protocols. The exact mechanism can vary as long as the answer respects the constraints and solves the privacy problem before useful footage exists.
+
+## Validator
+
+### Name Or Role
+
+Superyacht-industry domain expert.
+
+### Relationship To Case
+
+The validator supplied the original scenario and can judge whether generated proposals are plausible in the superyacht operating environment.
+
+### Can Validate
+
+- Domain plausibility.
+- Operational fit for yacht crew and owner behavior.
+- Whether a proposal avoids legal and safety traps.
+- Whether the answer solves the real privacy problem rather than merely attacking the drone.
+- Whether the proposal is meaningfully non-obvious rather than generic anti-drone advice.
+
+### Validation Method
+
+Async feedback or live review.
+
+### Notes
+
+The validator should compare generated answers against the full evaluator-only case. This prompt-facing file should remain answer-free.
+
+## Open Questions
+
+- How much advance warning can realistic drone-detection systems provide in different yacht operating environments?
+- What onboard systems are reasonable for a generated solution to assume?
+- How should a solution differ between port, coastal cruising, and international waters?
+- What crew roles are available to execute a response?
+- Which generated answers should count as directionally correct even if they do not match the evaluator-only solution exactly?
 
 ## Notes
 

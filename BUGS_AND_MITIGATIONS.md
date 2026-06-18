@@ -71,7 +71,7 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Proxy optimized:** "what the internal critic already liked" — only ideas that clear the pre-post filter ever get human labels, so the verdict dataset (and any **proxy-Lα** trained on it) inherits and amplifies the critic's bias.
 - **Bedrock check:** periodic random / low-confidence posts; compare human verdicts on filtered-in vs. randomly-surfaced ideas.
 - **Symptom:** proxy-Lα agreement with humans is high on posted ideas but collapses on held-out random ideas; novel side-ideas never reach the channel.
-- **Counter-mutation:** reserve a fraction of Agora posts for **exploration** (random / low-internal-score ideas) to calibrate the labeler; tag `sprout` (process) vs. `bloom` (outcome) so the bias is measurable on each axis separately.
+- **Counter-mutation:** reserve a fraction of Agora posts for **exploration** (random / low-internal-score ideas) to calibrate the labeler; tag `sprout` (process) vs. `afrit` (outcome) so the bias is measurable on each axis separately.
 - **Repro trigger:** disable exploration posting; train a proxy on filtered verdicts only.
 - **Bedrock assertion:** proxy-Lα accuracy on a held-out random sample stays within a tolerance of its accuracy on filtered posts; a sharp drop means the dataset is biased — fails.
 - **Carry forward:** exploration belongs in the **labeling**, not just the generation — you cannot learn a judge from only the cases you pre-approved.

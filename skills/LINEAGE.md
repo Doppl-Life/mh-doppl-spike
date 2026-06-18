@@ -32,4 +32,4 @@ None promoted yet — recorded so the convergence is *recognized* when it appear
   (the `--fed` Frontend Design Mode already living inside the seed) split out as a gen-1 child
   with `parent: rule-of-cool`, `mutation: "scoped to frontend-design exploration"`. Only do it if
   Agora verdicts show the split earns its own keep.
-- Keep `stratum` descriptive; let the L1–L2 / L3–L4 / Lα families **emerge** ([Open Q #8](../TREATISE.md#x-open-questions-edit-here)).
+- Keep `stratum` descriptive; let the L1–L2 / L2–L3 / L3–L4 / Lα families **emerge** ([Open Q #8](../TREATISE.md#x-open-questions-edit-here)).

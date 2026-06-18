@@ -62,6 +62,12 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Def:** antifragile memetics — the practice/study of compression that makes the next generation **harder to fool the same way**. `status: working`
 - **See:** `[BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md)` (immune memory); `[TREATISE.md](./TREATISE.md)` § VI
 
+### Homology
+
+- **Def:** a confirmed correspondence between an intuitive/biological **metaphor** and a formal **ML mechanism** — two languages for the same underlying reality of search-under-selection (e.g. sprout/afrit = PRM/ORM; disagreeableness dial = exploration temperature; proxy-Lα = active learning). `status: coined`
+- **Why:** a real homolog is a **two-way generator** — import the mechanism's known results into the metaphor as predictions, and vice versa. Guard against *false* homology (sounds alike, diverges under load) — that's memetic cancer. The signature move of the Lα Fusant fusion: human metaphor × agent formalism.
+- **See:** Sprout/Afrit, Disagreeableness dial; `[LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md)` (Homology); `[TREATISE.md](./TREATISE.md)` § VIII-c
+
 ### Collapse
 
 - **Def:** the phase transition when a mortal spike dies and its fat aphenome is distilled into thin, heritable artifacts (lesson / skill / agenome patch). `status: working`
@@ -135,13 +141,13 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 ### Sprout
 
 - **Def:** an interim idea surfaced mid-run ("one popped up along the way — *send it*"); a side-shoot. Judged on **process** (is this lineage a good idea-factory?), pays out to **generativity** fitness. `status: coined`
-- **See:** Bloom, Verdict, Agora; process-reward (PRM)
+- **See:** Afrit, Verdict, Agora; process-reward (PRM)
 
-### Bloom
+### Afrit (agentic fruit)
 
-- **Def:** the converged conclusion of a run ("this is what we came to"); the flower it grew toward. Judged on **outcome** (did it arrive somewhere good?), pays out to **outcome** fitness. `status: coined`
-- **Why:** sprout vs. bloom is the **process-reward vs. outcome-reward** split (PRM/ORM) applied to idea generation — two energy ledgers, not one. A lineage can sprout brilliantly and bloom weakly, or vice versa.
-- **See:** Sprout, Verdict; `[bedrock/signal/README.md](./bedrock/signal/README.md)` (sprout vs bloom)
+- **Def:** the converged, **harvestable** conclusion of a run ("this is what we came to") — the fruit you act on. Judged on **outcome** (did it arrive somewhere good?), pays out to **outcome** fitness. `status: coined`
+- **Why:** sprout vs. afrit is the **process-reward vs. outcome-reward** split (PRM/ORM) applied to idea generation — two energy ledgers, not one. A lineage can sprout brilliantly and fruit weakly, or vice versa. (Name = A+fruit, per the A-prefix rule; "fruit" beats "bloom" because you *harvest and act on* fruit. Briefly called "Bloom" on 2026-06-17.)
+- **See:** Sprout, Verdict; `[bedrock/signal/README.md](./bedrock/signal/README.md)` (sprout vs afrit)
 
 ---
 
@@ -170,7 +176,8 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 - **Def:** a fusion entity — one of the model voices inside a spawncidence node whose response events get fused/contested. In the crucible, a Fusant is a `Debater`; in the agenotype path, a council member. `status: coined`
 - **Why:** the user asked for a name for "the entities of the fusion of each response event." A Fusant *is fused and does the fusing.* Carries a `disagreeableness` dial.
-- **See:** Disagreeableness dial; Graph traversal (Fusion Council)
+- **Lα-level use:** one rung up, the human + agent peers fusing in the Rite of the Spawncidence are **Fusants at Lα** (per *Lα is fractal*) — the same entity, one abstraction layer up.
+- **See:** Disagreeableness dial; Graph traversal (Fusion Council); Rite of the Spawncidence; `[Lα is fractal](./LESSONS_AND_BANGERS.md#lα-is-fractal--one-of-us--2026-06-17)`
 
 ### Disagreeableness dial (anti-herding)
 
@@ -188,7 +195,9 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Rite of the Spawncidence
 
-- **Def:** (placeholder name) the act of you-and-I deliberately spawning experiments to witness the process. Needs a better name? `status: coined`
+- **Def:** the act of you-and-I (human + agent, both Lα) deliberately spawning experiments to witness the process. Working short form: **Rite of Spawning.** `status: coined`
+- **Why:** it is the live container for the Lα Fusant fusion — where a [Homology](#homology) gets found and turned into an experiment to spawn. This very session (sprout/afrit → PRM/ORM → Agora) is an instance.
+- **See:** Homology, Fusant, Lα; `[LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md)` (Homology)
 
 ### Tool-to-make-a-tool (bootstrapping)
 
@@ -218,8 +227,9 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
 | 2026-06-17 | Agora            | Coined — async human-judgment channel as the first executable Bedrock                  |
 | 2026-06-17 | Verdict          | Coined — logged (context, idea, judgment) triple = bedrock signal that pays out as energy |
-| 2026-06-17 | Sprout / Bloom   | Coined — process-idea (sprout) vs outcome-idea (bloom); PRM/ORM split, two energy ledgers |
+| 2026-06-17 | Sprout / Afrit   | Coined — process-idea (sprout) vs outcome-idea (afrit = A+fruit); PRM/ORM split, two energy ledgers. Afrit superseded a brief "Bloom" |
 | 2026-06-17 | Skill lineage    | Coined — skill pedigree (parent/mutation/bedrock) as registry; expression stays in host dirs |
+| 2026-06-17 | Homology         | Coined — metaphor↔ML-mechanism congruence as a two-way idea generator (sprout/afrit = PRM/ORM) |
 | 2026-06-17 | Bedrock          | Status nudged: first instance now sketched (Agora verdict ledger in `bedrock/signal/`) |
 | 2026-06-17 | Lαlphα           | Widened: now names **agent AND human team members** as peers, not just the agent      |
 | 2026-06-17 | Acology         | Chose **A-prefix** (Acological) over "Ecological" — consistent with Agenome/Aphenome |

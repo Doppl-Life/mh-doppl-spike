@@ -33,7 +33,7 @@ organism run ──► post (finalist OR side-idea, + provenance + trace link)
 Nephew reports up (the idea); uncle/bedrock judges down (the reaction). The persistence —
 not the chat — is the point: a logged verdict becomes a lineage's fitness history.
 
-## Two kinds of surfaced idea: **sprout** vs **bloom** (process vs outcome)
+## Two kinds of surfaced idea: **sprout** vs **afrit** (process vs outcome)
 
 A run mutates, diverges, and eventually converges. It throws off two *different* things, and
 they must be judged on different axes:
@@ -41,13 +41,13 @@ they must be judged on different axes:
 | Kind       | Botanical rhyme | What it is | Judges | Pays out to |
 | ---------- | --------------- | ---------- | ------ | ----------- |
 | **sprout** | side-shoot mid-growth | "an idea popped up along the way — *send it*" | the **process** — is this lineage a good idea-factory? | **generativity** fitness |
-| **bloom**  | the flower it grew toward | "this is the conclusion we came to" | the **outcome** — did it arrive somewhere good? | **outcome** fitness |
+| **afrit**  | the fruit it grew toward (A+fruit) | "this is the conclusion we came to — harvest it" | the **outcome** — did it arrive somewhere good? | **outcome** fitness |
 
 This is the **process-reward vs outcome-reward** split (PRM vs ORM) applied to idea generation.
-They are not redundant: a spawner can be a brilliant *sprouter* with a weak *bloom*, or a dull
+They are not redundant: a spawner can be a brilliant *sprouter* whose *afrit* is weak, or a dull
 journey with a strong conclusion. Keep **two energy ledgers**, not one — selecting only on
-blooms starves the lineages that are most generative along the way (often the ones worth
-breeding for sprouts and re-rolling toward a better bloom).
+afrits starves the lineages that are most generative along the way (often the ones worth
+breeding for sprouts and re-rolling toward a better afrit).
 
 ## Schema 1 — a post (organism → Agora)
 
@@ -56,7 +56,7 @@ breeding for sprouts and re-rolling toward a better bloom).
   "post_id": "p_2026-06-17_0001",
   "spawncidence_id": "crucible:run_42:node_3",
   "source_agenome": "transfer-hunter×feasibility-hawk:gen2",
-  "kind": "sprout",                    // "sprout" (process) | "bloom" (outcome)
+  "kind": "sprout",                    // "sprout" (process) | "afrit" (outcome)
   "context": "Room Vitals prompt — what to monitor in a shared office",
   "idea": "Treat CO2 as a proxy for 'is this meeting over?' and auto-release the room booking.",
   "internal_score": 7.5,              // the internal critic/judge score (for the correlation gate)

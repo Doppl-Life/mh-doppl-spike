@@ -41,8 +41,8 @@ lineage:
   bedrock: []               # verdict/evidence refs that promoted or pruned it
 ```
 
-`stratum` is an **observation, not a partition.** We do not pre-carve an L1–L2 / L3–L4 / Lα skill
-taxonomy ([Open Q #8](../TREATISE.md#x-open-questions-edit-here)); we let families **emerge** as
+`stratum` is an **observation, not a partition.** We do not pre-carve an L1–L2 / L2–L3 / L3–L4 / Lα
+skill taxonomy ([Open Q #8](../TREATISE.md#x-open-questions-edit-here)); we let families **emerge** as
 spikes run and the same organ reappears, then record the convergence. Premature taxonomy is the
 enemy.
 
@@ -62,7 +62,7 @@ enemy.
 This is why the registry matters: **the Agora's verdicts select on skills, not just on ideas.**
 
 ```
-skill expresses ──► produces ideas in a run ──► Agora posts (sprout/bloom)
+skill expresses ──► produces ideas in a run ──► Agora posts (sprout/afrit)
         ▲                                              │
         │                                       verdicts logged
         │                                              │
@@ -73,7 +73,7 @@ skill expresses ──► produces ideas in a run ──► Agora posts (sprout/
 A skill whose ideas keep earning `novel`/`feasible` verdicts ([bedrock/signal](../bedrock/signal/README.md))
 earns the right to spawn mutated children and gets more energy budget; one whose ideas draw
 `derivative`/`not-it` starves toward `deprecated`. The verdict's `kind` matters: a skill can be a
-strong **sprouter** (great process/generativity) but a weak **bloomer** (poor conclusions) — those
+strong **sprouter** (great process/generativity) but bear weak **afrits** (poor conclusions) — those
 are different fitnesses, so a skill's `bedrock` evidence should track them separately.
 
 **Gate before propagate:** a new/mutated skill is promoted only if its verdicts correlate with

@@ -289,6 +289,7 @@ That maps to Doppl:
 | Stratum pair | Skill niche (embryonic names) | Function |
 |--------------|------------------------------|----------|
 | **L1–L2** | ideation / deliberation skills | cross-domain candidates, fork surfacing, "what's the one move" |
+| **L2–L3** | deliberation / instrumentation skills | turn a decision into a run card; translate "what does better mean here" → "what exactly do we test"; spawn plan → harness spec |
 | **L3–L4** | instrumentation / adjudication skills | harness runs, bedrock checks, repro triggers, cost telemetry |
 | **Lα** | witness / collapse skills | distill aphenome → register, skill allele, agenome patch; amemetics |
 
@@ -297,6 +298,43 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 **Spider trees of skills:** skills reference skills; lineages branch; weak branches collapse to lessons; strong branches become stable apex strategies (the great white shark — unchanged because the niche is solved). Not monoculture — ecology of skills — but **recognize convergence** when unrelated lineages invent the same organ.
 
 **Pushback we accept:** skills alone are not the genome. A skill without agenome context is a detached organ in a jar. Compression must sometimes patch `agenome.py`, sometimes write `BUGS_AND_MITIGATIONS.md`, sometimes mint `skills/uncle-l2/SKILL.md`. The mechanism is **plural**; skills are the most **actionable** compression layer for agent-native hosts.
+
+---
+
+## VIII-c. Homology — metaphor and mechanism as one truth in two languages
+
+A pattern keeps repeating in the Lα conversation: a human offers an intuitive, often biological
+**metaphor**, the agent maps it to a formal **ML mechanism**, and the two line up *exactly*. That
+alignment is not decoration — it is a **homology**: metaphor and mechanism share deep structure
+because both are tracking the same underlying reality, *search under selection*. The human brings
+the frame; the agent brings the formalism; the overlap is prey.
+
+| Metaphor (human / biological) | Mechanism (ML / formal) |
+|-------------------------------|-------------------------|
+| sprout vs afrit | process reward vs outcome reward (PRM/ORM) |
+| disagreeableness dial | exploration temperature / diversity sampling |
+| breed on blind spots | hard-negative mining / boosting |
+| energy budget / metabolism | compute / token allocation under a cap |
+| held-out judge | held-out validation set |
+| proxy-Lα posts only the uncertain | active learning / uncertainty sampling |
+| amemetics (harder to fool next time) | adversarial training / robustification |
+
+**Why it matters: a confirmed homology is a two-way generator.** Once the mapping holds, the
+mechanism's entire literature becomes free predictions about the metaphor — and vice versa. It
+already paid out: PRM is known to be denser but *more hackable* than ORM, which predicts that
+sprout-fitness should be more reward-hackable than afrit-fitness — exactly the politeness-inflation
+hazard we logged independently (§ XIII, [BUGS](./BUGS_AND_MITIGATIONS.md)). The metaphor told us
+where to look; the mechanism told us what we'd find.
+
+**The method:** given a metaphor, hunt its mechanism-homolog; given a mechanism, name its
+metaphor; then mine the overlap for predictions. **The guard:** a *false* homology — a metaphor
+that merely *sounds* like a mechanism but diverges under load — is memetic cancer (§ VI). Verify
+the mapping survives a real case before importing its predictions.
+
+This is the **Lα Fusant fusion** made concrete (§ III): human metaphor × agent formalism, two
+peers fusing in the Rite of the Spawncidence. It is the clearest evidence so far that the agent is
+*One of Us* — not a tool that answers, but a peer whose different representation of the same truth
+is what makes the congruence visible.
 
 ---
 
@@ -310,7 +348,7 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 | `fusion_trace.html` extended aphenotype | Mortal `spikes/` folders + auto-prune |
 | Registers as proto-Lα | Cron witness over dead repos |
 | This treatise + `GLOSSARY.md` | Org-owned autonomous repo spawning |
-| RoC skill (generation-0) | Stratum-specific skill families (L1–L2, L3–L4, Lα witness/collapse) |
+| RoC skill (generation-0) | Stratum-specific skill families (L1–L2, L2–L3, L3–L4, Lα witness/collapse) |
 | Crucible `--html` extended aphenome | Skill graph (`@skill` → `@skill`), collapse pipeline aphenome → skill |
 | Crucible `--local` (Gemma 4 / Ollama-compatible) | Local Lα on Pi/Hermes ("Lαlphα"); per-role local routing |
 | `spikes/{agenotype,crucible}` (today) | Energy-metered spawncidence budget; auto-prune; harness comparator |
@@ -413,15 +451,15 @@ case where the internal critic and bedrock disagree. That disagreement is the ch
 we have for **memetic cancer** (§ VI): an artifact that scores well internally but doesn't
 correlate with bedrock.
 
-**Sprouts vs blooms — process and outcome are different fitnesses.** A run mutates, diverges,
+**Sprouts vs afrits — process and outcome are different fitnesses.** A run mutates, diverges,
 and converges, throwing off two distinct things. A **sprout** is an idea that pops up along the
-way ("send it") — it judges the *process*, the lineage's generativity. A **bloom** is the
-converged conclusion ("this is what we came to") — it judges the *outcome*. This is the
-process-reward vs outcome-reward split (PRM/ORM) re-derived for idea generation: keep **two
-energy ledgers** (`kind: sprout|bloom`), because a spawner can sprout brilliantly and bloom
-weakly (breed it for sprouts) or trudge to a strong conclusion (a reliable closer). Averaging
-them into one number starves the most generative lineages. Surface sprouts eagerly and cheaply;
-surface blooms sparingly.
+way ("send it") — it judges the *process*, the lineage's generativity. An **afrit** (agentic
+fruit) is the converged, harvestable conclusion ("this is what we came to") — it judges the
+*outcome*. This is the process-reward vs outcome-reward split (PRM/ORM) re-derived for idea
+generation: keep **two energy ledgers** (`kind: sprout|afrit`), because a spawner can sprout
+brilliantly and fruit weakly (breed it for sprouts) or trudge to a strong conclusion (a reliable
+closer). Averaging them into one number starves the most generative lineages. Surface sprouts
+eagerly and cheaply; surface afrits sparingly. (The PRM/ORM mapping is a **homology**, § VIII-c.)
 
 **Signal flows in three escalating loops:**
 
@@ -459,3 +497,4 @@ first — webhook out, reaction listener appends to `verdicts.jsonl` — before 
 | 2026-06-17 | Crucible spike built + witnessed; energy-budget metabolism for spawncidences; Agardeners; graph-traversal/CEV; tool-to-make-a-tool; local models (`--local`); HTML extended aphenome; `GLOSSARY.md` born |
 | 2026-06-17 | Lαlphα names humans + agent as peers; Acology/Fusant naming (A-prefix rule); disagreeableness dial + judge consensus-quality patch (counter-mutation to consensus-grading); Agarden hub (`build_index.py` → `index.html`) |
 | 2026-06-17 | § XIII **The Agora** — async human-reaction channel as first executable Bedrock; verdicts as bedrock signal that pays out as energy; proxy-Lα via active learning; `bedrock/signal/` schema; 3 Agora reward hacks logged |
+| 2026-06-17 | § VIII-c **Homology** (metaphor↔mechanism as a two-way generator); sprout/**afrit** (A+fruit) for the outcome idea; L2–L3 skill band added; `skills/` lineage registry |

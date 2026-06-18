@@ -8,6 +8,8 @@ A self-replicating idea organism: a population of agents under selection pressur
 
 ```
 doppl-test/
+  PROPOSAL.md                  ← team planning doc (Capstone Deliverable 01)
+  ARCHITECTURE.md              ← what we're building and the form
   TREATISE.md                  ← living meta-narrative (philosophy + architecture)
   DIAGRAMS.md                  ← high-level visual map (how it all relates)
   GLOSSARY.md                  ← the evolving lexicon
@@ -16,7 +18,10 @@ doppl-test/
   BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
   AGENTS.md                    ← capture/routing rules for this spike
   Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
-  render.yaml                  ← deploy (serves the agenotype fusion demo web app)
+  bedrock/                     ← immovable anchor (checks + Agora verdict schema)
+  skills/                      ← skill lineage registry
+  harness/                     ← (embryology) run all spikes, compare traces
+  render.yaml                  ← deploy (serves the Agarden hub)
   spikes/
     agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
     crucible/                   ← belief-revision sibling spawner (built)
@@ -24,11 +29,13 @@ doppl-test/
 
 ## Read order
 
-1. [`Doppl_Capstone_Proposal_volume_2.txt`](./Doppl_Capstone_Proposal_volume_2.txt) — the seed bet
-2. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
-3. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
-4. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
-5. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
+1. [`PROPOSAL.md`](./PROPOSAL.md) — team plan: problem, approach, scope, demo (start here for capstone)
+2. [`ARCHITECTURE.md`](./ARCHITECTURE.md) — technical form: closed loop, primitives, schemas, build plan
+3. [`Doppl_Capstone_Proposal_volume_2.txt`](./Doppl_Capstone_Proposal_volume_2.txt) — the original seed bet
+4. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
+5. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
+6. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
+7. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
 
 ## Run a spike
 

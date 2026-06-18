@@ -1,0 +1,738 @@
+Okay, we got them. Remember to what's it called? This one, maybe even you can also push invites at once.
+
+You haven't got it done. We did ours, and she synthesized it.
+
+One of the things we can do is you can do it basically on your computer, but this way, it's just, you can synthesize it, we can all get a quick look over, ask the questions, and that's going to get your perspective that we don't have to get that synthesis. Because what we're going for is trying to find, okay, what is the simplified high-level architecture, the boil this thing down that we need to get so that we all kind of understand it.
+
+One of the things you just said, which is I think a piece of it, well, which the screen images captured, which is the outcome. This is oh, let me put this one up here. But anyway, which was about the outcomes and difficulty of the verifiers.
+
+How do we know what's a good idea? How do you know what a good idea is? Right. What's a lot of good ideas? What's no good ideas? What's false good ideas?
+
+It's something I've been thinking about. One of them is we thought in mine, it was talking about the ideas of bedrocks. Bedrocks being: what is the core? What are the determiners? What are the core principles that validate it?
+
+One of them was what we discussed was the, The channel, the Slack, the what's it called? The Discord. The asynchronous send.
+
+There's two kinds of good ideas. What's it called? There's early ideas during the process. What if you just if it's going through its process of spawning agents, discussing things. What if you see something that was good? It's not the final idea. It's not the we're going to go with an, but it's a piece of you never know when we're talking, all of a sudden you say something. It's like, "Yeah, but we do this," and then you bounce off ideas. Well, that's the sort of, in the nature kind of evolutionary term, we have kind of sprouts and fruit.
+
+Like sprouts are just little beginnings of ideas. So during the process, if you see something, spit it out into the channel, and then we can from there individually say what we think about it.
+
+That makes the owners of whoever's this process is given to, with their domain expertise, what's called the judgment. That's one avenue of determining good ideas.
+
+And it can differentiate between a sprout (this is an idea that ) and this is the fruit, the conclusion we came to. We can rate them differently. We can like, that's two different kind of data training sets.
+
+And that's just one avenue of keeping us in the loop, but asynchronously, like on the phone, just as it's running its process. Yeah. That's one idea I had. The other one came i got a call from my buddy Jack this morning. He's English. He runs one of the biggest, if not the biggest, super yacht technology expos and website and magazine or something like that. I know it's the technology and the websites and the expos. He runs them several times a year through Europe. Big, lots of money kind of thing, huge money.
+
+And we just talked. He asked me to help him solve a problem. He was just talking about, "Okay, so he got a website. He just kind of wants me to maybe help product over the course of the year because he's got to take it to a new level about people wanting to solve problems."
+
+And he gave me a scenario. It's like I had this one guest, one customer, the really rich man. He had a security and he had some this and that. I think he had drones. He had some guards. He had some cameras. And it was in Tegu. Somebody was still able to swim to the boat and get onto the boat and within 30 yards of the owner's camera.
+
+I was like, "That sounds like a problem set where you thought you had the solution, didn't know, and you're looking for an effort." That is a problem set that needs to be solved. I was like, "Okay, that got me thinking." And that's a good one.
+
+The better one, I said, "Okay, now tell this is what I want you to do." What we want, I think, is an interesting problem with interesting constraints with a known non-obvious solution that we can verify with equities. The simple one is build a space station. We spent millions of dollars trying to develop a pen that worked in space. What did the Russians do? They used a pencil.
+
+I said, "Hey, would you have any things like this?" And he's like, "Yeah." So he had a rockstar yacht owner who wanted privacy away from the paparazzi because he wanted to do things that he didn't want his wife to see. It's about their drone, paparazzi using drones for these things. So how do you stop them? It's like, okay, you can't, but you could shoot them down, you could hawks, whatever these things, but there's problems with this one. You can't just shoot them down. If it lands in the Mediterranean (this is a European thing), you can get sued for tens, maybe $100 million or something like that.
+
+You can't just use jamming technology because jamming doesn't understand who's okay to jam, so you're jamming everybody. That stops it, but by that time, you're already too late.
+
+This is an interesting problem to solve, but he also had the solution to come up with, which is not something you would find easily, which is they have a radar monitoring system. I could find out exactly what it is. I recorded most of it.
+
+That would detect the motion of the drones coming within a few kilometers. And all it did was send a signal to his sound system that would play a specific song so he knew to go inside and close the door because they can't open doors.
+
+Oh, interesting. And this way he could just hear the song, not disturb the party. Right? He gets it, can just walk in, close it, and do whatever he was going to do inside, and the party, whatever goes on.
+
+This is the thing, it's a brilliant, weird, obvious-in-retrospect kind of problem. But there's a lot of different constraints and contexts.
+
+I thought this was an interesting problem, and it's something we could say pointed at the problem without the solution, see how it does, and I have him to validate ideas in addition to us. I can always send them because I can just asynchronously send them and then tell us, "Is this an interesting idea?" And if not, why? What's that called? And then we can also from there say, "Here's one solution that actually came up with, now come up with new ones."
+
+That's one, I think problems like that are what we need to look for, especially if we have ones that are already solved that aren't easily searched for, non-obvious, but obvious in retrospect. Validated to some degree. So can we take what you just said and condense it down to something that is a template for a case study problem? Exactly.
+
+And have a perfect template, because then we can use that template to go and do deep research, and then have a bunch of examples of case studies come back to us, using deep research that have problems that existed that now have solutions. But here's the thing. I agree with you 100%. I think it's a great idea. I'd like to boil this down to a case study, try to extract the template, and then what's it called? You guys in the meantime think of what's it called, ones you came up with.
+
+Also, something I could do: I can go around, we have a bunch of problem solvers. There's a bunch of different experiences. This is the kind of problem we had. Can you think of some times that you solved problems that were non-obvious at first, but in retrospect?
+
+I can go just do user interviews, like in this building. Sure. We can do user interviews, and meanwhile we can see what our agents can come up with out on the air.
+
+It's something I can be searching while you guys are moving and building some of the structures. What's it? Is this the thing I can talk about?
+
+But then that gives us some sort of recipe for judging, at least, a different selection of problems to send off on to see how we do. I do like us using the word "problem" rather than "idea." Well, a problem needs an idea. Because I think that confuses people whenever we're trying to say, "Oh, we're judging what is a great idea." Idea of, what do you mean for? Because John Lucas didn't quite understand that.
+
+Where you're boiling it down to solicit more problems from the group, like the cohort here. Being like, "Give it a paragraph, just three or four sentences of here it is." This could be posted on Slack. This could be because you don't want to interrupt. Everyone's doing this kind of stuff with their own cohort right now. They don't want to immediately be interrupted. But it can be a quick, yes, "Here's A, what's B." Get the general template with the because we don't care if it, And then he throws it on Slack too.
+
+Put it on there and just say "More information." "Hey, this is what I'm looking for. I'm looking for people to talk to who have problems like this that would mind sitting down and chatting with me about it. Let me know." And that way it's kind of on them to say, "Yeah, I have a few minutes. I can talk to you about that one." And then I can just make it asynchronous. That's two of the big 
+
+That was really great. That adds a lot of clarity. It helps us with the outcome this year, which is how to judge it. We have a domain expert on that who can help us like a fifth person to validate whether these are good ideas.
+
+When I was doing it, I'm going to pull up i think you need to work backwards, basically. Start from the end. You mentioned, "What is a good idea?" What does that look like? Work backward from there, that would be the verdict to judge.
+
+I don't know. It must be like this, because we could even just say, "Tunes, and it's on space, the drone detector in the Mediterranean Sea." There are components to that environment, what doesn't work, what the need is.
+
+I also want to create, like I said, a case study template. It's almost like creating a schema taxonomy of the components, these problems, and ideas. I feel valuable as well.
+
+Just, okay, whoa, put this somewhere. Okay. I don't know if this is helpful, but is Willow going? Willow is going. All right. As far as I know. Let's see. I'm just saying it's not yet. It's hmm. So this was just during a quick run of what that would look like. If I could see, this sent it off on the process of just the pipe.
+
+Does the pipe carry water? What does it look like if you go down several creations of this? Just in quick iterations, because that's one of the things I like to do, and I think I'm okay at, just quick prototypes, throwing out crazy ideas.
+
+But you could see the generations of it trying to solve the problem, which was going with the themes: see what does evaluate, take the results, feed it back in, and just a general sense of, "Does the pipe carry water?" "Yeah," to a degree. You could see the efforts or the fruits because I like making stupid names for things. And the weeds are the bad ideas that when you can see the weed ideas reduced, what's it called? We're getting to fruit, but at least the novelty of the idea increased as the average score generally increased.
+
+Oh, you define novelty. Mm-hmm. That's fantastic.
+
+I would say, "I don't need this to be perfect. I want to give you the general idea, throw out the quickest thing that sounds like this, if you get what I'm talking about, and let's just see if this genuinely works." Then I want to kind of rip it apart, right and see how are we rating this thing? How does this work? And does this compound? Does this make sense? How do I explain it?
+
+So maybe you don't know yet how you score novelty. No, I don't think you i certainly don't, and I certainly don't know how this does it, but it's, cool. But it is the idea of that, yes, there is a novelty score. Right. Yes.
+
+Coming up with, okay, how does this feeling around the elephant blindly is kind of what I'm doing here. Okay. Meanwhile, I'm having Claude take my R project planning document and create a high-level architecture. And to create another document on that, because I think we are saying we do need that. We need to understand what are the big pieces that we're trying to achieve, so that we can actually agree on an architecture.
+
+I'll probably run it through my, because I have a 17-phase playbook that I've skilified. It's to create an architecture draft document, but it also creates your domain model document, your pre-search, your research artifact, your threat model, risk model, your users and user flows, and all of those different artifacts.
+
+We can use those for it will create diagrams, things like that. I can run it through mine as well.
+
+Do you want to take all of the actors that we shared? And put it in there? So I'll do that.
+
+What I'm doing right now is going through and using Office Hours on the proposal, just kind of validating it and reframing it and seeing where the gaps are. That was one of the first things that it caught, was the biggest weakness being good ideas too broad and less.
+
+We have a rubric that's nailed down. I'm just going to go through and run Office Hours on this, and then I might run CEO plan review as well, just to get a high-level view based on the proposal.
+
+From there, I'll take all of our documents and artifacts that we have, and then I'll run everything through my pipeline, my architecture draft pipeline. Then we can each do it too and see what the architecture looks like. Mine just is a draft.
+
+Sounds awesome. And I think that's kind of answers a few things, which is what do we need? We need to define a few, like the first things you said, which was inputs and outputs. What does that input look like?
+
+I think this is an example of a case study, which is here's the problem and someone in the field who'd know a good idea if they saw it, but doesn't have a good idea. Constraints considered inputs as well? I would say yes.
+
+It said this, it doesn't have it. Whenever we're i think the other thing we need to consider too is how things map to certain things in our proposal.
+
+Let me find that. I know you have some glossary of terms in that repo. I just wanted to see what I was thinking about all these things.
+
+That repo, yeah, so a genome maps to basically system prompt, persona evaluates, tool permissions, decomposition. That's what a genome is.
+
+We have that mapped, I think, but for example, the selective pressures or environmental pressures that you're putting on the evolution, what is it called? I can't remember the actual term.
+
+What does that map to? Are those mapped to the constraints, or is that what we're considering the pressures? I need to find the name.
+
+You know what I'm talking about? Yeah, I know the process you're talking about. I'm not going to bother with it. I might not know if I remember the specific term for it, but the selective pressure was generally how it was referred to.
+
+Something about evolutionary collection pressures. What is the selective pressure mapped to? Are those mapped to the constraints?
+
+I guess the pressure to me that would have mapped to you have the organism and you have the environment. The environment is the constraints, it's the temperature, it's the weather, it's the climate, it's the geography, the geology.
+
+What's it called? How one organism in one place versus in another, what's it called? One thrives, one fails. What's it called? It's the organism, which is the idea of this, and how well it survived the environment, which is the context. But we are recording now. The one was the Foursquare, finding wherever you guys are, we can come down to you. If we were sitting, we wouldn't always have to go find something to turn, then, "What about this thing?" As an idea.
+
+If I move to where you guys are, and we get in the same place, if we can get a corner of four, it's a thought, but some people like their own space. I'm not married to this idea; it was just an idea.
+
+Okay. This is the simple question. Let's make the end.
+
+We don't need to know what the paragraph is because we get it in one paragraph. We could look at the system. We could look at the five moving parts. Those are really hard to read.
+
+Maybe let's go to the five moving parts and see if we, five moving parts. Okay.
+
+Now, to know the union of life, explanation: Explain the role of pool seed for me. The role of pool seed I came up with, which I can pull up on the screen (which I have right here).
+
+It's what is the most non-obvious, non-obvious but a creditive idea. Look at what you have. What do we have? At any given moment, the skill looks at the repo or the idea you're talking about, the system you've made. You've already made something.
+
+And then it goes, "Okay, now look at it. See all the pieces that are already there? What's non-obvious, that these ideas are converging to this other bigger idea that you haven't quite gone towards yet? What is the big accredited idea that somebody wouldn't come up with if they thought about it for five minutes, that is non-obvious but that is easy for it because it can see a metric ton of data at once that we can't?"
+
+It's looking at all the data and trying to connect them in ways. Finding the creditive, what's it called? connective tissue idea that says, "Oh, this is the cool idea that brings what you already have to light in an interesting way." So then in the PDF where it says it's the rule where was it? The rule of cool. Okay, generation zero equals rule of cool plus 19 mutated variants. What's it called?
+
+So the idea would be, I think let me just make sure. There's rule of cool plus 19, mutations, variants. That is the mutation selective pressure, and it's one variant of it.
+
+I actually have two more, which is: now look at this one. Debate, come up with some ideas about this one, and now apply that rule of cool. Of all the ideas you come up with, what is a non-obvious idea synthesis of this thing?
+
+And then what's it called? Take that, generate a few of those given that. Okay, prune those, run it through the system again. Now, what's it called? Debate on that one.
+
+It's a Cambrian explosion of ideas that goes through this filter. And so the age genome is one unit of these? Yes, one unit of, correct? One mutated variant.
+
+Okay. That's like what it would, number two, the generational loop. For me, 20? Mm-hmm. We're culling down to the best two? Is that what happens? Not necessarily.
+
+What's it called? There's a few different ways, before, where there's a marker there. Yeah, there's a marker back there. Right behind the thing. Back there, okay.
+
+What's it called? It could be two, but it could be one, could be three. It's like it's one of the come up with it has to be whatever our filtering process will be and our convergence and diversion process will be.
+
+This week, there's like A, we throw out some sprouts as you go along. If you see, "Yeah, that's a cool idea," and we can rate how well it's doing on those, but then it's like, "Okay, where's the fruit?" "What is the fruit we bore from this process? Did this mean anything? Was this a complete waste of time? Or wait, that's actually pretty cool."
+
+That makes sense. We know we've got every generation. Not necessarily. No. We let it run.
+
+I think the generational loop is clearly one unit that one person could work on. Whether it can be broken out into two different things, I don't know.
+
+Do you think it would be helpful if we whiteboarded out the life cycle of this process? Because I think that would, sure. Absolutely. Yeah, just getting tactile, visual. Yeah, pretty visual.
+
+From start to finish, like what does this look like? Right. Feel free to call bullshit on any step because I did just we have a bunch of papers to erase probably. Oh, yeah. Because of the towels. This is for this game. I'm going to plug it. If you like.
+
+Yeah. Oh, Austin just gave a what? Breaking news? Just read it. I'm struggling. Yeah. No. Nah. Oh, yeah. I saw him typing for a while. Go for it, man.
+
+Is this recording? This is being recorded.So there's a kernel, a verifier, a critic counsel, a selection, objective checks. These contracts are how they talk to each other, which is helpful to see.
+
+The kernel has the loop, the metabolism, the fusion, mutation in the seed. That makes sense. I think if we think of them as these four engineer services, that is helpful.
+
+Okay, keep going. Let me look up at this diagram again, because I'm not pleased with this diagram.
+
+It starts out with a rule pool seed, and that goes into the age genome population, or does that produce the agent population? I think it helps generate a bunch of children. Once we have that, is this all of these age genomes, like all 20 of them or whatever they are, are these all potential ideas?
+
+Yes, these are ideas or ideas for ideas. If you're coming up with a problem, it's generally not linear. It's a good combination. Sometimes you have to think, "Okay, this has several problems to solve to come up with a solution."
+
+This is going to be spawning. Like, "Okay, you need to solve this problem. You need to solve this problem in chemistry synthesis at every level." For like the A? The graph problem. How do I spell it? Imagine just "genome" with an "A" at the beginning because I'm a simple idiot.
+
+Each one of these is made up of some things. Yes. But they all have the same properties, right? What would an agenome be? Don't talk about data terms, but just tell me what one might look like.
+
+The agenome starts with the problems and the constraints. It's made up of a problem. Yes, a problem. Then you're turning it into data. Right, okay.
+
+Constraints, what's with the constraints of it, which is the environment. Okay, that's fine. Constraints config. Yeah. Is that like the energy budget?
+
+The energy budget, yes, which is how much energy does this thing have. When we go through a filtration process, does it earn its keep? Is the spawn of this one's keep failing? As it keeps failing, less energy, then that agenome dies.
+
+Is there like a status thing? What's it called? I would say the energy button is the "set." The more it has, what's called the "better it's doing." Let's ask the question: is it when it runs down to zero? But what makes it, how do we know that this one? Oh, whenever it runs out, yes, when it runs out, it's ruined. What's it called?
+
+It's like, does it do we like it, we still keep what's left? We can store it as the things we can. We can audit and say, "Okay, we can go through all the failed instances and go see if there's something we missed." Which is something I baked into one of my prototypes, that's wild, and then it's time to bullshit.
+
+Right. So we've got a bunch of these. These H&O's. Would you agree generally with these?
+
+So this is the agenome calculation. That sounds right. I guess, like I said, yes, if you're talking about inputs, like first of all, we put the first agenome, which they are we've got an agenome population. Together it becomes an agenome. We have an agenome population. It's an array of agenomes. Yeah, I would say it's almost like a graph, I would say.
+
+And then this agenome population, forget this right now, goes into an ID8 loop. Yes, which this would be the idea that we have with the open router fusion, which is like, okay, now with that, as you're going to decide what does it need, what's that called, and spin off who's going to try a bunch of ideas?
+
+So it goes into an ID8 surface. My issue with fusion though, it's sort of a black box, right? It goes and it does that. It splits off between two different models. It does the same thing, and then it reviews itself and outputs, but you can't see what each result is and you can't see what the review that happened is.
+
+The one I did, it captured the conversation. Oh, it did? You can't see it? Oh, I did. Yeah, in the spike that I did, I was like, okay, at each level, each generation recorded what did each one say? Then a separate model just, and I improved, I did better models now, uh, it's like your suggestion got the judges resulted in the critique of it all separate and all written out.
+
+Okay, okay. So I do you do get the breakdown? Certainly we could certainly be doing it at this point. Yeah, well, I mean, I was saying if open router fusion does give you that breakdown. I gave that, I don't even know if it maybe i don't know if it, hey, don't even know because I just was quick spitting it out. It may not have actually used the open router one.
+
+What it did was find two models, give the problem, have it argue, and then it simulated it one way or the other. Whether or not it was open router's one, I don't know.
+
+Yeah. I mean, I think as long as we're whatever we're doing, we can see what's happening. Yes. My concern with doing the open router fusion was that we wouldn't be able to see.
+
+What is the output of the? So we take a population of agenomes and then we output what? Because we're going to output it into some sort of critic service, I imagine. Right? So what goes into the critic service?
+
+Okay, that goes into the fitness pipeline with the critique council and the objective check. That's what we have on this one. See what came up with which was that the objective check is next. Yeah, the fitness problem. These are parallel, according to this one, it's parallel signals.
+
+I'm going to read it, see if it's not service. Oh, objective check service. And these are all part of something bigger, which is the fitness, right? Right. The fitness pipeline is what we call it here.
+
+Okay, that makes sense so far. So now we've judged it, but we don't know yet what comes out of that ID8 service. Is it a bunch of things? Is it one thing? Is it what's left over that hasn't run out of calories, metabolism?
+
+The way I was imagining, I don't know if this is the right way, but I'm going to tend to think of it evolutionarily. This is following here, this diagram then. Pretty good. I'm getting it. And the IDA service spits out an idea candidate. Think about it. The candidates, we could have a ton of different ones, but they all, in parallel, go to these various services, instances of these services.
+
+Okay, so an idea candidate comes out and then goes into the critic council and objective check, which is all the fitness pipeline. And then out of that, we get a critic critique result, a check result.
+
+Okay, and then partial credit gate. I don't understand that. It's combining the check score and the council score, it looks like.
+
+Standard definition: we're going to weight the check score and the council score. This has a, Okay, so then there's a calling. Yeah, which I think is what that does, the held-out judge, or to the selection. Yeah, it seems like step four of step four, though.
+
+Okay, so from the perspective of calling: is the way calling works that you're focused on the thing that you've chosen, or is it focused on the things that you removed? That you removed, right? That you removed. Because calling is removing.
+
+Yes. Calling is, collapsing back into the stable state.
+
+Okay, so if we're calling out, then we remove things, and what's left over goes into the reproduction, then evolutionarily stable agenome. Once it collapses back into it and strengthens the original, Okay, so this is a foundational loop.
+
+The fitness pipeline, I do see that as being its own thing that someone could work on. It has the critic service and the objective check service, and outputs this partial credit gate. I do see that.
+
+Selection and production, I do see that being its own thing for sure. Three-stage reproduction, distinct from typical evolutionary algorithm averaging.
+
+Individual parent evaluation: each parent earns its own fitness record from its own artifact. Pair evolution: two of these two parents, blind spots, cancel, and compound.
+
+As with any service, you guys, in order for you to work as an independent entity, you, me, and you, we need to know what are the arguments that are required for the service. What is the input? What's the contract between the collaboration? What is the output? So that's what I think you need to decide already.
+
+Oh, so it's like pass along. Well, yes. We have a general expectation of what you want from me, and so I'd pass you what you're going to pass back. And that's what this is outlining in the six contracts down below, where it says that the contract is this, but I don't know if for example, Adenom, we don't know exactly what that data model looks like. Maybe we do, maybe it's in the document, but not right now. A problem instance, what is a problem instance, right?
+
+I understand all of this now. What we need to do next, I think, is if you, Cody, could do what you wanted to do by throwing everything into your little system and seeing if there are any changes that we want to make to this approach.
+
+Okay, so there's a few things. I'm running out through Office Hours right now. What I wanted to do was basically map the schema and go over the strengths, the weaknesses, schema map, and then, You got a thing here? Right side? You like that, right? So it's from last year. Told you. That's right. Meta problems.
+
+So basically I said sessions to understand the proposal, find weaknesses, strengths, and gaps, understand the potential schemas and global maps, the inputs, outputs, selection, concerns, et cetera. Understanding what we don't understand and what the open questions are.
+
+Strengths: strong narrative, agent builds, agents, and blah, blah, blah. This is kind of irrelevant at this point. First section, names, right? Dangers, yeah. What's generation seed? Zero seed gives you a plausible starting scaffolding instead of pure vapor.
+
+Evaluation target is under specified. Wait, wait, wait. So we're saying, what are we evaluating of the this is for the proposal, the strengths, the weaknesses, of the one that we already have, and the gaps.
+
+And then the schema map, what it looks like, how we're mapping everything to each component. Like, what are the gaps?
+
+Evaluation target is under specified. Idea quality needs a rubric. We already talked about this briefly. Baseline held out tasks and judge separation.
+
+After reading through all these weaknesses and gaps, I don't think there's anything that it proposes that is fundamentally going to change the structure yet. It's like we see what you, I think we see, what you said you're going to do. How are you going to do it? Exactly. Get specific on it.
+
+The box. Yeah, the concepts, right? Fusion is conceptually strong but mechanically fuzzy. What exactly crosses over? Prompt sections, tool permissions, critique style. Prompt section and scoring weights. Critic council can become the thing agents learn to fool.
+
+You need held out judges and non-LLM checks. That's part of, sending it out to us? Yeah. Fitness function evolves itself. It's moonshot only for MVP, which I don't know. It's up to you guys.
+
+"Better ideas are better" is the after we get the thing working, can we re-evaluate your own coherent extrapolated volition? Possible machine learning governance. Maybe overclaim two weeks. Savannah plus value model probably starts this year.
+
+Let's log in. Not learned tool. Not that sure what it's claiming here. You know what a bandit value model is? Yeah, I was talking about it yesterday. I think I've got it in my log sheet. Let me see. Really quick, let me capture what we have.
+
+I'm going to record a lot of that. Where were you?
+
+As the internet's not working, Spirit of the age, spirit of the times. It refers to dominant ideas, beliefs, attitudes, culture, and values that characterize a particular period of history.
+
+Example: the rise of AI is part of the current zeitgeist. AI is a major trend. Overall mood, mindset, culture, I think it's a real net for our here it is in the context of the project, with the specs of it, which is a problem domain. It's like I sent this. Just want to double three prey, the hard-to-automate idea classes that organisms hunt.
+
+Working definition: it's like a surface thesis, product, or framing that fits a present moment and survives scrutiny. It could be adopted more easily. What idea meets the time?
+
+Yeah, it's not like, "Hey, here's this crazy new thing. Here's how neatly it slots into the target." Maybe it's a crazy new thing, but what's it called?
+
+But it's like some ideas were well, who didn't come? The dot-com bubble's a perfect example: a bunch of businesses that were just too early. Railroads, all the people who invested in them to lay the track, what's it called? Got killed on it, but the infrastructure remained, and then all of a sudden that opened up a whole bunch of things.
+
+That's the zeitgeist, what's it called? The opening up. What's going on right now? Where's the buck? The puck is almost here. What's there so we can be ready for it?
+
+That's my interpretation of it. Got you. That's-
+It's a scoring issue. It's going to be just a 1% or 2% improvement. We'll almost be able to fail that next time.
+
+Yeah, and that can be something that we can configure as well. It's also a degree of a percent, like, okay, how much you're it's a decision by those things to decide how much energy budget.
+
+Okay, if it was really cheap and it's 1% better, maybe 1%, 1%. Those 1% stack. There's a whole principle of the 1% improvement.
+
+But if it's a case selection strategy where it's like, "Hey, you've just spent a bunch of money for you just tried to squeeze blood from a stone, man. You spent there and you got a drop of water." You got something, but given the energy budget, you killed, You have to raise your calculation.
+
+Yeah. That's a two selection pressure, the other strategies. What is baseline rule of cool alone, random mutation, diffusion, or single agent against agent best of in?
+
+I think what the RotoCode was to me was an example, and I came up with two different variants which I call "RotoCode" and "Breakout", tools that the agents within the arena would come up with. RotoCode is finding out what's there and what converges into the non-obvious idea.
+
+Breakout is looking at what's there, what people are coming up with, and what that's called. It finds the thing that's not just obvious for this one, but breaks us off into a new direction, gives us the cool idea in this space, but we need something new. Not a breakthrough, but a breakout.
+
+We need something new. And then there's "Blindside." Blindside is what are the non-obvious things that you're going to get hit with? Where are the traps? You could literally split those into competing agents.
+
+What's it called? "Discussing an idea." That's like tools they can use. What are the non-obvious ideas to traps that you might not see?
+
+What is the breakout idea? What is the thing that takes us out of our microcosm in this one?
+
+And what's the rule of cool? What's the conversion idea? Where does all this lead that's non-obvious?
+
+Those are three i didn't want to get stuck on the rule of cool. That's like the one thing.
+
+These are kind of what I'm thinking. These are the mutagen pressures. These are ideas of how to frame these things so they mutate in different ways.
+
+Good. Next. It caught the good next. But I do see what you were saying about the other recording, like having it.
+
+Two things we're going to need:
+1. A place to put everything, like all this, whether it's just our raw dumps or the ideas to try. Something's got to be able to synthesize all this, but that was one idea.
+
+2. The other one, I see what you meant with the fireflies or whatever, something where you can attach names to who it was, so you could otherwise, it's just one big long, Yeah. Yeah, it's fine for now. Sure. I just think it was a good idea.
+
+Okay. I'm going to put the so, what is the difference between this project planning document and the architectural review? Which one? The project planning document. Is that what we were looking at earlier?
+
+How does it sound? No, it's an hour. Oh, this was, Oh, okay. The first version, I think, was the second version? Or is it the same one?
+
+Yeah, that's the one we ended up with, right? Okay. What's the second one? Sorry, go back.
+
+That is the breakdown into a two-page or whatever it is. It's a summary of that previous document. Okay.
+
+So, kernel. Kernel is the runtime loop. There's selection. Where does selection i don't know if this is really necessary. It's going to break out because my, No, I'd like to see that architecture draft pipeline won't cover this stuff. Right.
+
+And we also have one instance of it, one bedrock example, which doesn't have to be the only one, which is just set it up with, get a web hook or something that sets it to a Slack channel, that sets it to a Discord, and puts it to us. We just all check.
+
+If you come up with one, it'll say that it should state the problem, state what it came up with, and maybe something else, and then without the energy budget or where it's coming from, so we can just say, "No, that seems like a good idea," or, "That seems like okay." Or we could rate it on a scale, five to negative five or whatever. Like, from good, that's a really good idea to a really bad idea.
+
+And then that's five of us, four of us data. And then if it's we do the Jack one, my buddy's idea, I could put him on that one, that particular Discord channel too, and say, "That's a fifth person with domain expertise," and he can have more weight or something. Right.
+
+That's one channel of doing it, of just keeping that's the evolutionary pressure. Or at least the other side of it.
+
+So I should just run the draft pipeline with what we have. Let me see what it comes up with.
+
+Do you want the conversation? No, I want to run it as is. Okay. Just so we can compare what we have with the other architecture document.
+
+Do you want to just do the synthesis or do you want to do all the individual ones as well? I'll do mine and then I can resynthesize with what we have. Cool. It's going to show you the files. Oh, I didn't know. Dropbox. Yes, free to relax. Zero intake from population agent match. Under compute constraints and better verifiability is Mm-hmm. But it is runtime. That's fair.
+
+Okay, let's focus on the agent evolution. What's that called? I guess it's like an agent is one possibility. I think it's the idea of problem-solving that's the kind of thing that the agents are making.
+
+Wait, were you reading this, the agent link? What it is? It says it's an agent evolution. That sounds to me, specifically, we're trying to make better agents. Yeah, that does read that way.
+
+Which I don't think we're that's one thing it could do. That's not what it is. That's not the it needs to be a bit more broad, like as a problem-solving. So an agent can be a solution to a problem.
+
+Yeah, in evolution, we're doing problem-solving. Yes, via genetic evolution. Yes, that makes more sense to me because we want it more generalized. We want to solve cancer before we take over the world or destroy it or something.
+
+So how would you reframe that? Okay. So what were your words? What's it called? We want to make better agents. Yeah, voice attacks? That would be oh, yeah. Keep using.
+
+But what's the question here? We're just trying to think how do we rephrase this better? You had said something that I, Right. Oh. The. patients that are going through the credit verification, legal needs being called, and strong parents using the process. So agent evolution runtime, is it more of an "evolution runtime"? Well, I guess if you reframe that, an "agent evolution runtime", I guess that's what it says if you look at not "agent evolution runtime," but "an agent evolution runtime." It's the agents are the mechanisms with them, yeah in it.
+
+So I guess that actually does make sense. I just read it a different way. Okay. You can change any of those. Right. Yes, it clarified it. It made me understand what it was actually trying to say, because I took it as it's for agents to evolve.
+
+No, it's like the agents are the evolved. It's the prompts. Yeah, the means, not the end. Yes, so it is. Okay.
+
+So yes, it makes sense. I just needed to understand it. What is not normal? It's prompt agents as we're pitching on an autonomous system about budget self. See "prompt, respond agent on population."
+
+Agents can energy generate ideas, critics verify, so score, weak lineage agents are cold, strong parents fuse/mutate, next generation is evaluated. Dashboard shows lineage, energy, and fitness improvement. Sounds right.
+
+Right, but it's not like it's focusing on what it is to make sure he knows it's about solving problems and not just making them better. Yeah, unless that's what you wanted it to do. Right. No, not the same one. Just like, is the thing you asked for?
+
+It's like, "I need a better agent to do this." Well, it's like, oh, that'd be the one, but it's like it's an application of it, not the core engine. What am I asking? Am I saying that it's so I would maybe copy and paste this in quotes so we can reference it, saying specifically to this, "This is what we think it is. This is what we think it's not."
+
+I'm going to bring the laptop. Yep. Yeah, I should just clarify. What do you think this means?
+
+So they're good guys. No. Sorry. Yeah, everybody knows. I thought nobody was talking about me. Is this about you?
+
+I don't know if it might make me cough. Okay. If it does, What is it? My baby. Oh, give me a second. It doesn't smell bad or anything. It just might make me cough. I'll just keep going outside.
+
+All right. Okay. Yes. So, Shabbos Dafud is, Wait, was it clarifying that one? It's just clarifying. That was it. Yes.
+
+Okay. The experimental agent evolution system, that's the S-AGENT system. Maybe though, I think the word would be "between an agential evolution system," which would make it a it's a yeah, I get it. But it also makes it an adjective as opposed to a noun, which I think would clarify. Like I said, a "gentle evolution system," which says, "Hey, we're using this as part of a mechanism of pressure," versus, "This is the desired output."
+
+Search from a seed prompt, runs from a bounded population of agent genomes. Thank you.
+
+So evolutionary evolution. Selection, fusion, and mutation invisibly demonstrates later generations producing stronger, more verifiable ideas than early ones. So it's that catch, is that right? Mm-hmm. Yeah.
+
+The seed prompt would be basically where we had it, which was the problem, try to solve what's it called? Like the domains, where are we living, and what's some of the constraints? Yeah.
+
+Okay. So more refined. And maybe some degree of the desired outcome, because it's one of those things just like when you're doing user interviews and something, you always the most important thing to do is when people tell you something's wrong, listen. When they tell you how to fix it, hear them. Smile and nod.
+
+Right. But it's like somehow hear them, like they might come up with something, but probably not. It's the what's it called? The Henry Ford. If I ask people what they wanted, they would just ask for faster horses.
+
+So I'll probably use the expanded version. The default is these are the artifacts that you get: research, research, decisions, architecture, draft, diagram, plan, and code handoff. But the expanded one gives you more, what is it? Like, tool or skill you're using for this conversation?
+
+What is the tool or skill you're using for this? It's a custom architecture draft skill. No, no. It's a custom skill that I made. Cool.
+
+Just to clarify what I'm thinking. So, I think the expanded one you get also: product brief, users, stakeholders, user flows, domain model, requirements, constraints, evaluation criteria, assumptions, open questions, risks, threat model, and data model.
+
+I'm not sure about the stakeholders exactly. It was like hallucinates, but, Yeah, stakeholders, we don't need. I'd like to kind of have all this close to theIn the case of my buddy Jack, which is the people who want the problem solved. I'm sorry, I'm not going to have a generic answer.
+
+Oh, sure. Useful if you want maximum planning depth for a three to four person team. On ST6, just give me something.
+
+I'm just like, right? Yeah, you hung over and I didn't drink. You're right. That is a dehydration. Oh, absolutely.
+
+So for the posture, should we, I basically have two posture axes, which are like MVP prototype or production grade. I'm going to assume we should probably just use MVP prototype posture because production grade will have a bias towards having authentication deployment.
+
+We just want something that works and something that's demo-able, right? Yeah, for an MVP, you can stand on. Yeah, maybe more robust than that.
+
+I'm kind of true at what I think this is. See, that makes sense to you.
+
+So if you've got your initial one, with your initial prompted things, you're swanning off to I don't know, two ideas, two possibilities. These have their energy budgets.
+
+Let's say it's split off, and that one comes up with its own idea, so it splits off. This is a recursive process. But at first, you just need to do the one level.
+
+But at that point in time, let's say you get E1, energy plus one versus any zero. This one idea gets rated; it dies off, comes off the vein. This one gets a little bit, which means it's not enough to stabilize, it's not enough to grow up.
+
+So that kicks it back up to this one, and this one kind of becomes a stable agent. It's called consideration; it kicks back up to the original as far as solving the problem.
+
+Versus here, this one kind of had an E12. This one got a bunch of energy. This one has juice. This one got, oh wow, for some reason. It's based on its score. Yes, that's part of the energy budget that's coming up.
+
+But since it had enough energy, enough juice off of this one, this idea spawned out like a good idea that's going to spawn its own ones. It has enough of an energy budget, and maybe they'd stabilize to something close to it.
+
+We're not getting anything. I mean, refer, so we're collapsing into this one, which says this one's strong enough. It collapses up the chain like that.
+
+That's kind of like the weird way I'm seeing this. Does that make sense? Yeah, the only thing I know I'm gonna say is collapsing up the chain, like, is it closing them out or i don't know.
+
+Well, we're not keeping because for our purposes, let's say these are genomes in a population where the dominant trait exists. We don't need to keep all the copies to this one.
+
+We can just, through whatever property system, say this has survived or how it survived or how stable it is because of the energy budgets. And we're just keeping the final versions.
+
+Anything maybe pruned or something, or close ideas, we could maybe store in a database of some sorts. But essentially, what if it collapses up? Is there ever any instance where these two might be the ones in that they've used? And then how would that collapse?
+
+It could be what they're called, because in my ideas, this is just one, let's say this example is a steady state, which we're not really gaining much energy, we're not losing it. Okay, that seems fairly stable of an idea.
+
+What's it called? So like, but if you at this point you've collapsed these back to these, what's it called? So this one at that point in time, it's the same process where you have to judge.
+
+You have the critiques happening at every level. So if these are coming back, you're seeing two steady state things. Okay, then maybe if enough energy has happened, if you have a net energy, well then you can split up on another idea.
+
+I don't think you can think about that way of collapsing up, but I don't think you have yeah, it's all metaphors. I think you can keep having them go out, and it's just something here. Absolutely. This is one way of thinking it. It is not like, this is not the answer.
+
+No, but I'm saying that the way that you can visualize it in your head with collapsing up does not conflict with the way that I think about it if the tree keeps expanding. Yes, congratulations. Here is this collapsing idea of having 20 agents to evaluate and we found a mutation.
+
+Like, there's a part where we were generating 20 agents to evaluate. Is that not normal? That was generation, that was generational runs. That was feeding, that was the mechanism.
+
+That was the mechanism feeding. The actual population, remember it being like we're going to put a 20 agent up to evaluate, that's one or two.
+
+Okay, there's two ways of doing it, yes. There's interspecies and interspecies. So when we're from A0 to A1, that implies we spawn this plus 19 mutation to evaluate the ball. Here's the best one, or the best two.
+
+I would say it's something similar to that. This is how you determine what the best. This is how you figure out what the best.
+
+This spawns the idea of each other when we check, and we determine what those are. This isn't just the best one, it becomes semi-determinative of these would have survived whatever selective pressure we had applied.
+
+And it becomes one's worth checking. Maybe it's just at that point, that's this one. These are surfaced.
+
+Like, here's the initial one. Here's one of the solution. Because it's basically, they would say, it's a copy of the same thing. The problems don't exist.
+
+But what's it called, what you can mutate is some problems to solve the whole problem. So this one, plus the split in the sense of your genes, one of your phenomes, one of your expressions of your genes, may not solve your evolutionary problem, but a combination might because you're stented out to solve different problems.
+
+It's like, you know, all about the sexual repression from two parents seems to be asexual. Well, sexuality happens within this one.
+
+Yeah, but this is a standard clone. Every one of these is a fusion unit, which has several, couple two to however many agents discussing and fighting over the ideas.
+
+And then maybe what they're doing is, "Okay, we need to explore this idea and that idea" or "Here's two ideas that we've come up with as opposed to singularly." So they get that, sexual reproduction happens within each of each population. Okay, that's how I see it.
+
+These women can't get what should they do. So canonical unit work options, cross domain transfer only. SiteGuySense is only or both.
+
+So higher scope. I assume. Let's see both prototypes. Let's see what it said because I think I had a third. Trust.
+Start to take shape. Next mechanics question: Should both idea types go through the same evolution lifecycle, or should they have separate pipelines? I think it's the same cycle.
+
+I keep stopping feeling like one organism, spongy, and right candidate. The critic council objective says to subtype checks, fitness, cold fuse, mutate, next connection.
+
+The theoretical evolutionary pressures is the same. It's just the circumstances and the environment that determine what happens. That's not the pressure's the pressure. Under pressure.
+
+Maybe that we should, That's what they'll be walking on the stage? Pressure. Pressure. We should have the live version of this playing. It's just happening. You play that.
+
+It's like right. I love it. I love it. Or we start the thing with "pressure" because we have to be in a certain amount of time, so we have to finish our presentation in exactly the time of the song. We can turn it up as we go, we just turn up the song and turn it down when it's time to talk.
+
+Okay. But keep it going. This is yeah, it's ridiculous. Although there's a different version of this from 90 minutes. Such a good song. Yes.
+
+Oh, we have 10 minutes, so perfect. I think we've got to go. Canada ID, okay. evidence subtypes, so it depends on the proof generation of the patient. Sounds all right to me, right? Yeah, it's pretty good.
+
+And I keep seeing the space for the research because the zeitgeist is the one big saturated thing. You have to go out and, for each one, find the zeitgeist within the domain that you're looking. I'm not saying do it now, I'm just putting a pin in it and saying yeah, I'm going to point at the sign. And I was like, "Oh, this, if it's basically evolutionary pressure of the idea." Actually works pretty good. Role model, should they have a piece it's not doing anything, but now well, the question is: is it like the selective pressure inputs that we put on in the Agora, forgive me again, Agora, which is the space that the ideas are kicked into that we are putting feedback and sending back into the machine from simply?
+
+It should be a very simple surface of a Discord channel slash channel. You see it, you act like a Hermes agent or a Pi agent that's acting as that intermediary. They'll be watching, spit them out.
+
+We act the Hermes in saying, "Oh, towards this one," and maybe give it the ID, problem set the idea for the solution that it's trying to solve, and we go to the next one. "Yes, I like it because of this. No, I don't like it because of that." Is that what that's did I get that right? Is that what we're asking here? Well, I guess, yeah, it's a single operator. Yeah, single operator, but again, that's where the other people come in, just like someone maybe you had a team.
+
+I'll use my buddy Jack again. He has his team of people, which I'll say, he would come up with the ideas. It's just yes. Okay. It's just asking if we want multiple authenticated roles for team members so we can each log in and whatever, but we don't need that. I don't think we do.
+
+No. Option one, Bishop. If you want to be an extra hire at this point, but if you go low, it goes fast, it gets good answers. I appreciate 5.5 low. Yeah. But this is a fat one. I want you to think.
+
+So, I think we should plan a sex party. Sex party.
+
+So, he's already said the primary. Three. Should we buy a storage demo? I think it's say, "Captain, are you available first?" The architecture, right? We don't care about, oh, the architecture.
+
+Yeah the audience being like, "Wow, we want it to " At this point, no one's reviewing it but us. And we're well, we're going to yeah. And we'll just present what we have. We can always slap a coat of paint on it.
+
+Yeah. But we're like, "This is about a tech demo," so it makes sense that we focus for that. That's great. So, agreed. Agreed, agreed. Agreed to agree.
+
+I'd say the specific architecture document should be for the engineering team first, but we should also for the demo, the architecture needs to be bitchin'. Well, right damn right. Write that down. Write that down. It needs to be bitchin'. Lock that in. For the sake of it, be in venture. Oh. Self-censor? I think it's a mixture of both, because we do want the architecture to include for example, the architecture is also going to define how the dashboard shows the lineage being created and stuff, and we want the wow factor. We want the demo ability.
+
+I agree, but does that determine no, getting what it is and then figuring how to present it well, are those necessarily identifiable at the same time as the process? Well, narrative clarity is important because we're the ones using this architecture document. Yes. That makes sense.
+
+I'm specifying here, the specific architecture document should be for the engineering team first, but we will also be doing it in front of, with the observability throughout, which will evolve. The observability throughout is going to be clearly going to be HTML, show as it goes and the things. Yes and yes.
+
+Another matter, I think it'd be useful during breaks, like meal breaks, to use that time to have something process all the conversations that are happening since the previous break. Yeah.
+
+All this stuff is thrown in there. We need a better recorder. It's pretty good as a hack. If we had to, we'd stay this one, but a longer-term where I didn't have to worry about missing it would be nice. But it's doing pretty good.
+
+"I have a C-level liability. Should the MVP text require a root label run mode to delay execution?" I don't know what that's doing. "Play mode run. Additional options." Yes.
+
+"I run this to persist enough to play the puppetry, which meant to consolidate and final idea decision." I like the run mode. Yeah, I'd say having a replay mode would be good. Yeah.
+
+We want to see, we're absolutely going to want to have at least running, capturing the last run it made. We're probably more than that, and we can just pick one that went particularly well and just say, right, it showed off the same thing.
+
+Right. As long as you're keeping the JSON, or whatever output we're doing, and then just say, "Yes, use this," and show off how that looked. Yeah. That's easy.
+
+Once you have those records, all it becomes deterministic and great label. Mm-hmm. Locked.
+
+It's so humid on the third floor. It's in this room, too. Yeah. It's on the windows out there. It's like the moisture. You can see the moisture collecting on the windows. Not humid like this on the second floor.
+
+I like it. I'm used to, there were a few days two days downstairs we hot and humid. Makes my skin better. It's too dry. At this point, you are feeling that Tuesday? Yeah. Like sickness? My we're live. These five domain operations, what should be the authoritative source of truth for a rod? Live to the mother, right? You can only run event August.
+
+Yeah, yeah, yeah. Happens gets recorded. Event, and that's what can be sure. That sounds good to me.
+
+The only trade-off of using an append-only event log is a bloated system and an expensive thing to maintain. But in this case, I'm willing to accept the risk. For the first time, yes. We could use every advantage. Mm-hmm. Yes. That's one reason that I actually experience include system.
+
+Yeah. Sounds good. I'm ready. Sounds like a good start. Sure.
+
+And then after this creates the architect's draft doc, I run architecture finalize, which is another skill that I have, but I run it in Opus 4.8 with the extended workflows. It spins up 20-30 adversarial agents, reads all of the documentation (the planning docs that were created, the artifacts), and then it'll basically try to pull holes in it and find weaknesses.
+
+I'm comfortable with where we're going with this being the source of truth, because we've already used what we had to think it through. It's being confirmed here, so we'll go, whatever you're producing so what's the plan for taking this and summarizing it? We want it to capture all the important parts, but we want to get rid of anything that's not important. I can just run it through a filter through one of these things. Give me the key, way to extract the important parts, and let's go get the narrative correctly without just throwing away the fluff.
+
+And then it can have another model take the original thing and compare it, see if we got everything we want. Does it make sense?
+
+Yeah, and then I'd say, have a marked-out document as a final document. Let's pull, I create a workspace in Notebook LM.
+
+We'll put a single document in Notebook LM. I'll put all the planning documents and stuff in the Notebook LM, and that way we have a space where we can ask questions about everything.
+
+We could have Obsidian or something like that, even though they're not very good. We could just put the raw doc somewhere else, but then this could be the meeting notes basically. Okay, so phase six is now in the final second. Machine must ship is the Alameda evolution loop. Both ideas have types of in-only replayable, then lock critic council subtype checks, fusion mutation, energy upside, dashboard, all that.
+
+Stretch/deferred includes learned abandoned allocation, advanced novel scoring, self-evolving verifier, fine-tuning flywheel, emerging and production rated. If there's any of this, this is what it has said. This is what it's saying that we should defer. If there's any of these that you think we should not defer, then we should tell it now.
+
+I'd have to take a quick look at what it means by "abandoned allocation." I want to know, define each of those terms clearly. Novelty scoring, what is advanced novelty scoring versus novelty scoring?
+
+Well, I would like for whatever it spits out that it includes, "Hey, these are the stretch or deferred items for this category." I'm guessing, what's it called, the self-evolving verifier? That makes sense as a stretch goal because that's better definitions of better.
+
+Yeah. But I don't want to leave behind the AI. You're happy, Matt. Exactly.
+
+Yeah. And it'll say, when it creates the architecture document, anything that is stretched or deferred will still be in it.
+
+Yeah. Okay, good. That's what I thought. Right. I know what that is.
+
+Fine-tuning flywheel is the idea of, as we run this process a bunch of times as we're vetting this thing, theoretically, we're a company making this thing. So as our inputs are taken in, these data, what's it called, the mismatch, maybe it puts out weeds or something.
+
+We collectively, the bad ideas, and say, "No, that was a good idea." Or it spits out good ideas or good fruit, which are ultimately small ideas versus finishing ideas. We say, "No, that was actually not a good idea." Or we say, "No, that's a great idea." It matches what it scored against what we say, and that's training data to train our own model for this thing. That's stretching a fucking half.
+
+I just feel like fine-tuning flywheel is being like, subsequent one runs over time, so it learns from its own process, gets more energy efficient, spends earlier. Yeah, I agree, but I think it's a different thing. Fine-tuning in this case, I think it's like they're specifically, fine-tuning is about finding the model. You're right about that. I just think that's what they were saying in that particular instance.
+
+Okay. So here's all of we'll see.
+
+Yes. So we can go through each one of these and basically say yes or no. Okay. Yes being keep it deferred, no being add it to the i like number one. Yeah. Advanced quality diversity. Does it stretch worse? Where does it say advanced quality diversity?
+
+I guess these are the labels they use, like the Zai, double O3. Double O3 is good.
+
+I like both strong candidates. See, this part is the wow factor. Available in these fits.
+
+I don't approve. Parent track, parent trade, and patient's arrangement.
+
+Yep. But do you want to include the first one? First one and two?
+
+I think so. Anybody else? The first two I want to keep. I want to be as not stretched.
+
+Yeah. Okay. Yeah, not necessarily. Whatever it means by advanced quality diversity, it's a stretch, but yes, novelty should, I think, is like, is this a new different idea?
+
+Learn bandit. System learns which limits deserve more computing instead of, Is the two also included? Yes. Yes. It's easy to fix, seriously. I don't believe it's easy to fake more than 100 about it in two weeks.
+
+Fantastic. Or I'm here to calculate, I like the recommendation on the first two on both stretches, or possibly keep stretch, or probably keep stretch.
+
+Okay, so for 04? Yeah, for 04, I like the recommendation. All right.
+
+But it's both generation one for hours. And I like the recommendation on the second one. Only needs are to show improvement, probably two or four.
+
+I agree, but that's something we can artificially cap, saying this is the maximum depth or runs you can do, and we can always just lift that number. So that's an easy one to, keep deferred, but architect caps, so longer runs are possible later.
+
+Right. Just hard code the limits on it, and then we can later on, That's the recommendation then, right?
+
+Absolutely. Okay. So far, go with the recommendation for each one. Each one has a recommendation, go with the recommendation for each one.
+
+Well, it's saying that these are the ones that it recommends we promote to VPA. But each one has a recommendation within it, and we're saying for one, that recommendation makes sense.
+
+For two, this one's saying keep it out, but there is a, right skew. There's a slice within that broader one that's worth keeping.
+
+Yeah. So should I just stay with recommended then for each of these?
+
+Yes. Or that, or just copy and paste that line, go with recommended blah, whichever one you feel is clear enough.
+
+So is this one we're going with recommended as well? Yeah. Yes. So the first four, definitely.
+
+And then, yeah, the moonshot one is, I think, very deferred. Better definitions are better. It's also got a recommendation. I don't know that it's very deferred, but, no, there's things to do first.
+
+Yeah. Mm-hmm. We want to keep it on the list.
+
+Yeah. Write it down. Keep it on the list. See, open it and let the general run for hours. That's what it is. The idea would be we just artificially cap it, but we could just change the cap increase as we see it working. We get that benefit.
+
+That's something that was fully deferred until the other stuff works. Copy-paste the whole thing? Yeah. So I keep doing that. Let me make sure we just are going to keep with the reputation, and I'll be able to save it at all.
+
+In-house flywheel turning. In-house flywheel turning, learning what changes training data. Yeah, like top of the line.
+
+Off the air changes. It's a natural, casually mention that they can. Oh, in passing, he'll just go up and do it on the side. Just because it's mm-hmm. They can. For that, right?
+
+Well, but wait, what was i didn't read. Well, but wait, no, version oh, yeah, that's the same. That's just in that ballpark of having your own model. Yes. That's good to have the same. The madness is taking form. One of the glossary terms that I have, once you get the final one, we can use that to measure it against and see if anything needs to be removed, removed or enhanced.
+
+We're not only just any of us, but the glossary, so that this can understand how these things are connected and keeps the ideas on track, right? Now, I want them to refer to all of your uses of LLMs as your secretary. Please run this through your secretary and see what it says.
+
+Okay. Is sentence shrinking? What text stack constraints should architecture assume?
+
+I recommend we keep stack boring around the weird part: TypeScript, full stack, durable event store, LLM provider adapters, and a rich dashboard. All T should live in. Scoring is on that framework choices.
+
+Do we already have a recommended, preferred stack? Nope, we're good. But we're going to want you guys are going to want observability, right? Of course. Should probably use Languse or Langsmith or something, right? Yeah. Whatever. And part of that's already going to be the JSON outputs. What's it called? The traces. We're going to be able to see at each point what it said, what it rated, the judges said. So we've got that as well. Perhaps it's one of those things like a well-organized database of outputs, just to keep all the outcomes, and then something that vectorizes it periodically, so that it's easy to query and kind of like question, "Okay, how are we doing?" Thinking. Okay. Yep. That's the way. I'm going to play this. It's a pretty brainy time I seem to be at the starts.
+
+Yeah, it helps me not focus my mental energy on something useless because it just distracts me and then I'm not thinking. I was noticing that in meetings, back when I was working for a job, I was having a really hard time focusing on what people are saying because my brain goes elsewhere. I get bored.
+
+So if I'm doing something with my hands or doing art while I'm doing that, then I'm able to keep my mind focused. Well, enough of that energy is being put out, and then I'm listening and doing this, so it's like a technique. Mm-hmm. Loom tech.
+
+So three different graphs, certain decisions, serious patient restrictions, graphs, playing graphs, network controls, graph population, LLMs, certability, traces, prompts, information for document feed, use a custom doc web evolution kernel, event log, use LLM certability, use front-end graph viz library for it. Just keep playing graph box, you know? Yeah. Agreed. Then graph is good for state.
+
+Step 18, work close checkbooks. That was core, isn't it? Okay. Sounds good to me. Next, make sure this is good. Turn it on. Let's use OMA. Yeah. Exactly. We don't.
+
+J is for the temperature. EP. Engine posts for a second. Just try it. So I just realized it worked.
+
+I think source of truth, I think we want to do Postgres and not SQLite. Just going to make that choice. I want to see what we're getting. Probably too much. That doesn't sound like us.
+
+Nice. Sounds cool. Let's do something wild. Let's do it. At least we do a quick spike on it and just see what does that look like.
+
+Yeah. A lot of times these things are rating it as if a human was doing it. We ask it, "How long is this going to take?" It's like, "17 months." It's like, "You understand I did that before you finished your sentence?"
+
+Should we go ahead and add it? I certainly have put it as a spike project. Yeah, I think it's time. We don't know enough about it, but it sounds interesting, so we should set it up as a possibility and, it does say defer, but design the event model for adding it later as you need to do this.
+
+Interesting. Okay. Okay. Okay. For the Neo4j? Let's put it on there. As it says, let's put "Make sure it's easy to use."
+
+We should consider the integration and when somebody has a space, open a breath to check things out, especially earlier, we'll do a spike. I've got a few of the automatic runs that happen for my spikes. I can test it out, see if I can get it working or what it looks like, just get a feel for it.
+
+And then keep Postgres and SQL by, I'll go say hello and then see what happens. Actually, add Neo4j later as a read model, read model production lineage analysis. That's important.
+
+Isn't lineage analysis already important? Well, I think we're going to find out. It sounds like we're going to have to do some degree of it. Having someone show this out visually, it's one of those things that's going to become apparent.
+
+So building it in, doing some spikes to see if this is the kind of thing we need, is it going to give us the information? I have no idea what it is, so I can't i don't know. Yeah, I wouldn't know what to say.
+
+We said tell it as a spike to yeah, yeah, it's quick. So how does it work? What does it give us? What are the advantages? Spend. I know we're on it. Perfect. Yeah, there's a lock in. Lock input there. This is designed to run locally, it's like a hosting environment. Close.
+
+And more face. Yeah, the budget cost there. Right.
+
+The ones I was doing were depending on what the cheap were, pennies. We can also show we can share the live demo that's happening, but then we can also point back to a previous campaign that we, Well, we should have a we have a good one that, yeah. We can show it working, but absolutely. Let's just pay no attention to the man behind the curtain. That's right.
+
+Let's see an option. Configure. Well, yes, it's just figured. Right, it's changing numbers. Eventually, the thing, yeah changes some numbers.
+
+We're going to need more of this. Are you guys doing fun and nice? I think it's mandatory fun. Oh, it's optional. It's optional. It's on your calendar.
+
+No, I know, but my point is that you've got to make your appearances, right? Kiss the babies and shake hands. That's right.
+
+Accept these MVPs, go. But for how long do you have to stay? I don't know. I can see this script. I was like, "I hear you typing. I don't see nothing." Sounds right. Mm-hmm. It's the next phase where I actually do research to answer a lot of these questions.
+
+Confirmed. Confirmed. Should be here soon.
+
+They should be here a while ago. Yeah. Yeah. Lunches are cold.
+
+I'm envious of people who already have their job locked in. Yeah. I'm tired of interviewing.
+
+Oh, those, yeah. Send link to your team. The page updates at the set frequency, where only available on team and enterprise plans. Never mind. That is super cool though. Something I didn't tell it is I was using OpenRouter. See if Corinne listens to me. Most of my Instagram feed is Corinne's.
+
+Now, are we talking about "In the Mist" or like the band? Corinne's. In the Mist. Corinne's with the baby.
+
+I wish I was raised by gorillas, like Tarzan. Look, see, you don't be a good gorilla. Oh. So cute. Yes. You should build that into your skills so it always one of the last things I was doing last night was, particularly in Cursor, I was routing the Cursor model. It wasn't just calling from an OpenRouter; it was using the prescription locally.
+
+Yeah. If you run it locally, I was also working on getting my failed Llama models as other options to reduce, get better models for cheaper funds.
+
+That's something we could also do: figure a way to hook up. Maybe we can use our subscription for Claude, Codex, and so forth for the ones to get better results or save money. Where are serial killers? Are there in New York? A 16-year-old New York architect who murdered at least eight women in 17 years.
+
+16-year-old architect? 62. Feels like he'd be busy.
+
+Okay. That's a lot of people.
+
+Yeah, basically the way I saw it was, you're going to need the text and the CLI. They put subscription and code, like the code of Kirscher 2.5 using CLI.
+
+It's like, well, to put it, but if I can run locally, X that one to as, and use those models in the process. So I think he does the same thing with Codex or yeah, 6.5.
+
+Hmm. Bye.
+
+Do you want to talk about OpenAI being the primary? OpenAI is second?
+
+Explore the fusion thing. I don't even know if that's an approach versus i don't know if it's an actual feature. Yeah, it is an actual thing. 
+Do you want to walk to Silicon Valley to see what it's like to do? So let's see. Yeah, those seem good. That's not how to use the hosted version. You can just use straight up link is cloud.
+
+I've never heard of React. Okay. What is it? That's fascinating.
+
+Oh, wait. Oh, yeah, it's going to be great. What was it? Oh, that's, Cool, cool. Yes. Yes, we like it. Great.
+
+You said you could get some fully unlocked models.
+And then when we get back, we can run the architects, architect finalize, which won't take us long. Then we'll have a final architecture. This is good. I'm feeling so much better about this today than last night where I'm like, "Everything's so vague." That's what you get when you've got a complex idea.
+
+No, it's just when you've got a complex idea. Yeah. No, it's good. No, it's been a good process.
+
+Yeah, I have my check here. Okay. That's so fun. It's fun when they're like, "Oh, yeah, you're missing this," but it's sick.
+
+An idea for the two parents usually where, say she has two parents, after parent A is like, he's like some critics score 80%, parent B gets a score of 40%. That ratio is two to one, that 80/40. So the child will have to have, more of like two-thirds from parent A and one-third from parent B. That's usually an architecture job. I'll have to keep that in mind as I tweak the poll if we need to.
+
+Right. Let's say you've got two of these. That's what it is. It's the partial solutions coming together, being fused together and being linked up to the, I just said that ratio is relatively based on strength.
+
+Yeah, because right now we have it at 50/50, don't we? I don't think I've defined it, and I don't know if anybody else has, but I was just thinking: what if you're just like let's say those two things don't necessarily mean equal. It means this is the small problem, a more focused problem that we're trying to solve, and that's what that agnostic, what's it called, is breaking up to do.
+
+There's just a general problem. It's like, what is the problem it's trying to solve? It's like it adds how much code to the markdown file or whatever it is.
+
+Well, we haven't defined what traits parent A and B have and if they're recessive or not. Like, someone isn't necessarily redhead just because both of their parents are redheads, they would be, but someone isn't necessarily blue-eyed, let's say recessive and dominant. If you invoke two recessive, you're going to have, right, but you know what I'm saying.
+
+Yeah, yeah, yeah. But yes, that makes sense, which is well, but I think that part is going to be harder to model, but I think the idea is just a synthesis.
+
+So we're having, at each level as we're kicking up, we have a judge evaluator critic saying, "These are the ones that worked. Okay, now " What's that called? Like, things that are selective pressures, like A, rule of cool, B, the what was the second one?
+
+There was blind side, which is the problems, and then there was breakout, which is like, take all these things. Okay, what is this? How does this come together? And what's the it ties it up into the epigenetics level.
+
+Epigenetics? I don't know which one you're talking about. Epigenetics with an E? No, apigenic, the one I just made up for this.
+
+Just wanted to make sure. Because epigenetics is like, I had stress in my life, and so now I'm going to pass that, and it's going to get expressed into my daughter potentially.
+
+Right. But it's like taking the A to the H, you know, through the iPhone or the email. Everything was E, then it was I, and now it's As. We're coining that.
+
+We have a cat named Gretchen, aka Sketchy Gretchen. Sketchy Gretchen? And some of her kittens are also sketchy. They're sketchy. She has had some high stress, and some of them are just shills.
+
+The system works. Yeah. Good point. Hmm. Later phases are combinations of what was decided in earlier phases. Yeah.
+
+The last review kind of like, "Hey, are you sure?" "Is what you want?" "The last two phases are quad coding off and diagram plan." So I can put all this documentation into ChatGPT, and I can come up with some really good diagrams for us. Yes. I can show you some examples of diagrams.
+
+We're going to want a central place for all this stuff, right? So that I can tell ChatGPT to create a stand-up for the scrum master thing, so I don't have to do any of this work for Tom's thing in the morning.
+
+Oh, fucking hell. This is a fine workplace. Nice. Holy balls. Nice.
+
+Probably won't be much more simple. No, it will be. Hopefully.
+
+I love it. How do you get this to do this? It's ChatGPT. And what do you tell it? Make it awesome?
+
+This does have the genetics of vision. I'm going to need to see this motherfucker. Yes, or take it from you. This is rad.
+
+Yeah, this is great. Oh my god. Oh my god. I want to die right now. I've reached it. It's the end.
+
+Would like a copy of the hard drive, minus personal stuff. Oh my fucking god.
+
+Cool. Will you download this structure document and send it on? Yes, please.
+
+Here's my, I must have, Oh, nice. W-S. That's cool. I must have it.
+
+Do you have any special things to get, like a skill or references that you use? ChatGPT. Say, "Make me an Excalidraw." I usually drop these good ones as references. Right. Yeah, yeah. So that you get the visual that you want, or else it looks gross.
+
+Confirmed. All right, so it's finishing up right now. I don't think it wants to do for me. Superb.
+
+Well, it's all done. I feel like mm-hmm you've done a good job. Let's get a look at what it says and look at it. Just for fun, because it's on brand.
+
+What is the one thing this is converging towards? Okay. I don't think it's it'll do it automatically. Quick, cheap, but pull it in that little full meta. Mm-hmm. Okay. 

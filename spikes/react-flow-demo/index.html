@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doppl React Flow Demos</title>
+    <style>
+      :root {
+        color: #eef7ff;
+        background: #060d18;
+        font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 16% 0%, rgba(89, 255, 173, 0.14), transparent 34%),
+          radial-gradient(circle at 88% 10%, rgba(255, 93, 143, 0.14), transparent 34%),
+          linear-gradient(180deg, #07111f, #050912);
+      }
+
+      .shell {
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px;
+        align-items: end;
+        max-width: 1640px;
+        margin: 0 auto 18px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid rgba(110, 231, 255, 0.24);
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: #6ee7ff;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 980px;
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: clamp(38px, 5vw, 76px);
+        line-height: 0.92;
+        letter-spacing: 0;
+      }
+
+      header p:not(.eyebrow) {
+        max-width: 900px;
+        margin: 0;
+        color: #b8cad8;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      button {
+        min-height: 42px;
+        border: 1px solid rgba(110, 231, 255, 0.28);
+        color: #dff7ff;
+        background: rgba(8, 24, 36, 0.82);
+        padding: 0 16px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+      }
+
+      button:hover,
+      button:focus-visible,
+      button[aria-selected="true"] {
+        border-color: #6ee7ff;
+        background: rgba(110, 231, 255, 0.14);
+        outline: none;
+        transform: translateY(-1px);
+      }
+
+      .frame-wrap {
+        max-width: 1640px;
+        margin: 0 auto;
+        border: 1px solid rgba(110, 231, 255, 0.22);
+        background: rgba(8, 24, 36, 0.7);
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36);
+        overflow: hidden;
+      }
+
+      iframe {
+        display: none;
+        width: 100%;
+        height: calc(100vh - 176px);
+        min-height: 720px;
+        border: 0;
+        background: #07111f;
+      }
+
+      iframe.active {
+        display: block;
+      }
+
+      @media (max-width: 900px) {
+        header {
+          grid-template-columns: 1fr;
+        }
+
+        .tabs {
+          justify-content: flex-start;
+        }
+
+        iframe {
+          height: 780px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div>
+          <p class="eyebrow">Doppl visual prototypes</p>
+          <h1>React Flow demos in one place.</h1>
+          <p>
+            Switch between the Crucible belief-revision chamber and the Agenotype lineage lab.
+            Each tab is an interactive React Flow canvas with draggable, persistent nodes.
+          </p>
+        </div>
+        <nav class="tabs" aria-label="Demo tabs">
+          <button id="tab-crucible" type="button" aria-selected="true">Crucible</button>
+          <button id="tab-agenotype" type="button" aria-selected="false">Agenotype</button>
+        </nav>
+      </header>
+
+      <section class="frame-wrap" aria-label="Selected React Flow demo">
+        <iframe
+          id="frame-crucible"
+          class="active"
+          title="Crucible React Flow demo"
+          src="../crucible/react-flow-demo/dist/index.html"
+        ></iframe>
+        <iframe
+          id="frame-agenotype"
+          title="Agenotype React Flow demo"
+          src="../agenotype/react-flow-demo/dist/index.html"
+        ></iframe>
+      </section>
+    </main>
+
+    <script>
+      const tabs = {
+        crucible: {
+          button: document.getElementById('tab-crucible'),
+          frame: document.getElementById('frame-crucible'),
+        },
+        agenotype: {
+          button: document.getElementById('tab-agenotype'),
+          frame: document.getElementById('frame-agenotype'),
+        },
+      };
+
+      function activate(name) {
+        Object.entries(tabs).forEach(([key, item]) => {
+          const active = key === name;
+          item.button.setAttribute('aria-selected', String(active));
+          item.frame.classList.toggle('active', active);
+        });
+        window.history.replaceState(null, '', `#${name}`);
+      }
+
+      tabs.crucible.button.addEventListener('click', () => activate('crucible'));
+      tabs.agenotype.button.addEventListener('click', () => activate('agenotype'));
+
+      if (window.location.hash === '#agenotype') {
+        activate('agenotype');
+      }
+    </script>
+  </body>
+</html>

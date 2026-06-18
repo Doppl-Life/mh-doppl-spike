@@ -8,6 +8,8 @@ This schema defines the information needed to describe a case study clearly and 
 | --- | --- | --- | --- |
 | `title` | string | Yes | Short human-readable title for the case study. |
 | `summary` | text | Yes | Brief overview of the case study in three to six sentences. |
+| `source` | object | Recommended | Where the case came from and how close the writeup is to the original material. |
+| `visibility` | object | Recommended | Confidentiality, anonymization, and public-use rules for the case. |
 | `problem` | object | Yes | The problem being studied. |
 | `purpose` | object | Yes | Why this case study exists and what it is meant to show. |
 | `constraints` | list<object> | Yes | Important limits, requirements, or tradeoffs. |
@@ -16,7 +18,34 @@ This schema defines the information needed to describe a case study clearly and 
 | `environment` | object | Yes | The context in which the problem and solution exist. |
 | `solution` | object | Yes | The resulting answer, design, intervention, or recommendation. |
 | `reproducible` | object | Yes | Whether and how the case study can be reproduced. |
+| `validator` | object | Optional | Domain expert, reviewer, or stakeholder who can judge whether the case and solution are plausible. |
+| `open_questions` | list<string> | Recommended | Missing facts, follow-up questions, or uncertainties that would improve the case study. |
 | `notes` | text | Optional | Extra context that does not fit elsewhere. |
+
+## Source
+
+The `source` section records where the case study came from and how much transformation happened between the original material and the structured writeup.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `type` | enum | Yes | One of `interview`, `transcript`, `field_note`, `article`, `internal_document`, `expert_recollection`, `synthetic`, `other`. |
+| `origin` | text | Recommended | Short description of the original source, such as the interview, document, or conversation that produced the case. |
+| `source_file` | string | Optional | File path, link, or identifier for the original source, if available. |
+| `derived_by` | string | Optional | Person, team, or process that converted the source into this case study. |
+| `fidelity` | enum | Recommended | One of `raw`, `lightly_cleaned`, `summarized`, `heavily_synthesized`, `synthetic`. |
+| `source_notes` | text | Optional | Important caveats about transcript quality, missing context, interpretation, or source reliability. |
+
+## Visibility
+
+The `visibility` section explains how the case study can be shared and what must be hidden or anonymized.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `level` | enum | Yes | One of `public`, `internal`, `confidential`, `restricted`, `unknown`. |
+| `anonymized` | boolean | Recommended | Whether names, companies, identifying details, or sensitive facts have been changed or removed. |
+| `public_summary_allowed` | boolean | Recommended | Whether a short public-facing summary may be shown outside the team. |
+| `sensitive_details` | list<string> | Optional | Details that should not be exposed, such as names, locations, technical vulnerabilities, or private business context. |
+| `sharing_notes` | text | Optional | Any additional handling rules, caveats, or approvals needed before sharing. |
 
 ## Problem
 
@@ -51,6 +80,7 @@ The `constraints` section records limits that shaped the solution.
 | `name` | string | Yes | Short name for the constraint. |
 | `description` | text | Yes | What the constraint is. |
 | `type` | enum | Recommended | One of `time`, `budget`, `technical`, `legal`, `ethical`, `organizational`, `data`, `user`, `other`. |
+| `rationale` | text | Recommended | Why the constraint exists and what makes it real, such as legal exposure, safety risk, user behavior, physics, policy, or domain practice. |
 | `effect` | text | Recommended | How the constraint changed the solution or process. |
 
 ## Failed Attempts
@@ -115,6 +145,18 @@ The `reproducible` section explains whether someone else could recreate the case
 | `expected_result` | text | Recommended | What a reproducer should expect to see. |
 | `known_variability` | text | Optional | Reasons a repeated attempt might differ. |
 
+## Validator
+
+The `validator` section identifies who can judge whether the case study and proposed solution are realistic.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name_or_role` | string | Recommended | Domain expert, customer, stakeholder, evaluator, or reviewer role. |
+| `relationship_to_case` | text | Recommended | Why this person or group is qualified to evaluate the case. |
+| `can_validate` | list<string> | Recommended | Aspects they can judge, such as domain plausibility, operational fit, legal risk, user value, or solution novelty. |
+| `validation_method` | enum | Optional | One of `interview`, `survey`, `rubric_review`, `async_feedback`, `live_review`, `unknown`. |
+| `notes` | text | Optional | Caveats about evaluator bias, availability, or limits of their expertise. |
+
 ## Minimal Example
 
 ```yaml
@@ -135,6 +177,7 @@ constraints:
   - name: Limited reviewer time
     type: time
     description: Humans can only inspect a small fraction of cases each day.
+    rationale: Reviewer capacity is fixed by staffing and shift coverage.
 failed_attempts:
   - name: First-in-first-out queue
     approach: Review cases in arrival order.
@@ -162,4 +205,6 @@ reproducible:
     - Gather a sample of past cases.
     - Score them with the proposed triage factors.
     - Compare ordering against the original queue.
+open_questions:
+  - Which historical cases should be treated as the validation set?
 ```

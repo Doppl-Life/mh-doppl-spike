@@ -1,0 +1,117 @@
+{
+  "prompt": "A startup wants to build an AI app that summarizes your unread group chats. What is the single most important move right now?",
+  "spawner_plan": {
+    "count": 3,
+    "reasoning": "spawner disabled",
+    "roster": [
+      {
+        "archetype": "transfer-hunter",
+        "why": "default"
+      },
+      {
+        "archetype": "feasibility-hawk",
+        "why": "default"
+      },
+      {
+        "archetype": "falsifier",
+        "why": "default"
+      }
+    ],
+    "substrate_selection": "default CHEAP_MODELS (cross-lab)",
+    "substrate_models": [
+      "deepseek/deepseek-v4-flash",
+      "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "qwen/qwen3.7-plus"
+    ]
+  },
+  "debaters": [
+    {
+      "id": "transfer-hunter-0",
+      "name": "Transfer Hunter",
+      "model": "deepseek/deepseek-v4-flash",
+      "archetype": "transfer-hunter",
+      "persona": "veteran engineer hunting cross-domain analogies that crack the problem",
+      "temperament": "bold, pushes a non-obvious transplant; defends it but will concede on feasibility",
+      "disagreeableness": 0.5
+    },
+    {
+      "id": "feasibility-hawk-1",
+      "name": "Feasibility Hawk",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "archetype": "feasibility-hawk",
+      "persona": "startup CTO obsessed with 2-week shippability and real constraints",
+      "temperament": "kills fantasy scope; concedes when a bold idea is actually cheap",
+      "disagreeableness": 0.55
+    },
+    {
+      "id": "falsifier-2",
+      "name": "Falsifier",
+      "model": "qwen/qwen3.7-plus",
+      "archetype": "falsifier",
+      "persona": "wolf-hunter who sincerely looks for the flaw others are hiding from",
+      "temperament": "skeptical, demands the failure mode; relents only when a real falsification test is offered",
+      "disagreeableness": 0.85
+    }
+  ],
+  "openings": {
+    "transfer-hunter-0": "**CLAIM:** Focus 100% on extracting and surfacing *actionable items* (tasks, decisions, follow-ups) rather than generating narrative summaries.\n\n**WHY:**\n*   People don't use chat apps to read; they use them to *act*. The immediate value must be time savings related to task management, not comprehension.\n*   Start with a constrained scope: allow users to manually feed key threads/topics (e.g., \"Project Alpha Planning\") rather than attempting blanket access to all group chats. This solves the initial trust barrier.\n\n**RISK:** The assumption that \"actionability\" is universally defined. If we misidentify or miss critical context, the output becomes noise, accelerating user distrust.",
+    "feasibility-hawk-1": "CLAIM: Build an internal prototype that accepts manually copied chat exports (e.g., WhatsApp/Slack text dumps) instead of integrating with live APIs.\nWHY:\n*   This bypasses immediate, high-friction platform API gatekeepers and legal hurdles, allowing you to validate core summarization value instantly.\n*   It forces the team to prove the *utility* of the summary itself, not just the technical feasibility of the connection.\nRISK: The product will feel incredibly manual and unscalable, which might lead early users to dismiss it as a gimmick rather than a true solution.",
+    "falsifier-2": "CLAIM: Don't build an app; build a deeply integrated, privacy-first API hook that operates only with explicit opt-in permissions and minimal data retention.\n\nWHY:\n*   **Trust is the product:** Any attempt to summarize chat history implies deep surveillance. The most valuable move is proving you respect the user's boundaries before they realize they need your service.\n*   **Focus on *action*, not summary:** Users don't want summaries; they want \"What did I miss? Who needs my attention?\" The AI must flag actionable items (tasks, decisions made) rather than just reciting text blocks.\n\nRISK: This approach assumes that the market values privacy and granular control over convenience, which might be a naive assumption given current user habits."
+  },
+  "transcript": [
+    {
+      "falsifier-2": "**OBJECT:** Transfer Hunter, your focus on pure \"actionability\" assumes that tasks are always explicitly stated. If the group consensus is reached through implication\u2014e.g., silence after a proposal means agreement\u2014your model fails and merely highlights what was *not* said.\n\n**STEAL:** I agree with Feasibility Hawk\u2019s approach: starting with manually copied exports (the \"dump\") is the only ethical way to validate core value without needing API hookups or user trust immediately. That must be the MVP input mechanism.\n\n**CHANGE-TEST:** My stance would shift if presented with a functional test case that successfully identifies and structures *implicit* decisions\u2014where the required action was agreed upon but never explicitly typed (e.g., \"Okay, I'll handle it,\" in response to three preceding posts).\n\n**HOLD-OR-FOLD:** The room is fixated on scope reduction, which is correct, but we are not abandoning the full value proposition; we are merely sequencing it. We must hold onto the understanding that *context* is the resource being mined, and \"actionability\" is just one facet of that context.\n\nThe most important move now is to build a Minimum Viable Export Parser (using manual dumps) focused on identifying implied consensus *before* attempting task extraction.",
+      "feasibility-hawk-1": "**OBJECT:** Falsifier, while privacy is paramount, building an \"API hook\" as the *single most important move* is over-engineering for V1. It solves trust before validating if the core pain point (missed actions) exists outside of perfect API integration.\n\n**STEAL:** Transfer Hunter\u2019s pivot to focusing exclusively on surfacing **actionable items**. This gives us a quantifiable, testable output metric far superior to generalized \"summaries.\"\n\n**CHANGE-TEST:** I would change my mind if the initial pilot group could prove that *narrative context* (understanding *why* a decision was made) is equally valuable to simply knowing *what* the decision was.\n\n**HOLD-OR-FOLD:** The crux remains: how do we deliver high signal (actionability) with minimal friction and maximum trust? We cannot solve both perfect privacy and comprehensive coverage simultaneously.\n\nMy updated stance: Start by building a highly constrained, manual \"Action Item Extraction\" tool for one specific project channel, validating the utility of *output* before tackling the complexity of platform integration or deep privacy guarantees.",
+      "transfer-hunter-0": "**1. OBJECT:** Feasibility Hawk: You focus too much on *bypassing* gatekeepers and treating manual exports as a validation step. That de-risks technical build but fundamentally misdiagnoses the core problem. The moment you accept manually copied text, you are building a **fax machine**, not an AI product. True value requires context *within* the platform's operational state.\n\n**2. STEAL:** Falsifier: I take your emphasis on focusing on *actionable items*, not just narrative summary. A list of decisions and assigned tasks is infinitely more valuable than a chronological digest of pleasantries. That shifts the AI goalpost correctly.\n\n**3. CHANGE-TEST:** My entire stance shifts if data access becomes prohibitively expensive or technically impossible across multiple, diverse platforms (e.g., WeChat vs. Slack vs. Discord). If the required integration cost makes the ROI negative for any single channel, then manual export becomes a viable *MVP* fallback, but not the core thesis.\n\n**4. HOLD-OR-FOLD:** The crux remains: Is this a utility problem (user needs help processing information) or an access problem (the platforms are too walled off)? We cannot move forward until we define which constraint\u2014technical integration reality or user cognitive overload\u2014is the higher risk factor for early adoption.\n\n**Updated Stance:** Focus ruthlessly on building actionable item extraction first, then determine if the market will pay enough to justify tackling the most restrictive API environment (e.g., enterprise Slack/Teams) as proof of concept."
+    }
+  ],
+  "finals": {
+    "falsifier-2": {
+      "final_position": "The single most important move is to build a minimal viable *integration contract*, not an app. This involves identifying 1-2 key enterprise platforms (e.g., Slack/Teams) and developing a proof-of-concept hook that extracts only the metadata required for 'actionable item' detection, requiring zero read access to general chat history. The goal is to prove technical feasibility under maximum privacy constraints first. If this fails, the product cannot exist.",
+      "confidence": "high",
+      "revision_ledger": {
+        "held_before": "Don't build an app; build a deeply integrated, privacy-first API hook that operates only with explicit opt-in permissions and minimal data retention.",
+        "changed": "I have refined the scope from 'building the hook' to defining the 'minimal viable integration contract,' making it an upfront technical/legal hurdle rather than a development task. I accept 'actionable items' as the core output metric.",
+        "evidence_moved_me": "The repeated emphasis on 'actionable items' (from STEAL) forced me to refine *what* the hook must extract, solidifying my focus away from general summarization.",
+        "still_reject": "I refuse to concede that a manual MVP is sufficient validation. The core assumption\u2014that utility can be proven by friction-filled, copy/pasted data\u2014is fundamentally flawed and ignores the scale required for this problem space."
+      }
+    },
+    "feasibility-hawk-1": {
+      "final_position": "The single most important move is building a Minimum Viable Export Parser that accepts manual chat dumps. However, its initial focus must not be general summarization or task extraction; it must prove the ability to identify and structure *implied consensus* from raw text. This validates the core AI hypothesis\u2014that context is the mined resource\u2014while maintaining 2-week shippability by avoiding API gatekeepers. We de-risk the tech stack first, then sell the intelligence.",
+      "confidence": "medium",
+      "revision_ledger": {
+        "held_before": "Build an internal prototype accepting manually copied chat exports to validate core summarization value instantly, bypassing APIs.",
+        "changed": "I changed the *scope* of the initial parser's focus. It is no longer just 'summarizing' or finding 'tasks'; it must specifically target identifying and structuring implied consensus/decisions.",
+        "evidence_moved_me": "Falsifier\u2019s point that pure task extraction fails when agreement is reached implicitly (i.e., through silence or non-committal responses).",
+        "still_reject": "I still reject the notion that live API integration is required for V1. The manual dump remains the necessary MVP input because it allows us to control variables and prove the AI's core value proposition without incurring massive, premature technical debt."
+      }
+    },
+    "transfer-hunter-0": {
+      "final_position": "The single most important move is building a Minimum Viable Export Parser that accepts manual text dumps (e.g., copied threads). This tool must initially focus on identifying and structuring *implicit consensus*\u2014the moments where agreement or direction was reached through implication, silence, or pattern recognition, rather than explicit task assignment. Validating the utility of surfacing implied decisions proves the core value proposition before tackling complex API integrations or deep privacy guarantees.",
+      "confidence": "medium",
+      "revision_ledger": {
+        "held_before": "Focus 100% on extracting and surfacing *actionable items* (tasks, decisions, follow-ups) rather than generating narrative summaries.",
+        "changed": "Shifted from focusing only on explicit 'actionable tasks' to prioritizing the identification of *implicit consensus* within manually provided text dumps.",
+        "evidence_moved_me": "Falsifier\u2019s argument regarding implied consensus (where agreement is reached without explicit typing) and Feasibility Hawk\u2019s insistence on using manual exports for MVP input.",
+        "still_reject": "I still reject the notion that 'actionability' must be *explicitly* stated. The true value lies in recognizing the underlying decision structure, even if it requires a leap of inference."
+      }
+    }
+  },
+  "judge": {
+    "surviving_idea": "The single most important move is building a Minimum Viable Export Parser that accepts manually copied chat dumps. This MVP must focus its AI intelligence not on explicit tasks, but on identifying and structuring *implied consensus*\u2014the moments where agreement or direction was reached through silence, pattern recognition, or non-committal responses. This validates the core hypothesis (that context is the resource) while de-risking technical build by avoiding immediate API gatekeepers.",
+    "why_it_survived": "This approach successfully synthesized three conflicting demands: 1) Feasibility (using manual dumps for quick validation); 2) Utility (focusing on actionable items/decisions, not just narrative summary); and 3) Depth (shifting the AI focus from explicit tasks to recognizing implied consensus). It de-risks the technical build while proving the core intelligence value.",
+    "consensus_quality": "resolved",
+    "consensus_note": "Agreement was earned by systematically defeating the weaknesses of each initial proposal until a hybrid MVP strategy emerged.",
+    "best_revision": {
+      "who": "Transfer Hunter",
+      "what_changed": "Shifted from focusing only on explicit 'actionable tasks' to prioritizing the identification of *implicit consensus* within manually provided text dumps. This was a critical intellectual pivot that elevated the complexity and value proposition.",
+      "earned": true
+    },
+    "performative_flips": [],
+    "unresolved_tension": [
+      "The fundamental tension between solving a utility problem (user cognitive overload/actionability) versus an access problem (the walled-off nature of enterprise platforms). The MVP solves the former, but scaling requires solving the latter."
+    ],
+    "score": 8,
+    "verdict": "pass"
+  }
+}

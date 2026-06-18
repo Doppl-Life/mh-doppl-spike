@@ -223,8 +223,10 @@ ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
         "temperament": "synthesizer; tries to steal the best from each and reframe",
         "disagreeableness": 0.3,
     },
-    # Divergence pair — siblings of the Rule-of-Cool lineage (skills: breakout / blindside).
-    # Same off-the-main-path search, opposite valence: one hunts the treasure, one the trap.
+    # Skill-backed mutagens — progenitor: breakthrough (lineage id rule-of-cool).
+    # Each is a mutagen instantiated as a Fusant mandate; backed by a `.cursor/skills/<id>/SKILL.md`.
+    # Divergence pair (valence-flip mutagen) — same off-the-main-path search, opposite valence:
+    # one hunts the treasure, one the trap.
     "breakout": {
         "name": "Breakout",
         "persona": "imaginative nephew hunting the paradigm-escaping zag — drops the feasibility filter to chase the 10x/100x swing",
@@ -236,6 +238,35 @@ ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
         "persona": "invested uncle who finds the hit you don't see coming — the non-obvious failure mode, or the honest case for not doing it",
         "temperament": "hard questions in service of your success; every trap comes with its sharpening or its spare-you, never points-scoring",
         "disagreeableness": 0.85,
+    },
+    # basis-transform mutagen — strip to bedrock, rebuild from invariants. (Cousin of `contrarian`.)
+    "first-principles": {
+        "name": "First Principles",
+        "persona": "reductionist who strips the problem to bedrock invariants, then rebuilds only from what must be true",
+        "temperament": "subtracts inherited frames and proxies; concedes when a convention turns out to be a real constraint",
+        "disagreeableness": 0.6,
+    },
+    # scarcity-operator mutagen — inject the one binding constraint that forces quality.
+    "constraint-injection": {
+        "name": "Constraint Injection",
+        "persona": "injects the one binding constraint (budget, timebox, audience, metric) that forces specificity and taste",
+        "temperament": "applies productive scarcity; relents if the constraint would amputate the ambition instead of sharpening it",
+        "disagreeableness": 0.5,
+    },
+    # domain-transfer mutagen — the Renaissance man; the Medici Effect. Skill-backed crystallization
+    # of the older `transfer-hunter` archetype (organ re-evolved → promoted).
+    "polymath": {
+        "name": "Polymath",
+        "persona": "Renaissance man who transplants a proven mechanism from a distant field to crack this one — innovation at the intersection",
+        "temperament": "ranks by structural fit × domain distance; defends the graft but discards it when the analogy snaps at the load-bearing joint",
+        "disagreeableness": 0.45,
+    },
+    # valence-flip mutagen (convergent-DOWN) — the sculptor; via-negativa. Truest sibling of breakthrough.
+    "addition-by-subtraction": {
+        "name": "Addition by Subtraction",
+        "persona": "sculptor who finds the single highest-leverage removal — the dead part whose deletion makes the whole stronger",
+        "temperament": "hunts the cut that compounds, not mere trimming; checks for a load-bearing dependency before swinging the knife",
+        "disagreeableness": 0.6,
     },
 }
 
@@ -691,9 +722,16 @@ def run_crucible(
     explicit_models: list[str] | None = None,
     randomize_models: bool = False,
     seed: int | None = None,
+    forced_roster: list[str] | None = None,
 ) -> dict[str, Any]:
     console.rule("[bold cyan]Spawner — deciding the room[/bold cyan]")
-    if use_spawner:
+    if forced_roster:
+        plan = {
+            "count": len(forced_roster),
+            "reasoning": "forced --roster (explicit voicing)",
+            "roster": [{"archetype": a, "why": "forced voicing"} for a in forced_roster],
+        }
+    elif use_spawner:
         plan = run_spawner(client, prompt, cap)
     else:
         plan = {"count": forced_count or len(DEFAULT_ROSTER), "reasoning": "spawner disabled", "roster": [{"archetype": a, "why": "default"} for a in DEFAULT_ROSTER]}
@@ -785,6 +823,12 @@ def main() -> None:
         help="Force debater count (overrides spawner latitude)",
     )
     parser.add_argument("--no-spawner", action="store_true", help="Skip the spawner; use the default roster")
+    parser.add_argument(
+        "--roster",
+        default=None,
+        help="Force an explicit voicing: comma-separated ARCHETYPE_POOL ids (e.g. "
+        "'polymath,addition-by-subtraction,blindside'). Bypasses the spawner and --no-spawner.",
+    )
     parser.add_argument(
         "--dissent",
         type=float,
@@ -888,6 +932,9 @@ def main() -> None:
 
     cap = max(2, min(args.cap, 8))
     dissent_floor = max(0.0, min(args.dissent, 1.0))
+    forced_roster = (
+        [a.strip() for a in args.roster.split(",") if a.strip()] if args.roster else None
+    )
     with make_client(_BACKEND) as client:
         trace = run_crucible(
             client,
@@ -901,6 +948,7 @@ def main() -> None:
             explicit_models=explicit_models,
             randomize_models=args.random_models,
             seed=args.seed,
+            forced_roster=forced_roster,
         )
 
     if args.json_out:

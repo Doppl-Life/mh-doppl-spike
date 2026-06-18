@@ -1,0 +1,118 @@
+{
+  "prompt": "A startup wants to build an AI app that summarizes your unread group chats. What is the single most important move right now?",
+  "spawner_plan": {
+    "count": 3,
+    "reasoning": "forced --roster (explicit voicing)",
+    "roster": [
+      {
+        "archetype": "polymath",
+        "why": "forced voicing"
+      },
+      {
+        "archetype": "addition-by-subtraction",
+        "why": "forced voicing"
+      },
+      {
+        "archetype": "blindside",
+        "why": "forced voicing"
+      }
+    ],
+    "substrate_selection": "default CHEAP_MODELS (cross-lab)",
+    "substrate_models": [
+      "deepseek/deepseek-v4-flash",
+      "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "qwen/qwen3.7-plus"
+    ]
+  },
+  "debaters": [
+    {
+      "id": "polymath-0",
+      "name": "Polymath",
+      "model": "deepseek/deepseek-v4-flash",
+      "archetype": "polymath",
+      "persona": "Renaissance man who transplants a proven mechanism from a distant field to crack this one \u2014 innovation at the intersection",
+      "temperament": "ranks by structural fit \u00d7 domain distance; defends the graft but discards it when the analogy snaps at the load-bearing joint",
+      "disagreeableness": 0.45
+    },
+    {
+      "id": "addition-by-subtraction-1",
+      "name": "Addition by Subtraction",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "archetype": "addition-by-subtraction",
+      "persona": "sculptor who finds the single highest-leverage removal \u2014 the dead part whose deletion makes the whole stronger",
+      "temperament": "hunts the cut that compounds, not mere trimming; checks for a load-bearing dependency before swinging the knife",
+      "disagreeableness": 0.6
+    },
+    {
+      "id": "blindside-2",
+      "name": "Blindside",
+      "model": "qwen/qwen3.7-plus",
+      "archetype": "blindside",
+      "persona": "invested uncle who finds the hit you don't see coming \u2014 the non-obvious failure mode, or the honest case for not doing it",
+      "temperament": "hard questions in service of your success; every trap comes with its sharpening or its spare-you, never points-scoring",
+      "disagreeableness": 0.85
+    }
+  ],
+  "openings": {
+    "blindside-2": "**CLAIM:** Do not build an AI summary app. Instead, build a protocol that allows users to opt-in for summaries of *archived* chats they have already viewed but found overwhelming.\n\n**WHY:**\n*   The value isn't summarizing content; it's solving the cognitive load of digital clutter. Focus on retrieval and synthesis of past noise.\n*   This shifts the perceived risk from \"reading private messages\" to \"managing personal data archives,\" which is a much lower trust barrier.\n\n**RISK:** You are assuming that people find their *past* chats overwhelming enough to pay for a summary, rather than just ignoring them because they feel too invasive.",
+    "polymath-0": "**CLAIM:** Do not build a summary; build an *action log*. Focus the AI on identifying decisions, assigned tasks, and necessary follow-ups within the chat history.\n\n**WHY:**\n*   The inherent value of group chats is communication leading to action, not information consumption. A \"summary\" is passive; an \"action log\" solves a critical workflow pain point.\n*   This mechanism allows for immediate integration into project management tools (Jira, Asana), turning the chat from noise into structured data.\n\n**RISK:** The core assumption that all group chats are inherently goal-oriented. If the primary use case is purely social venting or casual water-cooler talk, this feature will fail completely and provide zero value.",
+    "addition-by-subtraction-1": "CLAIM: Do not build a general summary engine. Ship a hyper-focused \"Decision Tracker\" that only flags explicit decisions, deadlines, or needed follow-ups mentioned across threads.\n\nWHY:\n*   Most group chat overwhelm isn't the *volume*, it's the inability to quickly pinpoint **action items** assigned to you. This is a high-leverage pain point.\n*   This narrow scope minimizes initial AI complexity while providing immediate, measurable value (reducing \"Where do I start?\" anxiety).\n\nRISK: The core risk is platform access and privacy friction. If users don't trust the hook\u2014that this tool *only* extracts necessary commitments and nothing else\u2014the entire premise collapses into a surveillance nightmare before a single line of code is shipped."
+  },
+  "transcript": [
+    {
+      "polymath-0": "**OBJECT:** To Blindside: Assuming people will pay for summarizing *past* chats is a leap of faith based on abstract cognitive load, not immediate utility. The value must be proactive, or it risks becoming digital archaeology\u2014a feature nobody actively seeks out until it's too late.\n\n**STEAL:** From Addition by Subtraction: The focus on \"Decision Tracker\" (action items) is structurally sound because it grounds the AI in *output* and measurable accountability, not just linguistic synthesis.\n\n**CHANGE-TEST:** My mind would change if a mechanism emerged that could prove value pre-AI\u2014perhaps by structuring the chat metadata itself first (e.g., forcing mandatory tagging of decisions before extraction). That shifts the burden from tech magic to social engineering.\n\n**HOLD-OR-FOLD:** The crux remains: We must move beyond simple summarization and focus on **structured utility extraction**.\n\nMy updated stance is that the most important move is building a low-fidelity, high-protocol *Decision Skeleton* first\u2014a tool that doesn't summarize conversation but mandates/extracts only named decisions, owners, and dates. This minimizes AI risk while maximizing immediate, measurable accountability value.",
+      "addition-by-subtraction-1": "**1. OBJECT (To Polymath):** Your \"Action Log\" assumption is too brittle; you are assuming that professional goal-orientation is the *only* load-bearing dependency. If the primary value is relationship maintenance or emotional catharsis, your feature provides zero utility and fails entirely.\n\n**2. STEAL (From Blindside):** I take the wisdom of shifting the perceived risk by focusing on managing *archived* data rather than live chats. This lowers the immediate trust barrier significantly.\n\n**3. CHANGE-TEST:** I would change my mind if we could identify a single, non-work-related use case that generates massive, repeatable friction (e.g., organizing family event details across multiple scattered groups).\n\n**4. HOLD-OR-FOLD:** The unresolved crux is the inherent tension between **Utility (Action)** and **Emotional Context (Noise)**. We must build for *both* without sacrificing either by making the tool too narrow or too broad.\n\n**Updated Stance:** Focus on building a highly customizable, multi-mode ingestion layer that first analyzes the chat's *intent category* (Work/Social/Event) before applying any specific extraction logic.",
+      "blindside-2": "I object to Polymath\u2019s assumption that action logs solve everything; you only stated the failure mode for social chats, not how to build *for* them.\n\nHowever, I steal Addition by Subtraction's focus on extracting **personalized commitments**. That narrows scope effectively.\n\nMy mind would change if they could prove value in managing emotional labor\u2014a \"social health\" metric\u2014rather than just project tasks.\n\nThe room is fixated on mandatory utility (tasks/decisions). The unresolved crux is the *motivational hook*. We are abandoning the idea that this tool must be a work assistant; it needs to feel indispensable for communication, not just compliance.\n\n**Updated Stance:** The single most important move is building an AI layer that models and suggests optimal *reply strategies* within group chats, turning the app from a logger into a conversation curator."
+    }
+  ],
+  "finals": {
+    "polymath-0": {
+      "final_position": "The single most important move is building a 'Relationship Friction Predictor.' Instead of summarizing content or logging tasks, the AI must model the *gap* between the group's stated goal (task) and its emotional state (tension/excitement). The app should proactively suggest optimal intervention points: e.g., 'A decision was made, but three members haven't responded to the follow-up; suggest a casual check-in.' This turns the tool from a passive logger into an active social mediator, making it indispensable for both professional and personal cohesion.",
+      "confidence": "medium",
+      "revision_ledger": {
+        "held_before": "Focus on building an 'action log' by identifying decisions, assigned tasks, and necessary follow-ups within the chat history.",
+        "changed": "I shifted from a purely structural 'Action Log' to a predictive 'Relationship Friction Predictor,' incorporating emotional modeling alongside task extraction.",
+        "evidence_moved_me": "Blindside's insistence that the tool must be indispensable for communication, not just compliance (the 'motivational hook').",
+        "still_reject": "I still reject the idea of building a purely reactive summary. Any feature that merely aggregates past information is inherently insufficient; the value must come from predicting and managing *future* conversational needs."
+      }
+    },
+    "addition-by-subtraction-1": {
+      "final_position": "The most important move is building a 'Commitment Skeleton' that extracts structured agreements, not just tasks. This tool must flag three types of commitments: 1) Action Items (who does what by when), 2) Decisions Made (e.g., 'We agreed to X'), and 3) Required Follow-ups (e.g., 'Need input on Y before Z'). By structuring the *output* this way, we minimize AI complexity while providing measurable value that addresses both accountability and conversational closure. This keeps the focus on structured utility extraction.",
+      "confidence": "medium",
+      "revision_ledger": {
+        "held_before": "Do not build a general summary engine; ship a hyper-focused 'Decision Tracker' flagging explicit decisions, deadlines, or needed follow-ups assigned to me.",
+        "changed": "I am broadening the scope of extraction from *only* 'Action Items' to include 'Decisions Made' and 'Required Follow-ups.' This acknowledges that group chats often require documenting agreement itself, not just tasks.",
+        "evidence_moved_me": "Blindside\u2019s point regarding the need for a motivational hook (social health/reply strategies) forced me to broaden my definition of 'utility.' I realized pure task management is too narrow to be indispensable.",
+        "still_reject": "I still reject the idea that the primary value must come from proactive, generative AI (like suggesting optimal replies). Generating contextually appropriate responses requires a level of emotional and social modeling that is far too high-leverage for an MVP. The initial focus must remain on reliable *extraction*."
+      }
+    },
+    "blindside-2": {
+      "final_position": "The single most important move is to build a 'Contextual Indexing Protocol' for archived chats, not a summary engine. The app must force users to categorize and tag memories or decisions *after* they have been viewed\u2014e.g., tagging a chat thread as [Family Milestone], [Project Decision], or [Emotional Support]. This shifts the value proposition from summarizing noise (which is technically difficult) to structuring personal context (which solves the emotional clutter problem). We are building a digital memory organizer, not an AI assistant.",
+      "confidence": "medium",
+      "revision_ledger": {
+        "held_before": "Focus on managing archived data by lowering the trust barrier and solving cognitive load from past noise.",
+        "changed": "I have broadened the scope beyond pure 'utility' (actions/decisions) to explicitly incorporate 'emotional context' and 'relational memory,' recognizing that social friction is as valuable a target as professional accountability.",
+        "evidence_moved_me": "Addition by Subtraction\u2019s insistence on balancing Utility (Action) with Emotional Context (Noise), particularly the suggestion of non-work, high-friction use cases like family organization.",
+        "still_reject": "I still refuse to concede that 'AI summarization' is the core value. The tool must remain a low-fidelity, user-mandated protocol layer; if we build it as an AI black box, we fail immediately on trust and utility."
+      }
+    }
+  },
+  "judge": {
+    "surviving_idea": "The single most important move is building a 'Structured Context Protocol' that forces users to categorize and tag chat threads based on their *intent* (e.g., [Project Decision], [Family Milestone], [Emotional Support]). The AI's role is not summarizing, but providing structured extraction of commitments (who, what, when) AND flagging the emotional/relational context gaps (e.g., 'Decision made, but no follow-up response from X'). This turns the app into a low-friction digital memory organizer and accountability layer.",
+    "why_it_survived": "The idea survived by successfully rejecting the premise of passive summarization. It withstood pressure because it shifted the value proposition from high-risk AI generation (summarizing noise) to low-risk, user-mandated protocol enforcement (structuring context). This approach addresses both professional accountability and emotional clutter.",
+    "consensus_quality": "resolved",
+    "consensus_note": "Agreement was earned by logically eliminating the weak premise of 'simple summarization' through sustained critique.",
+    "best_revision": {
+      "who": "Blindside",
+      "what_changed": "Shifting the focus from summarizing content to building a user-mandated, low-fidelity 'Contextual Indexing Protocol.' This maintains skepticism about AI black boxes while incorporating emotional context and structured tagging.",
+      "earned": true
+    },
+    "performative_flips": [],
+    "unresolved_tension": [
+      "The optimal balance between mandatory utility (professional accountability) and optional, emotionally valuable use cases (personal memory/relationship maintenance).",
+      "How to monetize the 'protocol' layer without making it feel like a surveillance tool."
+    ],
+    "score": 9,
+    "verdict": "pass"
+  }
+}

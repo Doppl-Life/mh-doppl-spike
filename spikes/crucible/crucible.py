@@ -722,9 +722,16 @@ def run_crucible(
     explicit_models: list[str] | None = None,
     randomize_models: bool = False,
     seed: int | None = None,
+    forced_roster: list[str] | None = None,
 ) -> dict[str, Any]:
     console.rule("[bold cyan]Spawner — deciding the room[/bold cyan]")
-    if use_spawner:
+    if forced_roster:
+        plan = {
+            "count": len(forced_roster),
+            "reasoning": "forced --roster (explicit voicing)",
+            "roster": [{"archetype": a, "why": "forced voicing"} for a in forced_roster],
+        }
+    elif use_spawner:
         plan = run_spawner(client, prompt, cap)
     else:
         plan = {"count": forced_count or len(DEFAULT_ROSTER), "reasoning": "spawner disabled", "roster": [{"archetype": a, "why": "default"} for a in DEFAULT_ROSTER]}
@@ -816,6 +823,12 @@ def main() -> None:
         help="Force debater count (overrides spawner latitude)",
     )
     parser.add_argument("--no-spawner", action="store_true", help="Skip the spawner; use the default roster")
+    parser.add_argument(
+        "--roster",
+        default=None,
+        help="Force an explicit voicing: comma-separated ARCHETYPE_POOL ids (e.g. "
+        "'polymath,addition-by-subtraction,blindside'). Bypasses the spawner and --no-spawner.",
+    )
     parser.add_argument(
         "--dissent",
         type=float,
@@ -919,6 +932,9 @@ def main() -> None:
 
     cap = max(2, min(args.cap, 8))
     dissent_floor = max(0.0, min(args.dissent, 1.0))
+    forced_roster = (
+        [a.strip() for a in args.roster.split(",") if a.strip()] if args.roster else None
+    )
     with make_client(_BACKEND) as client:
         trace = run_crucible(
             client,
@@ -932,6 +948,7 @@ def main() -> None:
             explicit_models=explicit_models,
             randomize_models=args.random_models,
             seed=args.seed,
+            forced_roster=forced_roster,
         )
 
     if args.json_out:

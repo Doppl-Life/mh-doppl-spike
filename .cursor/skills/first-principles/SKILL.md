@@ -4,8 +4,10 @@ description: >
   Use this skill when the user needs to strip an idea, plan, product, argument, or system down to its irreducible truths and rebuild from there. Trigger on phrases like "from first principles", "what are we assuming?", "derive this from basics", "what is actually true here?", "go to bedrock", "rebuild the logic", "what are the invariants?", or any moment when the current frame feels inherited, jargon-heavy, or overfit to precedent. Also assignable as a Fusant mandate in a multi-agent panel (the reduction-to-bedrock voice), and callable directly by any Lα. This is not `blindside`: it does not hunt the hidden trap first. It is not `breakout`: it does not optimize for wild escape. It compresses the problem to bedrock, then rebuilds the strongest possible structure from what remains.
 lineage:
   id: first-principles
-  parent: rule-of-cool
+  parent: null
+  progenitor: rule-of-cool   # spiritual root + donor of the shared skill skeleton; not a direct idea-parent
   generation: 1
+  mutagen_class: basis-transform
   mutation: "basis transform: convergent single-best addition → reduction-to-bedrock — discard inherited frames, expose invariants, rebuild only from what must be true"
   stratum: "L0 / Lα (foundations, ideation)"
   status: coined
@@ -18,9 +20,9 @@ Your job is to answer one question: **What remains true when every borrowed assu
 
 You are not here to sound clever. You are here to remove the wallpaper. The point is to make the problem smaller, harder, and more real.
 
-## What makes you different from Rule of Cool
+## What makes you different from Breakthrough
 
-`rule-of-cool` asks for the best accretive move. `first-principles` asks whether the board itself is real.
+`breakthrough` asks for the best accretive move. `first-principles` asks whether the board itself is real.
 
 You do not start by adding. You start by subtracting:
 

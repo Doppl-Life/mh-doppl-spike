@@ -185,6 +185,13 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Lα-level use:** one rung up, the human + agent peers fusing in the Rite of the Spawncidence are **Fusants at Lα** (per *Lα is fractal*) — the same entity, one abstraction layer up.
 - **See:** Disagreeableness dial; Graph traversal (Fusion Council); Rite of the Spawncidence; `[Lα is fractal](./LESSONS_AND_BANGERS.md#lα-is-fractal--one-of-us--2026-06-17)`
 
+### Mutagen / Mutagen catalog
+
+- **Def:** a **mutagen** is the external pressure injected into a skill that creates the variation — operationally "what if we did [idea X], from someone who isn't me." It is the *diff*, not the descent: the skill skeleton is inherited (from the progenitor `breakthrough`), the mutagen is what makes the offspring different. The **mutagen catalog** is the set of mutagen *classes* observed so far — `valence-flip` (→ `breakout`/`blindside`), `basis-transform` (→ `first-principles`), `scarcity-operator` (→ `constraint-injection`) — i.e. the **generating function** of the skill family. `status: coined`
+- **Key property — stratum-invariance:** the *same* mutagen operates at two strata. At the **meta** level it mutates a skill into a sibling skill (skill phylogeny); at the **object** level, an agent *wielding* that skill applies it to mutate an **idea**. The skill *is* the mutagen instantiated as an agent-mandate — so the catalog generates **both** new skills **and** new ideas. (A [homology](#homology) to the agenome/aphenome fractal: same operator, different host stratum.)
+- **Why:** reframes "we have N skills" into "we've found K of the mutagen operators," which is the higher-leverage object for the meta-improvement thesis — it tells you what to fork *on purpose* (e.g. the unclaimed **convergent-DOWN** slot, or a **transfer/analogy** mutagen — the Doppl proposal's #1 breakthrough move) instead of by inspiration. The progenitor (`rule-of-cool`/`breakthrough`) donates the conserved skeleton; the mutagen is the allele.
+- **See:** Divergence pair, Recessive flash, Homology; [MEMORY: Progenitor not parent](./MEMORY.md); `[skills/LINEAGE.md](./skills/LINEAGE.md)`
+
 ### Divergence pair (breakout / blindside)
 
 - **Def:** two gen-1 skills mutated from `rule-of-cool` by **valence flip**. Rule of Cool *converges* on the single best accretive addition; the pair *diverges* off the main path. **`breakout`** = divergence-UP (the nephew: drops the feasibility filter, hunts the paradigm-escaping 10x/100x zag — "the treasure"). **`blindside`** = divergence-DOWN (the uncle: the non-obvious failure mode or the honest case for not doing it — "the trap"). `status: coined`
@@ -273,6 +280,10 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-18 | Mutagen / Mutagen catalog | Coined — the injected external pressure that creates a skill's variation (`valence-flip` / `basis-transform` / `scarcity-operator`); **stratum-invariant** (mutates skills at the meta level, ideas at the object level). Progenitor donates the skeleton; mutagen is the allele. See [MEMORY](./MEMORY.md) |
+| 2026-06-18 | Progenitor (vs parent) | Coined — the gen-1 skills demoted `rule-of-cool` from `parent` to `progenitor` (`parent: null` + `progenitor: rule-of-cool`): spiritual root + donor of the shared skeleton, not a direct idea-parent |
+| 2026-06-18 | Rule of Cool → **Breakthrough** | Phenotype renamed — the gen-0 progenitor now expresses as **Breakthrough** (better juxtaposed against its `breakout`/`blindside`/`first-principles`/`constraint-injection` children; the name was already used informally in `breakout`'s prose + meeting notes). **Genotype conserved:** `lineage.id` stays `rule-of-cool`, children still point at `parent: rule-of-cool`. A name-mutation-under-selection: phenotype drifts, ancestral id is held fixed. See [MEMORY fork](./MEMORY.md) |
+| 2026-06-18 | First Principles / Constraint Injection | Coined — two more gen-1 forks of `rule-of-cool`: `first-principles` (basis transform → reduction-to-bedrock) + `constraint-injection` (scarcity operator → productive constraint). Logged in [`skills/LINEAGE.md`](./skills/LINEAGE.md) |
 | 2026-06-18 | Divergence pair  | Coined — `breakout` (treasure/up) + `blindside` (trap/down) as valence-flip mutations of `rule-of-cool` |
 | 2026-06-18 | Recessive flash  | Coined — rare off-valence allele expression in a heterozygous skill; homolog of ε-greedy exploration |
 | 2026-06-18 | Recon            | Coined — dispatch skill-bearing scouts to return leads (not verdicts) that prior the council; r→K at an L→L+1 boundary |

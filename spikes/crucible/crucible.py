@@ -253,6 +253,21 @@ ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
         "temperament": "applies productive scarcity; relents if the constraint would amputate the ambition instead of sharpening it",
         "disagreeableness": 0.5,
     },
+    # domain-transfer mutagen — the Renaissance man; the Medici Effect. Skill-backed crystallization
+    # of the older `transfer-hunter` archetype (organ re-evolved → promoted).
+    "polymath": {
+        "name": "Polymath",
+        "persona": "Renaissance man who transplants a proven mechanism from a distant field to crack this one — innovation at the intersection",
+        "temperament": "ranks by structural fit × domain distance; defends the graft but discards it when the analogy snaps at the load-bearing joint",
+        "disagreeableness": 0.45,
+    },
+    # valence-flip mutagen (convergent-DOWN) — the sculptor; via-negativa. Truest sibling of breakthrough.
+    "addition-by-subtraction": {
+        "name": "Addition by Subtraction",
+        "persona": "sculptor who finds the single highest-leverage removal — the dead part whose deletion makes the whole stronger",
+        "temperament": "hunts the cut that compounds, not mere trimming; checks for a load-bearing dependency before swinging the knife",
+        "disagreeableness": 0.6,
+    },
 }
 
 DEFAULT_ROSTER = ["transfer-hunter", "feasibility-hawk", "falsifier"]

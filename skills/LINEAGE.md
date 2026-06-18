@@ -17,6 +17,8 @@ converge on the same organ. **Edit a row when:** status changes (promotion, depr
 | `blindside` | 1 | — *(progenitor `rule-of-cool`)* | **valence-flip** mutagen · valence flip (divergence fork): convergent single-best → **divergent-DOWN** — hunt the non-obvious failure mode / opportunity cost (invested uncle, not gloating critic) | Lα / L1-L2 (ideation, deliberation) | coined | [`.cursor/skills/blindside/`](../.cursor/skills/blindside/SKILL.md) + crucible `ARCHETYPE_POOL["blindside"]` | The uncle. Sibling of `breakout`; convergence candidate with the watched **uncle-questioner** / **falsifier-audit** organs. No verdicts yet. |
 | `first-principles` | 1 | — *(progenitor `rule-of-cool`)* | **basis-transform** mutagen · convergent single-best addition → **reduction-to-bedrock** — discard inherited frames, expose invariants, rebuild only from what must be true | L0 / Lα (foundations, ideation) | coined | [`.cursor/skills/first-principles/`](../.cursor/skills/first-principles/SKILL.md) | Subtract-then-rebuild fork. Recessive `blindside` + `breakout` alleles. No verdicts yet. |
 | `constraint-injection` | 1 | — *(progenitor `rule-of-cool`)* | **scarcity-operator** mutagen · convergent single-best addition → **productive constraint** — add the pressure that forces specificity, taste, and testability | Lα / L1-L2 (ideation, design, execution) | coined | [`.cursor/skills/constraint-injection/`](../.cursor/skills/constraint-injection/SKILL.md) | Productive-scarcity fork. Recessive `first-principles` + `blindside` alleles. No verdicts yet. |
+| `polymath` | 1 | — *(progenitor `rule-of-cool`)* | **domain-transfer** mutagen (the 4th operator class) · import a proven mechanism from field B to crack field A — the Medici Effect | Lα / L1 (ideation) | coined | [`.cursor/skills/polymath/`](../.cursor/skills/polymath/SKILL.md) + crucible `ARCHETYPE_POOL["polymath"]` | The Renaissance man. Skill-backed crystallization of the older `transfer-hunter` archetype (organ re-evolved → promoted). Recessive `first-principles` + `breakout` alleles. No verdicts yet. |
+| `addition-by-subtraction` | 1 | — *(progenitor `rule-of-cool`)* | **valence-flip** mutagen (convergent axis) · convergent best-ADD → convergent best-CUT — the highest-leverage removal (via-negativa) | Lα / L1-L2 (ideation, design, editing) | coined | [`.cursor/skills/addition-by-subtraction/`](../.cursor/skills/addition-by-subtraction/SKILL.md) + crucible `ARCHETYPE_POOL["addition-by-subtraction"]` | The sculptor. Truest sibling of `breakthrough` (pure up→down flip, stays convergent); completes the 2×2. Recessive `blindside` + `breakthrough` alleles. No verdicts yet. |
 
 ## Convergence watch
 
@@ -30,28 +32,27 @@ two unrelated lineages grow them — [Convergent skills](../LESSONS_AND_BANGERS.
 
 None promoted yet — recorded so the convergence is *recognized* when it appears, not reinvented.
 
-## Open cells — mutagens named, not yet forked
+## The convergence × valence 2×2 (now complete)
 
-Pointed at deliberately so the gaps are *visible* (not built — the current five are the first trial cohort).
-The skill family currently tiles a 2×2 of convergence × valence with one corner empty, plus one
-high-value operator that already exists as an *archetype* but not yet as a *skill*:
+Four of the seven skills tile a clean 2×2 of convergence × valence; the other two
+(`first-principles` = basis-transform, `constraint-injection` = scarcity-operator) sit *off* it as
+different operator classes — which is the point: the **mutagen catalog**, not the 2×2, is the real
+generating set.
 
-|  | **up (treasure)** | **down (trap / cut)** |
+|  | **up (treasure / add)** | **down (trap / cut)** |
 | --- | --- | --- |
-| **convergent** (one best) | `breakthrough` — best thing to **add** | **`subtraction`** *(open)* — best thing to **cut** |
+| **convergent** (one best) | `breakthrough` — best thing to **add** | `addition-by-subtraction` — best thing to **cut** *(coined 2026-06-18)* |
 | **divergent** (off-path) | `breakout` — paradigm-escaping zag | `blindside` — non-obvious failure mode |
 
-- **`subtraction`** *(convergent-DOWN, open)* — the empty corner. Converges on the single highest-leverage
-  *removal* — the load-bearing thing to delete (via-negativa / "the best part is no part"). Mutagen class:
-  **valence-flip** (the pure up→down flip of `breakthrough`, staying convergent — the truest sibling).
-  Distinct from `blindside` (which hunts *risk*) and `constraint-injection` (which *adds* pressure); this
-  *removes mass*. Working names: `subtraction` / `via-negativa` / `the-cut`. Not built.
-- **`transfer`** *(cross-domain transplant, open — but half-evolved)* — find a technique/result in field A
-  that cracks an open problem in field B. The **Doppl proposal's #1 breakthrough move** ("transfer …
-  the move behind most real breakthroughs"). Mutagen class: a **new** operator — **domain-transfer**
-  (not valence-flip / basis-transform / scarcity). **Already exists as the `transfer-hunter` archetype**
-  in the crucible `ARCHETYPE_POOL` — so crystallizing it into a skill is low-cost, high-value (an organ
-  re-evolving → promotion candidate, cf. Convergence watch). Working names: `transfer` / `transplant`. Not built.
+**Mutagen-operator catalog (4 observed):** `valence-flip` (→ breakout / blindside / addition-by-subtraction),
+`basis-transform` (→ first-principles), `scarcity-operator` (→ constraint-injection), and
+**`domain-transfer`** (→ polymath) — the catalog is **open**, not closed at three. `polymath` also confirms
+the *organ-promotion* path: the `transfer-hunter` archetype re-evolved into a skill (cf. Convergence watch).
+
+> **Emergent voicings (watch, don't pre-name):** a *recurring, reusable* combination of mutagens we didn't
+> design but that keeps winning would be **emergent behavior**, not a planned noun. Recorded here so it's
+> *recognized* if it appears in trials (cf. Convergence watch); the per-problem assignment is just the
+> `spawn plan` until then.
 
 `first-principles` (basis-transform) and `constraint-injection` (scarcity-operator) sit *off* this 2×2 —
 they are different operator classes, not compass corners. That's the point: the **mutagen catalog** is the

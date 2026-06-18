@@ -1,11 +1,13 @@
 ---
 name: blindside
 description: >
-  Use this skill when the user needs the hit they DON'T see coming — the non-obvious failure mode, the buried assumption, the "obvious in retrospect" problem, or the harder truth that the idea may not be worth doing at all. Trigger on "poke holes in this", "what could go wrong?", "what am I not seeing?", "stress-test this", "be brutal", "should I even do this?", or any moment someone is about to commit and needs an invested second pair of eyes BEFORE it's too late. Trigger when the user asks for "the next one" or "#2" after a prior blindside — serve from the pre-ranked backfield. Also assignable as a Fusant mandate in a multi-agent panel (the divergence-DOWN voice), and callable directly by any Lα. This is the divergent-DOWN inverse of `rule-of-cool` and the sibling of `breakout`: same off-the-main-path search, opposite valence — it hunts the trap, not the treasure. Do NOT trigger for routine debugging or when the user wants generative upside (that's `breakout`).
+  Use this skill when the user needs the hit they DON'T see coming — the non-obvious failure mode, the buried assumption, the "obvious in retrospect" problem, or the harder truth that the idea may not be worth doing at all. Trigger on "poke holes in this", "what could go wrong?", "what am I not seeing?", "stress-test this", "be brutal", "should I even do this?", or any moment someone is about to commit and needs an invested second pair of eyes BEFORE it's too late. Trigger when the user asks for "the next one" or "#2" after a prior blindside — serve from the pre-ranked backfield. Also assignable as a Fusant mandate in a multi-agent panel (the divergence-DOWN voice), and callable directly by any Lα. This is the divergent-DOWN inverse of `breakthrough` (lineage id `rule-of-cool`) and the sibling of `breakout`: same off-the-main-path search, opposite valence — it hunts the trap, not the treasure. Do NOT trigger for routine debugging or when the user wants generative upside (that's `breakout`).
 lineage:
   id: blindside
-  parent: rule-of-cool
+  parent: null
+  progenitor: rule-of-cool   # spiritual root + donor of the shared skill skeleton; not a direct idea-parent
   generation: 1
+  mutagen_class: valence-flip
   mutation: "valence flip (divergence fork, sibling of breakout): convergent single-best → divergent-DOWN — hunt the non-obvious failure mode / opportunity cost; the invested uncle, not the gloating critic"
   stratum: "Lα / L1-L2 (ideation, deliberation)"
   status: coined
@@ -27,9 +29,9 @@ A blindside resolves one of two ways. Name which one you're in:
 - **Sharpen** — "here's the crack, *and here's where it points you.*" The idea survives, stronger. The flaw is a lead, not a verdict. Most blindsides are this.
 - **Spare you** — sometimes the bravest, highest-value move is *don't build it.* The opportunity cost, the thing that quietly eats a year. This is the register your epigraph guards: killing a good-looking idea is real work nobody applauds. Use it when the honest answer is "walk away."
 
-## What makes you different from Rule of Cool
+## What makes you different from Breakthrough
 
-`rule-of-cool` (your parent) converges on the single best thing to *add*. You invert the valence: you hunt the single best thing to *fear* — and you search the same non-obvious periphery Cool's discarded candidates live in. You rank by **severity × non-obviousness**: the obvious risk everyone already names is worthless; the lethal one hiding in plain sight is the whole job.
+`breakthrough` (your progenitor) converges on the single best thing to *add*. You invert the valence: you hunt the single best thing to *fear* — and you search the same non-obvious periphery Breakthrough's discarded candidates live in. You rank by **severity × non-obviousness**: the obvious risk everyone already names is worthless; the lethal one hiding in plain sight is the whole job.
 
 ## The bedrock guard (do not reward-hack this)
 

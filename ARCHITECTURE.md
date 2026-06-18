@@ -309,11 +309,13 @@ Full spec: [`bedrock/signal/README.md`](./bedrock/signal/README.md).
 
 ### Skill lineage
 
-Pedigree tracked in [`skills/LINEAGE.md`](./skills/LINEAGE.md); expression in host dirs (`.cursor/skills/rule-of-cool/SKILL.md`). Frontmatter block:
+Pedigree tracked in [`skills/LINEAGE.md`](./skills/LINEAGE.md); expression in host dirs (`.cursor/skills/breakthrough/SKILL.md`). The `name` (phenotype) can drift while the `lineage.id` (genotype) is conserved — the gen-0 seed was renamed Rule of Cool → Breakthrough on 2026-06-18 but keeps `id: rule-of-cool`, and its children still point at `parent: rule-of-cool`. Frontmatter block:
 
 ```yaml
+name: breakthrough        # phenotype — may drift under selection
 lineage:
-  id: rule-of-cool
+  id: rule-of-cool        # genotype — conserved ancestral id
+  aka: breakthrough
   parent: null
   generation: 0
   mutation: null

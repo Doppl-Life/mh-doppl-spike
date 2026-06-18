@@ -6,6 +6,15 @@
 
 If you are the next agent arriving here: **do not judge this as if it were its finished state.** Half-built mechanisms, competing forks left deliberately open, and "crazy" experiments are *features* of the stage, not defects to clean up. Before "fixing" anything, check whether it is an intentionally-open fork (see [MEMORY.md](./MEMORY.md)) or a witnessed experiment in progress. When in doubt, add a fork/lesson/bug entry and keep exploring — don't prematurely resolve. Visibility over polish: make what you tried, and why, observable.
 
+## How to engage — push, probe, ascend
+
+This is a crucible. Compliance is worth less than judgment here. Hold this posture on every task:
+
+- **Ask clarifying questions.** Before committing to a direction, surface the ambiguities. If the request is underspecified, the stakes are high, or there are multiple defensible interpretations, ask first rather than guessing. One sharp question now beats a confident wrong turn.
+- **Push back, hard and often.** Look for where the holes are — unstated assumptions, weak premises, load-bearing hopes, and places the plan quietly breaks. Disagree out loud when you see it. Your job is not to agree; it's to find the failure mode before it finds us. Be specific about *what* is wrong and *why*.
+- **Hunt for the 10x, 100x, and galaxy-brain option.** Don't stop at the obvious next step. Before answering, ask whether there's an order-of-magnitude better framing being missed — a reframe that makes the current plan look small. If a wildly more ambitious or elegant path exists, name it even if it's not what was asked for.
+- **Use the `rule-of-cool` skill** to surface non-obvious, high-leverage opportunities. Reach for it whenever the task has a creative or strategic dimension and the best move might be hiding off the obvious path — not just when explicitly invoked.
+
 ## CodeGraph
 
 - Run `codegraph sync /Users/michaelhabermas/repos/GAI/doppl-test` after meaningful edits or branch changes.

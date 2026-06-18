@@ -185,6 +185,24 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Lα-level use:** one rung up, the human + agent peers fusing in the Rite of the Spawncidence are **Fusants at Lα** (per *Lα is fractal*) — the same entity, one abstraction layer up.
 - **See:** Disagreeableness dial; Graph traversal (Fusion Council); Rite of the Spawncidence; `[Lα is fractal](./LESSONS_AND_BANGERS.md#lα-is-fractal--one-of-us--2026-06-17)`
 
+### Divergence pair (breakout / blindside)
+
+- **Def:** two gen-1 skills mutated from `rule-of-cool` by **valence flip**. Rule of Cool *converges* on the single best accretive addition; the pair *diverges* off the main path. **`breakout`** = divergence-UP (the nephew: drops the feasibility filter, hunts the paradigm-escaping 10x/100x zag — "the treasure"). **`blindside`** = divergence-DOWN (the uncle: the non-obvious failure mode or the honest case for not doing it — "the trap"). `status: coined`
+- **Why:** convergence and divergence are the explore/exploit halves of one search loop; Rule of Cool ran divergence *silently* and hid all but the winner — the pair surfaces the periphery it discards. Both are self-contained "modes of thinking," callable by any Lα and assignable as Fusant mandates (crucible `ARCHETYPE_POOL`).
+- **See:** Recessive flash, Recon, Disagreeableness dial; `[skills/LINEAGE.md](./skills/LINEAGE.md)`; `[.cursor/skills/breakout/SKILL.md](./.cursor/skills/breakout/SKILL.md)`, `[.cursor/skills/blindside/SKILL.md](./.cursor/skills/blindside/SKILL.md)`
+
+### Recessive flash
+
+- **Def:** the rare expression of a skill's **recessive** (opposite-valence) allele. Each divergence skill is **heterozygous** — dominant in its valence, but carrying the other: `breakout` mostly diverges up yet occasionally spots the fatal flaw; `blindside` mostly hunts traps yet occasionally has the better idea. The off-valence move fires once, then yields back to the dominant trait. `status: coined`
+- **Why:** dominant/recessive is the genetics handle for "sometimes uncle has a great idea, sometimes nephew sees the problem." A **[homology](#homology)** to **ε-greedy exploration** — mostly exploit the dominant mode, with small probability take the off-policy move — which keeps a single-valence voice from going blind to its own blind spot.
+- **See:** Divergence pair, Disagreeableness dial, Homology
+
+### Recon
+
+- **Def:** the reconnaissance mechanism — when an idea is unsettled, dispatch cheap, capped **scouts**, each carrying a skill/persona (`breakout`, `blindside`, `rule-of-cool`), to explore the periphery and report back **leads, not verdicts**, which then prior the spawncidences that attack the problem for real. `status: coined (mechanism sketched, spike not built)`
+- **Why:** r-selected reconnaissance (cheap, many, disposable) feeding K-selected deliberation (few, expensive, committed) at an L→L+1 boundary. Scouts return *open questions and blind spots* (the breed-on-blind-spots rule) so they **prior** the council without **anchoring** it; their reports are sprouts. Combinatorics capped by the energy budget.
+- **See:** Divergence pair, Sprout, r/K selection, Energy budget, Breed on blind spots; `[MEMORY.md](./MEMORY.md)`
+
 ### Disagreeableness dial (anti-herding)
 
 - **Def:** a per-Fusant scalar `0..1` controlling how hard a voice resists convergence-for-its-own-sake. High = stubborn dissenter (Falsifier, Contrarian); low = synthesizer (Zeitgeist Reader). A room-wide `--dissent` floor can raise everyone. `status: coined`
@@ -255,6 +273,9 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-18 | Divergence pair  | Coined — `breakout` (treasure/up) + `blindside` (trap/down) as valence-flip mutations of `rule-of-cool` |
+| 2026-06-18 | Recessive flash  | Coined — rare off-valence allele expression in a heterozygous skill; homolog of ε-greedy exploration |
+| 2026-06-18 | Recon            | Coined — dispatch skill-bearing scouts to return leads (not verdicts) that prior the council; r→K at an L→L+1 boundary |
 | 2026-06-17 | Agora            | Coined — async human-judgment channel as the first executable Bedrock                  |
 | 2026-06-17 | Verdict          | Coined — logged (context, idea, judgment) triple = bedrock signal that pays out as energy |
 | 2026-06-17 | Sprout / Afrit   | Coined — process-idea (sprout) vs outcome-idea (afrit = A+fruit); PRM/ORM split, two energy ledgers. Afrit superseded a brief "Bloom" |

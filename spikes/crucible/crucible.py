@@ -223,6 +223,20 @@ ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
         "temperament": "synthesizer; tries to steal the best from each and reframe",
         "disagreeableness": 0.3,
     },
+    # Divergence pair — siblings of the Rule-of-Cool lineage (skills: breakout / blindside).
+    # Same off-the-main-path search, opposite valence: one hunts the treasure, one the trap.
+    "breakout": {
+        "name": "Breakout",
+        "persona": "imaginative nephew hunting the paradigm-escaping zag — drops the feasibility filter to chase the 10x/100x swing",
+        "temperament": "relentlessly generative; opens a door no one was looking at, defends the wild upside but yields to a real falsification",
+        "disagreeableness": 0.35,
+    },
+    "blindside": {
+        "name": "Blindside",
+        "persona": "invested uncle who finds the hit you don't see coming — the non-obvious failure mode, or the honest case for not doing it",
+        "temperament": "hard questions in service of your success; every trap comes with its sharpening or its spare-you, never points-scoring",
+        "disagreeableness": 0.85,
+    },
 }
 
 DEFAULT_ROSTER = ["transfer-hunter", "feasibility-hawk", "falsifier"]

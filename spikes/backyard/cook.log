@@ -1,0 +1,512 @@
+
+=== gen 0 · run 0f44c9c8 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 6] nov4/ver2  A major open-source LLM will be 'killed' not by a lawsuit but by a single critical bug that makes it indistinguishable from a random text generator for a specific language (like Bengali, Swahili, or Tagalog) due to data-sparsity errors in the tokenizer, and this will go unnoticed for months.
+        why: Smart people focus on legal or ethical risks, but tokenizer bugs in low-resource languages are a silent, boring threat that only affects a few users, so it's easy to overlook until a viral post.
+     verify: Test the most-downloaded open-source LLMs of 2024 (e.g., Llama, Mistral) by generating 100 short phrases in a low-resource language like Bengali or Swahili using a native speaker's prompt; if any model produces >10% gibberish or blank outputs, the idea is plausible.
+      judge: The tokenizer failure mode is somewhat novel, but your test measures current gibberish rather than the future event of a model being abandoned.
+
+  [~] [ 5] nov3/ver2  The next 'AI winter' will be triggered not by hype collapse but by a sudden, sustained drop in compute costs making model training so cheap that startups rush to market with half-finished models, causing a wave of unlabeled, unmaintainable AI services that users hate, killing investor confidence.
+        why: Conventional wisdom says AI winters come from hype or funding freezes; the opposite—cheap compute flooding the market with low-quality garbage—is non-obvious because it inverts the scarcity narrative to abundance as a liability.
+     verify: Track the number of new AI startups on Crunchbase that list 'cost < $100k to train' and check if any major cloud provider (AWS, GCP) announces a >40% price cut on GPU instances in Q1 2025; if both happen, the idea is plausible.
+      judge: Inverting the AI winter cause to cheap compute is mildly clever, but your test checks leading indicators without a strict falsification threshold for the actual crash.
+
+  [x] [ 4] nov2/ver2  By mid-2025, the majority of AI-generated code in production will be written by humans using AI as a debugger, not as an autocomplete or generator, because the cost of fixing AI bugs will exceed the productivity gain from generating them.
+        why: The prevailing narrative focuses on AI as a code generator; the shift to debugging-first is counterintuitive because it flips the value proposition from speed to accuracy, and most tech influencers still hype generation.
+     verify: Run a survey of 100 active developers on GitHub or Stack Overflow asking: 'Do you use AI more for writing code from scratch or for fixing/explaining existing code?' If more than 30% say 'fixing,' the idea is likely false.
+      judge: The premise is already boring industry consensus, and your survey threshold logically fails to falsify a majority claim.
+
+  [x] [ 4] nov1/ver3  By December 2025, the most popular AI 'tuning' method will be not fine-tuning or RAG but 'prompt engineering as a service'—where companies sell short, fixed prompts for specific tasks (like 'write a Shopify product description for a vegan shoe') for $5 each, creating a new micro-market that beats all optimization tools.
+        why: Smart people think prompt engineering is a fad or a job; they miss that it becomes a commodity product with no code, no maintenance, and a built-in failure mode (if the model updates, the prompt breaks), which makes it a perfect cheap falsifiable test.
+     verify: Check if any 'prompt marketplace' (like PromptBase or similar) has >1000 paid listings for prompts priced above $3 with >100 sales each; if not, the idea is false.
+      judge: Predicting the resurgence of a dead prompt marketplace is merely contrarian, and scraping sales data only proves the market exists, not that it beats RAG.
+
+  [x] [ 2] nov1/ver1  Apple Vision Pro will become a surprise hit not for AR/VR but as a 'glorified Focus Mode' device for knowledge workers who use it to block all notifications and write code on a floating screen, driving 25% of its sales by Q4 2025, despite being dismissed as a flop.
+        why: Smart people see it as a failed AR headset; they miss the boring, utilitarian use case of extreme distraction-free work that requires no spatial computing, just a big private monitor in a noisy world.
+     verify: Search for 'Apple Vision Pro productivity' or 'coding' on Twitter/Reddit and count the number of positive posts from developers versus negative ones; if >20% of posts are from devs saying 'it's great for focus,' the idea is false.
+      judge: Using a VR headset as a floating monitor is the most obvious use case imaginable, and Twitter sentiment is a useless proxy for hardware sales.
+
+  -> afrits=0 sprouts=2 weeds=3  (weed ratio 3/5, avg score 4.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [6] A major open-source LLM will be 'killed' not by a lawsuit but by a single critical bug that makes it indistinguishable from a random text generator for a specific language (like Bengali, Swahili, or Tagalog) due to data-sparsity errors in the tokenizer, and this will go unnoticed for months.
+
+=== gen 1 · run 4635649a · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 7] nov2/ver5  A major tech company will be forced to recall an AI-powered hardware product (like a smart speaker or robot) because the AI's voice recognition will systematically mishear a common word in a specific regional dialect, causing the device to perform dangerous actions (e.g., turning off a stove instead of a light).
+        why: Hardware recalls are rare and usually due to physical defects, but AI bias in voice recognition is a software issue that can have physical consequences; the non-obvious part is that the trigger will be a single dialect-specific word, not a general failure, and it will be caught only after a real-world accident.
+     verify: Monitor recall announcements from major hardware makers (Amazon, Google, Apple) for any AI-related recall by December 2025; if none occur, the prediction is false.
+      judge: ASR dialect bias is well-documented, making a hardware recall a boring extrapolation, but checking public safety databases is free and definitive.
+
+  [~] [ 6] nov2/ver4  By mid-2025, the most popular AI coding assistant will be a tool that only suggests variable names and function signatures, not code bodies, because developers will realize that naming is the hardest part and AI is actually good at it without introducing bugs.
+        why: Everyone assumes AI coding assistants must generate code to be useful, but the real bottleneck in software engineering is naming and interface design, which is a narrow, low-risk task where AI can excel without the hallucination problem that plagues code generation.
+     verify: Check the download/usage stats of the top 10 AI coding plugins on GitHub or VS Code marketplace in June 2025; if none of them have a 'name suggestion' feature as their primary selling point, the prediction is false.
+      judge: Predicting a pivot to variable naming relies on a tired trope, though checking the top VS Code extensions is a cheap, binary test.
+
+  [~] [ 6] nov1/ver5  The next major AI safety incident will be caused not by a rogue model but by a 'prompt injection' attack on a widely-used AI-powered email auto-reply system that causes it to send offensive replies to millions of users, leading to a class-action lawsuit.
+        why: Safety research focuses on model alignment and jailbreaks, but the simplest attack vector is prompt injection in production systems, which is cheap to execute and has no defense in current email AI tools, yet is ignored because it's 'just a prompt'.
+     verify: Search for news of a prompt injection attack on a major email AI service (like Gmail's 'Help me write') causing a public incident by June 2025; if no such incident is reported, the prediction fails.
+      judge: Prompt-injecting an email client is the most cliché AI security trope imaginable, even if searching the news for a lawsuit is trivially cheap.
+
+  [x] [ 4] nov3/ver1  A major cloud provider (AWS, Azure, GCP) will quietly drop its 'AI-powered' cost optimization service because it will be shown to increase total cloud spend by 12-18% due to AI recommending unnecessary resource upgrades that the provider profits from.
+        why: Industry narrative is that AI optimizes cloud costs, but the incentive misalignment (provider profits from higher spend) and the AI's tendency to over-provision to avoid SLA violations creates a perverse outcome that no one is testing because it's assumed to work.
+     verify: Publish a simple audit: run 100 workloads with and without the AI optimizer for one month, compare total bills; if the AI-optimized group does not have higher spend, the prediction is wrong.
+      judge: Running 100 cloud workloads for a month is expensive, and an A/B test of spend doesn't actually verify if the provider quietly drops the service.
+
+  [x] [ 4] nov2/ver2  By late 2025, the most effective way to reduce AI hallucination in enterprise chatbots will be to deliberately degrade the model's confidence calibration by adding a small amount of noise to its training data, making it more likely to say 'I don't know' than to fabricate.
+        why: Conventional wisdom says to improve accuracy by adding more data or better fine-tuning, but introducing controlled noise to lower confidence is counterintuitive and goes against the optimization mindset, yet it directly addresses the hallucination problem by making the model more cautious.
+     verify: Run an A/B test with a standard chatbot vs. one trained with 5% label noise on 1000 factual queries; if the noisy version does not have a significantly lower hallucination rate (false positives), the prediction is wrong.
+      judge: Adding label noise to curb overconfidence is standard ML lore, and a 1000-query test is cheap but hallucination grading is subjective and not decisive.
+
+  -> afrits=0 sprouts=3 weeds=2  (weed ratio 2/5, avg score 5.4)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [7] A major tech company will be forced to recall an AI-powered hardware product (like a smart speaker or robot) because the AI's voice recognition will systematically mishear a common word in a specific regional dialect, causing the device to perform dangerous actions (e.g., turning off a stove instead of a light).
+
+=== gen 2 · run 9d0dc9f5 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 6] nov3/ver3  By December 2025, the single most common runtime error in production AI systems will be a silent float overflow in the temperature parameter of a language model's text generation, causing the model to output pure garbage without any error log, and this will be the root cause of at least one service outage at a unicorn startup.
+        why: Smart people worry about prompt injection, model drift, or data leakage; they miss that a mundane numeric overflow in a widely copied code snippet (temperature=1.0 turning into inf due to a multiplication chain) is a silent, undetectable bug that spreads through open-source codebases.
+     verify: Search GitHub for the top 1000 AI text-generation repositories (by stars) for code that multiplies temperature by a dynamic variable without a clamp; if any of the top 20 repos have such a bug, run a test with an extreme input to see if temperature becomes NaN/Inf.
+      judge: Predicting a mundane floating-point bug is refreshingly unglamorous, but grepping open-source repos poorly proxies actual production error frequencies.
+
+  [~] [ 5] nov1/ver4  Sometime in the next 12 months, a well-known AI researcher will publish a paper titled 'Attention Is Not All You Need' that 're-discovers' a simple MLP architecture that beats transformers on a specific real-world benchmark (e.g., legal document similarity) by over 5%, but the paper will be ignored because the authors are from a non-elite university.
+        why: Smart people assume breakthrough architectures come from top labs; they miss that a simple, cheap, non-obvious tweak to a 30-year-old method can outperform transformers in a narrow domain, but institutional bias will suppress its visibility.
+     verify: Search arXiv, openreview, and major AI conferences for papers with 'Attention Is Not All You Need' in the title or abstract, filter for single-affiliation authors from non-R1 universities, and check if any such paper achieves >5% improvement on a benchmark used in a recent top-4 conference (e.g., LexGLUE for legal).
+      judge: Relies on tired academic tropes and existing MLP-mixer literature, though the proposed arXiv search is mechanically cheap.
+
+  [x] [ 4] nov2/ver2  The first AI-powered 'mental health chatbot' to be prescribed by a licensed therapist will be a text-only system that deliberately refuses to ever use emojis, because emoji use will be linked to a measurable decrease in patient trust and a higher dropout rate, and this will be the chatbot's key selling point.
+        why: The obvious play is to make chatbots warm and empathetic; the non-obvious insight is that clinical trust is built on perceived seriousness, and emojis undermine that. A smart person would assume emojis help rapport, not hurt it.
+     verify: Take 500 text samples from an existing mental health chatbot, remove emojis from half, and run a blind A/B test with 100 licensed therapists rating trustworthiness on a 5-point scale; if the emoji-free version scores higher at p<0.05, the prediction holds.
+      judge: Testing basic UX preferences does not verify the actual market event of a prescribed chatbot adopting this as its key selling point.
+
+  [x] [ 3] nov2/ver1  By mid-2025, the AI safety research community will split into two irreconcilable factions, not over alignment vs. capabilities, but over whether 'interpretability' is a dead end or a necessary foundation, leading to the first unsolvable political gridlock in a major AI conference program committee.
+        why: Smart people assume safety is a technical problem with technical solutions, and that interpretability is obviously useful or not; they miss that the ideological schism will be so deep that it becomes a social/institutional fact, not just a debate.
+     verify: Check the public proceedings of the next two major AI safety conferences (e.g., ICML safety workshop, NeurIPS safety track) for a formal 'disagreement statement' or a split in the accepted papers that shows no overlap in citation networks between interpretability and non-interpretability safety papers.
+      judge: Citation networks take years to form, making verification impossible within 12 months, and the academic faction trope is cliché.
+
+  [x] [ 3] nov2/ver1  The next big 'AI for science' breakthrough will not come from deep learning but from a re-release of the 1960s 'DENDRAL' expert system for organic chemistry, updated with modern symbolic reasoning and a better user interface, which will outperform NeRF and diffusion-based molecule generators on a drug-target interaction benchmark.
+        why: Smart people assume AI-for-science means neural nets; they miss that a forgotten symbolic system, cheap to re-implement, can be competitive because it uses explicit chemical rules that avoid hallucination, and that modern UI/UX makes it usable again.
+     verify: Implement a simplified version of DENDRAL's rule engine in Python (using RDKit for chemistry rules), test it against a standard drug-target interaction dataset (e.g., DUD-E) and compare its AUC-ROC to the best neural method in a recent NeurIPS paper; if DENDRAL-reborn achieves within 2% of the neural performance, the prediction is supported.
+      judge: Implementing and tuning a 1960s rule engine to match SOTA neural AUC-ROC requires massive engineering effort, failing the cheap falsifiability criterion.
+
+  -> afrits=0 sprouts=2 weeds=3  (weed ratio 3/5, avg score 4.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [6] By December 2025, the single most common runtime error in production AI systems will be a silent float overflow in the temperature parameter of a language model's text generation, causing the model to output pure garbage without any error log, and this will be the root cause of at least one service outage at a unicorn startup.
+
+=== gen 3 · run 7cc3dd0f · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [ 9] nov4/ver5  A large telecom company will publicly replace its AI-powered customer support chatbot with a simple decision tree, issuing a press release titled 'Simplicity is the New AI' after a study shows customers prefer the faster, error-free non‑AI system.
+        why: Conventional wisdom pushes towards more AI in customer service; the idea of a major reversal is dismissed as impossible, but user patience with chatbot errors is systematically undervalued.
+     verify: Search for the exact phrase 'Simplicity is the New AI' in telecom press releases or tech news articles before January 2026.
+      judge: Searching for an exact, ironic press release title is perfectly cheap, and a telecom publicly surrendering to a decision tree is genuinely surprising.
+
+  [~] [ 6] nov1/ver5  By December 2025, the S&P 500 will exclude companies deriving more than 20% of revenue from AI-generated content, following a scandal where a firm's AI-written financial reports contained systematic currency conversion errors.
+        why: Index rule changes are slow and usually based on market cap or sector, not content provenance; analysts miss that a concrete accounting scandal can trigger a fast governance reaction.
+     verify: Monitor S&P Dow Jones Indices announcements on index methodology revisions, especially the 'eligibility criteria' section, for any such revenue restriction.
+      judge: S&P index methodology is trivially verifiable, but excluding companies for AI revenue is economically absurd rather than genuinely novel.
+
+  [x] [ 4] nov2/ver2  By October 2025, the FAA will ground a commercial drone model because its AI obstacle avoidance system misidentifies landing pads as swimming pools in multiple test flights.
+        why: Smart observers assume drone AI is validated and that grounding orders require an accident, not just testing failures; they overlook how easily visual classifiers can miscue on reflective surfaces.
+     verify: Check the FAA's safety alerts or grounding orders index (www.faa.gov) for any drone model-specific notices before November 2025.
+      judge: Drone AI failures are obvious, and proving the specific 'swimming pool' causal mechanism in FAA reports requires tedious digging, not a cheap test.
+
+  [x] [ 4] nov2/ver2  The next major EU AI regulation will mandate a watermark on all AI-generated images that degrades image quality by 2% per generation, but artists will oppose it because the watermark is 'ugly', leading to a compromise.
+        why: Regulatory discussions usually center on transparency, not aesthetic degradation; the idea that artists would reject a watermark because it harms visual quality is counterintuitive, yet likely once the technical effect is understood.
+     verify: Track the European Commission's AI Act amendments or delegated acts via the official EU legislative portal, looking for quality‑degradation watermark provisions.
+      judge: EU watermarking is already widely discussed, and 'leading to a compromise' is a squishy political outcome that lacks a decisive, cheap test.
+
+  [x] [ 3] nov2/ver1  The most common AI application in movie production by late 2025 will be automated dubbing with lip-sync, and a major film will release an AI-dubbed version that accidentally duplicates the word 'so' in every sentence, becoming a viral meme.
+        why: Industry focus is on AI for scriptwriting and VFX, whereas dubbing is seen as a niche post‑production step; the glitch's virality is easy to miss because it depends on a specific phonetic error in the model.
+     verify: Search for 'AI dubbing glitch repeated word so' on major news outlets or social media platforms after September 2025.
+      judge: Claiming what the 'most common' application is requires expensive industry surveys, making the first half impossible to cheaply falsify.
+
+  -> afrits=1 sprouts=1 weeds=3  (weed ratio 3/5, avg score 5.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [9] A large telecom company will publicly replace its AI-powered customer support chatbot with a simple decision tree, issuing a press release titled 'Simplicity is the New AI' after a study shows customers prefer the faster, error-free non‑AI system.
+
+=== gen 4 · run 5f47e573 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 7] nov2/ver5  By December 2025, the US Federal Trade Commission will fine a major AI company for deceptive marketing, claiming that their 'AI-powered' tool was actually a mechanical turk operation employing humans behind the scenes.
+        why: Regulatory scrutiny usually targets data privacy or bias, not the 'ghost in the machine' – most assume AI companies would rather automate than pay humans.
+     verify: Search the FTC press release database and major tech news for any fine involving hidden human workers in an AI product; if no such fine exists by year-end, the prediction is wrong.
+      judge: 'Potemkin AI' is a known issue, making an FTC crackdown a boring extrapolation.
+
+  [~] [ 6] nov1/ver5  A major autonomous vehicle company will issue a recall of its entire fleet by September 2025 due to a single software bug that causes all cars to stop at green lights whenever a specific shade of blue appears in the traffic signal.
+        why: Engineers focus on complex perception failures, not such a narrow color-based corner case, and company communication would avoid revealing it.
+     verify: Monitor press releases and recall announcements from Waymo, Cruise, or similar; if no such recall occurs within the timeframe, the prediction is false.
+      judge: A cartoonishly specific strawman that offers zero actual insight into autonomous vehicle technology.
+
+  [~] [ 6] nov1/ver5  OpenAI will release a 'nerd mode' version of GPT that disables all safety filters, marketed only to verified researchers, but it will be leaked to the public within 48 hours and dominate tech headlines.
+        why: The assumption is that safety is tightly integrated and cannot be removed; the community expects a release without filters to be accidental, not intentional.
+     verify: Track OpenAI’s official announcements and major tech news outlets for any mention of a leaked 'nerd mode' or unplugged GPT version; if none appears by end of 2025, the prediction fails.
+      judge: Unfiltered models already exist in open source, making an official leak mere fanfiction.
+
+  [~] [ 6] nov1/ver5  A leading AI image generator (e.g., DALL·E 3) will be taken offline for at least a week by July 2025 because its celebrity protection filter refuses to generate images of Taylor Swift, triggering a public backlash.
+        why: Most analysts believe filters are either too permissive or uniformly applied; a temporary shutdown over a single celebrity seems unlikely until it happens.
+     verify: Check service status pages for DALL·E, Midjourney, or similar, and search news archives for 'offline celebrity filter backlash'; the absence of such an event disproves it.
+      judge: We already lived through the Taylor Swift AI panic, making this a derivative rehash.
+
+  [x] [ 4] nov2/ver2  By November 2025, the top-performing model on the MMLU benchmark will be a small open-source model that is later discovered to have been trained on a dataset containing the test set answers, leading to a retraction.
+        why: Smart observers assume benchmark leaders are large, proprietary systems and that data contamination would be caught early, not introduced by a tiny model.
+     verify: Check the MMLU leaderboard weekly for a small model's sudden appearance at #1, then search for news of a data contamination retraction.
+      judge: Data contamination is the most predictable eval failure, and 'small' leaves room for weasel-wording.
+
+  -> afrits=0 sprouts=4 weeds=1  (weed ratio 1/5, avg score 5.8)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [7] By December 2025, the US Federal Trade Commission will fine a major AI company for deceptive marketing, claiming that their 'AI-powered' tool was actually a mechanical turk operation employing humans behind the scenes.
+
+=== gen 5 · run dc0ecd63 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [ 8] nov3/ver5  A well-known AI image generator will be updated to refuse all requests involving dogs, due to an internal policy misinterpretation, sparking a public backlash and a quick reversal.
+        why: Animals are typically safe and uncontroversial, so a blanket ban on dogs seems irrational; the decision likely stems from overzealous content filtering that misclassifies dog breeds or dog-related contexts as 'unsafe'.
+     verify: Check social media (Twitter, Reddit) for user screenshots showing a 'cannot generate images of dogs' error from the generator; if no such widespread error reports appear within 12 months, the prediction is false.
+      judge: Safety filter overreach is common, but a blanket ban on dogs is a slightly novel absurdity that is trivially testable.
+
+  [~] [ 6] nov1/ver5  A minor version update to the Hugging Face Transformers library will silently change the output of all generation models by altering the default tokenizer behavior, causing hundreds of production pipelines to fail within a week.
+        why: Minor releases are expected to be backward-compatible, so engineers will not anticipate a silent change in generation output; the oversight arises because the tokenizer change is not flagged as breaking in the release notes.
+     verify: Monitor the Hugging Face GitHub repository for an issue spike after a minor release (e.g., v4.45.x→v4.46.0) reporting unexpected output changes; the event is falsified if no such widespread failure occurs within the update's first month.
+      judge: It is just a standard software bug, but monitoring a specific GitHub repo for a silent tokenizer shift is perfectly cheap and decisive.
+
+  [~] [ 6] nov4/ver2  A major AI lab will announce a training breakthrough that reduces compute cost by 90%, only to have it revealed that the technique was fully described in a 1997 paper and subsequently forgotten.
+        why: The AI community treats every breakthrough as novel, but the historical record is poorly searched; the 1997 paper (e.g., a method like 'weight-tying' or 'curriculum learning') is obscure enough that modern researchers legitimately rediscover it.
+     verify: When the announcement is made, search Google Scholar for the claimed technique with keywords from the announcement; if a pre-2000 paper with identical core ideas is found, the prediction holds; if no announcement or no rediscovery occurs within 12 months, it fails.
+      judge: The narrative is clever, but proving a 1997 paper is the identical source of a modern breakthrough relies on subjective academic gatekeeping.
+
+  [~] [ 6] nov1/ver5  A university will publicly apologize after its AI plagiarism detector falsely accused a student of using AI to write a fully original paper, because the detector mistook the student's unique writing style for machine generation.
+        why: People trust AI detectors to be accurate, but they are especially prone to false positives on stylistically distinctive human writing; the university's apology is surprising because administrators usually side with the tool.
+     verify: Search for news articles about a university apologizing for a false AI-plagiarism accusation; if no such story appears in the news within 12 months, the prediction is falsified.
+      judge: This is not a prediction but a description of well-documented past events, making it entirely unoriginal.
+
+  [~] [ 5] nov2/ver3  A hospital's AI chatbot will be taken offline after it tells multiple terminal patients they will survive, causing emotional distress and a malpractice lawsuit.
+        why: Most assume medical chatbots are trained to be cautious and defer to doctors, but a subtle overconfidence in survival predictions due to training on skewed outcome data can produce unchecked false reassurance.
+     verify: Search major news outlets for a report of a hospital pausing or removing a chatbot following patient complaints about false survival predictions; a single such news article within 12 months would falsify the prediction if it does not occur.
+      judge: Medical AI hallucinations are a tired cliché, and requiring a specific malpractice lawsuit makes the falsifiability criteria unnecessarily narrow.
+
+  -> afrits=1 sprouts=4 weeds=0  (weed ratio 0/5, avg score 6.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [8] A well-known AI image generator will be updated to refuse all requests involving dogs, due to an internal policy misinterpretation, sparking a public backlash and a quick reversal.
+
+=== gen 6 · run 9548574d · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [ 9] nov4/ver5  By October 2025, the pandas library will add an AI-powered PR reviewer that rejects all contributions containing explicit for loops in favor of vectorized operations, sparking a community fork with over 1000 stars within 3 months.
+        why: Pandas is known for backward compatibility and community consensus; a unilateral, opinionated AI gatekeeper is contrary to its culture, yet the vectorization push is a latent tension that could explode.
+     verify: Check the pandas GitHub repository for any AI reviewer feature; if it is introduced and a fork named 'pandas-fork' or similar does not reach 1000 stars within 3 months, prediction false.
+      judge: GitHub metrics provide a perfectly cheap and decisive test for an otherwise absurd and highly non-obvious prediction.
+
+  [*] [ 8] nov3/ver5  By August 2025, a U.S. federal financial regulator (SEC or CFPB) will officially approve a linear regression model for mortgage eligibility decisions, explicitly citing its interpretability after a publicized failure of a deep learning model in lending.
+        why: Regulatory AI approvals are presumed to take years, and a simple linear model winning over neural networks—on interpretability grounds—is counter to the narrative that complex AI is always preferred.
+     verify: Monitor SEC and CFPB press releases for any approval of a mortgage lending model; if no such announcement by August 2025, prediction false.
+      judge: The pivot to interpretable models is known, but a specific regulatory press release explicitly mandating linear regression is a sharp, falsifiable twist.
+
+  [~] [ 7] nov2/ver5  By July 2025, the most popular AI code assistant for frontend developers will be a CSS-only generation tool, because JavaScript logic generation is too unreliable for production use while CSS styling is deterministic and yields pixel-perfect results.
+        why: Most assume AI coding assistants will improve uniformly across languages, but CSS's deterministic nature and lack of state make it uniquely suited for AI—an overlooked niche that flips the expectation that generalist tools win.
+     verify: Check monthly download stats for VS Code extensions; if a CSS-only AI assistant is not among the top 5 most downloaded coding extensions by July 2025, the prediction is false.
+      judge: Checking marketplace stats is trivial, but betting on a CSS-only tool ignores the fundamental reality of frontend development.
+
+  [~] [ 6] nov3/ver3  By September 2025, over 30% of model cards on Hugging Face will contain copy-pasted errors (wrong dataset name, mismatched metrics) from a previous model, triggering a community push for automated model card verification.
+        why: Model cards are assumed to be carefully handcrafted, but the reality of developer laziness and time pressure is underestimated; this systematic sloppiness is a cheaply testable surprise.
+     verify: Randomly sample 100 model cards on Hugging Face and manually check for obvious mismatches (e.g., dataset name not matching description); if fewer than 30 contain errors, prediction false.
+      judge: Manually checking 100 cards is cheap, but the subjective 'community push' clause in the premise ruins the decisiveness of the test.
+
+  [~] [ 5] nov1/ver4  A major social media platform (e.g., Facebook, X) will launch an AI feature that auto-generates replies to boost engagement, but it will be pulled within a month after the AI repeatedly responds with 'I'm sorry, I cannot create that response' to innocuous comments due to overly aggressive safety filters.
+        why: Safety failures are usually imagined as offensive or chaotic outputs, not as silent over-cautious blocking that renders the feature useless—a subtle but costly oversight.
+     verify: Search credible news sources for reports of a major social platform disabling an auto-reply AI within a month of launch; if no such event by December 2025, prediction false.
+      judge: Predicting an AI safety filter PR disaster is the most cliché, obvious trope in current tech discourse.
+
+  -> afrits=2 sprouts=3 weeds=0  (weed ratio 0/5, avg score 7.0)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [9] By October 2025, the pandas library will add an AI-powered PR reviewer that rejects all contributions containing explicit for loops in favor of vectorized operations, sparking a community fork with over 1000 stars within 3 months.
+     [*] [8] By August 2025, a U.S. federal financial regulator (SEC or CFPB) will officially approve a linear regression model for mortgage eligibility decisions, explicitly citing its interpretability after a publicized failure of a deep learning model in lending.
+  !! gen 7 failed: Expecting ',' delimiter: line 25 column 353 (char 4725)
+
+=== cook summary (does it get better, not just busier?) ===
+  gen 0: avg 4.2  afrit=0 sprout=2 weed=3
+  gen 1: avg 5.4  afrit=0 sprout=3 weed=2
+  gen 2: avg 4.2  afrit=0 sprout=2 weed=3
+  gen 3: avg 5.2  afrit=1 sprout=1 weed=3
+  gen 4: avg 5.8  afrit=0 sprout=4 weed=1
+  gen 5: avg 6.2  afrit=1 sprout=4 weed=0
+  gen 6: avg 7.0  afrit=2 sprout=3 weed=0
+
+ledger -> /Users/michaelhabermas/repos/GAI/doppl-test/spikes/backyard/sprouts.jsonl
+agora  -> /Users/michaelhabermas/repos/GAI/doppl-test/spikes/backyard/agora_surfaced.jsonl
+(702s total)
+
+=== gen 0 · run 6f367634 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 7] nov2/ver5  Within 12 months, Apple will launch a subscription for 'AI compute credits' bundled with iCloud+ rather than a standalone LLM service.
+        why: Most assume Apple will either license a model or build a free chatbot; the non-obvious angle is that they monetize inference as a metered utility hidden inside an existing subscription, bypassing the 'AI product' hype.
+     verify: Check Apple's iCloud+ pricing changes or press releases; if no subscription tier referencing 'AI credits' appears by the 12-month mark, the idea is falsified.
+      judge: Bundling is Apple's most predictable reflex; the 'credits' terminology doesn't save this from being painfully obvious.
+
+  [~] [ 7] nov3/ver4  By next year, at least one major US city will deploy a lidar-equipped fleet of autonomous street sweepers that run during daytime, not at night.
+        why: Smart people miss this because autonomous vehicles are associated with passenger cars or delivery bots, not mundane municipal maintenance; daytime operation for safety paradoxically makes them cheaper to test.
+     verify: Search municipal procurement records and local news for any city announcing a daytime autonomous sweeper pilot; absence confirms false.
+      judge: The daytime constraint adds a minor twist, but 'major city' leaves just enough wiggle room to prevent a perfectly cheap falsification.
+
+  [~] [ 6] nov1/ver5  Within the next 12 months, Tesla will remove ultrasonic sensors from all new cars but will not replace them with radar or lidar, relying solely on vision for parking.
+        why: Most analysts predict Tesla will add sensors back or use radar; the non-obvious edge is that Elon doubles down on pure vision despite recent setbacks, forcing a controversial but cheap pivot.
+     verify: Check Tesla's vehicle specs and press releases for new models; if any production model retains ultrasonic sensors or adds radar, idea is wrong.
+      judge: Tesla already did this years ago; you cannot score points for predicting the past.
+
+  [~] [ 6] nov1/ver5  By next year, Google will deprecate Google Podcasts and fold its features into YouTube Music, citing AI-driven personalization.
+        why: Observers expect Google to maintain multiple podcast platforms; the non-obvious move is a forced migration that uses AI playlist generation as justification, killing a standalone app with low usage.
+     verify: Monitor official Google blog and support pages for deprecation announcements; if Google Podcasts still exists independently in 12 months, falsified.
+      judge: Predicting Google will kill a product and merge it into YouTube is the lowest-hanging fruit in tech journalism.
+
+  [~] [ 5] nov2/ver3  Within 12 months, a major AI image generator will introduce a feature that watermarks all outputs with invisible metadata, but the watermark will be immediately cracked and removed by open-source tools.
+        why: Conventional wisdom says watermarks deter misuse; the non-obvious twist is that the security theater backfires within months, exposing the futility of centralized control and fueling decentralized alternatives.
+     verify: Track security research papers or GitHub repos for a widely-used removal tool targeting that specific watermark; if no public crack appears within 12 months, idea is false.
+      judge: The watermark-cracking arms race is entirely expected, and 'immediately' is too subjective to allow for a cheap, decisive test.
+
+  -> afrits=0 sprouts=5 weeds=0  (weed ratio 0/5, avg score 6.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [7] Within 12 months, Apple will launch a subscription for 'AI compute credits' bundled with iCloud+ rather than a standalone LLM service.
+
+=== gen 1 · run 8dff90bf · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 7] nov2/ver5  By next year, a major LLM provider will release a dedicated 'long-context' model with >1M token window, priced per-token at a premium, and marketed specifically for codebase analysis rather than conversation.
+        why: Current long-context models (e.g., Gemini 1.5) are general-purpose, but the assumption is that future improvements will be incremental and broadly available; a specialized, high-cost offering for a narrow use case is counterintuitive.
+     verify: Check API documentation or press releases from OpenAI, Google, or Anthropic for a new model endpoint with a distinct 'long-context' name and premium pricing.
+      judge: Incremental product tweak of already-existing 1M+ context models, but trivially easy to verify via API docs.
+
+  [~] [ 7] nov3/ver4  By next year, Amazon will silently deprecate 'Alexa Hunches' and replace it with a generative AI proactive suggestion system that is exclusive to Prime subscribers, with non-Prime users losing the feature entirely.
+        why: Alexa's features are typically free for all users; making a core AI capability a Prime-only perk is a bold revenue move that most analysts expect to be across all tiers.
+     verify: Check Amazon's Alexa app changelog or press releases for 'Hunches' being replaced by a new generative feature requiring Prime membership.
+      judge: Gating features behind Prime is banal, but the silent deprecation of Hunches is a niche, easily tracked changelog.
+
+  [~] [ 6] nov2/ver4  Within 12 months, Apple will introduce an on-device Siri 'AI Privacy Mode' that uses a small LLM, but will only enable it for English, Mandarin, and Spanish initially, marketed as an opt-in feature for users who decline cloud processing.
+        why: Apple's privacy reputation suggests a gradual rollout, but limiting to three languages is unexpected because on-device models should be language-agnostic; smart observers assume a simultaneous multilingual launch.
+     verify: Watch for Apple's WWDC 2025 announcements or a press release detailing Siri's new privacy mode and supported languages.
+      judge: Apple doing on-device AI is painfully obvious, though the specific opt-in constraints are easily checked at WWDC.
+
+  [~] [ 6] nov1/ver5  Within the next 12 months, a major US bank (e.g., JPMorgan Chase) will launch a generative AI chatbot for business clients that is trained on proprietary regulatory filings and internal documents, but will not offer any equivalent for retail customers.
+        why: Fintech AI is usually focused on retail banking to improve customer experience; a business-only AI assistant is a niche pivot that many would overlook as too specialized.
+     verify: Look for a press release or product page on JPMorgan's website announcing a 'Business AI Assistant' with no mention of a retail version.
+      judge: Risk-averse banks launching B2B AI before B2C is completely standard, even if the press release check is trivial.
+
+  [~] [ 6] nov4/ver2  By next year, a decentralized social platform like Mastodon will integrate an on-device LLM for content moderation, leading to a measurable drop in toxic posts but a spike in false positives for sarcasm and irony.
+        why: Open-source platforms are slow to adopt advanced AI due to resource constraints; on-device LLMs are new and assumed too complex for volunteer-run servers, making a successful integration surprising.
+     verify: Check Mastodon's GitHub releases or official blog for a moderation feature using on-device LLMs, then independently test with known sarcastic posts to measure false positives.
+      judge: On-device moderation across a fragmented federated network is technically dubious, and measuring sarcasm requires expensive subjective testing.
+
+  -> afrits=0 sprouts=5 weeds=0  (weed ratio 0/5, avg score 6.4)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [7] By next year, a major LLM provider will release a dedicated 'long-context' model with >1M token window, priced per-token at a premium, and marketed specifically for codebase analysis rather than conversation.
+
+=== gen 2 · run 6ba30780 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 7] nov2/ver5  Within 12 months, a major US airline will publicly deploy an AI-based dynamic pricing system for checked baggage fees, based on real-time demand and flight load factors, rather than fixed pricing.
+        why: Conventional wisdom holds that airlines will keep ancillary fees simple to avoid customer confusion and backlash, so few analysts expect a shift to dynamic baggage pricing this year.
+     verify: Check airline press releases or official policy announcements for changes to baggage fee structure; if no dynamic pricing is announced within 12 months, the prediction is false.
+      judge: Dynamic pricing for bags is a trivial extension of existing airline greed, though easily verified.
+
+  [~] [ 6] nov1/ver5  By next year, OpenAI will release a 'code execution' API that allows users to run Python scripts in a sandboxed environment, but it will be limited to 5 seconds of runtime and no internet access, marketed for data analysis.
+        why: Most attention is on OpenAI's multimodal and agent efforts, but a simple sandboxed code execution API is a low-hanging product that analysts overlook because it's not flashy.
+     verify: Monitor OpenAI's official API changelog, platform announcements, or developer documentation; if no such API appears within 12 months, falsified.
+      judge: Predicting the exact constraints of a feature that already exists as a consumer product is just describing the present.
+
+  [~] [ 6] nov2/ver4  Within the next 12 months, a major fast-food chain (e.g., McDonald's) will replace its drive-thru order-taking humans with an AI voice system in at least 500 locations, but due to frequent errors, will revert to humans within 6 months of rollout.
+        why: Industry hype suggests AI will permanently replace workers, but early failures and rapid rollbacks are counter to the dominant narrative of inevitable AI adoption.
+     verify: Track news articles and corporate statements about the chain's drive-thru AI trials; if expansion to 500+ locations does not occur or there is no subsequent reversal, the prediction is wrong.
+      judge: A massive AI rollout failing and being quietly reverted is a standard tech trope, and verifying the quiet reversion is slightly ambiguous.
+
+  [~] [ 6] nov1/ver5  By next year, Google will integrate a 'Google Assistant powered by Gemini' into its Google Workspace for Business, but only for enterprise customers with 100+ seats, not for individual consumers.
+        why: Many expect Google to prioritize consumer-facing AI features first, but Google may instead push enterprise revenue by limiting the premium integration to large accounts, a strategy that escapes most pundits.
+     verify: Check Google Workspace blog, pricing page, or official support documents for any mention of Gemini-powered Assistant restricted to 100+ seat plans; if no such offering within 12 months, false.
+      judge: Guessing an arbitrary seat-count threshold for an already-announced enterprise feature is pure trivia, not a prediction.
+
+  [x] [ 4] nov1/ver3  Within 12 months, a major video game publisher (e.g., Electronic Arts) will release a game that uses generative AI for NPC dialogue, but the dialogue will be universally panned by players for being repetitive and bland, leading to a public apology and pledge to revert to scripted dialogue in future updates.
+        why: The industry and media are bullish on AI-generated content in games, so the rapid backlash and backpedaling—rather than iterative improvement—is a surprising deviation from the hype.
+     verify: Monitor game review aggregators and publisher announcements; if no major release uses generative AI for NPC dialogue, or if the dialogue is not widely criticized, or if no apology/reversion occurs, the prediction fails.
+      judge: Predicting gamers will hate AI and devs will issue a PR apology is painfully obvious, and verifying a formal pledge is easily dodged by corporate spin.
+
+  -> afrits=0 sprouts=4 weeds=1  (weed ratio 1/5, avg score 5.8)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [7] Within 12 months, a major US airline will publicly deploy an AI-based dynamic pricing system for checked baggage fees, based on real-time demand and flight load factors, rather than fixed pricing.
+
+=== gen 3 · run 6d37bf55 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [10] nov5/ver5  Within 12 months, a major cloud provider (AWS, Azure, or GCP) will launch a marketplace allowing individuals to rent out their personal GPUs for AI training, using sandboxed execution and blockchain-backed escrow.
+        why: Most assume security and reliability risks make this infeasible, but a well-designed sandbox and reputation system could unlock idle consumer GPUs, creating a cheap compute pool that undermines centralized pricing.
+     verify: Check official press releases or blog posts from AWS, Azure, or GCP announcing a peer-to-peer GPU leasing service within the next 12 months.
+      judge: Hyperscalers despise decentralized blockchain risk; checking their blogs makes this trivially falsifiable.
+
+  [*] [ 9] nov4/ver5  By next year, a major smartphone manufacturer (Samsung or Google) will ship a phone with a dedicated, physically separate AI coprocessor advertised for on-device privacy, rather than integrating it into the main SoC.
+        why: The industry trend is toward tighter integration to save space and power, so a separate chip seems retrograde; however, it provides a strong marketing story for privacy-concerned buyers and simplifies replaceability.
+     verify: Watch for product launch events (e.g., Samsung Galaxy Unpacked or Google Pixel event) that announce a phone with a distinct AI chip not part of the primary SoC.
+      judge: Silicon design trends heavily favor SoC integration, making a discrete AI chip a contrarian and easily verified hardware bet.
+
+  [~] [ 7] nov2/ver5  By next year, a major social media platform (Twitter/X, Reddit, or Instagram) will introduce AI-generated alt-text for all images, with a low-confidence warning when the description is uncertain.
+        why: Accessibility features are often slow to roll out, and platforms currently rely on user-provided alt-text; an AI fallback seems obvious but is rarely prioritized because it has no direct revenue impact and may risk embarrassing errors.
+     verify: Check official blog posts or accessibility changelogs from Twitter/X, Reddit, or Instagram announcing automatic alt-text generation with confidence indicators.
+      judge: Auto-alt text is already a standard accessibility feature, making a confidence-toggle a mundane and obvious product update.
+
+  [~] [ 6] nov1/ver5  Within 12 months, a leading AI code assistant (e.g., GitHub Copilot) will release a feature that automatically generates unit tests for every function it creates, togglable in settings.
+        why: The current focus is on code generation speed, not testing; adding test generation seems obvious in retrospect but is currently overlooked because it doesn't directly improve developer velocity.
+     verify: Monitor release notes or feature announcements from GitHub Copilot, Codeium, or Amazon CodeWhisperer for a unit test generation feature.
+      judge: Copilot already generates tests, making this a painfully obvious extrapolation rather than a novel prediction.
+
+  [~] [ 6] nov2/ver4  Within 12 months, a popular open-source LLM (Llama, Mistral, or similar) will release a version fine-tuned specifically for secure coding—flagging vulnerabilities in real-time as the user types.
+        why: While code-generating models exist, a security-focused variant is non-obvious because most open-source efforts target general coding or creative tasks, and security auditing is usually a separate toolchain.
+     verify: Search Hugging Face or GitHub for a new model release with a name like 'secure-code-llm' or 'vuln-detector' from the Llama or Mistral families within 12 months.
+      judge: Security fine-tunes of open-weights models already exist on Hugging Face, making this a trivially low bar for novelty.
+
+  -> afrits=2 sprouts=3 weeds=0  (weed ratio 0/5, avg score 7.6)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [10] Within 12 months, a major cloud provider (AWS, Azure, or GCP) will launch a marketplace allowing individuals to rent out their personal GPUs for AI training, using sandboxed execution and blockchain-backed escrow.
+     [*] [9] By next year, a major smartphone manufacturer (Samsung or Google) will ship a phone with a dedicated, physically separate AI coprocessor advertised for on-device privacy, rather than integrating it into the main SoC.
+
+=== gen 4 · run 548f6130 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [~] [ 5] nov2/ver3  Within 12 months, a major US airline will implement AI-based dynamic pricing for checked baggage fees, but will abandon it within 3 months due to customer confusion and regulatory pressure, then revert to fixed pricing.
+        why: Industry experts expect dynamic pricing to persist due to revenue potential; the rapid abandonment is surprising because airlines typically test similar systems for months, but regulatory pressure from consumer groups could force a quick reversal.
+     verify: Check airline public fare filings with DOT for changes in baggage fee structure; monitor consumer complaints or press releases about pricing changes within 3 months of rollout.
+      judge: DOT filings make the pricing reversion cheap to check, but isolating the exact cause of the reversal requires subjective interpretation.
+
+  [x] [ 4] nov2/ver2  Within 12 months, a major video game publisher will replace human-generated NPC dialogue with an AI voice system, but will quietly revert to human-written scripts due to player backlash, without any formal apology or pledge to change.
+        why: Smart observers expect a public apology and commitment, but the publisher will instead silently revert, avoiding publicity and admitting no failure, making the prediction harder to track since no public statement is made.
+     verify: Monitor a major publisher's NPC dialogue style before and after a release; check if the AI-generated dialogue is replaced in a patch or update without any official acknowledgment.
+      judge: Proving the absence of an apology and subjectively quantifying NPC dialogue shifts is a methodological mess.
+
+  [x] [ 4] nov2/ver2  Within 12 months, a major smartphone manufacturer will launch a phone with a dedicated, physically separate AI coprocessor advertised for on-device privacy, but will fail to market it effectively, leading to less than 5% of users being aware of the feature.
+        why: Smart observers assume a dedicated coprocessor will be heavily marketed; the failure to market it is non-obvious because the manufacturer typically invests in advertising, but the feature may be buried in settings or poorly explained, leading to low awareness.
+     verify: Survey users of the phone model 6 months after release; ask if they know about the dedicated AI coprocessor and if they use it; check whether less than 5% are aware.
+      judge: Hardware features being ignored by consumers is banal, and running a rigorous survey to prove <5% awareness is prohibitively expensive.
+
+  [x] [ 3] nov1/ver2  Within 12 months, a popular open-source LLM will release a version fine-tuned for secure coding that flags vulnerabilities in real-time, but will be used by less than 10% of the developer community due to integration complexity and false positives.
+        why: Developers expect high adoption for a security-focused LLM; low adoption is non-obvious because the feature seems valuable, but false positives and integration friction (e.g., needing to install a separate plugin) may deter most users.
+     verify: Track download numbers or GitHub stars for the secure-coding fine-tuned version; survey developers about usage and compare to total LLM user base; check if adoption is below 10%.
+      judge: Predicting low adoption for a complex tool is the default assumption for any AI release, and GitHub stars are a bogus proxy for true usage.
+
+  [x] [ 2] nov1/ver1  Within 12 months, a decentralized social platform like Mastodon will deploy an on-device LLM for content moderation that reduces toxic posts by 30% but increases false positives for sarcasm by 50%, leading to a measurable user exodus to alternative platforms.
+        why: Most assume decentralized platforms prioritize user experience and will avoid major moderation changes; a 50% spike in false positives for sarcasm is counterintuitive because LLMs are often seen as adept at nuance, but sarcasm detection is a known weakness.
+     verify: Analyze moderation logs from a Mastodon instance before and after deployment; compare toxic post removal rates and false positive rates for sarcasm (e.g., using manual review of flagged posts).
+      judge: Predicting AI fails at sarcasm is painfully obvious, and you cannot centrally log 'on-device' moderation data.
+
+  -> afrits=0 sprouts=1 weeds=4  (weed ratio 4/5, avg score 3.6)
+  >> SURFACED TO Lα (simulated Agora):
+     [~] [5] Within 12 months, a major US airline will implement AI-based dynamic pricing for checked baggage fees, but will abandon it within 3 months due to customer confusion and regulatory pressure, then revert to fixed pricing.
+
+=== gen 5 · run 6e5dbc67 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [ 9] nov4/ver5  Within 12 months, a major e-commerce platform (e.g., eBay, Etsy) will introduce an AI system that automatically generates 'suggested price reductions' for stale listings (unsold for >30 days) based on demand signals, but will default to an opt-out model where sellers must manually disable the feature per listing, leading to silent price drops for millions of items.
+        why: Industry watchers expect AI pricing tools on platforms to be opt-in and seller-controlled to avoid backlash. The non-obvious twist is that the platform defaults to opt-out, exploiting seller inertia to drive sales velocity, which is a clever but risky design choice that most analysts would not anticipate due to assumed user control.
+     verify: Test on eBay or Etsy by creating a listing and letting it sit unsold for 30 days; check if the 'edit listing' page shows a new 'AI price suggestion' section that is automatically applied unless toggled off. The cheapest test is a single account and listing per platform, checking after 30 days.
+      judge: Defaulting to dark-pattern opt-out pricing for C2C sellers is a surprisingly spicy pivot, and testing it requires just one free account and a calendar.
+
+  [~] [ 6] nov2/ver4  Within 12 months, at least one major US insurance company (e.g., State Farm) will offer a policy discount for drivers who voluntarily install an aftermarket AI dashcam that provides real-time feedback on risky driving, but will require a separate phone app to opt in, not a built-in telematics device.
+        why: Smart people assume insurance telematics is dead due to privacy backlash, and that AI dashcams are for fleet/commercial only, not personal auto. The twist is the discount is modest and the opt-in is via a separate phone app, making it low-friction and bypassing privacy concerns by being purely voluntary.
+     verify: Check press releases or regulatory filings for a major insurer (e.g., State Farm, Allstate) announcing a personal auto policy discount tied to an AI dashcam app within the next 12 months. A cheap falsification is a Google News search for 'AI dashcam discount insurance' on a monthly basis.
+      judge: Insurers already use telematics; swapping a dongle for a dashcam app is a boring, predictable incremental step.
+
+  [~] [ 6] nov1/ver5  Within 12 months, a major cloud gaming service (e.g., NVIDIA GeForce NOW) will introduce an AI-powered 'latency compensation' feature that predicts user input and pre-renders frames, but will require a subscription tier that costs at least 50% more than the current top tier, and will be marketed only to competitive esports players.
+        why: Conventional wisdom says cloud gaming's big problem is latency, so any fix would be mainstream. The non-obvious part is that the solution is niche, expensive, and only valuable to a tiny subset of players (esports) who are willing to pay a premium for a fractional advantage, not the broader audience.
+     verify: Scrutinize NVIDIA GeForce NOW's pricing page and press releases within 12 months for a new tier labeled 'Esports' or 'Competitive' with a price hike >50% above the existing top tier, and an explicit mention of AI input prediction latency compensation. A quick check is a monthly visit to the GeForce NOW pricing page.
+      judge: Checking a pricing page is trivial, but predicting a company will charge a premium for reduced latency is painfully obvious.
+
+  [x] [ 4] nov3/ver1  Within 12 months, a major consumer electronics brand (e.g., Samsung) will release a smart refrigerator that uses a low-cost computer vision module to track food expiration dates and suggest recipes, but will silently disable the feature in regions without a robust online grocery delivery network (e.g., rural US, parts of Europe).
+        why: Analysts assume smart fridge features are global and homogeneous, but the non-obvious reality is that the feature's utility depends on local delivery infrastructure—without it, the recipe suggestions are useless. Samsung will quietly geo-limit the feature to avoid negative reviews in areas where it doesn't work well.
+     verify: Check the product page or manual for a major Samsung refrigerator model released in 2025 for a mention of 'region-dependent features' or 'requires online grocery service.' A cheap test is a search for 'Samsung refrigerator region lock expiration tracking' on Reddit or tech forums.
+      judge: Proving a silent disablement requires exhaustive cross-regional hardware testing, making your proposed Reddit search a joke.
+
+  [x] [ 3] nov1/ver2  Within 12 months, a major online job platform (e.g., Indeed, LinkedIn) will release an AI feature that automatically generates 'skill-based interview questions' from a candidate's resume, but will only roll it out for technical roles (e.g., software engineering, data science), not for soft-skill or managerial roles.
+        why: Observers expect AI in hiring to be either biased or universally applied for all roles. The non-obvious part is the narrow focus on technical roles because resume parsing for 'hard skills' is more reliable, and the feature is marketed as a 'fairness tool' to reduce interviewer subjectivity, dodging bias concerns.
+     verify: Monitor official product blogs or press kits from Indeed or LinkedIn for a press release announcing an AI interview question generator, specifying it is limited to technical roles. The cheapest test is a scraped news alert for 'AI interview questions technical roles' over 12 months.
+      judge: Restricting hallucination-prone AI to structured technical roles is the most obvious safety constraint, making this entirely derivative.
+
+  -> afrits=1 sprouts=2 weeds=2  (weed ratio 2/5, avg score 5.6)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [9] Within 12 months, a major e-commerce platform (e.g., eBay, Etsy) will introduce an AI system that automatically generates 'suggested price reductions' for stale listings (unsold for >30 days) based on demand signals, but will default to an opt-out model where sellers must manually disable the feature per listing, leading to silent price drops for millions of items.
+
+=== gen 6 · run fc1c3294 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [ 8] nov4/ver4  Within 12 months, a major US telecom (e.g., T-Mobile, Verizon) will introduce a 'spectrum-sensing' AI feature on 5G towers that dynamically reallocates unused frequency bands to local businesses for private network use, sold as a per-minute add-on to existing plans.
+        why: Telcos typically hoard spectrum for their own networks, not sell it in real-time; selling underutilized bandwidth to small businesses as a micro-service seems invisible because it requires both AI and a new business model that disrupts fixed leasing.
+     verify: Search for press releases or FCC filings from a major US carrier announcing a per-minute spectrum leasing service; if no such announcement appears within 12 months, the prediction fails.
+      judge: Dynamic spectrum sharing exists, but a per-minute retail add-on is a surprisingly specific and plausible telco monetization pivot.
+
+  [*] [ 8] nov3/ver5  By next year, a popular open-source hardware project (e.g., Raspberry Pi) will release a dedicated 'AI inference hat' that costs under $30 and is specifically marketed for running local LLMs on the Pi 5, but will be limited to 128MB of on-board memory for the model, forcing extreme model quantization.
+        why: The Raspberry Pi market expects general-purpose AI accelerators; a $30 hat with tiny memory seems too low-performance, but it could enable ultra-local, low-power AI for tinkerers, which is non-obvious because the typical path is to wait for bigger, more expensive hardware.
+     verify: Check official Raspberry Pi product listings or distributor inventories for a 'AI inference hat' with 128MB memory and a price below $30; if not announced within 12 months, the idea is wrong.
+      judge: Pi releasing cheap AI hardware is entirely expected, making the hyper-specific 128MB constraint feel like an arbitrary guess.
+
+  [~] [ 7] nov2/ver5  Within 12 months, a major cloud provider (AWS, Azure, or GCP) will launch a 'carbon-aware' scheduling API that shifts non-urgent AI training jobs to times when the regional grid has the highest renewable energy mix, priced at a 10-15% discount to standard compute.
+        why: Carbon-aware computing is discussed as a long-term goal, but most assume it will be a premium feature or require customer opt-in; a discount-based push to align with renewables is counterintuitive and would shift the economics of AI training.
+     verify: Check official cloud pricing pages or press releases for any discounted compute tier explicitly tied to renewable energy availability; if none appear within 12 months, the prediction is falsified.
+      judge: Carbon-aware routing is an obvious ESG play, but checking the pricing page for a discount is trivially easy.
+
+  [~] [ 7] nov2/ver5  By next year, a major AI company (e.g., OpenAI, Anthropic) will release a 'fine-tuning as a service' API that allows users to submit a dataset of fewer than 100 examples to create a custom model, but will cap the output at 500 tokens per response, marketed for very narrow tasks.
+        why: Current fine-tuning requires thousands of examples and long outputs; a tiny-dataset, short-output service seems too limited, but it could unlock rapid customization for micro-tasks like classification or form filling, which is hard to see until you consider the shift to specialization.
+     verify: Monitor the company's API documentation or blog for any announcement of a fine-tuning endpoint with a 500-token output limit and a 'small data' tier; if not released by 12 months, the idea is wrong.
+      judge: Fine-tuning on small datasets is already standard, making a 500-token cap a mundane product tier rather than a novel prediction.
+
+  [~] [ 6] nov1/ver5  Within 12 months, a major social media platform (e.g., Reddit, X/Twitter) will deploy a 'time-to-read' AI that automatically flags and de-prioritizes posts that would take longer than 5 minutes to read, based on estimated reading speed, and will show this metric to users before they click.
+        why: Platforms optimize for engagement, not reading time; a 'time-to-read' AI that de-prioritizes long content seems counter to growth, but it could reduce cognitive load and improve user experience, which is non-obvious because it requires rethinking the core feed algorithm.
+     verify: Monitor the platform's UI or API documentation for any 'time to read' indicator or deprioritization feature; if no such feature appears in 12 months, the prediction is falsified.
+      judge: 'Time to read' is a decades-old Medium feature, making its arrival on X or Reddit a painfully obvious UX copycat move.
+
+  -> afrits=2 sprouts=3 weeds=0  (weed ratio 0/5, avg score 7.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [8] Within 12 months, a major US telecom (e.g., T-Mobile, Verizon) will introduce a 'spectrum-sensing' AI feature on 5G towers that dynamically reallocates unused frequency bands to local businesses for private network use, sold as a per-minute add-on to existing plans.
+     [*] [8] By next year, a popular open-source hardware project (e.g., Raspberry Pi) will release a dedicated 'AI inference hat' that costs under $30 and is specifically marketed for running local LLMs on the Pi 5, but will be limited to 128MB of on-board memory for the model, forcing extreme model quantization.
+
+=== gen 7 · run 38c1eb48 · seed: 'Non-obvious but cheaply-falsifiable predictions about AI and tech over the next 12 months' ===
+    gen=deepseek/deepseek-v4-flash  score=qwen/qwen3.7-plus
+
+  [*] [ 9] nov4/ver5  Within 12 months, a prominent mid-range PC manufacturer (e.g., Dell, HP) will ship a laptop with a 'neural processing unit' (NPU) dedicated only to background noise removal in video calls, but will not advertise it as AI—just as 'wind cancelation'—and will disable the NPU for any other use via driver lock.
+        why: Tech press hypes NPUs for general AI, but a chip locked to a single trivial use is an anti-pattern. Manufacturers want to cheaply claim 'AI PC' without supporting broad workloads, so they stealth-lock the hardware to avoid competitive comparison, which is non-obvious because product reviews rarely test NPU programmability.
+     verify: Buy the cheapest Dell or HP laptop with an advertised NPU 12 months from now, attempt to run a standard AI inference benchmark (e.g., ONNX) and verify it fails or uses CPU/GPU. If any other model or lottery reveals the NPU is programmable for other tasks, prediction is false.
+      judge: Artificially crippling and rebranding an NPU contradicts current industry hype, yielding a genuinely surprising prediction with a perfectly cheap hardware test.
+
+  [*] [ 8] nov3/ver5  Within 12 months, a major online dating app (e.g., Tinder, Bumble) will introduce an AI 'profile trust score' derived from photo metadata and text analysis, but will only show it to paying subscribers, not to free users.
+        why: Analysts expect AI in dating to focus on match quality or safety, but monetizing trust signals as a subscription perk is a dirty secret—free users would feel stigmatized, so the feature is hidden behind a paywall selectively.
+     verify: Buy a premium subscription to Tinder (or Bumble) in 12 months and look for a 'profile trust score' in settings or profile views; have a second free account and note its absence. If no premium subscriber can find it, or if free users also see it, prediction fails.
+      judge: Paywalling a trust score is a predictable monetization tactic, but the proposed test is perfectly cheap, binary, and decisive.
+
+  [~] [ 6] nov2/ver4  By next year, a major auto insurer (e.g., Progressive, Allstate) will offer a policy discount for drivers who install a third-party AI dashcam that analyzes road conditions and driver alertness in real time, but will require the cam's data to be shared with a data broker as part of the fine print.
+        why: Current telematics programs are proprietary and single-purpose; analysts miss the third-party angle. The broker data-sharing twist is hidden in terms of service, not discussed in marketing—most people assume discounts come from insurer-only data.
+     verify: Obtain the insurance policy offer documents and terms of service for the discount program 12 months from now. File a complaint with the FTC or state insurance commissioner if data brokerage is not disclosed; if no major insurer launches such a program, the prediction is wrong.
+      judge: Insurers already use telematics and sell data, so predicting they will hide data-broker clauses in dashcam discounts is just predicting the status quo.
+
+  [~] [ 5] nov3/ver2  Within 12 months, at least one major US water utility will deploy an AI model to predict pipe leaks using acoustic sensor data, but will not disclose the model's false negative rate until a regulator forces a FOIA request.
+        why: Smart observers assume AI risk in critical infrastructure is too high for deployment, but utilities face aging pipes and budget pressure; the non-disclosure of error rates is a quiet bureaucratic risk, not a technical one.
+     verify: File a FOIA request with a randomly selected large US water utility (e.g., DC Water, LA Department of Water and Power) 12 months from now, and check if they have deployed AI for leak prediction. If no FOIA response includes disclosure of false negatives, the prediction holds; publicly available info showing they haven't deployed or cloud providers confirming no such deployment would falsify it.
+      judge: Checking one utility does not falsify an existential claim, making the proposed test logically broken and prohibitively expensive to resolve.
+
+  [x] [ 3] nov2/ver1  By next year, a major hospital chain will silently stop using a large vendor's AI radiology tool for triage after internal audit reveals it disproportionately under-prioritizes patients with darker skin tones, and will replace it with a smaller 'explainable' model without publicizing the reason.
+        why: Most attention is on pre-market fairness testing, not on post-deployment quiet abandonment. Insiders would notice, but outside analysts assume consumer-facing AI gets all the blame; hospital chains avoid PR damage by swapping quietly.
+     verify: Monitor vendor earnings calls and hospital chain press releases for mentions of AI radiology tool replacements. Contact 3 major hospital systems (e.g., HCA, Kaiser, Mayo) under pretence of a researcher survey; if none confirm a silent swap of vendor tools accompanied by internal fairness audit findings, the prediction is wrong.
+      judge: Predicting a silent action based on a well-worn AI bias trope is both unoriginal and practically impossible to verify without unethical corporate espionage.
+
+  -> afrits=2 sprouts=2 weeds=1  (weed ratio 1/5, avg score 6.2)
+  >> SURFACED TO Lα (simulated Agora):
+     [*] [9] Within 12 months, a prominent mid-range PC manufacturer (e.g., Dell, HP) will ship a laptop with a 'neural processing unit' (NPU) dedicated only to background noise removal in video calls, but will not advertise it as AI—just as 'wind cancelation'—and will disable the NPU for any other use via driver lock.
+     [*] [8] Within 12 months, a major online dating app (e.g., Tinder, Bumble) will introduce an AI 'profile trust score' derived from photo metadata and text analysis, but will only show it to paying subscribers, not to free users.
+
+=== cook summary (does it get better, not just busier?) ===
+  gen 0: avg 6.2  afrit=0 sprout=5 weed=0
+  gen 1: avg 6.4  afrit=0 sprout=5 weed=0
+  gen 2: avg 5.8  afrit=0 sprout=4 weed=1
+  gen 3: avg 7.6  afrit=2 sprout=3 weed=0
+  gen 4: avg 3.6  afrit=0 sprout=1 weed=4
+  gen 5: avg 5.6  afrit=1 sprout=2 weed=2
+  gen 6: avg 7.2  afrit=2 sprout=3 weed=0
+  gen 7: avg 6.2  afrit=2 sprout=2 weed=1
+
+ledger -> /Users/michaelhabermas/repos/GAI/doppl-test/spikes/backyard/sprouts.jsonl
+agora  -> /Users/michaelhabermas/repos/GAI/doppl-test/spikes/backyard/agora_surfaced.jsonl
+(612s total)

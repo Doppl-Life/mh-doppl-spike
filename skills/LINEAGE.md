@@ -13,6 +13,8 @@ converge on the same organ. **Edit a row when:** status changes (promotion, depr
 | Lineage id | Gen | Parent | Mutation (what changed) | Stratum (observed) | Status | Expresses at | Bedrock evidence |
 | ---------- | --- | ------ | ----------------------- | ------------------ | ------ | ------------ | ---------------- |
 | `rule-of-cool` | 0 | — | — (gen-0 seed) | Lα (witness/reframe) | stable | [`.cursor/skills/rule-of-cool/`](../.cursor/skills/rule-of-cool/SKILL.md) | Progenitor of the repo ([AGENTS.md](../AGENTS.md)); "cool uncle at Lα" ([TREATISE § VIII](../TREATISE.md#viii-the-search-for-better-definitions-of-better)). No Agora verdicts yet. |
+| `breakout` | 1 | `rule-of-cool` | valence flip (divergence fork): convergent single-best → **divergent-UP** — drop the feasibility filter, crank variance, hunt the paradigm-escaping zag | Lα / L1 (ideation) | coined | [`.cursor/skills/breakout/`](../.cursor/skills/breakout/SKILL.md) + crucible `ARCHETYPE_POOL["breakout"]` | The nephew. Sibling of `blindside`. No verdicts yet. |
+| `blindside` | 1 | `rule-of-cool` | valence flip (divergence fork): convergent single-best → **divergent-DOWN** — hunt the non-obvious failure mode / opportunity cost (invested uncle, not gloating critic) | Lα / L1-L2 (ideation, deliberation) | coined | [`.cursor/skills/blindside/`](../.cursor/skills/blindside/SKILL.md) + crucible `ARCHETYPE_POOL["blindside"]` | The uncle. Sibling of `breakout`; convergence candidate with the watched **uncle-questioner** / **falsifier-audit** organs. No verdicts yet. |
 
 ## Convergence watch
 
@@ -28,8 +30,15 @@ None promoted yet — recorded so the convergence is *recognized* when it appear
 
 ## Carry forward
 
-- First mutation candidate: a **stratum-specialized Rule of Cool** — e.g. `rule-of-cool-fed`
-  (the `--fed` Frontend Design Mode already living inside the seed) split out as a gen-1 child
-  with `parent: rule-of-cool`, `mutation: "scoped to frontend-design exploration"`. Only do it if
-  Agora verdicts show the split earns its own keep.
+- **First realized mutation (2026-06-18):** the **divergence fork** — `breakout` + `blindside`, gen-1
+  children of `rule-of-cool` via *valence flip* (Cool converges on one best addition; the children
+  diverge UP toward treasure and DOWN toward traps). They are a sibling pair sharing one skeleton;
+  the mutation is the sign of the valence. Watch whether Agora verdicts show divergence-skills
+  sprout well but fruit weakly (predicted by the PRM/ORM homology). See [MEMORY fork](../MEMORY.md).
+- Each child is **heterozygous**: a dominant valence + a recessive opposite-valence allele that
+  flashes rarely (the "recessive flash" clause). If verdicts show the recessive flash earns its keep,
+  it's a candidate to promote into Rule of Cool itself.
+- Still-open mutation candidate: a **stratum-specialized Rule of Cool** — e.g. `rule-of-cool-fed`
+  (the `--fed` Frontend Design Mode already living inside the seed) split out as a gen-1 child.
+  Only do it if Agora verdicts show the split earns its own keep.
 - Keep `stratum` descriptive; let the L1–L2 / L2–L3 / L3–L4 / Lα families **emerge** ([Open Q #8](../TREATISE.md#x-open-questions-edit-here)).

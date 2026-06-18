@@ -318,6 +318,9 @@ the frame; the agent brings the formalism; the overlap is prey.
 | held-out judge | held-out validation set |
 | proxy-Lα posts only the uncertain | active learning / uncertainty sampling |
 | amemetics (harder to fool next time) | adversarial training / robustification |
+| r/K spawncidences (fast-cheap-many vs slow-expensive-few) | r/K selection theory; explore/exploit under budget |
+| Lα "worth the squeeze" allocation | budgeted multi-armed bandit (heterogeneous arm cost/latency) |
+| prediction (will-be) as insight | time as a free held-out test set; pre-registered forecasting |
 
 **Why it matters: a confirmed homology is a two-way generator.** Once the mapping holds, the
 mechanism's entire literature becomes free predictions about the metaphor — and vice versa. It
@@ -353,6 +356,7 @@ is what makes the congruence visible.
 | Crucible `--local` (Gemma 4 / Ollama-compatible) | Local Lα on Pi/Hermes ("Lαlphα"); per-role local routing |
 | `spikes/{agenotype,crucible}` (today) | Energy-metered spawncidence budget; auto-prune; harness comparator |
 | `bedrock/signal/` verdict schema (§ XIII) | The Agora — live Slack/Discord channel, reaction listener, verdict→energy metabolizer, proxy-Lα |
+| Insight Machine concept + tenses (§ XIV) | First predictive paper-bet spike; pre-registered prediction ledger; reality-verdicts; r/K-tagged stratum transitions |
 
 We are in **chaos space before constitution** — naming the organism while the phenotype forms. Premature optimization is the enemy. So is never building. The move is **small mortal experiments**, not big irreversible forks.
 
@@ -372,6 +376,7 @@ We are in **chaos space before constitution** — naming the organism while the 
 10. **Uncling/nephewing mechanisms** — How do nurture/maturation actually run? Candidates: cron-job check-ins, Codex Automations, Claude Cowork dispatches, scheduled Lα passes. Which fire down (uncle) vs. up (nephew)? *(First concrete instance: the **Agora** (§ XIII) — nephew reports an idea up, uncle/bedrock reacts down, async and logged.)*
 11. **Rite of the Spawncidence** — needs a better name for "you + I deliberately spawn experiments to witness."
 12. **Local Lα** — run the witness on a local model (Pi / Hermes / Gemma 4)? When does that beat a hosted Lα?
+13. **First Insight-Machine domain** — which domain first? Bias: predictive (will-be, bedrocked by time), short-loop, non-adversarial, paper-bet-able (blast radius dialable from $0). Alzheimer's is the dream, not the on-ramp; live stock trading is adversarial. (§ XIV; [MEMORY fork](./MEMORY.md#first-insight-machine-domain-prediction-markets-not-alzheimers--2026-06-17).)
 
 ---
 
@@ -487,6 +492,50 @@ first — webhook out, reaction listener appends to `verdicts.jsonl` — before 
 
 ---
 
+## XIV. Applications — the Insight Machine, the tenses of bedrock, and r/K allocation
+
+The mechanisms (crucible, agenotype, Agora) are substrate; tools (the **software factory** — a
+tool, *not* a primitive) are how a stratum acts. **Applications** are how the organism expresses
+against a real domain. The recurring one is the **Insight Machine**: prime it with what's known,
+have it collate a domain's frontier, and hunt **non-obvious convergences** — skate to where the
+puck is going. More seed knowledge = a sharper search prior.
+
+**Insight has tenses, and the tense sets the bedrock latency.**
+
+| Tense | Insight kind | Bedrock | Latency / cost |
+|-------|--------------|---------|----------------|
+| **will-be** | prediction / foresight | time itself — just wait | the future is a free held-out test set; cheapest, cleanest |
+| **why-it-happened** | explanation / abduction | held-out cases; new evidence | medium |
+| **should-be** | prescription / normative | a market, the factory, or human judgment | worst — reward-hack magnet (sounds-deep-but-wrong is unfalsifiable) |
+
+The taxonomy is **open** — two, three, or more; look for more. One sharp sub-cut inside
+*why-it-happened*: **myth vs territory.** History is an agreed-upon fiction; the stories we tell
+are flattering and easy. The machine's past-tense job is to cut the narrative down to the actual
+*predictive* cause — "this country succeeded because of geography, resources, and timing, not
+because of its beliefs about itself." The unflattering cause that generalizes beats the
+high-minded one ([BUGS: Myth over territory](./BUGS_AND_MITIGATIONS.md)).
+
+**Start predictive, short-loop, non-adversarial.** The cheapest real-world predictive bedrock is a
+**paper bet**: timestamp a prediction, let time adjudicate, measure the counterfactual P&L — *no
+money down*. Prediction markets sharpen it: predict what *should* be, diff against the market
+price, and the gap is a **non-obvious arbitrage** a plain arbitrage agent wouldn't see. Blast
+radius is a dial: $0 (paper) → small real bets → real capital. Markets are adversarial and slow
+(Tesla's fundamentals waited years for the price to agree), so paper-first earns bedrock without
+the wait costing money. Reality-verdicts (reactor = "the world / the price") flow into the same
+Agora ledger and pay out energy — even virtual bets earn "energies." **Pre-register every call**,
+losers included, or you cherry-pick yourself into a lie ([BUGS](./BUGS_AND_MITIGATIONS.md)).
+
+**r/K runs per stratum-transition, not per organism.** A single experiment changes metabolism as
+it descends. Landing pages: *generating and deploying* variants is **r-selected** at **L2–L3** —
+fast, cheap, spray confetti, tolerate mass death. *Earning reach* is **K-selected** at **L3–L4** —
+slow, bounded by the finite **attention economy**, few bets, heavy investment, can't-afford-to-lose.
+r-lineages get near-zero nurture (selection is the teacher); K-lineages get butterfly-wing uncling.
+Energy budget is the resource; r/K is the spend strategy; the Lα allocation call — "is the juice
+worth the squeeze?" / "does it earn its keep?" — is a **budgeted bandit over heterogeneous arms**
+whose cost is a *vector*: tokens, money, compute, and latency.
+
+---
+
 ## Revision log
 
 | Date | Note |
@@ -498,3 +547,4 @@ first — webhook out, reaction listener appends to `verdicts.jsonl` — before 
 | 2026-06-17 | Lαlphα names humans + agent as peers; Acology/Fusant naming (A-prefix rule); disagreeableness dial + judge consensus-quality patch (counter-mutation to consensus-grading); Agarden hub (`build_index.py` → `index.html`) |
 | 2026-06-17 | § XIII **The Agora** — async human-reaction channel as first executable Bedrock; verdicts as bedrock signal that pays out as energy; proxy-Lα via active learning; `bedrock/signal/` schema; 3 Agora reward hacks logged |
 | 2026-06-17 | § VIII-c **Homology** (metaphor↔mechanism as a two-way generator); sprout/**afrit** (A+fruit) for the outcome idea; L2–L3 skill band added; `skills/` lineage registry |
+| 2026-06-17 | § XIV **Insight Machine** + tenses of bedrock (will-be / why / should-be); myth vs territory; paper-bet predictive bedrock + prediction markets; r/K per stratum-transition; allocation as a budgeted bandit; software factory scoped as a tool |

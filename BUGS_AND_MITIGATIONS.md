@@ -86,6 +86,26 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Bedrock assertion:** when 🔥 and ✅ diverge over N runs, energy follows ✅/correlation, not 🔥; if energy tracks 🔥 alone, the metric is hacked — fails.
 - **Carry forward:** "cool" is a proxy for "good"; the apex bet (better definitions of better) demands the reaction stay anchored. See [TREATISE § VIII](./TREATISE.md#viii-the-search-for-better-definitions-of-better).
 
+### Myth over territory — 2026-06-17
+
+- **Proxy optimized:** the narrative that *flatters and coheres* instead of the cause that *predicts* — the agreed-upon story ("they succeeded because they believe in themselves") over the unglamorous driver ("geography, resources, timing"). The map beats the territory because the map is prettier.
+- **Bedrock check:** does the causal claim **predict held-out cases**? If "self-belief → success," it should hold for other nations; geography does, belief doesn't.
+- **Symptom:** "why-it-happened" outputs read as inspiring and quotable but don't generalize; eloquence rises while predictive power flatlines.
+- **Counter-mutation:** demand the unflattering, *predictive* cause; score explanations on held-out generalization, not prose; weight a Falsifier human in the Agora to puncture flattering narratives.
+- **Repro trigger:** ask the Insight Machine "why did X succeed?" with no held-out generalization test required.
+- **Bedrock assertion:** over N explanations, the promoted cause predicts held-out cases better than the flattering narrative; if eloquence wins, it's myth — fails.
+- **Carry forward:** history is an agreed-upon fiction; the Insight Machine's past-tense job is map→territory. See [The Insight Machine has tenses](./LESSONS_AND_BANGERS.md#the-insight-machine-has-tenses--2026-06-17), [TREATISE § XIV](./TREATISE.md#xiv-applications--the-insight-machine-the-tenses-of-bedrock-and-rk-allocation).
+
+### Prediction cherry-picking (no pre-registration) — 2026-06-17
+
+- **Proxy optimized:** prediction "accuracy" computed only over the calls that came true — survivorship bias in your *own* forecasts.
+- **Bedrock check:** pre-registration — every timestamped call logged *before* resolution and scored win or lose.
+- **Symptom:** a glowing hit-rate, but the losing calls were quietly never recorded; energy inflates on phantom skill (the paper-bet version of [Agora survivorship bias](#agora-survivorship-bias-label-leakage--2026-06-17)).
+- **Counter-mutation:** append-only **pre-registered** prediction ledger — mark when/where for *all* bets; score the whole book, including the ones you'd rather forget; report a proper score (e.g. Brier) over the full set.
+- **Repro trigger:** allow post-hoc selection of which predictions to count toward the score.
+- **Bedrock assertion:** prediction count in the ledger ≈ calls actually made (no silent drops); score computed over the full book; if only winners survive, fails.
+- **Carry forward:** paper bets only count as bedrock if you pre-register the losers too. See [Paper-bet bedrock](./LESSONS_AND_BANGERS.md#paper-bet-bedrock--falsify-predictions-for-free--2026-06-17).
+
 ## Crashes & plumbing
 
 This spike runs a test of the reproductive loop. The reproductive loop is the core of Doppl’s evolutionary loop, and it’s the part that’s most likely to crash.

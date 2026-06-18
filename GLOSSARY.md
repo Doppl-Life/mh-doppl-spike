@@ -103,6 +103,12 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Why:** the cap that stops infinite chaos. Hard cap (e.g. 5) plus earned budget. "Feeding and being fed upon."
 - **See:** `[TREATISE.md](./TREATISE.md)` § IV; crucible `--cap`
 
+### r/K selection (metabolic rate)
+
+- **Def:** the **strategy** dimension on top of the energy budget — **r** = many cheap fast offspring, mass death tolerated (landing-page confetti); **K** = few slow expensive offspring, heavy investment, can't-afford-to-lose. Runs **per stratum-transition, not per organism**: e.g. generate/deploy variants is r at L2–L3, earning reach against the finite attention economy is K at L3–L4. `status: coined`
+- **Why:** r/K sets **nurture and death-tolerance** (r → near-zero nurture; K → butterfly-wing uncling) and the allocation call ("worth the squeeze") is a budgeted bandit over a *cost vector* (tokens/money/compute/latency). Energy budget = resource; r/K = how you spend it.
+- **See:** Energy budget, Butterfly-wing touch, Homology; `[TREATISE.md](./TREATISE.md)` § XIV
+
 ### The fork is the prey
 
 - **Def:** the stance that design forks (A vs. B) should be raced under selection, not resolved by argument — the choice itself is what evolution hunts. `status: working`
@@ -218,6 +224,30 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Why:** "easiest to find and run." Each trace carries a back-link to the index, so you can navigate to and from runs across Agardens.
 - **See:** `build_index.py`; crucible `refresh_root_index`
 
+### Insight Machine
+
+- **Def:** an **application** (expression) of the organism, not a new mechanism: prime with what's known → collate a domain's frontier → hunt **non-obvious convergences** → skate to where the puck is going. `status: coined`
+- **Tenses (open taxonomy — two, three, or more):** **will-be** (prediction; bedrock = *time*, cheapest), **why-it-happened** (explanation/abduction; bedrock = held-out cases), **should-be** (prescription; bedrock = market/factory/human, worst). The tense sets the bedrock latency — start predictive, short-loop, non-adversarial.
+- **See:** Territory (vs myth), Paper bet, Homology; `[TREATISE.md](./TREATISE.md)` § XIV; `[LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md)` (The Insight Machine has tenses)
+
+### Territory (vs myth)
+
+- **Def:** in the *why-it-happened* tense, the actual **predictive** cause as opposed to the flattering, agreed-upon narrative (the myth/map). "A country succeeds on geography/resources/timing, not on its beliefs about itself." `status: coined`
+- **Why:** history is an agreed-upon fiction; the Insight Machine's past-tense job is map→territory. Optimizing for the prettier story is a reward hack ([Myth over territory](./BUGS_AND_MITIGATIONS.md)).
+- **See:** Insight Machine; memetic cancer
+
+### Paper bet
+
+- **Def:** a **timestamped prediction** (real-money *or* virtual) used as cheap predictive bedrock — let time adjudicate, measure counterfactual value, blast radius dialable from $0. Even virtual bets earn "energies." `status: coined`
+- **Why:** the will-be tense with the loop closed; reality-verdicts (`reactor: "world/price"`) flow into the Agora ledger. Requires **pre-registration** of all calls (losers too) or it's cherry-picking.
+- **See:** Insight Machine, Verdict, Bedrock; `[bedrock/signal/](./bedrock/signal/README.md)`
+
+### Software factory
+
+- **Def:** a **tool** (not a primitive) an L3/L4 stratum can pick up to build and run real-world experiments (scrapers, landing pages, bots). One source of reality-bedrock among others. `status: coined — tool, not integral`
+- **Why:** scoped deliberately: what's *integral* is reality-as-bedrock + the Lα allocation call; the factory is merely one way to produce the former.
+- **See:** Bedrock, Insight Machine, r/K selection
+
 ---
 
 ## Drift log
@@ -230,6 +260,11 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 | 2026-06-17 | Sprout / Afrit   | Coined — process-idea (sprout) vs outcome-idea (afrit = A+fruit); PRM/ORM split, two energy ledgers. Afrit superseded a brief "Bloom" |
 | 2026-06-17 | Skill lineage    | Coined — skill pedigree (parent/mutation/bedrock) as registry; expression stays in host dirs |
 | 2026-06-17 | Homology         | Coined — metaphor↔ML-mechanism congruence as a two-way idea generator (sprout/afrit = PRM/ORM) |
+| 2026-06-17 | r/K selection    | Coined — strategy layer on energy budget; per stratum-transition (r at L2–L3, K at L3–L4); allocation = budgeted bandit |
+| 2026-06-17 | Insight Machine  | Coined — application: non-obvious convergence; has tenses (will-be / why / should-be), open taxonomy |
+| 2026-06-17 | Territory / myth | Coined — actual predictive cause vs flattering narrative (map/territory) in the why-it-happened tense |
+| 2026-06-17 | Paper bet        | Coined — timestamped (real or virtual) prediction as cheap, $0-blast-radius predictive bedrock |
+| 2026-06-17 | Software factory | Coined — scoped as a **tool, not a primitive**; one source of reality-bedrock |
 | 2026-06-17 | Bedrock          | Status nudged: first instance now sketched (Agora verdict ledger in `bedrock/signal/`) |
 | 2026-06-17 | Lαlphα           | Widened: now names **agent AND human team members** as peers, not just the agent      |
 | 2026-06-17 | Acology         | Chose **A-prefix** (Acological) over "Ecological" — consistent with Agenome/Aphenome |

@@ -220,6 +220,7 @@ This repo is a spike ecology. Deeper narrative, forks, and falsifiable hazards l
 | Doc | What it is |
 |-----|------------|
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | What we're building and the form (this doc's technical companion) |
+| [`PRD.md`](./PRD.md) | Product requirements — stories, acceptance criteria, KPIs, roadmap |
 | [`TREATISE.md`](./TREATISE.md) | Living meta-narrative — philosophy + architecture |
 | [`GLOSSARY.md`](./GLOSSARY.md) | The evolving lexicon |
 | [`DIAGRAMS.md`](./DIAGRAMS.md) | Visual map |

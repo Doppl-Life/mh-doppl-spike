@@ -9,5 +9,8 @@ crucible_trace*.html
 *trace*.json
 index.html
 
+bedrock/signal/verdicts.jsonl
+bedrock/signal/posts.jsonl
+
 .codegraph/
 .DS_Store

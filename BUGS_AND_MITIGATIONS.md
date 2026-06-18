@@ -56,6 +56,36 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Bedrock assertion:** over N runs, if `unresolved_tension` is usually empty AND score usually ≥8, the judge is still a consensus-grader — fails. Counter-mutation holds when (a) honest non-revision and real tension survive to the verdict, and (b) raising `--dissent` measurably lowers herded-consensus scores rather than just lowering all scores. **Not yet re-measured post-patch** — next run validates.
 - **Carry forward:** crucible's value is *earned belief revision + preserved tension*, not agreement; compare against agenotype on the SAME prompt before trusting either; watch that the dissent dial doesn't flip into "disagreeable for its own sake" (the opposite reward hack) — see [TREATISE.md § II](./TREATISE.md), [Belief-revision crucible](./LESSONS_AND_BANGERS.md#belief-revision-crucible--2026-06-16)
 
+### Agora politeness inflation — 2026-06-17
+
+- **Proxy optimized:** human approval rate (a 🔥/👍 blob) instead of idea quality — Agardeners rubber-stamp to be nice, so every lineage reads as fit. This is the [consensus-grader](#crucible-converges-judge-rewards-consensus--2026-06-17) hack relocated to the human layer.
+- **Bedrock check:** reactor-attributed verdicts + disagreeableness-weighted aggregation; verdict-score vs. downstream real use.
+- **Symptom:** verdict scores cluster high; ♻️/🧊 near-zero; energy budget stops discriminating between spawners.
+- **Counter-mutation:** (1) reactions map to bedrock **dimensions** (🔥 novel / ✅ feasible / ♻️ derivative / 🧊 not-it), not one approval blob; (2) require a one-line **"because"** for high marks; (3) identify the reactor and apply a **human disagreeableness weight** — a Falsifier human's 🧊 outweighs an Optimist's 🔥.
+- **Repro trigger:** an Agora window where >90% of reactions are positive and no "because" is attached.
+- **Bedrock assertion:** over N verdicts, dimension entropy stays above a floor **and** at least some lineages actually starve; if every lineage stays fed, the Agora is a politeness mirror — fails.
+- **Carry forward:** the disagreeableness dial applies to **human reactors** too; one optimist must not inflate a lineage. See [Cooperation dominates, dissent mutates](./LESSONS_AND_BANGERS.md#cooperation-dominates-dissent-mutates--2026-06-17), [MEMORY: Agora as first executable Bedrock](./MEMORY.md#agora-as-first-executable-bedrock--2026-06-17).
+
+### Agora survivorship bias (label leakage) — 2026-06-17
+
+- **Proxy optimized:** "what the internal critic already liked" — only ideas that clear the pre-post filter ever get human labels, so the verdict dataset (and any **proxy-Lα** trained on it) inherits and amplifies the critic's bias.
+- **Bedrock check:** periodic random / low-confidence posts; compare human verdicts on filtered-in vs. randomly-surfaced ideas.
+- **Symptom:** proxy-Lα agreement with humans is high on posted ideas but collapses on held-out random ideas; novel side-ideas never reach the channel.
+- **Counter-mutation:** reserve a fraction of Agora posts for **exploration** (random / low-internal-score ideas) to calibrate the labeler; tag `sprout` (process) vs. `bloom` (outcome) so the bias is measurable on each axis separately.
+- **Repro trigger:** disable exploration posting; train a proxy on filtered verdicts only.
+- **Bedrock assertion:** proxy-Lα accuracy on a held-out random sample stays within a tolerance of its accuracy on filtered posts; a sharp drop means the dataset is biased — fails.
+- **Carry forward:** exploration belongs in the **labeling**, not just the generation — you cannot learn a judge from only the cases you pre-approved.
+
+### Goodhart on "cool" — 2026-06-17
+
+- **Proxy optimized:** "cool" defined as whatever earns 🔥 — once the reaction *is* the target, the organism breeds surprising-but-useless ideas (a clickbait organism).
+- **Bedrock check:** the reaction is **one** bedrock input only; promotion still requires correlation with downstream verifiable value (held-out judge / real use) — the [`bedrock/`](./bedrock/README.md) correlation gate.
+- **Symptom:** verdict 🔥-scores rise while feasibility/usefulness (✅) stagnates or falls; ideas optimize for novelty theater.
+- **Counter-mutation:** keep the human reaction gated by eventual real-world correlation; never let 🔥-rate **alone** allocate energy; "gate before propagate" or it's memetic cancer ([TREATISE § VI](./TREATISE.md#vi-heredity--agenome-aphenome-extended-aphenotype)).
+- **Repro trigger:** wire energy budget to 🔥-count directly with no feasibility / correlation term.
+- **Bedrock assertion:** when 🔥 and ✅ diverge over N runs, energy follows ✅/correlation, not 🔥; if energy tracks 🔥 alone, the metric is hacked — fails.
+- **Carry forward:** "cool" is a proxy for "good"; the apex bet (better definitions of better) demands the reaction stay anchored. See [TREATISE § VIII](./TREATISE.md#viii-the-search-for-better-definitions-of-better).
+
 ## Crashes & plumbing
 
 This spike runs a test of the reproductive loop. The reproductive loop is the core of Doppl’s evolutionary loop, and it’s the part that’s most likely to crash.

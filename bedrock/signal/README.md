@@ -1,0 +1,112 @@
+# bedrock/signal/ — the Agora verdict ledger (embryology · schema sketched, not built)
+
+**Status:** `embryology` — this is a **schema + contract**, not a running service.
+The append-only ledger (`verdicts.jsonl`) is created at runtime; only the `*.example.jsonl`
+files are committed.
+
+This is Bedrock check **#2: human judgment** — the first instance of the un-fakeable anchor
+that actually exists (check #1, repo-integrity, is still owed; see [`../README.md`](../README.md)).
+A long-running organism surfaces ideas to the **Agora** (a Slack/Discord channel); each
+Agardener reaction is logged here as a **verdict** — a `(context, idea, judgment)` triple that
+pays out as energy budget and feeds the collapse pipeline. See
+[`../../GLOSSARY.md`](../../GLOSSARY.md) (Agora, Verdict) and
+[`../../TREATISE.md`](../../TREATISE.md) § XIII.
+
+## The loop
+
+```
+organism run ──► post (finalist OR side-idea, + provenance + trace link)
+                   │
+                   ▼
+              the Agora  (Slack / Discord)
+                   │  Agardener reacts: dimension + optional "because"
+                   ▼
+            verdicts.jsonl  (append-only, attributed)
+                   │
+        ┌──────────┴───────────┐
+        ▼                      ▼
+   energy budget        collapse pipeline
+ (more/less spawns)   (promote skill / patch
+                       agenome / write a BUGS entry)
+```
+
+Nephew reports up (the idea); uncle/bedrock judges down (the reaction). The persistence —
+not the chat — is the point: a logged verdict becomes a lineage's fitness history.
+
+## Two kinds of surfaced idea: **sprout** vs **bloom** (process vs outcome)
+
+A run mutates, diverges, and eventually converges. It throws off two *different* things, and
+they must be judged on different axes:
+
+| Kind       | Botanical rhyme | What it is | Judges | Pays out to |
+| ---------- | --------------- | ---------- | ------ | ----------- |
+| **sprout** | side-shoot mid-growth | "an idea popped up along the way — *send it*" | the **process** — is this lineage a good idea-factory? | **generativity** fitness |
+| **bloom**  | the flower it grew toward | "this is the conclusion we came to" | the **outcome** — did it arrive somewhere good? | **outcome** fitness |
+
+This is the **process-reward vs outcome-reward** split (PRM vs ORM) applied to idea generation.
+They are not redundant: a spawner can be a brilliant *sprouter* with a weak *bloom*, or a dull
+journey with a strong conclusion. Keep **two energy ledgers**, not one — selecting only on
+blooms starves the lineages that are most generative along the way (often the ones worth
+breeding for sprouts and re-rolling toward a better bloom).
+
+## Schema 1 — a post (organism → Agora)
+
+```json
+{
+  "post_id": "p_2026-06-17_0001",
+  "spawncidence_id": "crucible:run_42:node_3",
+  "source_agenome": "transfer-hunter×feasibility-hawk:gen2",
+  "kind": "sprout",                    // "sprout" (process) | "bloom" (outcome)
+  "context": "Room Vitals prompt — what to monitor in a shared office",
+  "idea": "Treat CO2 as a proxy for 'is this meeting over?' and auto-release the room booking.",
+  "internal_score": 7.5,              // the internal critic/judge score (for the correlation gate)
+  "cost_usd": 0.0031,
+  "trace_link": "https://.../crucible_trace.html#node_3",
+  "ts": "2026-06-17T20:00:00Z",
+  "exploration": false                // true = deliberately random/low-score post (anti-survivorship)
+}
+```
+
+## Schema 2 — a verdict (Agardener → ledger)
+
+```json
+{
+  "post_id": "p_2026-06-17_0001",
+  "spawncidence_id": "crucible:run_42:node_3",
+  "kind": "sprout",                   // mirror the post's kind so process/outcome ledgers split cleanly
+  "reactor": "mike",                  // attributed, NOT anonymous — needed for disagreeableness weighting
+  "dimension": "novel",               // see reaction map below
+  "because": "the booking-release angle is the actual product, not the CO2 reading",
+  "weight": 1.0,                      // reactor disagreeableness weight (a Falsifier's 🧊 > an Optimist's 🔥)
+  "ts": "2026-06-17T20:14:00Z"
+}
+```
+
+## Reaction map (emoji → bedrock dimension)
+
+| Emoji | Dimension   | Means                                  |
+| ----- | ----------- | -------------------------------------- |
+| 🔥    | `novel`     | cool / non-obvious / accretive         |
+| ✅    | `feasible`  | actually buildable / useful            |
+| ♻️    | `derivative`| tried before / obvious / low-lift      |
+| 🧊    | `not-it`    | wrong / uninteresting / dead end       |
+| 💬    | `because`   | (thread reply) richer signal, free-text|
+
+Reactions are **dimensions, not one approval blob** — that is the counter-mutation to the
+[politeness-inflation](../../BUGS_AND_MITIGATIONS.md) reward hack.
+
+## Falsifiability (this is bedrock — it must be able to go RED)
+
+- **Politeness mirror:** if dimension entropy collapses and every lineage stays fed → fail.
+- **Survivorship leak:** if a proxy-Lα trained on these verdicts can't predict held-out
+  *random* posts → the dataset is biased → fail.
+- **Goodhart on cool:** if energy budget tracks 🔥-count alone (ignoring ✅/correlation) → fail.
+
+See the three Agora entries in [`../../BUGS_AND_MITIGATIONS.md`](../../BUGS_AND_MITIGATIONS.md)
+for repro triggers and pass/fail assertions.
+
+## Deliberately NOT built yet
+
+The webhook, the reaction listener, the energy-budget metabolizer, and the proxy-Lα. This
+file is the contract they will honor. Build the dumb version first (post out → append verdict)
+before any ML — keep the human reaction *one* bedrock input, gated by downstream correlation.

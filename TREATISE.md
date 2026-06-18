@@ -314,6 +314,7 @@ Watch for **natural convergence**: as mortal spikes run, the same skill shapes s
 | Crucible `--html` extended aphenome | Skill graph (`@skill` → `@skill`), collapse pipeline aphenome → skill |
 | Crucible `--local` (Gemma 4 / Ollama-compatible) | Local Lα on Pi/Hermes ("Lαlphα"); per-role local routing |
 | `spikes/{agenotype,crucible}` (today) | Energy-metered spawncidence budget; auto-prune; harness comparator |
+| `bedrock/signal/` verdict schema (§ XIII) | The Agora — live Slack/Discord channel, reaction listener, verdict→energy metabolizer, proxy-Lα |
 
 We are in **chaos space before constitution** — naming the organism while the phenotype forms. Premature optimization is the enemy. So is never building. The move is **small mortal experiments**, not big irreversible forks.
 
@@ -325,12 +326,12 @@ We are in **chaos space before constitution** — naming the organism while the 
 2. **Intra-species budget** — How many peer combats per stratum per run given token metabolism?
 3. **Archetype mix** — Minimum viable ecology so Dominant cannot capture without Falsifier?
 4. **Nephew honesty** — How do we reward reporting failure upward, not just optimism?
-5. **Lα automation** — When does witness get an LLM cron vs. stay human + register + conversation?
+5. **Lα automation** — When does witness get an LLM cron vs. stay human + register + conversation? *(Partial answer: the **Agora** (§ XIII) keeps a human in the loop while logging verdicts; a **proxy-Lα** trained on those verdicts is the path to automation via active learning.)*
 6. **Bedrock for Jun 29** — Critic only, or critic + human gate + one executable check?
 7. **Collapse pipeline** — Implement Lα distillation script? Input bundle schema?
 8. **Skill convergence catalog** — As spikes run, which organs reappear? Minimum skill ecology per stratum pair?
 9. **Repo layout** — ✅ done: `spikes/agenotype` + `spikes/crucible`.
-10. **Uncling/nephewing mechanisms** — How do nurture/maturation actually run? Candidates: cron-job check-ins, Codex Automations, Claude Cowork dispatches, scheduled Lα passes. Which fire down (uncle) vs. up (nephew)?
+10. **Uncling/nephewing mechanisms** — How do nurture/maturation actually run? Candidates: cron-job check-ins, Codex Automations, Claude Cowork dispatches, scheduled Lα passes. Which fire down (uncle) vs. up (nephew)? *(First concrete instance: the **Agora** (§ XIII) — nephew reports an idea up, uncle/bedrock reacts down, async and logged.)*
 11. **Rite of the Spawncidence** — needs a better name for "you + I deliberately spawn experiments to witness."
 12. **Local Lα** — run the witness on a local model (Pi / Hermes / Gemma 4)? When does that beat a hosted Lα?
 
@@ -392,6 +393,62 @@ Cheap-hosted (Gemini Flash 2.5, GPT-4o-mini) is the floor, not the ceiling. Team
 
 ---
 
+## XIII. The Agora — human reaction as bedrock signal
+
+A long-running organism is, by its nature, a **good-idea surfacer**: across many iterations it
+throws off finalists *and* side-ideas ("not the ultimate one, but one that popped up along the
+way"). The **Agora** is the async channel — Slack/Discord — where those ideas reach the
+Agardeners, and where the human reaction comes back. Naming follows the A-prefix rule: the
+agentic public square of the Agarden.
+
+The reframe that makes it load-bearing: **the Agora is not a notification feed — it is the
+first executable Bedrock.** § VIII names human judgment as one of the un-fakeable anchors;
+until now we had no logged instance of it. Each post → reaction is a `(context, idea,
+judgment)` **verdict**: held-out human judgment, captured as labeled data. The objective may
+evolve; this anchor does not move.
+
+**The side-ideas are the highest-value labels.** The internal fusion-judge already ranked the
+finalist. When a human reacts to a byproduct — "wait, *that's* the real idea" — we've caught a
+case where the internal critic and bedrock disagree. That disagreement is the cheapest detector
+we have for **memetic cancer** (§ VI): an artifact that scores well internally but doesn't
+correlate with bedrock.
+
+**Sprouts vs blooms — process and outcome are different fitnesses.** A run mutates, diverges,
+and converges, throwing off two distinct things. A **sprout** is an idea that pops up along the
+way ("send it") — it judges the *process*, the lineage's generativity. A **bloom** is the
+converged conclusion ("this is what we came to") — it judges the *outcome*. This is the
+process-reward vs outcome-reward split (PRM/ORM) re-derived for idea generation: keep **two
+energy ledgers** (`kind: sprout|bloom`), because a spawner can sprout brilliantly and bloom
+weakly (breed it for sprouts) or trudge to a strong conclusion (a reliable closer). Averaging
+them into one number starves the most generative lineages. Surface sprouts eagerly and cheaply;
+surface blooms sparingly.
+
+**Signal flows in three escalating loops:**
+
+1. **Immediate** — which idea to act on now.
+2. **Metabolic** — verdicts *pay out as energy budget* (§ II, § IV). A spawner whose ideas earn
+   `novel`/`feasible` earns more spawncidences; `derivative`/`not-it` starves. This is the
+   external number the energy metabolism was always missing — selection on *who thinks* finally
+   has a signal that isn't self-graded.
+3. **Bootstrapped** — once enough verdicts accumulate, train a **proxy-Lα** (the local
+   Gemma/Hermes witness of § XII) to predict the humans, and post only what it's *uncertain*
+   about (active learning). The channel generates the dataset that builds the tool that reduces
+   how often it must interrupt a human. Tool-to-make-a-tool, running on itself.
+
+**Failure modes (each logged in [BUGS](./BUGS_AND_MITIGATIONS.md) with repro + assertion):**
+politeness inflation (the consensus-grader hack at the human layer — counter with
+dimension-typed reactions, a required "because", and a **disagreeableness weight on the human
+reactors** themselves), survivorship bias (only labeling what the pre-filter liked — counter
+with exploration posts), and Goodhart-on-cool (breeding novelty theater — counter by keeping the
+reaction *one* gated input, never the sole fitness). Plus the oldest one: spam → dead channel →
+dark bedrock, so the Agora needs its own posting budget. Scarcity is what keeps a reaction worth
+recording.
+
+Schema and contract: [`bedrock/signal/`](./bedrock/signal/README.md). Build the dumb version
+first — webhook out, reaction listener appends to `verdicts.jsonl` — before any ML.
+
+---
+
 ## Revision log
 
 | Date | Note |
@@ -401,3 +458,4 @@ Cheap-hosted (Gemini Flash 2.5, GPT-4o-mini) is the floor, not the ceiling. Team
 | 2026-06-17 | Lα (not L5) — witness outside tree; amemetics / collapse pipeline sketch; `spikes/` repo ecology proposal |
 | 2026-06-17 | Crucible spike built + witnessed; energy-budget metabolism for spawncidences; Agardeners; graph-traversal/CEV; tool-to-make-a-tool; local models (`--local`); HTML extended aphenome; `GLOSSARY.md` born |
 | 2026-06-17 | Lαlphα names humans + agent as peers; Acology/Fusant naming (A-prefix rule); disagreeableness dial + judge consensus-quality patch (counter-mutation to consensus-grading); Agarden hub (`build_index.py` → `index.html`) |
+| 2026-06-17 | § XIII **The Agora** — async human-reaction channel as first executable Bedrock; verdicts as bedrock signal that pays out as energy; proxy-Lα via active learning; `bedrock/signal/` schema; 3 Agora reward hacks logged |

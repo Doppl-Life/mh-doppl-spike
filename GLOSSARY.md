@@ -32,6 +32,12 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Def:** ones who tend the Agarden — humans or agents. "We are the Agardeners of the Agarden." `status: coined`
 - **See:** Lα
 
+### Agora
+
+- **Def:** agentic agora — the async channel (Slack/Discord) where a long-running organism surfaces ideas (finalists *and* side-ideas, with provenance) to the Agardeners, and their reactions are logged as bedrock signal. The public square of the Agarden. `status: coined`
+- **Why:** makes the human Lα *metabolically* part of selection rather than a spectator — the "serviceable," reachable witness. Instantiates the **first executable Bedrock** (held-out human judgment, logged). A-prefix rhyme with Agarden/Agardener.
+- **See:** Verdict, Bedrock, Energy budget; `[bedrock/signal/](./bedrock/signal/README.md)`; `[TREATISE.md](./TREATISE.md)` § XIII
+
 ---
 
 ## Heredity (biological rhyme)
@@ -59,6 +65,12 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 ### Collapse
 
 - **Def:** the phase transition when a mortal spike dies and its fat aphenome is distilled into thin, heritable artifacts (lesson / skill / agenome patch). `status: working`
+
+### Skill lineage
+
+- **Def:** the heritable pedigree of a skill — `{parent, generation, mutation, observed stratum, status, bedrock evidence}` — tracked in [`skills/LINEAGE.md`](./skills/README.md) and in each skill's `lineage:` frontmatter, **separate from where the skill file expresses** (host dirs: `.cursor/skills/`, etc.). `status: coined`
+- **Why:** skills are convergent organs (mutate, diverge, converge); the file is mortal, the lineage survives. Agora verdicts select on the lineage (promote/mutate/deprecate), closing the loop between ideas and the strategies that produce them.
+- **See:** Convergent skills, Verdict; `[skills/README.md](./skills/README.md)`; `[TREATISE.md](./TREATISE.md)` § VIII-b
 
 ---
 
@@ -111,8 +123,25 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Bedrock
 
-- **Def:** the immovable anchor for "better" — executable checks, held-out judges, human judgment, falsifiable repro triggers. The objective may evolve; bedrock may not move. `status: working (concept) — no executable instance yet`
-- **Stub:** [`bedrock/README.md`](./bedrock/README.md) reserves the home; the first executable check is still to be defined.
+- **Def:** the immovable anchor for "better" — executable checks, held-out judges, human judgment, falsifiable repro triggers. The objective may evolve; bedrock may not move. `status: working (concept) — first instance now sketched (Agora verdict ledger)`
+- **Stub:** [`bedrock/README.md`](./bedrock/README.md) reserves the home; [`bedrock/signal/`](./bedrock/signal/README.md) sketches the first instance (human-judgment via the Agora). Repo-integrity check #1 is still to be built.
+
+### Verdict (bedrock signal)
+
+- **Def:** a logged `(context, idea, human-judgment)` triple emitted when an Agardener reacts to an Agora post — the append-only, attributable fitness label that pays out as energy budget and feeds the collapse pipeline. `status: coined`
+- **Why:** turns ephemeral reactions into falsifiable training data keyed to a spawncidence; the first concrete content of `bedrock/`. Reactions map to bedrock *dimensions* (novel / feasible / derivative / not-it), not one approval blob — see the politeness-inflation reward hack.
+- **See:** Agora, Energy budget, Bedrock; `[bedrock/signal/verdicts.jsonl](./bedrock/signal/README.md)`; `[BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md)` (Agora reward hacks)
+
+### Sprout
+
+- **Def:** an interim idea surfaced mid-run ("one popped up along the way — *send it*"); a side-shoot. Judged on **process** (is this lineage a good idea-factory?), pays out to **generativity** fitness. `status: coined`
+- **See:** Bloom, Verdict, Agora; process-reward (PRM)
+
+### Bloom
+
+- **Def:** the converged conclusion of a run ("this is what we came to"); the flower it grew toward. Judged on **outcome** (did it arrive somewhere good?), pays out to **outcome** fitness. `status: coined`
+- **Why:** sprout vs. bloom is the **process-reward vs. outcome-reward** split (PRM/ORM) applied to idea generation — two energy ledgers, not one. A lineage can sprout brilliantly and bloom weakly, or vice versa.
+- **See:** Sprout, Verdict; `[bedrock/signal/README.md](./bedrock/signal/README.md)` (sprout vs bloom)
 
 ---
 
@@ -187,6 +216,11 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-17 | Agora            | Coined — async human-judgment channel as the first executable Bedrock                  |
+| 2026-06-17 | Verdict          | Coined — logged (context, idea, judgment) triple = bedrock signal that pays out as energy |
+| 2026-06-17 | Sprout / Bloom   | Coined — process-idea (sprout) vs outcome-idea (bloom); PRM/ORM split, two energy ledgers |
+| 2026-06-17 | Skill lineage    | Coined — skill pedigree (parent/mutation/bedrock) as registry; expression stays in host dirs |
+| 2026-06-17 | Bedrock          | Status nudged: first instance now sketched (Agora verdict ledger in `bedrock/signal/`) |
 | 2026-06-17 | Lαlphα           | Widened: now names **agent AND human team members** as peers, not just the agent      |
 | 2026-06-17 | Acology         | Chose **A-prefix** (Acological) over "Ecological" — consistent with Agenome/Aphenome |
 | 2026-06-17 | Fusant           | Coined for the fusion entity inside a spawncidence node (crucible `Debater`)          |

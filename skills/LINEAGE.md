@@ -30,6 +30,33 @@ two unrelated lineages grow them — [Convergent skills](../LESSONS_AND_BANGERS.
 
 None promoted yet — recorded so the convergence is *recognized* when it appears, not reinvented.
 
+## Open cells — mutagens named, not yet forked
+
+Pointed at deliberately so the gaps are *visible* (not built — the current five are the first trial cohort).
+The skill family currently tiles a 2×2 of convergence × valence with one corner empty, plus one
+high-value operator that already exists as an *archetype* but not yet as a *skill*:
+
+|  | **up (treasure)** | **down (trap / cut)** |
+| --- | --- | --- |
+| **convergent** (one best) | `breakthrough` — best thing to **add** | **`subtraction`** *(open)* — best thing to **cut** |
+| **divergent** (off-path) | `breakout` — paradigm-escaping zag | `blindside` — non-obvious failure mode |
+
+- **`subtraction`** *(convergent-DOWN, open)* — the empty corner. Converges on the single highest-leverage
+  *removal* — the load-bearing thing to delete (via-negativa / "the best part is no part"). Mutagen class:
+  **valence-flip** (the pure up→down flip of `breakthrough`, staying convergent — the truest sibling).
+  Distinct from `blindside` (which hunts *risk*) and `constraint-injection` (which *adds* pressure); this
+  *removes mass*. Working names: `subtraction` / `via-negativa` / `the-cut`. Not built.
+- **`transfer`** *(cross-domain transplant, open — but half-evolved)* — find a technique/result in field A
+  that cracks an open problem in field B. The **Doppl proposal's #1 breakthrough move** ("transfer …
+  the move behind most real breakthroughs"). Mutagen class: a **new** operator — **domain-transfer**
+  (not valence-flip / basis-transform / scarcity). **Already exists as the `transfer-hunter` archetype**
+  in the crucible `ARCHETYPE_POOL` — so crystallizing it into a skill is low-cost, high-value (an organ
+  re-evolving → promotion candidate, cf. Convergence watch). Working names: `transfer` / `transplant`. Not built.
+
+`first-principles` (basis-transform) and `constraint-injection` (scarcity-operator) sit *off* this 2×2 —
+they are different operator classes, not compass corners. That's the point: the **mutagen catalog** is the
+real generating set, and the 2×2 is only one slice of it.
+
 ## Carry forward
 
 - **First realized mutation (2026-06-18):** the **divergence fork** — `breakout` + `blindside`, gen-1

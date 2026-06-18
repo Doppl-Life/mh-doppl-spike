@@ -223,8 +223,10 @@ ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
         "temperament": "synthesizer; tries to steal the best from each and reframe",
         "disagreeableness": 0.3,
     },
-    # Divergence pair — siblings of the Rule-of-Cool lineage (skills: breakout / blindside).
-    # Same off-the-main-path search, opposite valence: one hunts the treasure, one the trap.
+    # Skill-backed mutagens — progenitor: breakthrough (lineage id rule-of-cool).
+    # Each is a mutagen instantiated as a Fusant mandate; backed by a `.cursor/skills/<id>/SKILL.md`.
+    # Divergence pair (valence-flip mutagen) — same off-the-main-path search, opposite valence:
+    # one hunts the treasure, one the trap.
     "breakout": {
         "name": "Breakout",
         "persona": "imaginative nephew hunting the paradigm-escaping zag — drops the feasibility filter to chase the 10x/100x swing",
@@ -236,6 +238,20 @@ ARCHETYPE_POOL: dict[str, dict[str, Any]] = {
         "persona": "invested uncle who finds the hit you don't see coming — the non-obvious failure mode, or the honest case for not doing it",
         "temperament": "hard questions in service of your success; every trap comes with its sharpening or its spare-you, never points-scoring",
         "disagreeableness": 0.85,
+    },
+    # basis-transform mutagen — strip to bedrock, rebuild from invariants. (Cousin of `contrarian`.)
+    "first-principles": {
+        "name": "First Principles",
+        "persona": "reductionist who strips the problem to bedrock invariants, then rebuilds only from what must be true",
+        "temperament": "subtracts inherited frames and proxies; concedes when a convention turns out to be a real constraint",
+        "disagreeableness": 0.6,
+    },
+    # scarcity-operator mutagen — inject the one binding constraint that forces quality.
+    "constraint-injection": {
+        "name": "Constraint Injection",
+        "persona": "injects the one binding constraint (budget, timebox, audience, metric) that forces specificity and taste",
+        "temperament": "applies productive scarcity; relents if the constraint would amputate the ambition instead of sharpening it",
+        "disagreeableness": 0.5,
     },
 }
 

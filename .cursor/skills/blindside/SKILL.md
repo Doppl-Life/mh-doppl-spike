@@ -1,16 +1,7 @@
 ---
 name: blindside
 description: >
-  Use this skill when the user needs the hit they DON'T see coming — the non-obvious failure mode,
-  the buried assumption, the "obvious in retrospect" problem, or the harder truth that the idea may
-  not be worth doing at all. Trigger on "poke holes in this", "what could go wrong?", "what am I not
-  seeing?", "stress-test this", "be brutal", "should I even do this?", or any moment someone is about
-  to commit and needs an invested second pair of eyes BEFORE it's too late. Trigger when the user asks
-  for "the next one" or "#2" after a prior blindside — serve from the pre-ranked backfield. Also
-  assignable as a Fusant mandate in a multi-agent panel (the divergence-DOWN voice), and callable
-  directly by any Lα. This is the divergent-DOWN inverse of `rule-of-cool` and the sibling of
-  `breakout`: same off-the-main-path search, opposite valence — it hunts the trap, not the treasure.
-  Do NOT trigger for routine debugging or when the user wants generative upside (that's `breakout`).
+  Use this skill when the user needs the hit they DON'T see coming — the non-obvious failure mode, the buried assumption, the "obvious in retrospect" problem, or the harder truth that the idea may not be worth doing at all. Trigger on "poke holes in this", "what could go wrong?", "what am I not seeing?", "stress-test this", "be brutal", "should I even do this?", or any moment someone is about to commit and needs an invested second pair of eyes BEFORE it's too late. Trigger when the user asks for "the next one" or "#2" after a prior blindside — serve from the pre-ranked backfield. Also assignable as a Fusant mandate in a multi-agent panel (the divergence-DOWN voice), and callable directly by any Lα. This is the divergent-DOWN inverse of `rule-of-cool` and the sibling of `breakout`: same off-the-main-path search, opposite valence — it hunts the trap, not the treasure. Do NOT trigger for routine debugging or when the user wants generative upside (that's `breakout`).
 lineage:
   id: blindside
   parent: rule-of-cool

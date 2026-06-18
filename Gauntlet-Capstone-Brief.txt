@@ -1,0 +1,87 @@
+G A U N T L E T / / C A P S T O N E K I C K O F F B R I E F · W E E K 1
+
+The Capstone
+Ten weeks distilled into one system you design, build, and ship.
+This is the proof of what you can do with AI as a core primitive
+— not a side project.
+
+
+
+    R E V E A L E D     P L A N D U E          T E A M S I Z E     S H O W C A S E
+    MON · JUN 15,       WED · JUN 17 · 11:59   3–4                 MON · JUN
+    2026                PM                     CHALLENGERS         29
+
+
+
+
+
+0 1 — D I S C O V E R Y
+Pick a problem that is technically hard. The capstone is not
+measured by polish — it's measured by the ambition of what
+you attempted and how much of it you got working.
+
+
+    0 2 — T H E S C H E D U L E
+
+                   MON · JUN 15   Capstone revealed
+                        9:15 AM   Planning and the clock starts.
+
+                   MON · JUN 15   Proposals submitted
+                        6:00 PM   Everyone submits one. No exceptions.
+
+                   TUE · JUN 16   15 proposals selected
+                       12:00 PM   Winners start recruiting teams of 3–4.
+
+                   WED · JUN 17   Team formation — the atrium
+                       10:00 AM   Incomplete teams and people without a team meet to form teams.
+
+                   WED · JUN 17   Project planning document due DELIVERABLE
+                       11:59 PM   Hard deadline. One submission per team.
+
+ MON · JUN 29  @  10-minute live presentation DELIVERABLE
+PRESENTATIONS     Demo what you shipped. Live, in front of the r om.
+
+    0 3 — P R O J E C T D I R E C T I O N S
+
+    Focus on technically challenging projects. Three directions worth
+    chasing:
+
+
+    A   Combine ML with LLM applications
+        Pair classical machine learning models with LLM-driven systems so each does what it's
+        best at.
+
+
+
+
+B A philosophically different take on agents
+        Rethink how agents are leveraged. For example: could a company survive if a team worked
+        through one shared agent that did most of the work — and the team simply verified it?
+
+
+
+    C   One problem, many approaches
+        Take a simple problem and attack it from several angles — solving it multiple ways and
+        comparing what actually wins.
+
+
+
+
+    0 4 — D E L I V E R A B L E S
+
+
+    D E L I V E R A B L E 0 1                        D E L I V E R A B L E 0 2
+
+    Project Planning                                 Live Presentation
+    Document                                         Ten minutes, live, in front of the room. Demo
+    Your team's plan: the problem, the technical     what you built and what you learned.
+    approach, scope, and who owns what.
+
+    DUE WED · JUN 17 · 11:59 PM                      10 MIN · MON · JUN 29
+
+
+
+
+
+    Build something that proves what you can do.     G A U N T L E T / / C A P S T O N E
+    Start now.                                       K I C K O F F B R I E F · 2 0 2 6

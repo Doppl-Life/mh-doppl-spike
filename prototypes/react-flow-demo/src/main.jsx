@@ -57,6 +57,12 @@ import {
   subtypeCheckContractShapes,
   summarizeSubtypeChecks,
 } from './subtypeCheckData.js';
+import {
+  buildNoveltyEvent,
+  noveltyBoundary,
+  noveltyCandidates,
+  noveltyContractShapes,
+} from './noveltyRadarData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -2217,6 +2223,178 @@ function SubtypeCheckLab() {
   );
 }
 
+function NoveltyRadar() {
+  const [candidateId, setCandidateId] = useState(noveltyCandidates[0].id);
+  const candidate = noveltyCandidates.find((item) => item.id === candidateId) || noveltyCandidates[0];
+  const event = buildNoveltyEvent(candidate);
+  const maxSimilarity = Math.max(
+    0,
+    ...candidate.neighbors.map((item) => item.similarity),
+    ...candidate.priorArt.map((item) => item.similarity),
+  );
+  const riskLabel = candidate.degrade ? 'degraded' : maxSimilarity > 0.75 ? 'prior-art risk' : 'supported';
+
+  return (
+    <section className="prototype novelty-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 12 · novelty radar</p>
+          <h2>Similarity Is Evidence</h2>
+          <p>
+            Inspect whether a candidate is genuinely new against prior candidates, known prior art,
+            and current signals. Degraded embedding or retrieval states stay visible.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{candidate.method} · {riskLabel}</span>
+          <strong>{Math.round(candidate.score * 100)} novelty</strong>
+          <p>{candidate.comparisonSetSize || candidate.neighbors.length + candidate.priorArt.length + candidate.signals.length} persisted comparisons</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${Math.round(candidate.score * 100)}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="novelty-layout">
+        <aside className="novelty-candidate-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">candidate idea</p>
+              <h3>Choose Radar Target</h3>
+            </div>
+          </div>
+          <div className="novelty-candidate-list">
+            {noveltyCandidates.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={candidate.id === item.id}
+                onClick={() => setCandidateId(item.id)}
+              >
+                <span>{item.subtype}</span>
+                <strong>{item.title}</strong>
+                <small>{item.confidence}</small>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className="novelty-score-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">NoveltyScore</p>
+              <h3>{candidate.title}</h3>
+            </div>
+            <strong className={candidate.degrade ? 'status-bad' : 'status-good'}>
+              {candidate.degrade ? 'degraded' : 'scored'}
+            </strong>
+          </div>
+          <p className="novelty-summary">{candidate.summary}</p>
+          <div className="novelty-component-grid">
+            {candidate.components.map((component) => (
+              <article key={component.label}>
+                <span>{component.label}</span>
+                <strong>{Math.round(component.value * 100)}%</strong>
+                <i><b style={{ width: `${Math.round(component.value * 100)}%` }} /></i>
+                <p>{component.detail}</p>
+              </article>
+            ))}
+          </div>
+          {candidate.degrade && (
+            <article className="quarantine-callout novelty-degrade-card">
+              <span>degraded scoring</span>
+              <p>{candidate.degrade}</p>
+            </article>
+          )}
+        </section>
+
+        <section className="novelty-match-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">nearest neighbors</p>
+              <h3>Prior Candidates</h3>
+            </div>
+          </div>
+          <NoveltyMatchList items={candidate.neighbors} />
+        </section>
+
+        <section className="novelty-prior-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">known prior art</p>
+              <h3>Overlap Risk</h3>
+            </div>
+          </div>
+          <NoveltyMatchList items={candidate.priorArt} />
+        </section>
+
+        <section className="novelty-signal-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">current signals</p>
+              <h3>Signal Fit</h3>
+            </div>
+          </div>
+          {candidate.signals.length ? (
+            <NoveltyMatchList items={candidate.signals} />
+          ) : (
+            <article className="novelty-empty-card">
+              <span>not required</span>
+              <p>Current-signal evidence is optional for this cross-domain candidate.</p>
+            </article>
+          )}
+        </section>
+
+        <section className="novelty-event-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">persisted event</p>
+              <h3>{event.type}</h3>
+            </div>
+            <strong>{candidate.embeddingModelId}</strong>
+          </div>
+          <pre className="payload-preview novelty-event-preview">{JSON.stringify(event, null, 2)}</pre>
+        </section>
+
+        <aside className="boundary-panel novelty-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Novelty Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={noveltyBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={noveltyBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={noveltyBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={noveltyBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={noveltyBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="novelty-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={noveltyContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={noveltyContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function NoveltyMatchList({ items }) {
+  return (
+    <div className="novelty-match-list">
+      {items.map((item) => (
+        <article key={item.id}>
+          <div>
+            <span>{item.kind}</span>
+            <strong>{item.label}</strong>
+          </div>
+          <b>{Math.round(item.similarity * 100)}%</b>
+          <i><em style={{ width: `${Math.round(item.similarity * 100)}%` }} /></i>
+          <p>{item.note}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 function ReplaySpine() {
   const [fixtureId, setFixtureId] = useState('clean');
   const [foldMode, setFoldMode] = useState('replay');
@@ -2783,6 +2961,7 @@ const prototypeStages = [
     items: [
       { id: 'critic', label: 'Critic council' },
       { id: 'subtype', label: 'Subtype checks' },
+      { id: 'novelty', label: 'Novelty radar' },
     ],
   },
   {
@@ -2871,6 +3050,7 @@ function App() {
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}
       {tab === 'subtype' && <SubtypeCheckLab />}
+      {tab === 'novelty' && <NoveltyRadar />}
       {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
     </main>
   );

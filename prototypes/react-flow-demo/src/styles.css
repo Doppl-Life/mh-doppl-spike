@@ -142,7 +142,7 @@ textarea {
 
 .process-tab-stage > div {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -2678,6 +2678,200 @@ article.module-node::after {
   grid-column: 1 / -1;
 }
 
+/* ---------- Novelty radar (prototype 12) ---------- */
+
+.novelty-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) minmax(0, 1fr) 260px;
+  grid-template-areas:
+    "candidates score score boundary"
+    "candidates neighbors prior boundary"
+    "candidates signals event boundary"
+    "contracts contracts contracts contracts";
+  gap: 14px;
+  align-items: start;
+}
+
+.novelty-layout > * {
+  min-width: 0;
+}
+
+.novelty-candidate-panel,
+.novelty-score-panel,
+.novelty-match-panel,
+.novelty-prior-panel,
+.novelty-signal-panel,
+.novelty-event-panel,
+.novelty-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.novelty-candidate-panel { grid-area: candidates; }
+.novelty-score-panel { grid-area: score; }
+.novelty-match-panel { grid-area: neighbors; }
+.novelty-prior-panel { grid-area: prior; }
+.novelty-signal-panel { grid-area: signals; }
+.novelty-event-panel { grid-area: event; }
+.novelty-boundary-panel { grid-area: boundary; }
+.novelty-contract-panel { grid-area: contracts; }
+
+.novelty-candidate-panel,
+.novelty-boundary-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.novelty-candidate-list,
+.novelty-component-grid,
+.novelty-match-list {
+  display: grid;
+  gap: 10px;
+}
+
+.novelty-candidate-list button {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 13px;
+  background: rgba(4, 8, 23, 0.56);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.novelty-candidate-list button:hover,
+.novelty-candidate-list button:focus-visible,
+.novelty-candidate-list button[aria-selected="true"] {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.94);
+  outline: none;
+}
+
+.novelty-candidate-list button[aria-selected="true"] {
+  border-color: rgba(86, 255, 179, 0.62);
+}
+
+.novelty-candidate-list span,
+.novelty-component-grid span,
+.novelty-match-list span,
+.novelty-empty-card span {
+  display: block;
+  min-width: 0;
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.novelty-candidate-list small,
+.novelty-summary,
+.novelty-component-grid p,
+.novelty-match-list p,
+.novelty-empty-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.novelty-candidate-list strong,
+.novelty-match-list strong {
+  color: var(--ink);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.novelty-summary {
+  margin: 0 0 14px;
+  color: #d8e5ff;
+  font-size: 15px;
+}
+
+.novelty-component-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.novelty-component-grid article,
+.novelty-match-list article,
+.novelty-empty-card {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.novelty-component-grid strong {
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.novelty-component-grid i,
+.novelty-match-list i {
+  display: block;
+  height: 8px;
+  overflow: hidden;
+  background: rgba(110, 231, 255, 0.12);
+}
+
+.novelty-component-grid i b,
+.novelty-match-list i em {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+}
+
+.novelty-component-grid p,
+.novelty-match-list p,
+.novelty-empty-card p {
+  margin: 0;
+}
+
+.novelty-degrade-card {
+  margin-top: 12px;
+}
+
+.novelty-match-list article {
+  grid-template-columns: minmax(0, 1fr) 52px;
+}
+
+.novelty-match-list article > div {
+  min-width: 0;
+}
+
+.novelty-match-list b {
+  align-self: start;
+  color: var(--cyan);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: right;
+}
+
+.novelty-match-list i,
+.novelty-match-list p {
+  grid-column: 1 / -1;
+}
+
+.novelty-event-preview {
+  max-height: 420px;
+}
+
+.novelty-contract-panel {
+  grid-column: 1 / -1;
+}
+
 /* ---------- Replay spine (prototype 09) ---------- */
 
 .replay-layout {
@@ -3185,6 +3379,7 @@ article.module-node::after {
   .intake-layout,
   .operator-layout,
   .subtype-layout,
+  .novelty-layout,
   .fallback-layout,
   .replay-layout,
   .spend-grid,
@@ -3201,6 +3396,8 @@ article.module-node::after {
   .gateway-boundary-panel,
   .subtype-selector-panel,
   .subtype-boundary-panel,
+  .novelty-candidate-panel,
+  .novelty-boundary-panel,
   .fallback-rung-panel,
   .fallback-boundary-panel,
   .replay-control-panel,
@@ -3227,6 +3424,14 @@ article.module-node::after {
   .subtype-detail-panel,
   .subtype-boundary-panel,
   .subtype-contract-panel,
+  .novelty-candidate-panel,
+  .novelty-score-panel,
+  .novelty-match-panel,
+  .novelty-prior-panel,
+  .novelty-signal-panel,
+  .novelty-event-panel,
+  .novelty-boundary-panel,
+  .novelty-contract-panel,
   .fallback-rung-panel,
   .fallback-mode-panel,
   .fallback-actions-panel,
@@ -3253,6 +3458,7 @@ article.module-node::after {
   .operator-mode-row,
   .subtype-obligation-grid,
   .subtype-evidence-list,
+  .novelty-component-grid,
   .fallback-action-list,
   .fallback-event-list,
   .packet-pane,
@@ -3265,6 +3471,7 @@ article.module-node::after {
   .gateway-contract-panel,
   .gateway-result-panel,
   .subtype-contract-panel,
+  .novelty-contract-panel,
   .fallback-contract-panel,
   .replay-contract-panel {
     grid-column: auto;
@@ -3349,6 +3556,7 @@ article.module-node::after {
   .operator-mode-row,
   .subtype-obligation-grid,
   .subtype-evidence-list,
+  .novelty-component-grid,
   .fallback-action-list,
   .fallback-cap-grid,
   .fallback-event-list,

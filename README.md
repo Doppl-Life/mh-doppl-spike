@@ -17,6 +17,7 @@ doppl-test/
   DIAGRAMS.md                  ← high-level visual map (how it all relates)
   GLOSSARY.md                  ← the evolving lexicon
   LESSONS_AND_BANGERS.md       ← meta-concepts that reframe the problem
+  HEURISTICS.md                ← the tribe's instincts (portable moves + traps; priors for the Fusants)
   MEMORY.md                    ← fork register (paths chosen / deferred)
   BUGS_AND_MITIGATIONS.md      ← reward-hack + crash register (amemetic immune memory)
   AGENTS.md                    ← capture/routing rules for this spike
@@ -40,6 +41,7 @@ doppl-test/
 6. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
 7. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
 8. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
+9. [`HEURISTICS.md`](./HEURISTICS.md) — the tribe's instincts: portable problem-solving moves + traps, condensed as priors
 
 ## Run a spike
 

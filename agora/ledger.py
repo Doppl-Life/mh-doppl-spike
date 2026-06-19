@@ -9,11 +9,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .schema import Post, Verdict
+from .schema import GenerationRun, Post, Verdict
 
 DEFAULT_DIR = Path(__file__).resolve().parent / "ledger"
 POSTS_NAME = "posts.jsonl"
 VERDICTS_NAME = "verdicts.jsonl"
+GENERATION_RUNS_NAME = "generation_runs.jsonl"
 
 
 def _ensure(dir_: Path) -> Path:
@@ -62,3 +63,12 @@ def append_verdict(verdict: Verdict, *, dir_: Path = DEFAULT_DIR) -> None:
 
 def load_verdicts(*, dir_: Path = DEFAULT_DIR) -> list[Verdict]:
     return [Verdict.from_dict(d) for d in _read(dir_ / VERDICTS_NAME)]
+
+
+# ── generation runs ─────────────────────────────────────────────────────────
+def append_generation_run(run: GenerationRun, *, dir_: Path = DEFAULT_DIR) -> None:
+    _append(dir_ / GENERATION_RUNS_NAME, run.to_dict())
+
+
+def load_generation_runs(*, dir_: Path = DEFAULT_DIR) -> list[GenerationRun]:
+    return [GenerationRun.from_dict(d) for d in _read(dir_ / GENERATION_RUNS_NAME)]

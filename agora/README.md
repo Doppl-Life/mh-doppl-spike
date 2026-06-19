@@ -44,6 +44,18 @@ either the council is perfect or the humans are rubber-stamping (politeness mirr
                    spikes/backyard/respawn.py  →  another sprout round, informed
 ```
 
+Paid generational runs also write a run-level spend/yield row:
+
+```
+paid run ──► GenerationRun (cost events + outputs + rubric judgments)
+              └── agora/ledger/generation_runs.jsonl
+```
+
+This is not a replacement for verdicts. It is the accounting layer underneath
+"juice versus squeeze": exact provider charges where available, generated
+sprouts/fruits, and the first flexible judgments that let later bandits ask which
+arcade strategy converts marginal dollars into space-opening fruit.
+
 A **lift** (humans rescue an idea the machine weeded) or a high divergence rate
 trips the watcher, which writes a ticket aimed at the vein the humans just
 revealed. The trigger is pure heuristic math (auditable, no LLM) — a local
@@ -100,7 +112,7 @@ schema (`schema.py`), and the agreement metric (`agreement.py`).
 | File | Role |
 | --- | --- |
 | `schema.py` | `Post`, `Label`, `Verdict`; emoji→dimension map; the shared **polarity** (+1/0/−1) that lets any two labelers be compared |
-| `ledger.py` | append-only JSONL; read upserts by `post_id` (re-post to enrich) |
+| `ledger.py` | append-only JSONL; read upserts by `post_id` (re-post to enrich); generation-run spend/yield rows |
 | `agreement.py` | pairwise agreement + the divergence list (most-divergent first) |
 | `server.py` | the local square — stdlib web "shot" + click-to-react + `/agreement` |
 | `watcher.py` | the re-entry decider — measures human overturns, writes a respawn ticket |

@@ -113,6 +113,112 @@ class Post:
         return cls(labels=labels, **{k: v for k, v in d.items() if k in known})
 
 
+# ── schema 1b: a paid generation run (organism → spend/yield ledger) ───────
+@dataclass
+class CostEvent:
+    event_id: str
+    provider: str
+    model_or_tool: str
+    stage: str
+    units: dict = field(default_factory=dict)
+    total_cost_usd: float | None = None
+    exact: bool = False
+    source: str = ""
+    provider_request_id: str = ""
+    strategy_labels: list[str] = field(default_factory=list)
+    output_id: str = ""
+    ts: str = field(default_factory=_now)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "CostEvent":
+        known = {f for f in cls.__dataclass_fields__}
+        return cls(**{k: v for k, v in d.items() if k in known})
+
+
+@dataclass
+class GenerationOutput:
+    output_id: str
+    kind: str
+    title: str
+    uri: str = ""
+    selected: bool = False
+    carried_forward_to: str = ""
+    strategy_labels: list[str] = field(default_factory=list)
+    quality_score: float | None = None
+    space_opening_score: float | None = None
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "GenerationOutput":
+        known = {f for f in cls.__dataclass_fields__}
+        return cls(**{k: v for k, v in d.items() if k in known})
+
+
+@dataclass
+class GenerationJudgment:
+    rubric_version: str
+    output_id: str = ""
+    novelty: float | None = None
+    usefulness: float | None = None
+    generality: float | None = None
+    elegance: float | None = None
+    evidence: float | None = None
+    surprise: float | None = None
+    notes: str = ""
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "GenerationJudgment":
+        known = {f for f in cls.__dataclass_fields__}
+        return cls(**{k: v for k, v in d.items() if k in known})
+
+
+@dataclass
+class GenerationRun:
+    run_id: str
+    objective: str
+    started_at: str
+    ended_at: str = ""
+    arcade_id: str = ""
+    graph_node_ids: list[str] = field(default_factory=list)
+    strategy_labels: list[str] = field(default_factory=list)
+    currency: str = "USD"
+    total_cost_usd: float | None = None
+    total_cost_exact: bool = False
+    cost_events: list[CostEvent] = field(default_factory=list)
+    outputs: list[GenerationOutput] = field(default_factory=list)
+    judgments: list[GenerationJudgment] = field(default_factory=list)
+    notes: str = ""
+    ts: str = field(default_factory=_now)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "GenerationRun":
+        cost_events = [CostEvent.from_dict(row) for row in d.get("cost_events", [])]
+        outputs = [GenerationOutput.from_dict(row) for row in d.get("outputs", [])]
+        judgments = [GenerationJudgment.from_dict(row) for row in d.get("judgments", [])]
+        known = {
+            f
+            for f in cls.__dataclass_fields__
+            if f not in {"cost_events", "outputs", "judgments"}
+        }
+        return cls(
+            cost_events=cost_events,
+            outputs=outputs,
+            judgments=judgments,
+            **{k: v for k, v in d.items() if k in known},
+        )
+
+
 # ── schema 2: a verdict (Agardener → ledger) ───────────────────────────────
 @dataclass
 class Verdict:

@@ -45,6 +45,7 @@ This repo is a Doppl spike. As you explore, log durable findings in the right re
 |---|---|---|
 | A design fork — chose A over B, reason matters later | [MEMORY.md](./MEMORY.md) (Fork Register) | Chose / Over / Because / Revisit if |
 | A timeless meta-concept — reframes the problem, not one prompt's answer | [LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md) | Banger / Lesson / Evidence / Carry forward |
+| A transferable problem-solving instinct — a move that works or a trap to avoid, general across domains (object-level, not about how Doppl works) | [HEURISTICS.md](./HEURISTICS.md) (the tribe's instincts) | Move / Trap (one line, optional one-clause example) |
 | A proxy win — optimized for something easier than a genuinely good idea | [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md) → Reward-Hack Register | Proxy optimized / Bedrock check / Repro trigger / Bedrock assertion |
 | A crash or plumbing failure in the reproductive loop | [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md) → Crashes & plumbing | Crash / Repro trigger / Bedrock assertion |
 | How to run or demo a spike | the spike's own `spikes/<name>/README.md` | — (operational only; not for ideas) |

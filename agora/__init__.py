@@ -13,7 +13,11 @@ See README.md for the loop and the lexicon stub.
 """
 
 from .schema import (
+    CostEvent,
     DIMENSIONS,
+    GenerationJudgment,
+    GenerationOutput,
+    GenerationRun,
     REACTION_MAP,
     Label,
     Post,
@@ -23,8 +27,10 @@ from .schema import (
 )
 from .ledger import (
     DEFAULT_DIR,
+    append_generation_run,
     append_post,
     append_verdict,
+    load_generation_runs,
     load_posts,
     load_verdicts,
 )
@@ -33,14 +39,20 @@ from .agreement import HUMAN, SPIKE, agreement, render_text
 __all__ = [
     "DIMENSIONS",
     "REACTION_MAP",
+    "CostEvent",
+    "GenerationJudgment",
+    "GenerationOutput",
+    "GenerationRun",
     "Label",
     "Post",
     "Verdict",
     "polarity",
     "resolve_dimension",
     "DEFAULT_DIR",
+    "append_generation_run",
     "append_post",
     "append_verdict",
+    "load_generation_runs",
     "load_posts",
     "load_verdicts",
     "HUMAN",

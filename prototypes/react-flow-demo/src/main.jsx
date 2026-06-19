@@ -2443,6 +2443,11 @@ const prototypeStages = [
   },
 ];
 
+const prototypeStageRows = [
+  prototypeStages.slice(0, 3),
+  prototypeStages.slice(3),
+];
+
 const prototypeTabStorageKey = 'doppl-prototype-suite.active-tab';
 const prototypeTabIds = new Set(prototypeStages.flatMap((stage) => stage.items.map((item) => item.id)));
 
@@ -2479,21 +2484,25 @@ function App() {
           </p>
         </div>
         <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
-          {prototypeStages.map((stage) => (
-            <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
-              <span>{stage.label}</span>
-              <div>
-                {stage.items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    aria-selected={tab === item.id}
-                    onClick={() => setTab(item.id)}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
+          {prototypeStageRows.map((row, rowIndex) => (
+            <div className="process-tab-row" key={`prototype-row-${rowIndex}`}>
+              {row.map((stage) => (
+                <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
+                  <span>{stage.label}</span>
+                  <div>
+                    {stage.items.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        aria-selected={tab === item.id}
+                        onClick={() => setTab(item.id)}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </nav>

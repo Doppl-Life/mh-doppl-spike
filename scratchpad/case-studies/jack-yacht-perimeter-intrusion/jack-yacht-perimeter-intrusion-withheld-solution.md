@@ -1,10 +1,10 @@
-# Case Study: Superyacht Waterline Intrusion Detection
+# Case Study: Superyacht Waterline Intrusion Problem
 
 ## Summary
 
-A superyacht had layered security — dock watch, CCTV, and crew on board — and an intruder still defeated all of it: he entered the water, swam out, climbed onto the tender, climbed onto the yacht, and was eventually found wandering the interior corridors of a 140-meter vessel. In this industry, that is a catastrophic failure. The existing security was real but primitive: human watch-standers and conventional CCTV aimed at decks and boarding points, with the water itself effectively unmonitored. The non-obvious move is not "more guards." It is reframing the perimeter to include the water column and automating classification — sensors that can tell a human swimmer from a dolphin, turtle, or floating debris, distinguish an intruder from crew legitimately working on the hull, and trigger a preset lockdown fast enough for the onboard team to intercept before the interior is breached.
+A superyacht protected by a dock watch, conventional CCTV, and crew on board was still breached: an intruder entered the water from shore, swam to the vessel, used the tender as a step, climbed aboard undetected, and reached the interior. The obvious responses — more guards, more deck cameras — scale cost without closing the gap. This version intentionally withholds the known solution so it can be used as a Doppl prompt or evaluation case.
 
-This is a strong Doppl case study because the owner had a solution and it still failed, the obvious fixes scale cost without closing the real gap, and there is a known, constraint-aware answer that can be used as a validation target.
+The goal is to see whether a system can reason from the problem and constraints to the unguarded threat vector and a constraint-aware detection-and-response design, without being handed the answer.
 
 ## Source
 
@@ -18,7 +18,7 @@ Derived from a conversation with a superyacht-industry domain expert who describ
 
 ### Source File
 
-`scratchpad/case-studies/Jack-syn-6-18`
+`scratchpad/case-studies/jack-drone-privacy/Jack-syn-6-18.md`
 
 ### Derived By
 
@@ -30,7 +30,7 @@ Summarized.
 
 ### Source Notes
 
-The source transcript is conversational and covers several adjacent yacht scenarios. This writeup extracts the waterline-intrusion case into a clean case-study format while preserving the core problem, constraints, failed approaches, and known solution pattern.
+The source transcript is conversational and covers several adjacent yacht scenarios. This withheld version extracts only the problem, context, constraints, and failed approaches needed for an agenome run. The known solution is intentionally omitted.
 
 ## Visibility
 
@@ -50,11 +50,12 @@ Yes, if framed as a hypothetical but realistic superyacht security case and stri
 
 - Names or identifying details of owners, guests, vessels, management companies, or security staff.
 - Exact locations, dates, or operating details that could identify a real incident.
+- The evaluator-only known solution, which should not be included in the prompt context for generation runs.
 - Specific defensive procedures that should not be presented as operational advice for a named vessel.
 
 ### Sharing Notes
 
-Use as a capstone evaluation case and demo artifact, not as a claim about a specific person or vessel. Public versions should keep the scenario anonymized and emphasize the reasoning pattern.
+This file is designed as the model-facing case prompt. It may be used in demos and evaluations, but should not include the known answer or any private identifying detail.
 
 ## Problem
 
@@ -110,7 +111,7 @@ A strong generated answer should:
 
 ### Audience
 
-Doppl builders and evaluators who need a realistic, expert-grounded problem/solution pair for testing idea generation.
+Doppl builders and evaluators who need a realistic, expert-grounded problem for testing idea generation.
 
 ## User
 
@@ -147,10 +148,10 @@ A large yacht at anchor or dock near shore, where a person could enter the water
 
 ### Tools Or Systems
 
-- In-water sonar and forward-facing 3D radar.
-- AI-analytics CCTV.
-- Perimeter drones with thermal cameras for night coverage.
+- Crew on watch and a bridge/security station.
+- Conventional CCTV trained on decks and boarding points.
 - Crew radios and an existing alert/lockdown protocol with a safe room.
+- Potentially available: in-water sensing, radar, analytics-capable cameras, and small aerial platforms.
 
 ### Inputs
 
@@ -161,7 +162,7 @@ A large yacht at anchor or dock near shore, where a person could enter the water
 ### External Factors
 
 - IMO and maritime regulations, including limits on emissions and active radio/sonar systems in some areas.
-- The cost and visible footprint of large sensor hardware (domes, drones).
+- The cost and visible footprint of large sensor hardware.
 - Owner expectation of discretion and comfort.
 
 ### Assumptions
@@ -234,44 +235,81 @@ Active systems, emissions, and large hardware are constrained by IMO rules and b
 
 **Lesson:** Do not treat a situational barrier as a permanent one.
 
+## Problem Recovery
+
+This section is intentionally blank for the Doppl run. Before proposing a solution, the agenome should recover the actual problem using only the problem, purpose, constraints, failed attempts, user, and environment sections above. Treat the stated problem as a symptom report, not as a binding requirement.
+
+### Observed Situation
+
+_To be generated._
+
+### Stated Problem Or Symptom
+
+_To be generated._
+
+### Source-Proposed Solution Or Assumption
+
+_To be generated._
+
+### Deleted Assumptions
+
+_To be generated._
+
+### Actual Problem
+
+_To be generated._
+
+### Hidden Variable
+
+_To be generated._
+
+### Solution Class
+
+_To be generated._
+
+### Confidence And Open Questions
+
+_To be generated._
+
 ## Solution
+
+This section is intentionally blank for the Doppl run. The agenome should generate a proposed solution after completing Problem Recovery.
 
 ### Summary
 
-Reframe the perimeter as a 360-degree volume that includes the water surface and the water column, then fuse complementary sensors with automated classification and tie them to a preset response. In-water sonar distinguishes a diver from a dolphin at long range; AI-analytics CCTV flags a person entering the water and swimming toward the yacht; thermal-equipped perimeter drones cover the dark. Any confirmed human-in-water detection fires a single clear alert that drives a rehearsed sequence: owner to the safe room, vessel lockdown, security team intercepts.
+_To be generated._
 
 ### Details
 
-The operational design is:
+_To be generated._
 
-1. Cover the water vector with in-water sonar and forward-facing 3D radar that can classify objects (human vs. marine life vs. debris) at range.
-2. Add AI-analytics CCTV that detects a person entering the water and tracks movement toward the hull.
-3. Use thermal-equipped perimeter drones for night and low-visibility coverage.
-4. Fuse the feeds and apply classification so alerts fire only for a probable human intruder, not crew or wildlife.
-5. On a confirmed detection, broadcast one unambiguous alert ("individual in water") to all crew radios.
-6. The alert triggers a preset protocol: owner to safe room, lockdown, security team responds and intercepts.
+The proposed solution should explain:
+
+- what detection coverage, sensing, or workflow should be used
+- who takes each action
+- when the response happens
+- how the approach distinguishes intruders from crew and marine life
+- how the approach works at night and in low visibility
+- how the approach avoids the failed attempts above
+- how the approach handles each listed constraint
 
 ### Why This Solution
 
-The previous setup treated security as humans watching the boarding points. The breach came from the water — an unwatched volume — at night, when attention is weakest. This solution reframes the perimeter to include the water and shifts the work from fallible human vigilance to automated classification, so the scarce human response is triggered early and only for real threats. It closes the actual gap rather than buying more of what already failed.
+_To be generated._
+
+Explain why this solution fits the problem and constraints better than the failed approaches.
 
 ### Tradeoffs
 
-- Requires capital investment in sonar, radar, analytics, and drones.
-- Sensor fusion and classification must be tuned to keep false alarms low.
-- Some active systems are regulated near port and must be configured accordingly.
-- Hardware footprint must be balanced against the owner's desire for discretion.
+_To be generated._
 
-### Expected Outcome
+List the risks, limitations, dependencies, or ways this solution could fail.
 
-An approach from the water is detected and classified before boarding. A single clear alert drives a rehearsed response. The intruder is intercepted before reaching the yacht's interior, without flooding the crew with false alarms.
+### Validation Plan
 
-### Next Steps
+_To be generated._
 
-- Define required detection ranges by hull size and anchorage type.
-- Set an acceptable false-alarm rate and tune classification to it.
-- Integrate detection with the existing alert-and-lockdown protocol.
-- Confirm which active systems are permissible in port versus international waters.
+Describe how an evaluator could test whether the proposed solution is plausible, constraint-aware, and operationally useful.
 
 ## Reproducible
 
@@ -285,18 +323,17 @@ Approximate.
 
 ### Steps
 
-1. Provide the problem: a breach occurred despite CCTV and a human watch; the intruder came from the water and reached the interior.
-2. Give the constraints: distinguish humans from marine life and crew, work at night, detect early enough to intercept, respect regulatory and footprint limits.
-3. Ask a model or team to propose solutions without the known answer.
-4. Score whether the answer identifies the water/underwater vector and automated classification with a preset response.
-5. Compare against the known solution: sensor fusion across sonar/radar/AI-CCTV/thermal drones, tied to lockdown.
+1. Provide this withheld-solution case study as the prompt context.
+2. Ask the system to complete Problem Recovery.
+3. Ask it to generate a solution, tradeoffs, and validation plan.
+4. Compare generated answers against the full evaluator version.
+5. Have a domain expert rate plausibility, simplicity, and operational fit.
 
 ### Required Inputs
 
-- The intrusion problem statement.
-- Yacht operating context (near shore, night, tender in water).
-- Constraints around false positives, crew, night, timing, and regulation.
-- The known solution for evaluator-only comparison.
+- This withheld-solution case study.
+- The full solution version for evaluator-only comparison.
+- A scoring rubric for vector recovery, false-alarm handling, timing, legality, and non-obviousness.
 
 ### Expected Result
 
@@ -304,7 +341,7 @@ A strong system should converge on extending the perimeter into the water, autom
 
 ### Known Variability
 
-Generated answers may differ in sensor mix (sonar vs. radar vs. thermal vs. analytics) and in how detection ties to response. These can still be directionally correct if they reframe the perimeter to include the water and automate the human-vs-everything-else decision.
+Generated answers may differ in sensor mix and in how detection ties to response. These can still be directionally correct if they reframe the perimeter to include the water and automate the human-vs-everything-else decision.
 
 ## Validator
 
@@ -329,7 +366,7 @@ Async feedback or live review.
 
 ### Notes
 
-The validator is most useful for judging directionality and realism, not as a legal or regulatory authority.
+The validator should compare generated answers against the full evaluator-only case. This prompt-facing file should remain answer-free.
 
 ## Open Questions
 

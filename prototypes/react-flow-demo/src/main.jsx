@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   applyNodeChanges,
@@ -14,8 +14,26 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './styles.css';
+import {
+  agenomeContractShapes,
+  agenomePoolBoundary,
+  agenomePoolLibrary,
+  defaultStartingPool,
+  evaluateStartingPool,
+  maximumPoolSize,
+  minimumPoolSize,
+} from './agenomePoolData.js';
 import { fusionAgenomes, fusionMetadata, getFusionRun, makeFusionPairId } from './fusionData.js';
 import { costLedger, formatMaybeNumber, formatUsd } from './costLedger.js';
+import { gatewayBoundary, gatewayContractShapes, gatewayFixtures } from './gatewayData.js';
+import {
+  buildIntakeContractInstance,
+  buildUploadedCase,
+  intakeBoundary,
+  intakeContractShapes,
+  intakeExamples,
+} from './caseIntakeData.js';
+import { replayBoundary, replayContractShapes, replayEventTypes, replayFixtures } from './replayData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -1130,6 +1148,1007 @@ function SpendMetric({ label, value, detail }) {
   );
 }
 
+function CaseStudyIntake() {
+  const [selectedCaseId, setSelectedCaseId] = useState(intakeExamples[0].id);
+  const [uploadedCase, setUploadedCase] = useState(null);
+  const [activePane, setActivePane] = useState('visible');
+  const cases = uploadedCase ? [...intakeExamples, uploadedCase] : intakeExamples;
+  const selectedCase = cases.find((item) => item.id === selectedCaseId) || cases[0];
+  const passCount = selectedCase.checks.filter((check) => check.status === 'pass').length;
+  const contractInstance = useMemo(() => buildIntakeContractInstance(selectedCase), [selectedCase]);
+
+  const handleFile = useCallback((event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const draft = buildUploadedCase(file.name, String(reader.result || ''));
+      setUploadedCase(draft);
+      setSelectedCaseId(draft.id);
+      setActivePane('visible');
+    };
+    reader.readAsText(file);
+  }, []);
+
+  return (
+    <section className="prototype intake-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 06 · case intake</p>
+          <h2>Withheld-Solution Harness</h2>
+          <p>
+            Prepare a case for a fair Doppl run. The workbench separates what agents may see from
+            evaluator-only anchors, checks for solution leakage, and previews the boundary contracts
+            that downstream prototypes consume.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{selectedCase.source} · {selectedCase.leakageRisk} leakage risk</span>
+          <strong>{selectedCase.title}</strong>
+          <p>{passCount}/{selectedCase.checks.length} intake checks passing · readiness {selectedCase.readiness}%</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${Math.min(100, selectedCase.readiness)}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="intake-layout">
+        <aside className="intake-case-list">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">example packets</p>
+              <h3>Choose Input</h3>
+            </div>
+          </div>
+          <div className="intake-examples">
+            {cases.map((example) => (
+              <button
+                key={example.id}
+                type="button"
+                aria-selected={selectedCase.id === example.id}
+                onClick={() => {
+                  setSelectedCaseId(example.id);
+                  setActivePane('visible');
+                }}
+              >
+                <span>{example.source}</span>
+                <strong>{example.title}</strong>
+                <small>readiness {example.readiness}% · {example.leakageRisk} risk</small>
+              </button>
+            ))}
+          </div>
+
+          <label className="upload-drop">
+            <span>Upload markdown/text case</span>
+            <strong>Local draft parser</strong>
+            <small>Creates an untrusted draft preview. Nothing leaves the browser.</small>
+            <input type="file" accept=".md,.txt,text/markdown,text/plain" onChange={handleFile} />
+          </label>
+        </aside>
+
+        <div className="intake-main">
+          <section className="intake-summary">
+            <p className="eyebrow">case packet</p>
+            <h3>{selectedCase.title}</h3>
+            <p>{selectedCase.summary}</p>
+          </section>
+
+          <section className="intake-packet">
+            <div className="intake-tabs" aria-label="Case packet panes">
+              {[
+                ['visible', 'Agent-visible'],
+                ['hidden', 'Evaluator-only'],
+                ['run', 'Run seed'],
+                ['contracts', 'Contracts'],
+              ].map(([id, label]) => (
+                <button key={id} type="button" aria-selected={activePane === id} onClick={() => setActivePane(id)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            {activePane === 'visible' && <AgentVisiblePane packet={selectedCase.agentVisible} />}
+            {activePane === 'hidden' && <EvaluatorPane packet={selectedCase.evaluatorOnly} />}
+            {activePane === 'run' && <RunSeedPane caseItem={selectedCase} />}
+            {activePane === 'contracts' && <IntakeContractsPane instance={contractInstance} />}
+          </section>
+
+          <section className="intake-checks">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">leakage + runnability</p>
+                <h3>Intake Checks</h3>
+              </div>
+              <strong>{passCount}/{selectedCase.checks.length}</strong>
+            </div>
+            <div className="check-grid">
+              {selectedCase.checks.map((check) => (
+                <article key={check.id} className={`check-card status-${check.status}`}>
+                  <span>{check.status}</span>
+                  <strong>{check.label}</strong>
+                  <p>{check.detail}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <BoundaryPanel />
+      </div>
+    </section>
+  );
+}
+
+function IntakeContractsPane({ instance }) {
+  return (
+    <div className="contract-pane">
+      <div className="contract-column">
+        <p className="contract-note">
+          Stable prototype-local shapes. These are candidates for frozen contracts, not Appendix A
+          contracts until promoted.
+        </p>
+        <ContractShapeGroup label="Ingress" shapes={intakeContractShapes.ingress} />
+        <ContractShapeGroup label="Egress" shapes={intakeContractShapes.egress} />
+      </div>
+      <div className="contract-column contract-instance-column">
+        <p className="contract-note">
+          Selected-case instance values. These change when a different case packet or uploaded draft is chosen.
+        </p>
+        <ContractInstanceGroup label="Ingress Instance" rows={instance.ingress} />
+        <ContractInstanceGroup label="Egress Instance" rows={instance.egress} />
+      </div>
+    </div>
+  );
+}
+
+function ContractShapeGroup({ label, shapes }) {
+  return (
+    <section className="contract-group">
+      <p className="eyebrow">{label}</p>
+      {shapes.map((shape) => (
+        <article key={shape.name} className="contract-shape">
+          <span>{shape.anchor}</span>
+          <h4>{shape.name}</h4>
+          <dl>
+            {shape.fields.map(([field, type]) => (
+              <React.Fragment key={field}>
+                <dt>{field}</dt>
+                <dd>{type}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function ContractInstanceGroup({ label, rows }) {
+  return (
+    <section className="contract-group">
+      <p className="eyebrow">{label}</p>
+      <div className="contract-instance">
+        {rows.map(([field, value]) => (
+          <React.Fragment key={field}>
+            <span>{field}</span>
+            <strong>{value}</strong>
+          </React.Fragment>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AgentVisiblePane({ packet }) {
+  return (
+    <div className="packet-pane">
+      <PacketBlock label="problem" body={packet.problem} />
+      <PacketList label="context" items={packet.context} />
+      <PacketList label="constraints" items={packet.constraints} />
+      <PacketList label="success criteria" items={packet.successCriteria} />
+    </div>
+  );
+}
+
+function EvaluatorPane({ packet }) {
+  return (
+    <div className="packet-pane evaluator-pane">
+      <PacketBlock label="withheld known target" body={packet.knownSolution} />
+      <PacketList label="hidden anchors" items={packet.hiddenAnchors} />
+      <PacketList label="leakage terms" items={packet.solutionLeakageTerms} emptyText="No exact leakage terms saved." />
+    </div>
+  );
+}
+
+function RunSeedPane({ caseItem }) {
+  const preview = caseItem.downstreamPreview;
+  return (
+    <div className="run-seed">
+      <div>
+        <span>RunConfig.seed</span>
+        <strong>{preview.runSeed}</strong>
+      </div>
+      <div>
+        <span>enabled subtypes</span>
+        <strong>{preview.enabledSubtypes.join(' + ')}</strong>
+      </div>
+      <div>
+        <span>EvaluatorAnchorRef</span>
+        <strong>{preview.evaluatorAnchor}</strong>
+      </div>
+      <div>
+        <span>initial energy</span>
+        <strong>{preview.initialEnergy} doppl_energy</strong>
+      </div>
+    </div>
+  );
+}
+
+function PacketBlock({ label, body }) {
+  return (
+    <article className="packet-block">
+      <span>{label}</span>
+      <p>{body}</p>
+    </article>
+  );
+}
+
+function PacketList({ label, items, emptyText = 'None provided.' }) {
+  return (
+    <article className="packet-block">
+      <span>{label}</span>
+      {items?.length ? (
+        <ul>
+          {items.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      ) : (
+        <p>{emptyText}</p>
+      )}
+    </article>
+  );
+}
+
+function BoundaryPanel() {
+  return (
+    <aside className="boundary-panel">
+      <p className="eyebrow">boundary contracts</p>
+      <h3>Where Intake Fits</h3>
+      <BoundaryGroup title="Upstream Modules" items={intakeBoundary.upstreamModules} />
+      <BoundaryGroup title="Upstream Boundary Contracts" items={intakeBoundary.upstreamContracts} />
+      <BoundaryGroup title="Downstream Boundary Contracts" items={intakeBoundary.downstreamContracts} />
+      <BoundaryGroup title="Downstream Modules" items={intakeBoundary.downstreamModules} />
+      <BoundaryGroup title="Invariants Exercised" items={intakeBoundary.invariants} tone="strong" />
+    </aside>
+  );
+}
+
+function BoundaryGroup({ title, items, tone = 'default' }) {
+  return (
+    <div className={`boundary-group tone-${tone}`}>
+      <span>{title}</span>
+      <div>
+        {items.map((item) => <b key={item}>{item}</b>)}
+      </div>
+    </div>
+  );
+}
+
+function AgenomePool() {
+  const [selectedIds, setSelectedIds] = useState(defaultStartingPool);
+  const [activeId, setActiveId] = useState(defaultStartingPool[0]);
+  const pool = useMemo(() => evaluateStartingPool(selectedIds), [selectedIds]);
+  const activeAgenome = agenomePoolLibrary.find((agenome) => agenome.id === activeId) || agenomePoolLibrary[0];
+
+  const toggleAgenome = (agenomeId) => {
+    setSelectedIds((current) => {
+      const exists = current.includes(agenomeId);
+      if (exists) return current.filter((id) => id !== agenomeId);
+      return [...current, agenomeId];
+    });
+    setActiveId(agenomeId);
+  };
+
+  return (
+    <section className="prototype agenome-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 07 · agenome pool</p>
+          <h2>Mutagen Starting Population</h2>
+          <p>
+            Compose the bounded set of agenomes that enter a run. Each mutagen carries strategy,
+            traits, tool permissions, prior performance, and mutation hints before the runtime
+            spawns generation zero.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>RunConfig.startingPopulation</span>
+          <strong>{pool.selected.length}/{maximumPoolSize} selected</strong>
+          <p>{pool.ready ? 'ready for runtime spawn' : `${pool.warnings.length} pool warning${pool.warnings.length === 1 ? '' : 's'}`}</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${pool.ready ? 100 : Math.max(35, 100 - pool.warnings.length * 18)}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="agenome-layout">
+        <aside className="agenome-library-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">mutagen library</p>
+              <h3>Choose Pool</h3>
+            </div>
+          </div>
+          <div className="agenome-card-list">
+            {agenomePoolLibrary.map((agenome) => {
+              const selected = selectedIds.includes(agenome.id);
+              return (
+                <button
+                  key={agenome.id}
+                  type="button"
+                  className={`tone-${agenome.tone}`}
+                  aria-selected={activeAgenome.id === agenome.id}
+                  onClick={() => setActiveId(agenome.id)}
+                >
+                  <span>{agenome.subtypeFit}</span>
+                  <strong>{agenome.title}</strong>
+                  <small>{agenome.description}</small>
+                  <b>{selected ? 'in pool' : 'available'}</b>
+                </button>
+              );
+            })}
+          </div>
+        </aside>
+
+        <section className="agenome-inspector-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">agenome inspector</p>
+              <h3>{activeAgenome.title}</h3>
+            </div>
+            <button type="button" className="pool-toggle-button" onClick={() => toggleAgenome(activeAgenome.id)}>
+              {selectedIds.includes(activeAgenome.id) ? 'Remove' : 'Add'}
+            </button>
+          </div>
+          <p className="agenome-role">{activeAgenome.description}</p>
+          <div className="agenome-score-grid">
+            <AgenomeMetric label="fitness" value={activeAgenome.fitness} />
+            <AgenomeMetric label="novelty" value={activeAgenome.novelty} />
+            <AgenomeMetric label="efficiency" value={activeAgenome.energyEfficiency} />
+          </div>
+          <div className="agenome-detail-grid">
+            <AgenomePillGroup title="Traits" items={activeAgenome.traits} />
+            <AgenomePillGroup title="Tool Permissions" items={activeAgenome.tools} />
+            <AgenomePillGroup title="Prior Events" items={activeAgenome.priorEvents} />
+          </div>
+          <div className="agenome-notes">
+            <article>
+              <span>mutation hint</span>
+              <p>{activeAgenome.mutationHint}</p>
+            </article>
+            <article>
+              <span>selection risk</span>
+              <p>{activeAgenome.risk}</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="pool-diagnostics-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">pool diagnostics</p>
+              <h3>Run Readiness</h3>
+            </div>
+            <strong className={pool.ready ? 'status-good' : 'status-bad'}>
+              {pool.ready ? 'ready' : 'needs review'}
+            </strong>
+          </div>
+          <div className="projection-grid">
+            <ProjectionCard label="Fitness Avg" value={pool.avgFitness} detail="historical fixture projection" />
+            <ProjectionCard label="Novelty Avg" value={pool.avgNovelty} detail="anti-collapse pressure" />
+            <ProjectionCard label="Efficiency Avg" value={pool.avgEfficiency} detail="energy behavior prior" />
+            <ProjectionCard label="Trait Count" value={pool.traitCount} detail={`${pool.toolSet.size} tool permissions covered`} />
+          </div>
+          <div className="selected-pool-list">
+            {pool.selected.map((agenome) => (
+              <article key={agenome.id}>
+                <span>{agenome.subtypeFit}</span>
+                <strong>{agenome.title}</strong>
+                <p>{agenome.traits.slice(0, 2).join(' · ')}</p>
+              </article>
+            ))}
+          </div>
+          <div className="quarantine-list pool-warning-list">
+            <span>composition guardrails</span>
+            {pool.warnings.length ? (
+              pool.warnings.map((warning) => <b key={warning}>{warning}</b>)
+            ) : (
+              <b>Pool meets size, subtype, trait, and critic-readiness constraints.</b>
+            )}
+          </div>
+        </section>
+
+        <aside className="boundary-panel agenome-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Pool Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={agenomePoolBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={agenomePoolBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={agenomePoolBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={agenomePoolBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={agenomePoolBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="agenome-runconfig-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">runtime egress</p>
+              <h3>Spawn Preview</h3>
+            </div>
+            <strong>gen-0</strong>
+          </div>
+          <pre className="payload-preview">{JSON.stringify(buildAgenomeRunConfig(pool), null, 2)}</pre>
+        </section>
+
+        <section className="agenome-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={agenomeContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={agenomeContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function AgenomeMetric({ label, value }) {
+  return (
+    <article className="agenome-metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <i><b style={{ width: `${value}%` }} /></i>
+    </article>
+  );
+}
+
+function AgenomePillGroup({ title, items }) {
+  return (
+    <article className="agenome-pill-group">
+      <span>{title}</span>
+      <div>
+        {items.map((item) => <b key={item}>{item}</b>)}
+      </div>
+    </article>
+  );
+}
+
+function buildAgenomeRunConfig(pool) {
+  return {
+    caseId: 'case_superyacht_drone_privacy',
+    populationCap: maximumPoolSize,
+    minimumPoolSize,
+    selectedAgenomeIds: pool.selected.map((agenome) => agenome.id),
+    spawnEvents: pool.selected.map((agenome, index) => ({
+      type: 'agenome.spawned',
+      generationId: 'gen-0',
+      sequenceHint: index + 1,
+      agenomeId: agenome.id,
+      initialEnergy: Math.max(60, agenome.energyEfficiency),
+      mutationPolicyRef: `mutation_policy.${agenome.id}`,
+      toolPermissions: agenome.tools,
+    })),
+    diversityWarnings: pool.warnings,
+  };
+}
+
+function GatewayForge() {
+  const [fixtureId, setFixtureId] = useState('clean');
+  const fixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
+  const accepted = fixture.response.accepted;
+  const repairLabel = fixture.response.repairAttempted ? 'repair attempted' : 'no repair';
+
+  return (
+    <section className="prototype gateway-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 08 · gateway forge</p>
+          <h2>Structured Output Discipline</h2>
+          <p>
+            Route every model call through one accountable boundary. The forge validates raw model
+            output, allows one auditable repair, rejects unsafe payloads, preserves provider metadata,
+            and emits sanitized events for Replay Spine.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{fixture.role} · {fixture.schemaName}</span>
+          <strong>{fixture.label}</strong>
+          <p>{accepted ? 'accepted' : 'rejected'} · {repairLabel} · {fixture.providerMeta.latencyMs}ms</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${accepted ? 100 : 58}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="gateway-layout">
+        <aside className="gateway-scenario-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">recorded calls</p>
+              <h3>Choose Scenario</h3>
+            </div>
+          </div>
+          <div className="gateway-fixtures">
+            {gatewayFixtures.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={fixture.id === item.id}
+                onClick={() => setFixtureId(item.id)}
+              >
+                <span className={`gateway-status-dot status-${item.status}`} />
+                <strong>{item.label}</strong>
+                <small>{item.headline}</small>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className="gateway-request-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">gateway ingress</p>
+              <h3>ModelGatewayRequest</h3>
+            </div>
+            <strong>{fixture.request.id}</strong>
+          </div>
+          <div className="gateway-request-grid">
+            <GatewayField label="runId" value={fixture.request.runId} />
+            <GatewayField label="role" value={fixture.role} />
+            <GatewayField label="schema" value={fixture.schemaName} />
+            <GatewayField label="route" value={fixture.route} />
+            <GatewayField label="traceId" value={fixture.request.traceId} />
+          </div>
+          <GatewayList title="trusted instructions" items={fixture.request.trustedInstructions} />
+          <article className="gateway-payload-box">
+            <span>untrusted payload</span>
+            <p>{fixture.request.untrustedPayload}</p>
+          </article>
+        </section>
+
+        <section className="gateway-pipeline-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">validation pipeline</p>
+              <h3>Parse → Validate → Repair → Persist</h3>
+            </div>
+            <strong className={accepted ? 'status-good' : 'status-bad'}>
+              {accepted ? 'accepted' : 'rejected'}
+            </strong>
+          </div>
+          <div className="gateway-stage-list">
+            {fixture.stages.map((stage, index) => (
+              <article key={stage.id} className={`gateway-stage status-${stage.status}`}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <strong>{stage.label}</strong>
+                  <p>{stage.detail}</p>
+                </div>
+                <b>{stage.status}</b>
+              </article>
+            ))}
+          </div>
+          <div className="gateway-response-columns">
+            <GatewayCodeBlock title="raw response" body={fixture.rawResponse} />
+            {fixture.repairPrompt && <GatewayCodeBlock title="repair prompt" body={fixture.repairPrompt} />}
+            {fixture.repairedResponse && <GatewayCodeBlock title="repaired response" body={fixture.repairedResponse} />}
+            {fixture.fallbackResponse && <GatewayCodeBlock title="fallback response" body={fixture.fallbackResponse} />}
+          </div>
+        </section>
+
+        <section className="gateway-result-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">gateway egress</p>
+              <h3>Response + Event</h3>
+            </div>
+            <strong>{fixture.response.eventType}</strong>
+          </div>
+          <div className="gateway-result-grid">
+            <ProjectionCard label="Accepted" value={accepted ? 'true' : 'false'} detail={fixture.response.rejectionReason || fixture.response.outputTitle} />
+            <ProjectionCard label="Repair" value={fixture.response.repairAttempted ? '1 / 1' : '0 / 1'} detail="repair budget is capped" />
+            <ProjectionCard label="Cost" value={formatUsd(fixture.providerMeta.costUsd)} detail={`${fixture.providerMeta.promptTokens + fixture.providerMeta.completionTokens} tokens`} />
+            <ProjectionCard label="Latency" value={`${fixture.providerMeta.latencyMs}ms`} detail={`${fixture.providerMeta.provider} · ${fixture.providerMeta.model}`} />
+          </div>
+          <pre className="payload-preview gateway-event-preview">
+            {JSON.stringify(buildGatewayEvent(fixture), null, 2)}
+          </pre>
+        </section>
+
+        <aside className="boundary-panel gateway-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Gateway Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={gatewayBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={gatewayBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={gatewayBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={gatewayBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={gatewayBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="gateway-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={gatewayContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={gatewayContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function GatewayField({ label, value }) {
+  return (
+    <div>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function GatewayList({ title, items }) {
+  return (
+    <article className="gateway-list">
+      <span>{title}</span>
+      <ul>
+        {items.map((item) => <li key={item}>{item}</li>)}
+      </ul>
+    </article>
+  );
+}
+
+function GatewayCodeBlock({ title, body }) {
+  return (
+    <article className="gateway-code-card">
+      <span>{title}</span>
+      <pre>{body}</pre>
+    </article>
+  );
+}
+
+function buildGatewayEvent(fixture) {
+  return {
+    type: fixture.response.eventType,
+    requestId: fixture.request.id,
+    runId: fixture.request.runId,
+    role: fixture.role,
+    accepted: fixture.response.accepted,
+    repairAttempted: fixture.response.repairAttempted,
+    rejectionReason: fixture.response.rejectionReason || undefined,
+    providerMeta: {
+      provider: fixture.providerMeta.provider,
+      model: fixture.providerMeta.model,
+      promptTokens: fixture.providerMeta.promptTokens,
+      completionTokens: fixture.providerMeta.completionTokens,
+      costUsd: fixture.providerMeta.costUsd,
+      latencyMs: fixture.providerMeta.latencyMs,
+      traceId: fixture.request.traceId,
+    },
+    secretPolicy: 'scrubbed before run_events append',
+  };
+}
+
+function ReplaySpine() {
+  const [fixtureId, setFixtureId] = useState('clean');
+  const [foldMode, setFoldMode] = useState('replay');
+  const fixture = replayFixtures.find((item) => item.id === fixtureId) || replayFixtures[0];
+  const replay = useMemo(() => foldReplayFixture(fixture), [fixture]);
+  const [selectedEventId, setSelectedEventId] = useState(fixture.events[0].id);
+  const selectedEvent = fixture.events.find((event) => event.id === selectedEventId) || fixture.events[0];
+  const selectedIssue = replay.quarantine.find((issue) => issue.eventId === selectedEvent.id);
+  const validEventCount = replay.validEvents.length;
+  const parity = replay.quarantine.length === 0 && replay.missingSequences.length === 0;
+
+  return (
+    <section className="prototype replay-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 09 · replay spine</p>
+          <h2>Event Truth Workbench</h2>
+          <p>
+            Prove that every visible run state is a projection of append-only events. Live fold and
+            replay fold use the same envelopes; replay never calls models, tools, embeddings, or RNG.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{fixture.schemaVersion}</span>
+          <strong>{fixture.label}</strong>
+          <p>{validEventCount}/{fixture.events.length} events accepted · {replay.quarantine.length} quarantined</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${parity ? 100 : 74}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="replay-layout">
+        <aside className="replay-control-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">fixture</p>
+              <h3>Replay Source</h3>
+            </div>
+          </div>
+          <div className="replay-fixtures">
+            {replayFixtures.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={fixture.id === item.id}
+                onClick={() => {
+                  setFixtureId(item.id);
+                  setSelectedEventId(item.events[0].id);
+                }}
+              >
+                <strong>{item.label}</strong>
+                <span>{item.description}</span>
+              </button>
+            ))}
+          </div>
+          <div className="replay-mode-toggle" aria-label="Fold mode">
+            {[
+              ['live', 'Live ingest'],
+              ['replay', 'Replay only'],
+            ].map(([id, label]) => (
+              <button key={id} type="button" aria-selected={foldMode === id} onClick={() => setFoldMode(id)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="replay-proof-card">
+            <span>Fresh calls during replay</span>
+            <strong>0</strong>
+            <p>Projection state is reconstructed from stored event payloads only.</p>
+          </div>
+        </aside>
+
+        <section className="event-stream-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">append-only run_events</p>
+              <h3>{fixture.runId}</h3>
+            </div>
+            <strong>{foldMode === 'live' ? 'live fold' : 'replay fold'}</strong>
+          </div>
+          <div className="event-stream">
+            {fixture.events.map((event) => {
+              const issue = replay.quarantine.find((item) => item.eventId === event.id);
+              return (
+                <button
+                  key={event.id}
+                  type="button"
+                  className={issue ? 'is-quarantined' : 'is-accepted'}
+                  aria-selected={selectedEvent.id === event.id}
+                  onClick={() => setSelectedEventId(event.id)}
+                >
+                  <span>#{event.sequence}</span>
+                  <strong>{event.type}</strong>
+                  <small>{event.sourceModule}</small>
+                  {issue && <b>{issue.reason}</b>}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="replay-detail-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">selected envelope</p>
+              <h3>{selectedEvent.type}</h3>
+            </div>
+            <strong className={selectedIssue ? 'status-bad' : 'status-good'}>
+              {selectedIssue ? 'quarantined' : 'accepted'}
+            </strong>
+          </div>
+          <div className="event-envelope">
+            <ReplayRow label="id" value={selectedEvent.id} />
+            <ReplayRow label="sequence" value={selectedEvent.sequence} />
+            <ReplayRow label="schemaVersion" value={selectedEvent.schemaVersion || fixture.schemaVersion} />
+            <ReplayRow label="sourceModule" value={selectedEvent.sourceModule} />
+            <ReplayRow label="occurredAt" value={selectedEvent.occurredAt} />
+          </div>
+          {selectedIssue && (
+            <article className="quarantine-callout">
+              <span>quarantine reason</span>
+              <p>{selectedIssue.reason}. Replay keeps the event visible and refuses to silently repair state.</p>
+            </article>
+          )}
+          <pre className="payload-preview">{JSON.stringify(selectedEvent.payload, null, 2)}</pre>
+        </section>
+
+        <section className="projection-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">derived projections</p>
+              <h3>Fold Result</h3>
+            </div>
+            <strong>{parity ? 'equivalent' : 'degraded'}</strong>
+          </div>
+          <div className="projection-grid">
+            <ProjectionCard label="Run State" value={replay.projections.runState.status} detail={replay.projections.runState.caseTitle} />
+            <ProjectionCard label="Lineage Edges" value={replay.projections.lineage.edges.length} detail={replay.projections.lineage.lastFusion || 'no fusion yet'} />
+            <ProjectionCard label="Candidates" value={replay.projections.candidates.length} detail={`${replay.projections.candidates.filter((item) => item.status === 'selected').length} selected`} />
+            <ProjectionCard label="Spend" value={formatUsd(replay.projections.spend.totalCostUsd)} detail={`${replay.projections.spend.energySpent} energy spent`} />
+          </div>
+          <div className="candidate-projection-list">
+            {replay.projections.candidates.map((candidate) => (
+              <article key={candidate.id}>
+                <span>{candidate.status}</span>
+                <strong>{candidate.title}</strong>
+                <p>{candidate.reviews} critic review{candidate.reviews === 1 ? '' : 's'} · fitness {candidate.fitness || 'pending'}</p>
+              </article>
+            ))}
+          </div>
+          <div className="quarantine-list">
+            <span>Replay guardrails</span>
+            {replay.missingSequences.length > 0 && <b>Missing sequence: {replay.missingSequences.join(', ')}</b>}
+            {replay.quarantine.length === 0 && replay.missingSequences.length === 0 ? (
+              <b>All envelopes accepted in sequence order.</b>
+            ) : (
+              replay.quarantine.map((issue) => <b key={issue.eventId}>{issue.eventId}: {issue.reason}</b>)
+            )}
+          </div>
+        </section>
+
+        <aside className="boundary-panel replay-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Replay Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={replayBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={replayBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={replayBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={replayBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={replayBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="replay-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={replayContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={replayContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function ReplayRow({ label, value }) {
+  return (
+    <>
+      <span>{label}</span>
+      <strong>{String(value)}</strong>
+    </>
+  );
+}
+
+function ProjectionCard({ label, value, detail }) {
+  return (
+    <article className="projection-card">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <p>{detail}</p>
+    </article>
+  );
+}
+
+function foldReplayFixture(fixture) {
+  const seenSequences = new Set();
+  const validEvents = [];
+  const quarantine = [];
+
+  fixture.events.forEach((event) => {
+    const schemaVersion = event.schemaVersion || fixture.schemaVersion;
+    let reason = '';
+    if (!Number.isInteger(event.sequence) || event.sequence < 1) {
+      reason = 'invalid sequence';
+    } else if (seenSequences.has(event.sequence)) {
+      reason = 'duplicate sequence';
+    } else if (schemaVersion !== fixture.schemaVersion) {
+      reason = 'schema version mismatch';
+    } else if (!replayEventTypes.has(event.type)) {
+      reason = 'unknown event type';
+    } else if (!event.payload || typeof event.payload !== 'object') {
+      reason = 'invalid payload';
+    }
+
+    if (reason) {
+      quarantine.push({ eventId: event.id, sequence: event.sequence, reason });
+      return;
+    }
+
+    seenSequences.add(event.sequence);
+    validEvents.push(event);
+  });
+
+  const sortedEvents = [...validEvents].sort((a, b) => a.sequence - b.sequence);
+  const missingSequences = [];
+  const maxSequence = Math.max(0, ...fixture.events.map((event) => event.sequence || 0));
+  for (let sequence = 1; sequence <= maxSequence; sequence += 1) {
+    if (!seenSequences.has(sequence)) missingSequences.push(sequence);
+  }
+
+  return {
+    validEvents: sortedEvents,
+    quarantine,
+    missingSequences,
+    projections: projectRunEvents(sortedEvents),
+  };
+}
+
+function projectRunEvents(events) {
+  const runState = { status: 'pending', caseTitle: 'unseeded', survivorId: null, finalFitness: null };
+  const agenomes = new Map();
+  const candidates = new Map();
+  const lineage = { edges: [], lastFusion: '' };
+  const spend = { totalCostUsd: 0, energySpent: 0 };
+
+  events.forEach((event) => {
+    const payload = event.payload;
+    if (event.type === 'run.created') {
+      runState.status = payload.status;
+      runState.budgetUsd = payload.budgetUsd;
+    }
+    if (event.type === 'case.seeded') {
+      runState.caseTitle = payload.caseTitle;
+    }
+    if (event.type === 'agenome.spawned') {
+      agenomes.set(payload.agenomeId, { id: payload.agenomeId, label: payload.label, energy: payload.energy });
+    }
+    if (event.type === 'candidate.created') {
+      candidates.set(payload.candidateId, {
+        id: payload.candidateId,
+        title: payload.title,
+        agenomeId: payload.agenomeId,
+        status: payload.status,
+        reviews: 0,
+        fitness: null,
+      });
+    }
+    if (event.type === 'energy.spent') {
+      spend.totalCostUsd += payload.costUsd;
+      spend.energySpent += payload.energy;
+    }
+    if (event.type === 'critic.completed') {
+      const candidate = candidates.get(payload.candidateId);
+      if (candidate) {
+        candidate.reviews += 1;
+        candidate.lastVerdict = payload.verdict;
+      }
+    }
+    if (event.type === 'fusion.created') {
+      payload.parentIds.forEach((parentId) => {
+        lineage.edges.push({ from: parentId, to: payload.childAgenomeId });
+      });
+      lineage.lastFusion = payload.inheritance;
+    }
+    if (event.type === 'candidate.selected') {
+      const candidate = candidates.get(payload.candidateId);
+      if (candidate) {
+        candidate.status = 'selected';
+        candidate.fitness = payload.fitness;
+      }
+      runState.survivorId = payload.candidateId;
+    }
+    if (event.type === 'run.completed') {
+      runState.status = payload.status;
+      runState.survivorId = payload.survivorId;
+      runState.finalFitness = payload.finalFitness;
+    }
+  });
+
+  return {
+    runState,
+    lineage,
+    spend,
+    candidates: [...candidates.values()],
+    agenomes: [...agenomes.values()],
+  };
+}
+
 function formatRatio(value) {
   if (typeof value !== 'number' || !Number.isFinite(value)) return 'pending';
   return value >= 100 ? Math.round(value).toLocaleString() : value.toFixed(1);
@@ -1172,8 +2191,61 @@ function persistNodePositions(nextNodes, storageKey) {
   window.localStorage.setItem(storageKey, JSON.stringify(positions));
 }
 
+const prototypeStages = [
+  {
+    label: 'Seed',
+    items: [
+      { id: 'intake', label: 'Case intake' },
+      { id: 'agenomes', label: 'Agenome pool' },
+    ],
+  },
+  {
+    label: 'Route',
+    items: [{ id: 'gateway', label: 'Gateway forge' }],
+  },
+  {
+    label: 'Evolve',
+    items: [
+      { id: 'energy', label: 'Energy metabolism' },
+      { id: 'fusion', label: 'Fusion lab' },
+    ],
+  },
+  {
+    label: 'Judge',
+    items: [{ id: 'critic', label: 'Critic council' }],
+  },
+  {
+    label: 'Explain',
+    items: [
+      { id: 'replay', label: 'Replay spine' },
+      { id: 'trace', label: 'Trace viewer' },
+      { id: 'spend', label: 'Spend ledger' },
+    ],
+  },
+];
+
+const prototypeTabStorageKey = 'doppl-prototype-suite.active-tab';
+const prototypeTabIds = new Set(prototypeStages.flatMap((stage) => stage.items.map((item) => item.id)));
+
+function getInitialPrototypeTab() {
+  try {
+    const savedTab = window.localStorage.getItem(prototypeTabStorageKey);
+    return prototypeTabIds.has(savedTab) ? savedTab : 'intake';
+  } catch {
+    return 'intake';
+  }
+}
+
 function App() {
-  const [tab, setTab] = useState('fusion');
+  const [tab, setTab] = useState(getInitialPrototypeTab);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(prototypeTabStorageKey, tab);
+    } catch {
+      // Ignore storage failures; tab navigation should still work.
+    }
+  }, [tab]);
 
   return (
     <main className="app-shell">
@@ -1187,26 +2259,32 @@ function App() {
             product learns what it needs.
           </p>
         </div>
-        <nav className="tabs" aria-label="Prototype tabs">
-          <button type="button" aria-selected={tab === 'energy'} onClick={() => setTab('energy')}>
-            Energy metabolism
-          </button>
-          <button type="button" aria-selected={tab === 'critic'} onClick={() => setTab('critic')}>
-            Critic council
-          </button>
-          <button type="button" aria-selected={tab === 'fusion'} onClick={() => setTab('fusion')}>
-            Fusion lab
-          </button>
-          <button type="button" aria-selected={tab === 'trace'} onClick={() => setTab('trace')}>
-            Trace viewer
-          </button>
-          <button type="button" aria-selected={tab === 'spend'} onClick={() => setTab('spend')}>
-            Spend ledger
-          </button>
+        <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
+          {prototypeStages.map((stage) => (
+            <div className="process-tab-stage" key={stage.label}>
+              <span>{stage.label}</span>
+              <div>
+                {stage.items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-selected={tab === item.id}
+                    onClick={() => setTab(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
       </header>
 
+      {tab === 'intake' && <CaseStudyIntake />}
+      {tab === 'agenomes' && <AgenomePool />}
+      {tab === 'gateway' && <GatewayForge />}
       {tab === 'fusion' && <FusionLab />}
+      {tab === 'replay' && <ReplaySpine />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}
       {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}

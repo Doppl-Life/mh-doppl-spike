@@ -2,7 +2,7 @@ export const fallbackBoundary = {
   upstreamModules: ['Operator Console', 'Replay Spine', 'Model Gateway', 'Runtime Health'],
   upstreamContracts: ['RunConfig', 'RunCaps', 'HealthProjection', 'ReplayFixtureMetadata'],
   downstreamContracts: ['DemoModeState', 'FallbackDecisionEvent', 'RunCommand', 'ReplayReadRequest'],
-  downstreamModules: ['Operator Console', 'Dashboard Mode Indicator', 'Trace Viewer', 'Final Survivor Proof Panel'],
+  downstreamModules: ['Dashboard Mode Indicator', 'Trace Viewer', 'Final Survivor Proof Panel'],
   invariants: [
     'fallback is operator-driven',
     'replay is explicitly labeled',

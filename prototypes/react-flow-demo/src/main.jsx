@@ -73,20 +73,29 @@ import { sampleTrace } from './trace/sampleTrace.js';
 
 const HANDLE_SLOTS = [25, 37, 49, 61, 73];
 const PrototypeNavigationContext = createContext(() => {});
+const PrototypeActiveTabContext = createContext('');
 const prototypeModuleTargets = {
   'Agenome Pool': { tabId: 'agenomes', label: 'Agenome pool' },
   'Case Study Intake': { tabId: 'intake', label: 'Case intake' },
+  'Candidate Store': { tabId: 'replay', label: 'Replay spine' },
   'Critic Council': { tabId: 'critic', label: 'Critic council' },
+  'Dashboard Mode Indicator': { tabId: 'fallback', label: 'Fallback ladder' },
   'Demo Fallback Ladder': { tabId: 'fallback', label: 'Fallback ladder' },
   'Energy Metabolism': { tabId: 'energy', label: 'Energy metabolism' },
+  'Event Store': { tabId: 'replay', label: 'Replay spine' },
   'Final Survivor Proof Panel': { tabId: 'survivor', label: 'Survivor proof' },
   'Fusion / Mutation': { tabId: 'fusion', label: 'Fusion lab' },
   'Fusion Lab': { tabId: 'fusion', label: 'Fusion lab' },
   'Gateway Forge': { tabId: 'gateway', label: 'Gateway forge' },
+  'Live Run Operator Console': { tabId: 'operator', label: 'Operator console' },
   'Model Gateway': { tabId: 'gateway', label: 'Gateway forge' },
   'Novelty Radar': { tabId: 'novelty', label: 'Novelty radar' },
   'Operator Console': { tabId: 'operator', label: 'Operator console' },
+  'Operator Run Config': { tabId: 'operator', label: 'Operator console' },
   'Replay Spine': { tabId: 'replay', label: 'Replay spine' },
+  'Retrieval Grounding': { tabId: 'gateway', label: 'Gateway forge' },
+  'Runtime Health': { tabId: 'fallback', label: 'Fallback ladder' },
+  'Selection / Scoring': { tabId: 'novelty', label: 'Novelty radar' },
   'Spend Ledger': { tabId: 'spend', label: 'Spend ledger' },
   'Subtype Check Lab': { tabId: 'subtype', label: 'Subtype checks' },
   'Trace Viewer': { tabId: 'trace', label: 'Trace viewer' },
@@ -1476,12 +1485,14 @@ function BoundaryPanel() {
 
 function BoundaryGroup({ title, items, tone = 'default' }) {
   const navigatePrototype = useContext(PrototypeNavigationContext);
+  const activeTab = useContext(PrototypeActiveTabContext);
   const navigableItems = title.includes('Modules')
     ? [
         ...new Map(
           items
             .map((item) => prototypeModuleTargets[item])
             .filter(Boolean)
+            .filter((target) => target.tabId !== activeTab)
             .map((target) => [target.tabId, target]),
         ).values(),
       ]
@@ -3205,63 +3216,65 @@ function App() {
 
   return (
     <PrototypeNavigationContext.Provider value={setTab}>
-      <main className="app-shell">
-        <header className="hero">
-          <div>
-            <p className="eyebrow">Doppl prototype suite</p>
-            <h1>Small organisms for the big organism.</h1>
-            <p>
-              An evolving shelf of Doppl product organisms: small, testable views of metabolism,
-              criticism, selection, fusion, spend, and evaluation patterns that can grow as the live
-              product learns what it needs.
-            </p>
-          </div>
-          <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
-            {prototypeStageRows.map((row, rowIndex) => (
-              <div className="process-tab-row" key={`prototype-row-${rowIndex}`}>
-                {row.map((stage) => (
-                  <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
-                    <span>{stage.label}</span>
-                    <div>
-                      {stage.items.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          aria-selected={tab === item.id}
-                          onClick={() => setTab(item.id)}
-                        >
-                          {item.label}
-                        </button>
-                      ))}
+      <PrototypeActiveTabContext.Provider value={tab}>
+        <main className="app-shell">
+          <header className="hero">
+            <div>
+              <p className="eyebrow">Doppl prototype suite</p>
+              <h1>Small organisms for the big organism.</h1>
+              <p>
+                An evolving shelf of Doppl product organisms: small, testable views of metabolism,
+                criticism, selection, fusion, spend, and evaluation patterns that can grow as the live
+                product learns what it needs.
+              </p>
+            </div>
+            <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
+              {prototypeStageRows.map((row, rowIndex) => (
+                <div className="process-tab-row" key={`prototype-row-${rowIndex}`}>
+                  {row.map((stage) => (
+                    <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
+                      <span>{stage.label}</span>
+                      <div>
+                        {stage.items.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            aria-selected={tab === item.id}
+                            onClick={() => setTab(item.id)}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </nav>
-        </header>
+                  ))}
+                </div>
+              ))}
+            </nav>
+          </header>
 
-        <section className="prototype-context-strip" aria-label="Prototype case study context">
-          <span>active prototype</span>
-          <strong>{prototypeLabels[tab]}</strong>
-          <span>case study</span>
-          <strong>{prototypeCaseStudyLabels[tab] || 'Prototype fixture'}</strong>
-        </section>
+          <section className="prototype-context-strip" aria-label="Prototype case study context">
+            <span>active prototype</span>
+            <strong>{prototypeLabels[tab]}</strong>
+            <span>case study</span>
+            <strong>{prototypeCaseStudyLabels[tab] || 'Prototype fixture'}</strong>
+          </section>
 
-        {tab === 'intake' && <CaseStudyIntake />}
-        {tab === 'agenomes' && <AgenomePool />}
-        {tab === 'operator' && <OperatorConsole />}
-        {tab === 'gateway' && <GatewayForge />}
-        {tab === 'fusion' && <FusionLab />}
-        {tab === 'survivor' && <FinalSurvivorProofPanel />}
-        {tab === 'fallback' && <DemoFallbackLadder />}
-        {tab === 'replay' && <ReplaySpine />}
-        {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
-        {tab === 'spend' && <SpendLedgerView />}
-        {tab === 'subtype' && <SubtypeCheckLab />}
-        {tab === 'novelty' && <NoveltyRadar />}
-        {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
-      </main>
+          {tab === 'intake' && <CaseStudyIntake />}
+          {tab === 'agenomes' && <AgenomePool />}
+          {tab === 'operator' && <OperatorConsole />}
+          {tab === 'gateway' && <GatewayForge />}
+          {tab === 'fusion' && <FusionLab />}
+          {tab === 'survivor' && <FinalSurvivorProofPanel />}
+          {tab === 'fallback' && <DemoFallbackLadder />}
+          {tab === 'replay' && <ReplaySpine />}
+          {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
+          {tab === 'spend' && <SpendLedgerView />}
+          {tab === 'subtype' && <SubtypeCheckLab />}
+          {tab === 'novelty' && <NoveltyRadar />}
+          {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
+        </main>
+      </PrototypeActiveTabContext.Provider>
     </PrototypeNavigationContext.Provider>
   );
 }

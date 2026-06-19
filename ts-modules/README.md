@@ -84,7 +84,7 @@ When a Python module graduates:
 
 | TS module (here) | Ported from | Status |
 | --- | --- | --- |
-| _(none yet)_ | — | shelf is empty; first promotion pending |
+| [`skill-lineage`](./skill-lineage/) | net-new (source: `SKILL.md` frontmatter + `skills/LINEAGE.md`, not a Python port) | promoted — typed studbook parser/graph/diff; 11 tests green |
 
 ## Promotion checklist (copy when graduating a piece)
 

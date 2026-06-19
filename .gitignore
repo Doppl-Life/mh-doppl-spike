@@ -1,9 +1,70 @@
-.venv/
+# ---------------------------------------------------------------------------
+# Doppl-test .gitignore — coherent Python + TypeScript/Node crucible
+# ---------------------------------------------------------------------------
+
+# --- OS / editor ---
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# --- Secrets / env ---
 .env
 .env.*
 !.env.example
+
+# ===========================================================================
+# Python
+# ===========================================================================
+.venv/
+venv/
+env/
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.cover
+.coverage
+.coverage.*
+htmlcov/
+
+# ===========================================================================
+# TypeScript / Node
+# ===========================================================================
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+.pnp.*
+*.tsbuildinfo
+.eslintcache
+
+# Build output (TS/Vite/etc.)
+**/dist/
+**/build/
+.next/
+.turbo/
+.cache/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ===========================================================================
+# Project-specific generated artifacts
+# ===========================================================================
 fusion_trace.html
 crucible_trace*.html
 *trace*.json
@@ -12,5 +73,5 @@ index.html
 bedrock/signal/verdicts.jsonl
 bedrock/signal/posts.jsonl
 
+# Tooling
 .codegraph/
-.DS_Store

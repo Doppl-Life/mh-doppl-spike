@@ -379,7 +379,7 @@ const energyNodes = [
   node('child', 'agenomeNode', 1540, 95, { key: 'child', child: true }),
   node('artifact', 'energyNode', 1930, 95, { tone: 'success', wide: true }),
   node('energyEgressContract', 'contractNode', 2370, 95, { tone: 'gold' }),
-  node('sinkCritic', 'moduleNode', 2790, 95, { tone: 'cyan' }),
+  node('sinkCritic', 'moduleNode', 2790, 95, { tone: 'cyan', direction: 'out' }),
 ];
 
 const energyEdges = [
@@ -406,7 +406,7 @@ const energyEdges = [
 ];
 
 const criticNodes = [
-  node('sourceEnergy', 'moduleNode', -560, 265, { tone: 'blue' }),
+  node('sourceEnergy', 'moduleNode', -560, 265, { tone: 'blue', direction: 'in' }),
   node('criticIngressContract', 'contractNode', -220, 265, { tone: 'cyan' }),
   node('artifact', 'artifactNode', 130, 265),
   node('factual', 'criticNode', 540, -260, { score: 92, tone: 'cyan' }),
@@ -417,9 +417,9 @@ const criticNodes = [
   node('judge', 'judgeNode', 930, 265),
   node('verdict', 'artifactNode', 1280, 265, { verdict: true }),
   node('criticEgressContract', 'contractNode', 1700, 265, { tone: 'green' }),
-  node('sinkFusion', 'moduleNode', 2010, 35, { tone: 'green' }),
-  node('sinkTrace', 'moduleNode', 2010, 265, { tone: 'blue' }),
-  node('sinkSpend', 'moduleNode', 2010, 495, { tone: 'gold' }),
+  node('sinkFusion', 'moduleNode', 2010, 35, { tone: 'green', direction: 'out' }),
+  node('sinkTrace', 'moduleNode', 2010, 265, { tone: 'blue', direction: 'out' }),
+  node('sinkSpend', 'moduleNode', 2010, 495, { tone: 'gold', direction: 'out' }),
 ];
 
 const criticEdges = [
@@ -630,6 +630,7 @@ function ContractNode({ data, selected }) {
   return (
     <article className={`contract-node tone-${data.tone || 'default'} ${selected ? 'selected' : ''}`}>
       <NodeHandles />
+      <span className="contract-stamp">contract</span>
       <p className="node-label">{item.label}</p>
       <h3>{item.title}</h3>
       <p>{item.body}</p>
@@ -645,7 +646,7 @@ function ContractNode({ data, selected }) {
 function ModuleNode({ data, selected }) {
   const item = boundaryDetails[data.id];
   return (
-    <article className={`module-node tone-${data.tone || 'default'} ${selected ? 'selected' : ''}`}>
+    <article className={`module-node dir-${data.direction || 'out'} tone-${data.tone || 'default'} ${selected ? 'selected' : ''}`}>
       <NodeHandles />
       <p className="node-label">{item.label}</p>
       <h3>{item.title}</h3>

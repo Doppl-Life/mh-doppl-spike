@@ -1,0 +1,177 @@
+{
+  "generatedAt": "2026-06-19T19:18:07.535Z",
+  "boundary": {
+    "module": "skill-lineage",
+    "entersFrom": {
+      "id": "host-skill-dirs",
+      "label": "Host expression layer (.cursor / .claude / .codex skills)",
+      "kind": "datastore"
+    },
+    "input": {
+      "name": "Lineage",
+      "schemaId": "skill-lineage/Lineage",
+      "direction": "in"
+    },
+    "output": {
+      "name": "LineageGraphProjection",
+      "schemaId": "contracts/LineageGraphProjection",
+      "direction": "out"
+    },
+    "exitsTo": {
+      "id": "lineage-registry",
+      "label": "Lineage registry + React Flow dashboard",
+      "kind": "datastore"
+    }
+  },
+  "studbook": {
+    "nodes": [
+      {
+        "id": "rule-of-cool",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "breakthrough",
+          "status": "stable",
+          "generation": 0,
+          "mutagenClass": null
+        }
+      },
+      {
+        "id": "addition-by-subtraction",
+        "position": {
+          "x": 260,
+          "y": 0
+        },
+        "data": {
+          "label": "addition-by-subtraction",
+          "status": "coined",
+          "generation": 1,
+          "mutagenClass": "valence-flip"
+        }
+      },
+      {
+        "id": "blindside",
+        "position": {
+          "x": 260,
+          "y": 110
+        },
+        "data": {
+          "label": "blindside",
+          "status": "coined",
+          "generation": 1,
+          "mutagenClass": "valence-flip"
+        }
+      },
+      {
+        "id": "breakout",
+        "position": {
+          "x": 260,
+          "y": 220
+        },
+        "data": {
+          "label": "breakout",
+          "status": "coined",
+          "generation": 1,
+          "mutagenClass": "valence-flip"
+        }
+      },
+      {
+        "id": "constraint-injection",
+        "position": {
+          "x": 260,
+          "y": 330
+        },
+        "data": {
+          "label": "constraint-injection",
+          "status": "coined",
+          "generation": 1,
+          "mutagenClass": "scarcity-operator"
+        }
+      },
+      {
+        "id": "first-principles",
+        "position": {
+          "x": 260,
+          "y": 440
+        },
+        "data": {
+          "label": "first-principles",
+          "status": "coined",
+          "generation": 1,
+          "mutagenClass": "basis-transform"
+        }
+      },
+      {
+        "id": "polymath",
+        "position": {
+          "x": 260,
+          "y": 550
+        },
+        "data": {
+          "label": "polymath",
+          "status": "coined",
+          "generation": 1,
+          "mutagenClass": "domain-transfer"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "rule-of-cool->addition-by-subtraction:progenitor",
+        "source": "rule-of-cool",
+        "target": "addition-by-subtraction",
+        "label": "progenitor",
+        "animated": true
+      },
+      {
+        "id": "rule-of-cool->blindside:progenitor",
+        "source": "rule-of-cool",
+        "target": "blindside",
+        "label": "progenitor",
+        "animated": true
+      },
+      {
+        "id": "rule-of-cool->breakout:progenitor",
+        "source": "rule-of-cool",
+        "target": "breakout",
+        "label": "progenitor",
+        "animated": true
+      },
+      {
+        "id": "rule-of-cool->constraint-injection:progenitor",
+        "source": "rule-of-cool",
+        "target": "constraint-injection",
+        "label": "progenitor",
+        "animated": true
+      },
+      {
+        "id": "rule-of-cool->first-principles:progenitor",
+        "source": "rule-of-cool",
+        "target": "first-principles",
+        "label": "progenitor",
+        "animated": true
+      },
+      {
+        "id": "rule-of-cool->polymath:progenitor",
+        "source": "rule-of-cool",
+        "target": "polymath",
+        "label": "progenitor",
+        "animated": true
+      }
+    ]
+  },
+  "drift": {
+    "ok": true,
+    "missingFromTable": [],
+    "missingFromGraph": [],
+    "mismatches": []
+  },
+  "unlineaged": [
+    {
+      "name": "transcript-to-case-study",
+      "reason": "skill-lineage: frontmatter has no `lineage:` block"
+    }
+  ]
+}

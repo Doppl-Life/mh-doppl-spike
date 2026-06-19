@@ -15,7 +15,20 @@ export const fusionMetadata = {
   runCount: Object.keys(generated.runs).length,
 };
 
-export const fusionAgenomes = Object.values(generated.agenomes);
+const shortDescriptions = {
+  'addition-by-subtraction': 'Wins by removing risky counter-drone actions and unnecessary response surface.',
+  blindside: 'Hunts the non-obvious failure mode before the protocol becomes brittle.',
+  breakout: 'Escapes the anti-drone frame and changes what counts as the target.',
+  breakthrough: 'Adds the one practical mechanism that makes the whole answer click.',
+  'constraint-injection': 'Forces the answer through strict legality, safety, speed, and discretion limits.',
+  'first-principles': 'Reduces the problem to the real asset: preventing useful footage.',
+  polymath: 'Imports proven operating patterns from distant fields into yacht operations.',
+};
+
+export const fusionAgenomes = Object.values(generated.agenomes).map((agenome) => ({
+  ...agenome,
+  description: shortDescriptions[agenome.id] || agenome.move,
+}));
 export const fusionRuns = generated.runs;
 export const fusionPairs = Object.values(generated.runs).map(pairFixture);
 export const fusionPairsById = Object.fromEntries(fusionPairs.map((pair) => [pair.id, pair]));

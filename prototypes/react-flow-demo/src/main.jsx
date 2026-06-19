@@ -647,6 +647,11 @@ function FusionLab() {
             parent proposes, how the critic council scores them, and what the bred child contributes
             after inheriting weighted traits from both parents.
           </p>
+          <p className="problem-statement">
+            Problem: a high-profile guest wants private time on a superyacht, but paparazzi drones
+            can film from outside the vessel. The solution must avoid jamming, physical takedown,
+            spectacle, and late reactions that still leave the drone with useful footage.
+          </p>
         </div>
         <div className="case-card">
           <span>saved model batch</span>
@@ -674,7 +679,7 @@ function FusionLab() {
               >
                 <span>{agenome.label}</span>
                 <strong>{agenome.title}</strong>
-                <small>{agenome.move}</small>
+                <small>{agenome.description}</small>
               </button>
             ))}
           </div>
@@ -738,7 +743,7 @@ function FusionSocket({ label, agenome, onDrop }) {
     >
       <span>{label}</span>
       <strong>{agenome.title}</strong>
-      <p>{agenome.move}</p>
+      <p>{agenome.description}</p>
     </div>
   );
 }
@@ -759,7 +764,7 @@ function persistNodePositions(nextNodes, storageKey) {
 }
 
 function App() {
-  const [tab, setTab] = useState('energy');
+  const [tab, setTab] = useState('fusion');
 
   return (
     <main className="app-shell">

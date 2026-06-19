@@ -633,6 +633,8 @@ function YieldStrip({ yieldData }) {
 function FusionLab() {
   const [parentA, setParentA] = useState('first-principles');
   const [parentB, setParentB] = useState('breakthrough');
+  const [draggingAgenome, setDraggingAgenome] = useState(null);
+  const [hoveredSlot, setHoveredSlot] = useState(null);
   const run = getFusionRun(parentA, parentB);
   const selectedPairId = makeFusionPairId(parentA, parentB);
   const childYield = costLedger.outputById[`child:${selectedPairId}`];
@@ -653,7 +655,14 @@ function FusionLab() {
   const handleDrop = useCallback((event, slot) => {
     event.preventDefault();
     placeAgenome(slot, event.dataTransfer.getData('text/agenome-id'));
+    setDraggingAgenome(null);
+    setHoveredSlot(null);
   }, [placeAgenome]);
+
+  const handleDragEnd = useCallback(() => {
+    setDraggingAgenome(null);
+    setHoveredSlot(null);
+  }, []);
 
   return (
     <section className="prototype fusion-lab">
@@ -690,7 +699,10 @@ function FusionLab() {
       <div className="fusion-shell">
         <aside className="agenome-palette">
           <p className="eyebrow">drag agenomes</p>
-          <h3>Current mutagen pool</h3>
+          <div className="palette-heading">
+            <h3>Current mutagen pool</h3>
+            <p>Drag any card into Parent A or Parent B.</p>
+          </div>
           <div className="palette-list">
             {fusionAgenomes.map((agenome) => (
               <button
@@ -698,9 +710,15 @@ function FusionLab() {
                 type="button"
                 key={agenome.id}
                 className={`palette-card tone-${agenome.tone} ${parentA === agenome.id || parentB === agenome.id ? 'is-active' : ''}`}
-                onDragStart={(event) => event.dataTransfer.setData('text/agenome-id', agenome.id)}
+                onDragStart={(event) => {
+                  event.dataTransfer.effectAllowed = 'move';
+                  event.dataTransfer.setData('text/agenome-id', agenome.id);
+                  setDraggingAgenome(agenome.id);
+                }}
+                onDragEnd={handleDragEnd}
                 onClick={() => placeAgenome(parentA === agenome.id ? 'b' : 'a', agenome.id)}
               >
+                <em aria-hidden="true">drag</em>
                 <span>{agenome.label}</span>
                 <strong>{agenome.title}</strong>
                 <small>{agenome.description}</small>
@@ -714,6 +732,10 @@ function FusionLab() {
             <FusionSocket
               label="parent a"
               agenome={fusionAgenomes.find((item) => item.id === parentA)}
+              isDragging={Boolean(draggingAgenome)}
+              isHovering={hoveredSlot === 'a'}
+              onDragEnter={() => setHoveredSlot('a')}
+              onDragLeave={() => setHoveredSlot((slot) => (slot === 'a' ? null : slot))}
               onDrop={(event) => handleDrop(event, 'a')}
             />
             <div className="fusion-core">
@@ -724,6 +746,10 @@ function FusionLab() {
             <FusionSocket
               label="parent b"
               agenome={fusionAgenomes.find((item) => item.id === parentB)}
+              isDragging={Boolean(draggingAgenome)}
+              isHovering={hoveredSlot === 'b'}
+              onDragEnter={() => setHoveredSlot('b')}
+              onDragLeave={() => setHoveredSlot((slot) => (slot === 'b' ? null : slot))}
               onDrop={(event) => handleDrop(event, 'b')}
             />
           </div>
@@ -870,14 +896,22 @@ function formatRatio(value) {
   return value >= 100 ? Math.round(value).toLocaleString() : value.toFixed(1);
 }
 
-function FusionSocket({ label, agenome, onDrop }) {
+function FusionSocket({ label, agenome, isDragging, isHovering, onDragEnter, onDragLeave, onDrop }) {
   return (
     <div
-      className={`fusion-socket tone-${agenome.tone}`}
-      onDragOver={(event) => event.preventDefault()}
+      className={`fusion-socket tone-${agenome.tone} ${isDragging ? 'is-ready' : ''} ${isHovering ? 'is-hovering' : ''}`}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onDragOver={(event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+      }}
       onDrop={onDrop}
     >
       <span>{label}</span>
+      <div className="drop-target" aria-hidden="true">
+        <b>Drop agenome here</b>
+      </div>
       <strong>{agenome.title}</strong>
       <p>{agenome.description}</p>
     </div>

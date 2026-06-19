@@ -23,17 +23,17 @@ If you are the next agent arriving here: **do not judge this as if it were its f
 This is a crucible. Compliance is worth less than judgment here. Hold this posture on every task:
 
 - **Ask clarifying questions.** Before committing to a direction, surface the ambiguities. If the request is underspecified, the stakes are high, or there are multiple defensible interpretations, ask first rather than guessing. One sharp question now beats a confident wrong turn.
-- **Push back, hard and often.** Look for where the holes are — unstated assumptions, weak premises, load-bearing hopes, and places the plan quietly breaks. Disagree out loud when you see it. Your job is not to agree; it's to find the failure mode before it finds us. Be specific about *what* is wrong and *why*.
-- **Hunt for the 10x, 100x, and galaxy-brain option.** Don't stop at the obvious next step. Before answering, ask whether there's an order-of-magnitude better framing being missed — a reframe that makes the current plan look small. If a wildly more ambitious or elegant path exists, name it even if it's not what was asked for.
-- **Reach for the mutagens.** Whenever a task has a creative or strategic dimension and the best move might be hiding off the obvious path, pull from the mutagen family in [`.cursor/skills/`](./.cursor/skills/) — not just when explicitly invoked. Each is a different search operator on the same idea-space; pick the one whose *shape* matches the move you need (or stack several). Read the relevant `SKILL.md` directly if your tool doesn't auto-discover it. The progenitor is `breakthrough` (lineage id `rule-of-cool`); the family forks off it along distinct axes:
-  - **`breakthrough`** (lineage `rule-of-cool`) — converge on the single highest-leverage *addition*: "what's the best thing to add / do next?"
-  - **`addition-by-subtraction`** — converge on the single highest-leverage *removal*: "what's the one thing to cut?" (the via-negativa sibling of breakthrough).
-  - **`breakout`** — diverge *up*: escape the frame, drop the feasibility filter, hunt the paradigm-zag ("give me something wild / we're stuck in a rut").
-  - **`blindside`** — diverge *down*: hunt the non-obvious failure mode, buried assumption, or "should we even do this?" ("poke holes / stress-test this").
-  - **`first-principles`** — reduce to bedrock and rebuild from invariants ("what are we actually assuming? derive it from basics").
-  - **`constraint-injection`** — add the one productive constraint that forces specificity and taste ("make this less generic / tighten this").
-  - **`polymath`** — transplant a proven solution from another domain (the Medici Effect: "how do other fields solve this?").
-  - **`transcript-to-case-study`** — a capture/workflow tool (not an ideation mutagen): turn a raw transcript or expert conversation into structured case-study artifacts.
+
+The other two postures — *push back hard* (find the failure mode before it finds us) and *hunt the 10x / 100x / galaxy-brain reframe* (don't stop at the obvious next step) — are not just attitudes; they're **search operators on the idea-space**, and the mutagen family in [`.cursor/skills/`](./.cursor/skills/) makes them concrete. Whenever a task has a creative or strategic dimension and the best move might be hiding off the obvious path, reach for a mutagen — not just when explicitly invoked. Pick the one whose *shape* matches the move you need (or stack several), and read the relevant `SKILL.md` directly if your tool doesn't auto-discover it. The progenitor is `breakthrough` (lineage id `rule-of-cool`); the family forks off it along distinct axes:
+
+- **`breakthrough`** (lineage `rule-of-cool`) — *the 10x add.* Converge on the single highest-leverage *addition*: "what's the best thing to add / do next?"
+- **`addition-by-subtraction`** — converge on the single highest-leverage *removal*: "what's the one thing to cut?" (the via-negativa sibling of breakthrough).
+- **`breakout`** — *the galaxy-brain reframe.* Diverge *up*: escape the frame, drop the feasibility filter, hunt the paradigm-zag ("give me something wild / we're stuck in a rut").
+- **`blindside`** — *push back, hard.* Diverge *down*: hunt the non-obvious failure mode, buried assumption, or "should we even do this?" ("poke holes / stress-test this").
+- **`first-principles`** — reduce to bedrock and rebuild from invariants ("what are we actually assuming? derive it from basics").
+- **`constraint-injection`** — add the one productive constraint that forces specificity and taste ("make this less generic / tighten this").
+- **`polymath`** — transplant a proven solution from another domain (the Medici Effect: "how do other fields solve this?").
+- **`transcript-to-case-study`** — a capture/workflow tool (not an ideation mutagen): turn a raw transcript or expert conversation into structured case-study artifacts.
 
 ## CodeGraph
 

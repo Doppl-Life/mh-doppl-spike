@@ -34,6 +34,16 @@ import {
   intakeExamples,
 } from './caseIntakeData.js';
 import { replayBoundary, replayContractShapes, replayEventTypes, replayFixtures } from './replayData.js';
+import {
+  buildOperatorEvents,
+  defaultRunCaps,
+  operatorBoundary,
+  operatorCasePresets,
+  operatorContractShapes,
+  operatorModes,
+  operatorPoolPresets,
+  validateRunCaps,
+} from './operatorData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -1638,6 +1648,211 @@ function buildAgenomeRunConfig(pool) {
   };
 }
 
+function OperatorConsole() {
+  const [caseId, setCaseId] = useState(operatorCasePresets[0].id);
+  const [poolId, setPoolId] = useState(operatorPoolPresets[0].id);
+  const [mode, setMode] = useState('live');
+  const [caps, setCaps] = useState(defaultRunCaps);
+  const [status, setStatus] = useState('configured');
+  const selectedCase = operatorCasePresets.find((item) => item.id === caseId) || operatorCasePresets[0];
+  const selectedPool = operatorPoolPresets.find((item) => item.id === poolId) || operatorPoolPresets[0];
+  const capWarnings = validateRunCaps(caps);
+  const events = buildOperatorEvents(status, mode);
+  const canStart = status === 'configured' && capWarnings.length === 0;
+  const isActive = status === 'running' || status === 'paused';
+  const progress = status === 'configured' ? 0 : status === 'running' ? 42 : status === 'paused' ? 46 : 100;
+  const generation = status === 'configured' ? 0 : status === 'running' ? 1 : status === 'paused' ? 1 : 2;
+
+  const setCap = (key, value) => {
+    setCaps((current) => ({ ...current, [key]: Number(value) }));
+    if (status !== 'configured') setStatus('configured');
+  };
+
+  const startRun = () => {
+    if (canStart) setStatus('running');
+  };
+
+  return (
+    <section className="prototype operator-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 10 · operator console</p>
+          <h2>Run Control Room</h2>
+          <p>
+            Configure a bounded Doppl run, start it, monitor health, and intervene safely. The console
+            exposes operator commands without allowing edits to candidates, scores, lineage, or event truth.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{mode} mode · {status}</span>
+          <strong>{selectedCase.title}</strong>
+          <p>generation {generation}/{caps.generationCap} · energy {Math.max(0, caps.energyBudget - 146)}/{caps.energyBudget}</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${progress}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="operator-layout">
+        <section className="operator-config-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">pre-run config</p>
+              <h3>RunConfig</h3>
+            </div>
+            <strong className={capWarnings.length ? 'status-bad' : 'status-good'}>
+              {capWarnings.length ? 'blocked' : 'valid'}
+            </strong>
+          </div>
+          <OperatorSelect label="case packet" value={caseId} options={operatorCasePresets} onChange={setCaseId} disabled={isActive} />
+          <OperatorSelect label="agenome pool" value={poolId} options={operatorPoolPresets} onChange={setPoolId} disabled={isActive} />
+          <div className="operator-mode-row" aria-label="Run mode">
+            {operatorModes.map((item) => (
+              <button key={item.id} type="button" aria-selected={mode === item.id} disabled={isActive} onClick={() => setMode(item.id)}>
+                <strong>{item.label}</strong>
+                <span>{item.detail}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="operator-caps-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">hard caps</p>
+              <h3>Fail-Closed Limits</h3>
+            </div>
+            <strong>{capWarnings.length}/{6}</strong>
+          </div>
+          <div className="cap-grid">
+            <CapControl label="population" value={caps.populationCap} min={2} max={7} onChange={(value) => setCap('populationCap', value)} disabled={isActive} />
+            <CapControl label="generations" value={caps.generationCap} min={1} max={6} onChange={(value) => setCap('generationCap', value)} disabled={isActive} />
+            <CapControl label="energy" value={caps.energyBudget} min={80} max={600} step={10} onChange={(value) => setCap('energyBudget', value)} disabled={isActive} />
+            <CapControl label="minutes" value={caps.wallClockMinutes} min={2} max={30} onChange={(value) => setCap('wallClockMinutes', value)} disabled={isActive} />
+            <CapControl label="tool calls" value={caps.toolCallCap} min={8} max={90} onChange={(value) => setCap('toolCallCap', value)} disabled={isActive} />
+            <CapControl label="repairs" value={caps.repairAttempts} min={0} max={2} onChange={(value) => setCap('repairAttempts', value)} disabled={isActive} />
+          </div>
+        </section>
+
+        <section className="operator-command-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">operator commands</p>
+              <h3>Start / Stop</h3>
+            </div>
+            <strong>{status}</strong>
+          </div>
+          <div className="operator-command-grid">
+            <button type="button" className="command-primary" disabled={!canStart} onClick={startRun}>Start Run</button>
+            <button type="button" disabled={status !== 'running'} onClick={() => setStatus('paused')}>Pause</button>
+            <button type="button" disabled={status !== 'paused'} onClick={() => setStatus('running')}>Resume</button>
+            <button type="button" disabled={!isActive && status !== 'stopped'} onClick={() => setStatus('stopped')}>Stop</button>
+            <button type="button" className="command-danger" disabled={!isActive} onClick={() => setStatus('killed')}>Kill Switch</button>
+            <button type="button" onClick={() => setStatus('configured')}>Reset Config</button>
+          </div>
+          <div className="quarantine-list operator-warning-list">
+            <span>command guardrails</span>
+            {capWarnings.length ? capWarnings.map((warning) => <b key={warning}>{warning}</b>) : <b>Caps valid. Candidate text, scores, lineage, and event sequence remain read-only.</b>}
+          </div>
+        </section>
+
+        <section className="operator-health-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">live health</p>
+              <h3>Run State</h3>
+            </div>
+            <strong className={status === 'killed' ? 'status-bad' : 'status-good'}>
+              {status === 'running' ? 'healthy' : status}
+            </strong>
+          </div>
+          <div className="projection-grid">
+            <ProjectionCard label="Active Agenomes" value={status === 'configured' ? 0 : selectedPool.agenomeIds.length} detail={selectedPool.title} />
+            <ProjectionCard label="Gateway Queue" value={status === 'running' ? 3 : 0} detail={mode === 'replay' ? 'replay mode uses no fresh calls' : 'bounded provider calls'} />
+            <ProjectionCard label="Event Lag" value={status === 'running' ? '420ms' : '0ms'} detail="SSE delivery, event log remains truth" />
+            <ProjectionCard label="Schema Rejects" value={status === 'running' ? 1 : 0} detail="visible, not hidden" />
+          </div>
+          <div className="operator-event-list">
+            {events.map((event) => (
+              <article key={`${event.type}-${event.detail}`}>
+                <span>{event.source}</span>
+                <strong>{event.type}</strong>
+                <p>{event.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <aside className="boundary-panel operator-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Console Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={operatorBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={operatorBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={operatorBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={operatorBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={operatorBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="operator-payload-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">command preview</p>
+              <h3>RunCommand</h3>
+            </div>
+            <strong>{status === 'configured' ? 'create_run' : `run.${status}`}</strong>
+          </div>
+          <pre className="payload-preview">{JSON.stringify(buildRunCommandPreview({ selectedCase, selectedPool, caps, mode, status }), null, 2)}</pre>
+        </section>
+
+        <section className="operator-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={operatorContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={operatorContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function OperatorSelect({ label, value, options, onChange, disabled }) {
+  return (
+    <label className="operator-select">
+      <span>{label}</span>
+      <select value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)}>
+        {options.map((item) => (
+          <option key={item.id} value={item.id}>{item.title}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function CapControl({ label, value, min, max, step = 1, onChange, disabled }) {
+  return (
+    <label className="cap-control">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <input type="range" min={min} max={max} step={step} value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)} />
+    </label>
+  );
+}
+
+function buildRunCommandPreview({ selectedCase, selectedPool, caps, mode, status }) {
+  return {
+    type: status === 'configured' ? 'create_run' : `run.${status}`,
+    idempotencyKey: `operator:${selectedCase.id}:${selectedPool.id}:${mode}`,
+    requestedBy: 'operator',
+    runConfig: {
+      caseId: selectedCase.id,
+      startingPopulation: selectedPool.agenomeIds,
+      mode,
+      caps,
+      scoringPolicyVersion: 'mvp-held-out-v1',
+    },
+  };
+}
+
 function GatewayForge() {
   const [fixtureId, setFixtureId] = useState('clean');
   const fixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
@@ -2200,6 +2415,10 @@ const prototypeStages = [
     ],
   },
   {
+    label: 'Operate',
+    items: [{ id: 'operator', label: 'Operator console' }],
+  },
+  {
     label: 'Route',
     items: [{ id: 'gateway', label: 'Gateway forge' }],
   },
@@ -2282,6 +2501,7 @@ function App() {
 
       {tab === 'intake' && <CaseStudyIntake />}
       {tab === 'agenomes' && <AgenomePool />}
+      {tab === 'operator' && <OperatorConsole />}
       {tab === 'gateway' && <GatewayForge />}
       {tab === 'fusion' && <FusionLab />}
       {tab === 'replay' && <ReplaySpine />}

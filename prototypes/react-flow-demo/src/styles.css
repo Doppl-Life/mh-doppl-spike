@@ -59,7 +59,7 @@ textarea {
   align-items: end;
   max-width: 1500px;
   margin: 0 auto 28px;
-  padding: 36px 36px 184px;
+  padding: 36px 36px 232px;
   border: 1px solid rgba(110, 231, 255, 0.24);
   background:
     linear-gradient(130deg, rgba(11, 24, 50, 0.92), rgba(6, 13, 30, 0.74)),
@@ -111,7 +111,7 @@ textarea {
   right: 36px;
   bottom: 32px;
   display: grid;
-  grid-template-columns: repeat(5, auto);
+  grid-template-columns: repeat(6, auto);
   gap: 10px;
   padding: 10px;
   border: 1px solid rgba(110, 231, 255, 0.24);
@@ -1976,6 +1976,203 @@ article.module-node::after {
   border-color: rgba(110, 231, 255, 0.16);
 }
 
+/* ---------- Operator console (prototype 10) ---------- */
+
+.operator-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.85fr) minmax(420px, 1.15fr) minmax(300px, 0.72fr);
+  grid-template-areas:
+    "config caps commands"
+    "health health boundary"
+    "payload payload boundary"
+    "contracts contracts contracts";
+  gap: 14px;
+  align-items: start;
+}
+
+.operator-layout > * {
+  min-width: 0;
+}
+
+.operator-config-panel,
+.operator-caps-panel,
+.operator-command-panel,
+.operator-health-panel,
+.operator-payload-panel,
+.operator-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.operator-config-panel { grid-area: config; }
+.operator-caps-panel { grid-area: caps; }
+.operator-command-panel { grid-area: commands; }
+.operator-health-panel { grid-area: health; }
+.operator-boundary-panel { grid-area: boundary; }
+.operator-payload-panel { grid-area: payload; }
+.operator-contract-panel { grid-area: contracts; }
+
+.operator-select,
+.cap-control {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.operator-select + .operator-select {
+  margin-top: 10px;
+}
+
+.operator-select span,
+.cap-control span,
+.operator-event-list span {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.operator-select select {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid rgba(110, 231, 255, 0.24);
+  padding: 10px;
+  background: rgba(2, 5, 13, 0.76);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.operator-mode-row,
+.operator-command-grid,
+.cap-grid,
+.operator-event-list {
+  display: grid;
+  gap: 10px;
+}
+
+.operator-mode-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 10px;
+}
+
+.operator-mode-row button,
+.operator-command-grid button {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  background: rgba(4, 8, 23, 0.56);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, opacity 140ms ease;
+}
+
+.operator-mode-row button {
+  display: grid;
+  gap: 5px;
+  min-height: 92px;
+  padding: 12px;
+  text-align: left;
+}
+
+.operator-mode-row button span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.operator-mode-row button:hover,
+.operator-mode-row button:focus-visible,
+.operator-command-grid button:hover,
+.operator-command-grid button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.94);
+  outline: none;
+}
+
+.operator-mode-row button[aria-selected="true"],
+.operator-command-grid .command-primary:not(:disabled) {
+  color: #00121b;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  border-color: transparent;
+}
+
+.operator-mode-row button:disabled,
+.operator-command-grid button:disabled,
+.operator-select select:disabled,
+.cap-control input:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.cap-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cap-control strong {
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.cap-control input {
+  width: 100%;
+  accent-color: var(--cyan);
+}
+
+.operator-command-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.operator-command-grid button {
+  min-height: 48px;
+  padding: 12px;
+  font-weight: 900;
+}
+
+.operator-command-grid .command-danger:not(:disabled) {
+  border-color: rgba(255, 93, 143, 0.5);
+  color: #ffd5e1;
+  background: rgba(255, 93, 143, 0.12);
+}
+
+.operator-warning-list {
+  margin-top: 12px;
+}
+
+.operator-event-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.operator-event-list article {
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.operator-event-list strong {
+  display: block;
+  margin: 7px 0;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.operator-event-list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 /* ---------- Gateway forge (prototype 08) ---------- */
 
 .gateway-layout {
@@ -2591,6 +2788,7 @@ article.module-node::after {
   .agenome-layout,
   .gateway-layout,
   .intake-layout,
+  .operator-layout,
   .replay-layout,
   .spend-grid,
   .strategy-table,
@@ -2615,6 +2813,13 @@ article.module-node::after {
 
   .agenome-library-panel,
   .agenome-inspector-panel,
+  .operator-config-panel,
+  .operator-caps-panel,
+  .operator-command-panel,
+  .operator-health-panel,
+  .operator-boundary-panel,
+  .operator-payload-panel,
+  .operator-contract-panel,
   .pool-diagnostics-panel,
   .agenome-boundary-panel,
   .agenome-runconfig-panel,
@@ -2627,8 +2832,11 @@ article.module-node::after {
   .agenome-detail-grid,
   .agenome-notes,
   .agenome-score-grid,
+  .cap-grid,
   .gateway-response-columns,
   .gateway-result-grid,
+  .operator-event-list,
+  .operator-mode-row,
   .packet-pane,
   .projection-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2692,10 +2900,14 @@ article.module-node::after {
   .agenome-detail-grid,
   .agenome-notes,
   .agenome-score-grid,
+  .cap-grid,
   .event-envelope,
   .gateway-request-grid,
   .gateway-response-columns,
   .gateway-result-grid,
+  .operator-command-grid,
+  .operator-event-list,
+  .operator-mode-row,
   .packet-pane,
   .projection-grid,
   .run-seed {

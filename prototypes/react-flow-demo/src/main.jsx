@@ -1459,6 +1459,31 @@ function persistNodePositions(nextNodes, storageKey) {
   window.localStorage.setItem(storageKey, JSON.stringify(positions));
 }
 
+const prototypeStages = [
+  {
+    label: 'Seed',
+    items: [{ id: 'intake', label: 'Case intake' }],
+  },
+  {
+    label: 'Evolve',
+    items: [
+      { id: 'energy', label: 'Energy metabolism' },
+      { id: 'fusion', label: 'Fusion lab' },
+    ],
+  },
+  {
+    label: 'Judge',
+    items: [{ id: 'critic', label: 'Critic council' }],
+  },
+  {
+    label: 'Explain',
+    items: [
+      { id: 'trace', label: 'Trace viewer' },
+      { id: 'spend', label: 'Spend ledger' },
+    ],
+  },
+];
+
 function App() {
   const [tab, setTab] = useState('intake');
 
@@ -1474,25 +1499,24 @@ function App() {
             product learns what it needs.
           </p>
         </div>
-        <nav className="tabs" aria-label="Prototype tabs">
-          <button type="button" aria-selected={tab === 'intake'} onClick={() => setTab('intake')}>
-            Case intake
-          </button>
-          <button type="button" aria-selected={tab === 'energy'} onClick={() => setTab('energy')}>
-            Energy metabolism
-          </button>
-          <button type="button" aria-selected={tab === 'critic'} onClick={() => setTab('critic')}>
-            Critic council
-          </button>
-          <button type="button" aria-selected={tab === 'fusion'} onClick={() => setTab('fusion')}>
-            Fusion lab
-          </button>
-          <button type="button" aria-selected={tab === 'trace'} onClick={() => setTab('trace')}>
-            Trace viewer
-          </button>
-          <button type="button" aria-selected={tab === 'spend'} onClick={() => setTab('spend')}>
-            Spend ledger
-          </button>
+        <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
+          {prototypeStages.map((stage) => (
+            <div className="process-tab-stage" key={stage.label}>
+              <span>{stage.label}</span>
+              <div>
+                {stage.items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-selected={tab === item.id}
+                    onClick={() => setTab(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
       </header>
 

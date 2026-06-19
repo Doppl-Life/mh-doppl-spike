@@ -1486,33 +1486,27 @@ function BoundaryPanel() {
 function BoundaryGroup({ title, items, tone = 'default' }) {
   const navigatePrototype = useContext(PrototypeNavigationContext);
   const activeTab = useContext(PrototypeActiveTabContext);
-  const navigableItems = title.includes('Modules')
-    ? [
-        ...new Map(
-          items
-            .map((item) => prototypeModuleTargets[item])
-            .filter(Boolean)
-            .filter((target) => target.tabId !== activeTab)
-            .map((target) => [target.tabId, target]),
-        ).values(),
-      ]
-    : [];
+  const isModuleGroup = title.includes('Modules');
+  const seenTargets = new Set();
 
   return (
     <div className={`boundary-group tone-${tone}`}>
       <span>{title}</span>
       <div>
-        {items.map((item) => <b key={item}>{item}</b>)}
+        {items.map((item) => {
+          const target = isModuleGroup ? prototypeModuleTargets[item] : null;
+          const isNavigable = target && target.tabId !== activeTab && !seenTargets.has(target.tabId);
+          if (isNavigable) seenTargets.add(target.tabId);
+          if (isNavigable) {
+            return (
+              <button key={item} type="button" onClick={() => navigatePrototype(target.tabId)}>
+                {item}
+              </button>
+            );
+          }
+          return <b key={item}>{item}</b>;
+        })}
       </div>
-      {navigableItems.length > 0 && (
-        <div className="boundary-nav-buttons">
-          {navigableItems.map(({ label, tabId }) => (
-            <button key={`${label}-${tabId}`} type="button" onClick={() => navigatePrototype(tabId)}>
-              Open {label}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

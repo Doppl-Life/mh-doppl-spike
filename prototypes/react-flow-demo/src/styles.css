@@ -1754,6 +1754,23 @@ article.module-node::after {
 .boundary-panel {
   position: sticky;
   top: 18px;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  scrollbar-color: rgba(110, 231, 255, 0.42) rgba(4, 8, 23, 0.42);
+  scrollbar-width: thin;
+}
+
+.boundary-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.boundary-panel::-webkit-scrollbar-track {
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.boundary-panel::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(4, 8, 23, 0.7);
+  background: rgba(110, 231, 255, 0.42);
 }
 
 .boundary-group {
@@ -1770,43 +1787,38 @@ article.module-node::after {
   gap: 7px;
 }
 
-.boundary-group b {
+.boundary-group b,
+.boundary-group button {
   border: 1px solid rgba(110, 231, 255, 0.2);
   padding: 7px 8px;
   color: #d8e5ff;
   background: rgba(4, 8, 23, 0.42);
   font-size: 12px;
+  font-family: inherit;
+  font-weight: 850;
   line-height: 1.15;
+}
+
+.boundary-group button {
+  border: 1px solid rgba(86, 255, 179, 0.28);
+  background: rgba(86, 255, 179, 0.08);
+  color: #dfffee;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.boundary-group button:hover,
+.boundary-group button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(86, 255, 179, 0.72);
+  background: rgba(86, 255, 179, 0.14);
+  outline: none;
 }
 
 .boundary-group.tone-strong b {
   border-color: rgba(86, 255, 179, 0.24);
   color: #dfffee;
   background: rgba(86, 255, 179, 0.08);
-}
-
-.boundary-nav-buttons {
-  margin-top: 2px;
-}
-
-.boundary-nav-buttons button {
-  border: 1px solid rgba(86, 255, 179, 0.28);
-  padding: 8px 9px;
-  background: rgba(86, 255, 179, 0.08);
-  color: #dfffee;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 850;
-  line-height: 1.15;
-  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
-}
-
-.boundary-nav-buttons button:hover,
-.boundary-nav-buttons button:focus-visible {
-  transform: translateY(-1px);
-  border-color: rgba(86, 255, 179, 0.72);
-  background: rgba(86, 255, 179, 0.14);
-  outline: none;
 }
 
 /* ---------- Agenome pool (prototype 07) ---------- */

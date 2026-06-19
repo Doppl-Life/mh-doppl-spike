@@ -27,6 +27,7 @@ something we actually saw or a known bias/fallacy — not invented wisdom.
 - **Turn the constraint into the design** — the binding limit is usually the strongest lever, not the obstacle.
 - **Cheapest falsification first** — find the test that could kill the idea fastest and run that before investing.
 - **Don't mistake a situational barrier for a permanent one** — the wall you're counting on may not be there at game time. *(yacht: the tender removed the "too high to climb" hull)*
+- **Decouple the deliverable from the mechanism** — when you can't eliminate a failure, hide its *perception* at a different layer. Hard to know when to reach for it; often it's the payoff of spotting a plan flaw. *(yacht: deliver perceived continuity by buffering/prediction, not by stacking more pipes)*
 
 ## Traps — where we go wrong
 
@@ -41,3 +42,6 @@ something we actually saw or a known bias/fallacy — not invented wisdom.
 - **Confirmation** — collecting what supports the frame, ignoring what breaks it.
 - **More-of-the-same** — scaling the current approach when the gap is elsewhere. *(more guards, same unwatched water)*
 - **Premature lock-in** — closing a fork because deciding feels like progress.
+- **Infinite regress / turtles all the way down** — "fixing" it by adding a backup, then a backup for the backup, with no stopping rule. A fix you keep needing *more* of isn't a fix; it's a counter you keep incrementing. *(yacht: redundancy → redundancy for the redundancy → …)*
+- **Relocated single point of failure (quis custodiet)** — redundancy doesn't remove the SPOF, it moves it into the thing that chooses between the redundant parts. *(yacht: the failover controller is now the thing that can't go down)*
+- **Diminishing returns on redundancy** — each added layer multiplies reliability toward but never reaches 1.0, while cost, complexity, and new failure surface keep growing. Probability bought, not the guarantee promised.

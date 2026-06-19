@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   applyNodeChanges,
@@ -2002,8 +2002,28 @@ const prototypeStages = [
   },
 ];
 
+const prototypeTabStorageKey = 'doppl-prototype-suite.active-tab';
+const prototypeTabIds = new Set(prototypeStages.flatMap((stage) => stage.items.map((item) => item.id)));
+
+function getInitialPrototypeTab() {
+  try {
+    const savedTab = window.localStorage.getItem(prototypeTabStorageKey);
+    return prototypeTabIds.has(savedTab) ? savedTab : 'intake';
+  } catch {
+    return 'intake';
+  }
+}
+
 function App() {
-  const [tab, setTab] = useState('intake');
+  const [tab, setTab] = useState(getInitialPrototypeTab);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(prototypeTabStorageKey, tab);
+    } catch {
+      // Ignore storage failures; tab navigation should still work.
+    }
+  }, [tab]);
 
   return (
     <main className="app-shell">

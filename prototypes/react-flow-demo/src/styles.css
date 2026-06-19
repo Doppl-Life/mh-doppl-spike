@@ -1638,7 +1638,12 @@ textarea {
 
 .agenome-layout {
   display: grid;
-  grid-template-columns: 280px minmax(390px, 1fr) minmax(330px, 0.82fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.75fr);
+  grid-template-areas:
+    "library library"
+    "inspector diagnostics"
+    "runconfig boundary"
+    "contracts contracts";
   gap: 14px;
   align-items: start;
 }
@@ -1660,36 +1665,48 @@ textarea {
   backdrop-filter: blur(10px);
 }
 
-.agenome-library-panel,
-.agenome-boundary-panel {
-  position: sticky;
-  top: 18px;
-}
-
 .agenome-library-panel {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  max-height: calc(100vh - 36px);
-  overflow: hidden;
+  grid-area: library;
 }
 
-.agenome-card-list,
-.selected-pool-list {
-  display: grid;
-  gap: 10px;
+.agenome-inspector-panel {
+  grid-area: inspector;
+}
+
+.pool-diagnostics-panel {
+  grid-area: diagnostics;
+}
+
+.agenome-boundary-panel {
+  grid-area: boundary;
+}
+
+.agenome-runconfig-panel {
+  grid-area: runconfig;
+}
+
+.agenome-contract-panel {
+  grid-area: contracts;
 }
 
 .agenome-card-list {
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: 4px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 4px 8px 0;
+}
+
+.selected-pool-list {
+  display: grid;
+  gap: 10px;
 }
 
 .agenome-card-list button {
   position: relative;
   display: grid;
   gap: 7px;
-  width: 100%;
+  flex: 0 0 250px;
+  width: 250px;
   min-width: 0;
   border: 1px solid rgba(110, 231, 255, 0.2);
   border-left-width: 4px;
@@ -1852,14 +1869,6 @@ textarea {
 
 .pool-warning-list {
   border-color: rgba(110, 231, 255, 0.16);
-}
-
-.agenome-runconfig-panel {
-  grid-column: 2 / -1;
-}
-
-.agenome-contract-panel {
-  grid-column: 2 / -1;
 }
 
 /* ---------- Gateway forge (prototype 08) ---------- */
@@ -2482,6 +2491,7 @@ textarea {
   .strategy-table,
   .output-row {
     grid-template-columns: 1fr;
+    grid-template-areas: none;
   }
 
   .agenome-library-panel,
@@ -2494,14 +2504,17 @@ textarea {
     position: static;
   }
 
-  .agenome-library-panel {
-    max-height: none;
-    overflow: visible;
+  .agenome-card-list {
+    padding-right: 0;
   }
 
-  .agenome-card-list {
-    overflow: visible;
-    padding-right: 0;
+  .agenome-library-panel,
+  .agenome-inspector-panel,
+  .pool-diagnostics-panel,
+  .agenome-boundary-panel,
+  .agenome-runconfig-panel,
+  .agenome-contract-panel {
+    grid-area: auto;
   }
 
   .check-grid,

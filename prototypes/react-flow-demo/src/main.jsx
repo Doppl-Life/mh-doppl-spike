@@ -211,6 +211,159 @@ const criticDetails = {
   },
 };
 
+const criticBoundaryDetails = {
+  sourceEnergy: {
+    title: 'Energy Metabolism Simulator',
+    label: 'upstream module',
+    body:
+      'Best guess: the runtime and breeding pass emit a normalized candidate artifact plus metered evidence. This gauntlet consumes that output as untrusted data.',
+    bullets: ['opens prototype 01', 'source event: candidate.created', 'candidate text cannot instruct critics'],
+    targetTab: 'energy',
+    targetLabel: 'Open Energy metabolism',
+  },
+  criticIngressContract: {
+    title: 'Verifier Ingress Contract',
+    label: 'boundary contract',
+    body:
+      'What the verifier council needs before it can review the artifact: a frozen candidate shape, internal evidence references, and gateway calls that return schema-valid critic outputs.',
+    bullets: ['Prime anchors: architecture sections 3, 6, 7, 14, Appendix A', 'contract owner: verifier council consumes', 'risk focus: prompt-injection isolation'],
+    source: 'Doppl Prime: ARCHITECTURE.md sections 3, 6, 7, 14, Appendix A; DATA_MODEL.md Candidate Idea Shape; PRD 03.',
+    contracts: [
+      {
+        name: 'CandidateIdea',
+        source: 'Appendix A + DATA_MODEL.md Candidate Idea Shape',
+        fields: [
+          'id: string',
+          'runId: string',
+          'generationId: string',
+          'agenomeId: string',
+          'subtype: cross_domain_transfer | zeitgeist_synthesis',
+          'title: string',
+          'summary: string',
+          'claims: string[]',
+          'evidenceRefs: EvidenceRef[]',
+          'status: created | under_review | checked | scored | selected | rejected | culled | invalid',
+          'subtypePayload: CrossDomainTransferPayload | ZeitgeistSynthesisPayload',
+        ],
+      },
+      {
+        name: 'EvidenceRef',
+        source: 'Appendix A',
+        fields: ['kind: trace | check_output | prior_art | signal | raw_output | other', 'eventId?: string', 'uri?: string', 'label?: string', 'langfuseObservationId?: string'],
+      },
+      {
+        name: 'criticInput',
+        source: 'ARCHITECTURE.md section 7 + section 14',
+        fields: ['trustedRubric: structured reviewer instructions', 'untrustedCandidatePayload: delimited candidate data', 'rule: never interpolate candidate text into system instructions'],
+      },
+      {
+        name: 'ModelGatewayRequest/Response',
+        source: 'ARCHITECTURE.md section 6 + Appendix A',
+        fields: ['request.role: critic | subtype_check | final_judge | retrieval', 'request.schema?: structured output schema', 'response.accepted: boolean', 'response.output?: schema-valid payload', 'response.providerMeta: provider/model/tokens/cost'],
+      },
+    ],
+  },
+  criticEgressContract: {
+    title: 'Verifier Egress Contract',
+    label: 'boundary contract',
+    body:
+      'The verifier council does not select winners. It emits structured evidence, skipped/degraded statuses, and held-out judge evidence that selection can turn into fitness.',
+    bullets: ['Prime anchors: architecture sections 7 and 8, Appendix A', 'contract owner: verifier produces, selection consumes', 'hard rule: critics emit evidence only'],
+    source: 'Doppl Prime: ARCHITECTURE.md sections 7, 8, Appendix A; PRD 03 handoffs; PRD 01 freeze list.',
+    contracts: [
+      {
+        name: 'CriticReview',
+        source: 'Appendix A',
+        fields: ['id: string', 'candidateId: string', 'mandate: factual_grounding | novelty_prior_art | feasibility | falsification | subtype_specific', 'scores: Record<string, number>', 'critique: string', 'confidence: number', 'evidenceRefs: EvidenceRef[]'],
+      },
+      {
+        name: 'CheckResult',
+        source: 'Appendix A',
+        fields: ['id: string', 'candidateId: string', 'checkType: string', 'status: passed | failed | skipped', 'score?: number', 'output?: unknown', 'skipReason?: string', 'evidenceRefs: EvidenceRef[]', 'error?: string'],
+      },
+      {
+        name: 'FinalJudgeRubric',
+        source: 'ARCHITECTURE.md section 7 + Appendix A',
+        fields: ['axes: grounding, novelty, feasibility, falsification_survival, subtype_check_pass', 'weights: policy-versioned', 'immutableToAgents: true', 'role: final_judge, outside breeding loop'],
+      },
+      {
+        name: 'Selection Input Surface',
+        source: 'ARCHITECTURE.md section 8',
+        fields: ['critic reviews', 'check results', 'held-out judge score', 'novelty score reference', 'energy efficiency reference', 'FitnessScore produced downstream, not by verifier'],
+      },
+    ],
+  },
+  sinkFusion: {
+    title: 'Selection + Fusion',
+    label: 'downstream module',
+    body:
+      'Consumes verifier evidence plus novelty and energy signals, computes decomposed fitness, culls weak lineages, and breeds surviving parents.',
+    bullets: ['opens prototype 03', 'consumes CriticReview and CheckResult', 'produces FitnessScore, culling, parent selection, reproduction'],
+    targetTab: 'fusion',
+    targetLabel: 'Open Fusion lab',
+  },
+  sinkTrace: {
+    title: 'Trace Viewer',
+    label: 'downstream module',
+    body:
+      'Uses event and evidence references to explain why the artifact survived, failed, or moved into reproduction.',
+    bullets: ['opens prototype 04', 'reads event-derived evidence', 'replay requires no new model or web calls'],
+    targetTab: 'trace',
+    targetLabel: 'Open Trace viewer',
+  },
+  sinkSpend: {
+    title: 'Spend Ledger',
+    label: 'downstream module',
+    body:
+      'Reads metered gateway and energy evidence so review quality can be compared against cost and yield.',
+    bullets: ['opens prototype 05', 'reads provider metadata and energy events', 'useful for allocation decisions'],
+    targetTab: 'spend',
+    targetLabel: 'Open Spend ledger',
+  },
+};
+
+const energyBoundaryDetails = {
+  energyEgressContract: {
+    title: 'Candidate Egress Contract',
+    label: 'boundary contract',
+    body:
+      'Best guess: the energy flow hands the verifier a normalized candidate plus energy and lineage facts. The actual critic instructions live on the verifier side.',
+    bullets: ['Prime anchors: architecture sections 3, 4, 5, Appendix A', 'candidate.created is the handoff event', 'energy and reproduction stay replayable'],
+    source: 'Doppl Prime: ARCHITECTURE.md sections 3, 4, 5, Appendix A; PRD 01 freeze list.',
+    contracts: [
+      {
+        name: 'CandidateIdea',
+        source: 'Appendix A',
+        fields: ['id, runId, generationId, agenomeId', 'subtype + subtypePayload', 'title, summary, claims[]', 'evidenceRefs[]', 'status: created before verifier ingress'],
+      },
+      {
+        name: 'EnergyEvent',
+        source: 'Appendix A',
+        fields: ['id, runId, generationId?, agenomeId?', 'eventType: llm | tool | spawn', 'estimate + actual', 'unit: doppl_energy', 'reason', 'providerMeta?'],
+      },
+      {
+        name: 'ReproductionEvent',
+        source: 'Appendix A',
+        fields: ['parentAgenomeIds[]', 'childAgenomeId', 'mode: fusion | crossover | output_synthesis | mutation_only', 'crossoverPoints', 'mutationSummary'],
+      },
+    ],
+  },
+  sinkCritic: {
+    title: 'Critic Council Gauntlet',
+    label: 'downstream module',
+    body:
+      'The next module treats the candidate as data and turns it into structured critic/check/judge evidence.',
+    bullets: ['opens prototype 02', 'consumes CandidateIdea and EvidenceRef', 'produces CriticReview and CheckResult'],
+    targetTab: 'critic',
+    targetLabel: 'Open Critic council',
+  },
+};
+
+const boundaryDetails = {
+  ...criticBoundaryDetails,
+  ...energyBoundaryDetails,
+};
+
 const energyNodes = [
   node('case', 'energyNode', -180, 35, { tone: 'case' }),
   node('budget', 'budgetNode', 220, 35, { level: 350 }),
@@ -225,6 +378,8 @@ const energyNodes = [
   node('fuse', 'fusionNode', 1130, 270),
   node('child', 'agenomeNode', 1540, 95, { key: 'child', child: true }),
   node('artifact', 'energyNode', 1930, 95, { tone: 'success', wide: true }),
+  node('energyEgressContract', 'contractNode', 2370, 95, { tone: 'gold' }),
+  node('sinkCritic', 'moduleNode', 2790, 95, { tone: 'cyan' }),
 ];
 
 const energyEdges = [
@@ -246,20 +401,30 @@ const energyEdges = [
   edge('cull', 'fuse', '#ff5d8f', true),
   edge('fuse', 'child', '#6ee7ff', true),
   edge('child', 'artifact', '#4fffb0', true),
+  edge('artifact', 'energyEgressContract', '#ffd166', true),
+  edge('energyEgressContract', 'sinkCritic', '#6ee7ff', true),
 ];
 
 const criticNodes = [
-  node('artifact', 'artifactNode', -80, 265),
-  node('factual', 'criticNode', 430, -260, { score: 92, tone: 'cyan' }),
-  node('novelty', 'criticNode', 430, -20, { score: 96, tone: 'gold' }),
-  node('feasibility', 'criticNode', 430, 220, { score: 88, tone: 'green' }),
-  node('falsification', 'criticNode', 430, 460, { score: 78, tone: 'pink' }),
-  node('subtype', 'criticNode', 430, 700, { score: 82, tone: 'violet' }),
-  node('judge', 'judgeNode', 940, 265),
-  node('verdict', 'artifactNode', 1380, 265, { verdict: true }),
+  node('sourceEnergy', 'moduleNode', -560, 265, { tone: 'blue' }),
+  node('criticIngressContract', 'contractNode', -220, 265, { tone: 'cyan' }),
+  node('artifact', 'artifactNode', 130, 265),
+  node('factual', 'criticNode', 540, -260, { score: 92, tone: 'cyan' }),
+  node('novelty', 'criticNode', 540, -20, { score: 96, tone: 'gold' }),
+  node('feasibility', 'criticNode', 540, 220, { score: 88, tone: 'green' }),
+  node('falsification', 'criticNode', 540, 460, { score: 78, tone: 'pink' }),
+  node('subtype', 'criticNode', 540, 700, { score: 82, tone: 'violet' }),
+  node('judge', 'judgeNode', 930, 265),
+  node('verdict', 'artifactNode', 1280, 265, { verdict: true }),
+  node('criticEgressContract', 'contractNode', 1700, 265, { tone: 'green' }),
+  node('sinkFusion', 'moduleNode', 2010, 35, { tone: 'green' }),
+  node('sinkTrace', 'moduleNode', 2010, 265, { tone: 'blue' }),
+  node('sinkSpend', 'moduleNode', 2010, 495, { tone: 'gold' }),
 ];
 
 const criticEdges = [
+  edge('sourceEnergy', 'criticIngressContract', '#7ca7ff', true),
+  edge('criticIngressContract', 'artifact', '#6ee7ff', true),
   edge('artifact', 'factual', '#6ee7ff'),
   edge('artifact', 'novelty', '#ffd166'),
   edge('artifact', 'feasibility', '#4fffb0'),
@@ -271,6 +436,10 @@ const criticEdges = [
   edge('falsification', 'judge', '#ff5d8f', true),
   edge('subtype', 'judge', '#b38cff', true),
   edge('judge', 'verdict', '#4fffb0', true),
+  edge('verdict', 'criticEgressContract', '#4fffb0', true),
+  edge('criticEgressContract', 'sinkFusion', '#4fffb0', true),
+  edge('criticEgressContract', 'sinkTrace', '#7ca7ff', true),
+  edge('criticEgressContract', 'sinkSpend', '#ffd166', true),
 ];
 
 function node(id, type, x, y, data = {}) {
@@ -456,6 +625,45 @@ function JudgeNode({ selected }) {
   );
 }
 
+function ContractNode({ data, selected }) {
+  const item = boundaryDetails[data.id];
+  return (
+    <article className={`contract-node tone-${data.tone || 'default'} ${selected ? 'selected' : ''}`}>
+      <NodeHandles />
+      <p className="node-label">{item.label}</p>
+      <h3>{item.title}</h3>
+      <p>{item.body}</p>
+      <div className="contract-chip-list">
+        {item.contracts.slice(0, 4).map((contractItem) => (
+          <span key={contractItem.name}>{contractItem.name}</span>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function ModuleNode({ data, selected }) {
+  const item = boundaryDetails[data.id];
+  return (
+    <article className={`module-node tone-${data.tone || 'default'} ${selected ? 'selected' : ''}`}>
+      <NodeHandles />
+      <p className="node-label">{item.label}</p>
+      <h3>{item.title}</h3>
+      <p>{item.body}</p>
+      <button
+        className="node-action-button nodrag"
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          data.onNavigate?.(item.targetTab);
+        }}
+      >
+        {item.targetLabel}
+      </button>
+    </article>
+  );
+}
+
 function Metric({ label, value }) {
   return (
     <div>
@@ -465,7 +673,7 @@ function Metric({ label, value }) {
   );
 }
 
-function FlowPrototype({ kind }) {
+function FlowPrototype({ kind, onNavigate }) {
   const config = kind === 'energy'
     ? {
         title: 'Energy Metabolism Simulator',
@@ -474,8 +682,9 @@ function FlowPrototype({ kind }) {
           'A finite Doppl run where real mutagen agenomes spend energy, compete under the Jack case constraints, get culled, and fuse into a stronger child.',
         nodes: energyNodes,
         edges: energyEdges,
-        details: energyDetails,
+        details: { ...energyDetails, ...energyBoundaryDetails },
         initial: 'budget',
+        defaultViewport: { x: 110, y: 330, zoom: 0.28 },
       }
     : {
         title: 'Critic Council Gauntlet',
@@ -484,12 +693,17 @@ function FlowPrototype({ kind }) {
           'A candidate artifact from the Jack case enters an adversarial council. Critics score evidence, name failure modes, and a held-out judge decides whether it survives.',
         nodes: criticNodes,
         edges: criticEdges,
-        details: criticDetails,
-        initial: 'artifact',
+        details: { ...criticDetails, ...criticBoundaryDetails },
+        initial: 'criticIngressContract',
+        defaultViewport: { x: 170, y: 300, zoom: 0.29 },
       };
 
-  const storageKey = `doppl-prototype-${kind}-layout-v3`;
-  const initialNodes = useMemo(() => getInitialNodes(config.nodes, storageKey), [kind]);
+  const storageKey = `doppl-prototype-${kind}-layout-v4`;
+  const baseNodes = useMemo(
+    () => config.nodes.map((item) => ({ ...item, data: { ...item.data, onNavigate } })),
+    [config.nodes, onNavigate],
+  );
+  const initialNodes = useMemo(() => getInitialNodes(baseNodes, storageKey), [baseNodes, storageKey]);
   const [flowNodes, setFlowNodes] = useNodesState(initialNodes);
   const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(applyEdgeSides(initialNodes, config.edges));
   const [selected, setSelected] = useState(config.initial);
@@ -503,6 +717,8 @@ function FlowPrototype({ kind }) {
       artifactNode: ArtifactNode,
       criticNode: CriticNode,
       judgeNode: JudgeNode,
+      contractNode: ContractNode,
+      moduleNode: ModuleNode,
     }),
     [],
   );
@@ -521,9 +737,9 @@ function FlowPrototype({ kind }) {
 
   const resetLayout = useCallback(() => {
     window.localStorage.removeItem(storageKey);
-    setFlowNodes(config.nodes);
-    setFlowEdges(applyEdgeSides(config.nodes, config.edges));
-  }, [config.edges, config.nodes, setFlowEdges, setFlowNodes, storageKey]);
+    setFlowNodes(baseNodes);
+    setFlowEdges(applyEdgeSides(baseNodes, config.edges));
+  }, [baseNodes, config.edges, setFlowEdges, setFlowNodes, storageKey]);
 
   return (
     <section className="prototype">
@@ -550,8 +766,7 @@ function FlowPrototype({ kind }) {
               onNodesChange={onSmartNodesChange}
               onEdgesChange={onEdgesChange}
               nodesDraggable
-              fitView
-              fitViewOptions={{ padding: 0.16 }}
+              defaultViewport={config.defaultViewport}
               minZoom={0.22}
               maxZoom={1.4}
               onNodeClick={(_, nodeItem) => setSelected(nodeItem.id)}
@@ -567,8 +782,29 @@ function FlowPrototype({ kind }) {
           <p className="eyebrow">selected node</p>
           <h3>{active.title}</h3>
           <p>{active.body}</p>
+          {active.source && <p className="contract-source">{active.source}</p>}
+          {active.targetTab && (
+            <button className="inspector-action" type="button" onClick={() => onNavigate?.(active.targetTab)}>
+              {active.targetLabel}
+            </button>
+          )}
+          {active.contracts?.length > 0 && (
+            <div className="contract-stack">
+              {active.contracts.map((contractItem) => (
+                <article key={contractItem.name} className="contract-detail">
+                  <span>{contractItem.source}</span>
+                  <h4>{contractItem.name}</h4>
+                  <div className="contract-fields">
+                    {contractItem.fields.map((field) => (
+                      <code key={field}>{field}</code>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
           <ul>
-            {active.bullets.map((bullet) => (
+            {(active.bullets || []).map((bullet) => (
               <li key={bullet}>{bullet}</li>
             ))}
           </ul>
@@ -969,7 +1205,7 @@ function App() {
       {tab === 'fusion' && <FusionLab />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}
-      {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} />}
+      {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
     </main>
   );
 }

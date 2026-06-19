@@ -374,6 +374,115 @@ textarea {
   line-height: 1.45;
 }
 
+.contract-node,
+.module-node {
+  position: relative;
+  width: 250px;
+  min-height: 166px;
+  padding: 18px 20px;
+  border: 1px solid rgba(110, 231, 255, 0.28);
+  background:
+    linear-gradient(145deg, rgba(12, 24, 49, 0.98), rgba(5, 10, 23, 0.96)),
+    radial-gradient(circle at 10% 0%, rgba(67, 232, 255, 0.16), transparent 38%);
+  color: var(--ink);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: grab;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.contract-node {
+  width: 300px;
+  border-color: rgba(255, 209, 102, 0.36);
+}
+
+.contract-node:active,
+.module-node:active {
+  cursor: grabbing;
+}
+
+.contract-node.selected,
+.module-node.selected {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px rgba(67, 232, 255, 0.42), 0 0 42px rgba(67, 232, 255, 0.24);
+}
+
+.contract-node::before,
+.module-node::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--cyan);
+}
+
+.contract-node::before {
+  background: linear-gradient(90deg, var(--gold), var(--cyan), var(--green));
+}
+
+.contract-node h3,
+.module-node h3 {
+  margin: 0 0 12px;
+  font-size: 21px;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.contract-node p,
+.module-node p {
+  margin: 0;
+  color: #c8d5ef;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.contract-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.contract-chip-list span {
+  border: 1px solid rgba(255, 209, 102, 0.28);
+  padding: 5px 7px;
+  color: #fff2c6;
+  background: rgba(255, 209, 102, 0.08);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.node-action-button,
+.inspector-action {
+  border: 1px solid rgba(110, 231, 255, 0.3);
+  background: rgba(4, 8, 23, 0.72);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 850;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.node-action-button {
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px 11px;
+}
+
+.inspector-action {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 14px;
+}
+
+.node-action-button:hover,
+.node-action-button:focus-visible,
+.inspector-action:hover,
+.inspector-action:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.92);
+  outline: none;
+}
+
 .node-row {
   display: flex;
   gap: 14px;
@@ -532,6 +641,61 @@ textarea {
 .inspector p {
   color: var(--muted);
   line-height: 1.55;
+}
+
+.contract-source {
+  margin-top: 14px;
+  border-left: 3px solid var(--gold);
+  padding-left: 12px;
+  color: #fff2c6 !important;
+  font-size: 13px;
+}
+
+.contract-stack {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.contract-detail {
+  border: 1px solid rgba(110, 231, 255, 0.18);
+  padding: 12px;
+  background: rgba(4, 8, 23, 0.48);
+}
+
+.contract-detail span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contract-detail h4 {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+.contract-fields {
+  display: grid;
+  gap: 6px;
+}
+
+.contract-fields code {
+  display: block;
+  border: 1px solid rgba(110, 231, 255, 0.12);
+  padding: 6px 7px;
+  color: #d8e5ff;
+  background: rgba(3, 7, 17, 0.64);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .inspector ul {

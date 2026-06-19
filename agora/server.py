@@ -47,6 +47,8 @@ PAGE = """<!doctype html>
          align-items:center;gap:16px;z-index:5}
   header h1{font-size:18px;margin:0;letter-spacing:.3px}
   header .who{margin-left:auto;color:var(--dim);font-size:13px}
+  header input{background:#1f2630;border:1px solid var(--line);color:var(--ink);
+        border-radius:8px;padding:4px 8px;font:13px ui-sans-serif;width:120px}
   header a{color:var(--acc);text-decoration:none;font-size:13px}
   .wrap{max-width:760px;margin:0 auto;padding:20px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -78,16 +80,18 @@ PAGE = """<!doctype html>
 <header>
   <h1>🏛️ the Agora</h1>
   <a href="/agreement">agreement matrix →</a>
-  <span class="who" id="who"></span>
+  <span class="who">reacting as</span><input id="who" placeholder="your name"/>
 </header>
 <div class="wrap" id="feed"><div class="empty">loading…</div></div>
 <script>
 const POL={"1":["p1","good"],"0":["p0","mixed"],"-1":["pn1","bad"]};
 const DIM_POL={"novel":1,"feasible":1,"derivative":-1,"not-it":-1};
-let reactor = localStorage.getItem("agora_reactor");
-if(!reactor){ reactor = (prompt("Your name (attributed — not anonymous):")||"anon").trim(); localStorage.setItem("agora_reactor",reactor); }
-document.getElementById("who").textContent = "reacting as "+reactor;
-const voted = new Set(JSON.parse(localStorage.getItem("agora_voted_"+reactor)||"[]"));
+let reactor = new URLSearchParams(location.search).get("as")
+  || localStorage.getItem("agora_reactor") || "guest";
+localStorage.setItem("agora_reactor", reactor);
+const whoEl=document.getElementById("who"); whoEl.value=reactor;
+whoEl.addEventListener("change",()=>{ reactor=(whoEl.value||"guest").trim(); localStorage.setItem("agora_reactor",reactor); });
+let voted = new Set(JSON.parse(localStorage.getItem("agora_voted_"+reactor)||"[]"));
 function saveVoted(){ localStorage.setItem("agora_voted_"+reactor, JSON.stringify([...voted])); }
 
 function chip(p){ const [cls,txt]=POL[String(p)]; return `<span class="chip ${cls}">${txt}</span>`; }

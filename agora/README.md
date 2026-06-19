@@ -32,12 +32,31 @@ either the council is perfect or the humans are rubber-stamping (politeness mirr
 — so this instrument has to be able to go RED. See
 [`../bedrock/signal/README.md`](../bedrock/signal/README.md).
 
+### …and the loop closes (re-entry)
+
+```
+                          agora.watcher  (the "Hermes on watch")
+                                 │  humans overturn the machines hard enough?
+                                 ▼
+                        respawn TICKET (agora/ledger/tickets.jsonl)
+                                 │  carries the overturned ideas + a next-seed
+                                 ▼
+                   spikes/backyard/respawn.py  →  another sprout round, informed
+```
+
+A **lift** (humans rescue an idea the machine weeded) or a high divergence rate
+trips the watcher, which writes a ticket aimed at the vein the humans just
+revealed. The trigger is pure heuristic math (auditable, no LLM) — a local
+Hermes/Pi model can later enrich the ticket's prose, but it must not own the
+trigger.
+
 ## Run it
 
 ```bash
 # 1. produce posts (from a spike — example: backyard)
-cd spikes/backyard && ../../.venv/bin/python to_agora.py            # judge + council
-#   (or --no-council for judge-only, zero LLM calls)
+cd spikes/backyard && ../../.venv/bin/python to_agora.py            # judge + light council
+#   --crucible   → use the FULL belief-revision crucible as the council (slow, real)
+#   --no-council → judge label only, zero LLM calls
 
 # 2. open the square (from repo root)
 python -m agora.server                                             # http://127.0.0.1:8787
@@ -48,6 +67,10 @@ open http://127.0.0.1:8787/agreement
 #   or in code:
 python -c "from agora import load_posts, load_verdicts, agreement, render_text; \
            print(render_text(agreement(load_posts(), load_verdicts())))"
+
+# 4. close the loop: did humans overturn the machines enough to go again?
+python -m agora.watcher                                            # writes a respawn ticket if so
+cd spikes/backyard && ../../.venv/bin/python respawn.py            # consume ticket → another round
 ```
 
 ## Plug a new spike in (the whole interface)
@@ -80,6 +103,7 @@ schema (`schema.py`), and the agreement metric (`agreement.py`).
 | `ledger.py` | append-only JSONL; read upserts by `post_id` (re-post to enrich) |
 | `agreement.py` | pairwise agreement + the divergence list (most-divergent first) |
 | `server.py` | the local square — stdlib web "shot" + click-to-react + `/agreement` |
+| `watcher.py` | the re-entry decider — measures human overturns, writes a respawn ticket |
 | `__init__.py` | the public API |
 
 ## Lexicon stub (ships with the folder, so it's not semantically naked elsewhere)

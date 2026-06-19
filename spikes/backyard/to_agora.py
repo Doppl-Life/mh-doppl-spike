@@ -33,7 +33,18 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from agora import Label, Post, append_post, load_posts  # noqa: E402
-from sprout import SCORE_MODEL, chat, make_client, parse_json  # noqa: E402
+from sprout import AFRIT_BAR, SCORE_MODEL, WEED_BAR, chat, make_client, parse_json  # noqa: E402
+
+# Full Crucible is an optional, heavier labeler (--crucible). Import is guarded so
+# judge-only / light-council runs never pay for rich + the crucible module.
+CRUCIBLE_DIR = REPO_ROOT / "spikes" / "crucible"
+if str(CRUCIBLE_DIR) not in sys.path:
+    sys.path.insert(0, str(CRUCIBLE_DIR))
+try:
+    import crucible as cru  # noqa: E402
+except Exception as _e:  # noqa: BLE001 — degrade gracefully if rich/crucible absent
+    cru = None
+    _CRUCIBLE_IMPORT_ERR = _e
 
 # Council: cross-lab AND held out from the judge (SCORE_MODEL = qwen). Three labs.
 COUNCIL_MODELS = [
@@ -86,6 +97,53 @@ def council_label(client, idea: str, verify: str, models: list[str]) -> Label | 
     )
 
 
+def _kind_from_score(score: float | None) -> str:
+    if score is None:
+        return "sprout"
+    if score >= AFRIT_BAR:
+        return "afrit"
+    if score < WEED_BAR:
+        return "weed"
+    return "sprout"
+
+
+def crucible_council_label(idea: str, verify: str, *, turns: int, count: int) -> Label | None:
+    """Full Crucible as the council: a real belief-revision debate, then the
+    crucible judge. Polarity comes from the judge score; DISSENT is real — derived
+    from unresolved tension + consensus_quality (herded vs resolved vs mixed)."""
+    if cru is None:
+        print(f"    [crucible unavailable: {_CRUCIBLE_IMPORT_ERR}]")
+        return None
+    try:
+        backend = cru.resolve_backend(local=False)
+        client = cru.make_client(backend)
+        prompt = (
+            f"Stress-test this idea for whether it is non-obvious AND cheaply verifiable:\n"
+            f"  idea: {idea}\n  cheapest disproof: {verify}"
+        )
+        result = cru.run_crucible(
+            client, prompt, turns=turns, forced_count=count,
+            use_spawner=False, cap=count,
+        )
+    except Exception as e:  # noqa: BLE001 — a failed debate shouldn't sink the bridge
+        print(f"    [crucible skip] {e}")
+        return None
+    judge = result.get("judge", {}) or {}
+    n = len(result.get("debaters", []))
+    score = judge.get("score")
+    tension = judge.get("unresolved_tension") or []
+    cq = str(judge.get("consensus_quality", ""))
+    dissent = round(min(1.0, 0.25 * len(tension) + (0.3 if cq == "mixed" else 0.0)), 2)
+    surviving = str(judge.get("surviving_idea", ""))[:90]
+    return Label(
+        labeler=f"crucible:{n}-fusant",
+        kind=_kind_from_score(score),
+        score=score,
+        dissent=dissent,
+        note=f"score={score} consensus={cq or '?'}; surviving: {surviving}",
+    )
+
+
 def judge_label(row: dict) -> Label:
     """The single held-out judge already ran in backyard; it speaks in kinds."""
     return Label(
@@ -121,6 +179,10 @@ def main() -> None:
     ap.add_argument("--source", default="sprouts.jsonl")
     ap.add_argument("--limit", type=int, default=12)
     ap.add_argument("--no-council", action="store_true", help="judge label only, no LLM calls")
+    ap.add_argument("--crucible", action="store_true",
+                    help="use the FULL crucible (real belief-revision debate) as the council")
+    ap.add_argument("--crucible-turns", type=int, default=1, help="debate turns per idea")
+    ap.add_argument("--crucible-count", type=int, default=3, help="Fusants per debate")
     ap.add_argument("--council-models", default=",".join(COUNCIL_MODELS))
     args = ap.parse_args()
 
@@ -132,7 +194,7 @@ def main() -> None:
     existing = {p.post_id for p in load_posts()}
 
     client = None
-    if not args.no_council:
+    if not args.no_council and not args.crucible:
         try:
             client = make_client()
         except SystemExit as e:
@@ -146,7 +208,14 @@ def main() -> None:
             skipped += 1
             continue
         labels = [judge_label(r)]
-        if client is not None:
+        if args.crucible:
+            cl = crucible_council_label(
+                r.get("idea", ""), r.get("how_to_verify", ""),
+                turns=args.crucible_turns, count=args.crucible_count,
+            )
+            if cl is not None:
+                labels.append(cl)
+        elif client is not None:
             cl = council_label(client, r.get("idea", ""), r.get("how_to_verify", ""), council_models)
             if cl is not None:
                 labels.append(cl)

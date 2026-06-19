@@ -193,6 +193,365 @@ function getCaseDetails(caseId) {
   return caseStudyDetails[caseId] || caseStudyDetails['jack-superyacht-drone'];
 }
 
+const caseArtifactOverlays = {
+  'jack-superyacht-drone': {
+    candidateId: 'cand_discreet_protocol',
+    title: 'Discreet Scene-Shift Protocol',
+    summary: 'Detect early, trigger a quiet onboard signal, and move exposed guests out of view before useful footage exists.',
+    claim: 'Privacy improves by denying footage value instead of fighting the drone.',
+    baseline: 'generic anti-drone alert',
+    risk: 'late detection may still allow useful footage',
+    validation: 'time detection-to-scene-change drills with yacht crew',
+    evidence: ['Sterile cockpit rule', 'Hospital color-code policies'],
+    priorCandidates: [
+      ['Generic VIP privacy alert', 'Similar alert shape, weaker footage-denial mechanism.'],
+      ['Signal Decoy Watch Pattern', 'Shares cue concerns, different main action.'],
+      ['Drone route prediction', 'Same detection premise, no scene control.'],
+    ],
+    priorArt: [
+      ['RF jamming / spoofing systems', 'Different because it avoids active countermeasures.'],
+      ['Physical net capture drones', 'Different because it avoids takedown and spectacle.'],
+      ['Drone detection alerts', 'Overlap on detection; novelty depends on what the alert triggers.'],
+    ],
+    signals: [
+      ['Luxury discretion norms', 'Supports quiet response over visible defense.'],
+      ['Anti-surveillance fatigue', 'Relevant but not central to transfer subtype.'],
+    ],
+  },
+  'loft-insulation-adoption': {
+    candidateId: 'cand_loft_clearing_bundle',
+    title: 'Loft Clearing Bundle',
+    summary: 'Bundle low-cost clearing labor with insulation booking so the practical blocker is gone before installers arrive.',
+    claim: 'Adoption improves when the service removes the hidden chore, not when it repeats the payback math.',
+    baseline: 'financially rational insulation offer',
+    risk: 'clearing help can feel intrusive or create sorting decisions that bring friction back',
+    validation: 'A/B test insulation booking with and without low-cost loft-clearing labor',
+    evidence: ['Behavioural Insights Team trial', 'Home retrofit friction notes'],
+    priorCandidates: [
+      ['Subsidy reminder letter', 'Same economic case, no help with the junk-filled loft.'],
+      ['Energy savings calculator', 'Explains payback but leaves the access blocker untouched.'],
+      ['Installer scheduling nudge', 'Improves timing but not physical readiness.'],
+    ],
+    priorArt: [
+      ['Home energy information campaigns', 'High overlap on persuasion, low overlap on practical clearing.'],
+      ['Retrofit grants and rebates', 'Targets price rather than household friction.'],
+      ['Moving-service junk removal', 'Similar labor pattern, different goal and timing.'],
+    ],
+    signals: [
+      ['Hassle-factor retrofit research', 'Supports practical friction as an adoption barrier.'],
+      ['Concierge service expectations', 'Supports bundling the annoying prerequisite.'],
+    ],
+  },
+  'heinz-ketchup-authenticity': {
+    candidateId: 'cand_heinz_color_cue',
+    title: 'Tabletop Color-Match Cue',
+    summary: 'Use bottle and label design as a visible authenticity check so off-brand refills are easier to notice at the table.',
+    claim: 'Brand trust improves when substitution becomes visible without audits, apps, or confrontation.',
+    baseline: 'restaurant compliance warning',
+    risk: 'the cue must be hard to counterfeit and obvious under normal restaurant lighting',
+    validation: 'field-test whether diners and staff can detect substituted ketchup in labeled bottles',
+    evidence: ['Heinz brand-protection packaging pattern', 'Color matching quality-control practice'],
+    priorCandidates: [
+      ['Back-of-house audit program', 'Same authenticity goal, higher enforcement burden.'],
+      ['Tamper-proof bottle seal', 'Works before opening but not after refill cycles.'],
+      ['Taste detection campaign', 'Asks customers to notice after the experience is already degraded.'],
+    ],
+    priorArt: [
+      ['Anti-counterfeit packaging', 'Overlap on visible trust cues, different restaurant-table context.'],
+      ['Color calibration swatches', 'Similar perceptual check, different commercial domain.'],
+      ['Restaurant supplier audits', 'Targets compliance systems rather than at-table visibility.'],
+    ],
+    signals: [
+      ['Brand authenticity sensitivity', 'Supports visible assurance at point of use.'],
+      ['Social sharing of substitutions', 'Makes table-visible detection commercially relevant.'],
+    ],
+  },
+};
+
+const caseAgenomeOutputs = {
+  'jack-superyacht-drone': {
+    firstPrinciples: 'The drone is not the real target; the valuable footage is.',
+    constraintInjection: 'Any plan must act before visual contact and cannot look like a security panic.',
+    polymath: 'Borrow quiet-alert patterns from aviation sterile-cockpit and hospital code protocols.',
+    breakthrough: 'Turn drone detection into a private signal layer, not an anti-drone battle.',
+    additionBySubtraction: 'Delete every active counter-drone action after detection; the best response is non-engagement.',
+    blindside: 'If the alert is obvious, paparazzi learn the signal and wait for nonresponse moments.',
+    breakout: 'Make the drone footage worthless by changing the scene, not by controlling the drone.',
+    child: 'Breed footage-value denial, quiet signaling, and failure sensing into one crew-simple protocol.',
+  },
+  'loft-insulation-adoption': {
+    firstPrinciples: 'The real target is installable access, not belief in insulation payback.',
+    constraintInjection: 'Any plan must clear the loft before installer arrival without asking the homeowner to sort everything first.',
+    polymath: 'Borrow concierge prep and moving-service patterns for the annoying prerequisite work.',
+    breakthrough: 'Bundle low-cost clearing labor with the insulation offer.',
+    additionBySubtraction: 'Remove the pre-install chore from the homeowner journey.',
+    blindside: 'If clearing requires shame, sorting, or decision fatigue, the hidden friction returns.',
+    breakout: 'Sell access restoration before insulation advice.',
+    child: 'Breed hidden-constraint discovery, service bundling, and low-friction booking into one retrofit offer.',
+  },
+  'heinz-ketchup-authenticity': {
+    firstPrinciples: 'The real target is table-visible trust that Heinz is what is being served.',
+    constraintInjection: 'Any plan must reveal substitution without audits, apps, or confrontation.',
+    polymath: 'Borrow color calibration and anti-counterfeit packaging cues.',
+    breakthrough: 'Make off-brand refills visibly wrong inside the branded bottle experience.',
+    additionBySubtraction: 'Remove refill ambiguity rather than policing every kitchen.',
+    blindside: 'If the cue is easy to ignore or copy, substitution remains invisible.',
+    breakout: 'Make the table itself the authenticity check.',
+    child: 'Breed visible authenticity, low-enforcement detection, and brand-protection constraints into one packaging cue.',
+  },
+};
+
+function getCaseArtifact(caseDetails) {
+  return caseArtifactOverlays[caseDetails.id] || caseArtifactOverlays['jack-superyacht-drone'];
+}
+
+function getCaseAgenomeOutput(caseDetails, key) {
+  const outputs = caseAgenomeOutputs[caseDetails.id] || caseAgenomeOutputs['jack-superyacht-drone'];
+  const normalizedKey = {
+    'addition-by-subtraction': 'additionBySubtraction',
+    'constraint-injection': 'constraintInjection',
+    'first-principles': 'firstPrinciples',
+  }[key] || key;
+  return outputs[normalizedKey] || outputs.firstPrinciples;
+}
+
+function caseCandidatePayload(caseDetails) {
+  const artifact = getCaseArtifact(caseDetails);
+  return {
+    id: artifact.candidateId,
+    title: artifact.title,
+    summary: artifact.summary,
+    claims: [artifact.claim, caseDetails.subtypeTransfer],
+    evidenceRefs: artifact.evidence.map((label, index) => ({
+      kind: index === 0 ? 'trace' : 'prior_art',
+      eventId: index === 0 ? 'evt-005' : undefined,
+      label,
+    })),
+  };
+}
+
+function buildCaseRawResponse(caseDetails) {
+  const payload = caseCandidatePayload(caseDetails);
+  return JSON.stringify({
+    title: payload.title,
+    summary: payload.summary,
+    claims: payload.claims,
+    evidenceRefs: payload.evidenceRefs,
+  });
+}
+
+function caseSpecificText(caseDetails, jackText, loftText, heinzText) {
+  if (caseDetails.id === 'loft-insulation-adoption') return loftText;
+  if (caseDetails.id === 'heinz-ketchup-authenticity') return heinzText;
+  return jackText;
+}
+
+function buildCaseSubtypeCandidate(baseCandidate, caseDetails) {
+  const artifact = getCaseArtifact(caseDetails);
+  const isTransfer = baseCandidate.subtype === 'cross_domain_transfer';
+  const payload = isTransfer
+    ? {
+        sourceDomain: caseSpecificText(
+          caseDetails,
+          'aviation + hospital operations',
+          'moving services + concierge retrofit prep',
+          'color calibration + anti-counterfeit packaging',
+        ),
+        targetDomain: caseSpecificText(
+          caseDetails,
+          'superyacht privacy operations',
+          'home insulation retrofit adoption',
+          'restaurant ketchup authenticity',
+        ),
+        transferMechanism: caseDetails.subtypeTransfer,
+        adaptationRisk: artifact.risk,
+      }
+    : {
+        signals: artifact.signals.map(([label]) => label),
+        thesis: artifact.claim,
+        timingClaim: caseSpecificText(
+          caseDetails,
+          'public appetite favors quiet operational competence over visible countermeasures',
+          'energy retrofits need concierge friction removal more than another savings reminder',
+          'brand authenticity is more persuasive when the check is visible at point of use',
+        ),
+        falsifier: artifact.risk,
+      };
+
+  return {
+    ...baseCandidate,
+    title: isTransfer ? artifact.title : caseSpecificText(
+      caseDetails,
+      'Privacy Theater Exhaustion',
+      'Hassle-First Retrofit Framing',
+      'Tabletop Authenticity Moment',
+    ),
+    summary: isTransfer
+      ? `${caseDetails.subtypeTransfer} ${artifact.summary}`
+      : `${artifact.claim} ${artifact.summary}`,
+    payload,
+    checks: baseCandidate.checks.map((check) => ({
+      ...check,
+      detail: check.id.includes('prior')
+        ? `Compared against ${caseDetails.noveltyPrior}; strongest open risk is ${artifact.priorArt[0][0]}.`
+        : check.id.includes('exec') || check.id.includes('falsify')
+          ? `Executable validation required: ${artifact.validation}.`
+          : `Evidence for ${caseDetails.title}: ${artifact.evidence.join(' and ')}.`,
+      evidenceRefs: check.evidenceRefs.map((ref, index) => artifact.evidence[index] || ref),
+    })),
+  };
+}
+
+function buildCaseNoveltyCandidate(baseCandidate, caseDetails) {
+  const artifact = getCaseArtifact(caseDetails);
+  return {
+    ...baseCandidate,
+    title: baseCandidate.id === 'cand_drone_jamming'
+      ? caseSpecificText(caseDetails, 'Soft Jamming Umbrella', 'Generic Rebate Reminder', 'Restaurant Audit Threat')
+      : artifact.title,
+    summary: baseCandidate.id === 'cand_drone_jamming'
+      ? caseSpecificText(
+          caseDetails,
+          'Deploy a temporary interference umbrella that prevents drone camera transmission near the vessel.',
+          'Send another financial reminder explaining that insulation pays for itself.',
+          'Warn restaurants that Heinz may inspect whether bottles are refilled with off-brand ketchup.',
+        )
+      : artifact.summary,
+    explanation: baseCandidate.id === 'cand_drone_jamming'
+      ? `Low novelty because it stays close to ${caseDetails.noveltyPrior}.`
+      : `The mechanism differs from ${caseDetails.noveltyPrior} by targeting the hidden constraint: ${artifact.claim}`,
+    components: baseCandidate.components.map((component, index) => ({
+      ...component,
+      detail: [
+        `Nearest in-run idea is ${artifact.baseline}.`,
+        `Known prior art includes ${caseDetails.noveltyPrior}.`,
+        artifact.claim,
+        `Evidence remains partial until: ${artifact.validation}.`,
+      ][index] || component.detail,
+    })),
+    neighbors: artifact.priorCandidates.map(([label, note], index) => ({
+      id: `prior_${index}`,
+      kind: 'prior_candidate',
+      label,
+      similarity: baseCandidate.neighbors[index]?.similarity ?? 0.5,
+      note,
+    })),
+    priorArt: artifact.priorArt.map(([label, note], index) => ({
+      id: `art_${index}`,
+      kind: 'prior_art',
+      label,
+      similarity: baseCandidate.priorArt[index]?.similarity ?? 0.45,
+      note,
+    })),
+    signals: artifact.signals.map(([label, note], index) => ({
+      id: `sig_${index}`,
+      kind: 'current_signal',
+      label,
+      similarity: baseCandidate.signals[index]?.similarity ?? 0.55,
+      note,
+    })),
+  };
+}
+
+function buildSurvivorEvidence(run, caseDetails) {
+  const artifact = getCaseArtifact(caseDetails);
+  return run.evidence.map((item) => {
+    if (item.tab === 'novelty') return { ...item, detail: `Nearest prior-art overlap: ${artifact.priorArt[0][0]}.` };
+    if (item.tab === 'subtype') return { ...item, detail: `${caseDetails.subtypeTransfer} Evidence still needs ${artifact.validation}.` };
+    if (item.tab === 'trace') return { ...item, detail: `Trace atoms point to ${artifact.title} decisions for ${caseDetails.title}.` };
+    if (item.tab === 'critic') return { ...item, detail: `Critics pressure ${artifact.risk} and feasibility for the selected case.` };
+    return item;
+  });
+}
+
+function buildCaseReplayFixture(baseFixture, caseDetails) {
+  const artifact = getCaseArtifact(caseDetails);
+  return {
+    ...baseFixture,
+    runId: caseDetails.runId,
+    events: baseFixture.events.map((event) => {
+      const next = { ...event, payload: { ...event.payload } };
+      if ('runId' in next.payload) next.payload.runId = caseDetails.runId;
+      if (next.type === 'case.seeded') {
+        next.payload.caseTitle = caseDetails.title;
+        next.payload.agentVisibleRef = `casepkt_${caseDetails.id}`;
+        next.payload.evaluatorAnchorRef = `eval_anchor_${caseDetails.id}`;
+      }
+      if (next.type === 'candidate.created') {
+        if (next.payload.candidateId === 'cand_discreet_protocol') {
+          next.payload.candidateId = artifact.candidateId;
+          next.payload.title = artifact.title;
+        } else if (next.payload.candidateId === 'cand_signal_decoy') {
+          next.payload.candidateId = `${artifact.candidateId}_alt`;
+          next.payload.title = artifact.baseline;
+        }
+      }
+      if (next.type === 'energy.spent') {
+        next.payload.candidateId = artifact.candidateId;
+      }
+      if (next.type === 'critic.completed') {
+        next.payload.candidateId = artifact.candidateId;
+      }
+      if (next.type === 'fusion.created') {
+        next.payload.inheritance = caseSpecificText(
+          caseDetails,
+          next.payload.inheritance,
+          '66% hidden-friction discovery, 34% failure sensing around clearing labor',
+          '66% authenticity-cue mechanism, 34% counterfeiting failure sensing',
+        );
+      }
+      if (next.type === 'candidate.selected') {
+        next.payload.candidateId = artifact.candidateId;
+        next.payload.reason = `Best evidence for ${artifact.claim}`;
+      }
+      if (next.type === 'run.completed') {
+        next.payload.survivorId = artifact.candidateId;
+      }
+      return next;
+    }),
+  };
+}
+
+function buildCaseFusionProposal(report, caseDetails, role) {
+  const artifact = getCaseArtifact(caseDetails);
+  if (caseDetails.id === 'jack-superyacht-drone') {
+    return {
+      title: report.title,
+      proposal: report.proposal,
+    };
+  }
+  const title = role === 'child'
+    ? artifact.title
+    : `${report.title} for ${caseDetails.shortTitle}`;
+  const proposal = role === 'child'
+    ? `${artifact.summary} Inherited traits focus on ${artifact.claim.toLowerCase()}`
+    : `${getCaseAgenomeOutput(caseDetails, report.agenome)} Applied to ${caseDetails.title}: ${artifact.summary}`;
+  return { title, proposal };
+}
+
+function buildCaseFusionVerdict(verdict, caseDetails) {
+  if (caseDetails.id === 'jack-superyacht-drone') return verdict;
+  const artifact = getCaseArtifact(caseDetails);
+  return `Case-adapted fixture verdict: promising because it targets the hidden constraint for ${caseDetails.title}. Hardest pressure: ${artifact.risk}.`;
+}
+
+function buildCaseSpendOutput(output, caseDetails, index) {
+  if (caseDetails.id === 'jack-superyacht-drone') return output;
+  const artifact = getCaseArtifact(caseDetails);
+  const variants = [
+    artifact.title,
+    `${caseDetails.shortTitle} Baseline Breaker`,
+    `${caseDetails.shortTitle} Friction Probe`,
+    `${caseDetails.shortTitle} Transfer Draft`,
+    `${caseDetails.shortTitle} Constraint Pass`,
+    `${caseDetails.shortTitle} Judge Candidate`,
+  ];
+  return {
+    ...output,
+    title: variants[index % variants.length],
+  };
+}
+
 const contractFreezeBoundary = {
   upstreamModules: ['Case Study Intake', 'Operator Console', 'Architecture Appendix A'],
   upstreamContracts: ['Appendix A model inventory', 'Phase 0 schema snapshots', 'RunConfig.seed'],
@@ -618,6 +977,102 @@ function energyNodeDetails(key) {
   };
 }
 
+function buildCaseAgenome(caseDetails, key) {
+  const ag = agenomes[key];
+  return {
+    ...ag,
+    output: getCaseAgenomeOutput(caseDetails, key),
+  };
+}
+
+function buildEnergyDetail(caseDetails, key) {
+  const ag = buildCaseAgenome(caseDetails, key);
+  return {
+    title: ag.title,
+    label: ag.label,
+    body: `${ag.role} Output: ${ag.output}`,
+    bullets: [`energy ${ag.energy}`, `fitness ${ag.fitness}`, `novelty ${ag.novelty}`],
+  };
+}
+
+function buildCaseFlowDetails(caseDetails) {
+  const artifact = getCaseArtifact(caseDetails);
+  const childBody = getCaseAgenomeOutput(caseDetails, 'child');
+  return {
+    energy: {
+      ...energyDetails,
+      case: {
+        ...energyDetails.case,
+        title: `${caseDetails.shortTitle} Case Enters`,
+        body: caseDetails.prompt,
+        bullets: ['solution hidden from agents', `case seed: ${caseDetails.id}`, caseDetails.fixtureNote],
+      },
+      firstPrinciples: buildEnergyDetail(caseDetails, 'firstPrinciples'),
+      constraintInjection: buildEnergyDetail(caseDetails, 'constraintInjection'),
+      polymath: buildEnergyDetail(caseDetails, 'polymath'),
+      breakthrough: buildEnergyDetail(caseDetails, 'breakthrough'),
+      additionBySubtraction: buildEnergyDetail(caseDetails, 'additionBySubtraction'),
+      blindside: buildEnergyDetail(caseDetails, 'blindside'),
+      breakout: buildEnergyDetail(caseDetails, 'breakout'),
+      child: {
+        ...energyDetails.child,
+        body: childBody,
+        bullets: [
+          `mandate: ${artifact.claim}`,
+          `constraint: ${caseDetails.constraints[0]}`,
+          'energy: 96 / fitness: 94',
+        ],
+      },
+      artifact: {
+        ...energyDetails.artifact,
+        title: artifact.title,
+        body: `Proposed solution: ${artifact.summary}`,
+        bullets: [artifact.claim, `avoids: ${caseDetails.constraints[0]}`, `validates with: ${artifact.validation}`],
+      },
+    },
+    critic: {
+      ...criticDetails,
+      artifact: {
+        ...criticDetails.artifact,
+        title: `${artifact.title} Under Review`,
+        body: artifact.summary,
+        bullets: ['generated by child agenome', 'candidate text is data', 'not allowed to instruct critics'],
+      },
+      factual: {
+        ...criticDetails.factual,
+        body: `Checks whether the plan fits the case facts and constraints for ${caseDetails.title}.`,
+        bullets: ['score 4.6/5', `evidence: ${artifact.evidence[0]}`, `asks for: ${artifact.validation}`],
+      },
+      novelty: {
+        ...criticDetails.novelty,
+        body: `Rejects generic answers around ${caseDetails.noveltyPrior} and rewards the specific mechanism: ${artifact.claim}`,
+        bullets: ['score 4.8/5', 'non-obvious but obvious-in-retrospect', `prior-art risk: ${artifact.priorArt[0][0]}`],
+      },
+      feasibility: {
+        ...criticDetails.feasibility,
+        body: `Tests whether the proposal can be executed without violating the selected case constraints.`,
+        bullets: ['score 4.4/5', `dependency: ${caseDetails.constraints[0]}`, 'requires field validation'],
+      },
+      falsification: {
+        ...criticDetails.falsification,
+        body: `Names the strongest condition where the artifact fails: ${artifact.risk}.`,
+        bullets: ['score 3.9/5', 'strongest unresolved risk', `asks for: ${artifact.validation}`],
+      },
+      subtype: {
+        ...criticDetails.subtype,
+        body: `Checks whether this transfer actually maps into the selected case: ${caseDetails.subtypeTransfer}`,
+        bullets: ['score 4.1/5', 'mapping plausible', `needs evidence: ${artifact.evidence[1]}`],
+      },
+      verdict: {
+        ...criticDetails.verdict,
+        title: 'Defensible Verdict',
+        body: `The candidate passes because it targets the hidden constraint and preserves the selected case constraints: ${artifact.summary}`,
+        bullets: ['accepted for demo', `open question: ${artifact.risk}`, 'next: replay fixture'],
+      },
+    },
+  };
+}
+
 const criticDetails = {
   artifact: {
     title: 'Candidate Artifact Under Review',
@@ -1014,7 +1469,7 @@ function NodeHandles() {
 }
 
 function EnergyNode({ data, selected }) {
-  const item = energyDetails[data.id];
+  const item = data.item || energyDetails[data.id];
   return (
     <article className={`node-card ${data.wide ? 'wide' : ''} tone-${data.tone || 'default'} ${selected ? 'selected' : ''}`}>
       <NodeHandles />
@@ -1039,8 +1494,16 @@ function BudgetNode({ data, selected }) {
 
 function AgenomeNode({ data, selected }) {
   const item = data.child
-    ? { title: 'Child Agenome', label: 'offspring', tone: 'child', energy: 96, fitness: 94, novelty: 86, role: energyDetails.child.body }
-    : agenomes[data.key];
+    ? {
+        title: 'Child Agenome',
+        label: 'offspring',
+        tone: 'child',
+        energy: 96,
+        fitness: 94,
+        novelty: 86,
+        role: data.item?.body || energyDetails.child.body,
+      }
+    : data.agenome || agenomes[data.key];
   return (
     <article className={`agenome-node tone-${item.tone} ${selected ? 'selected' : ''}`}>
       <NodeHandles />
@@ -1079,7 +1542,7 @@ function FusionNode({ selected }) {
 }
 
 function ArtifactNode({ data, selected }) {
-  const item = criticDetails[data.id] || energyDetails[data.id];
+  const item = data.item || criticDetails[data.id] || energyDetails[data.id];
   return (
     <article className={`artifact-node ${data.verdict ? 'verdict' : ''} ${selected ? 'selected' : ''}`}>
       <NodeHandles />
@@ -1091,7 +1554,7 @@ function ArtifactNode({ data, selected }) {
 }
 
 function CriticNode({ data, selected }) {
-  const item = criticDetails[data.id];
+  const item = data.item || criticDetails[data.id];
   return (
     <article className={`critic-node tone-${data.tone} ${selected ? 'selected' : ''}`}>
       <NodeHandles />
@@ -1175,15 +1638,16 @@ function Metric({ label, value }) {
 
 function FlowPrototype({ kind, onNavigate, selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
-  const config = kind === 'energy'
+  const caseFlowDetails = useMemo(() => buildCaseFlowDetails(caseDetails), [caseDetails]);
+  const config = useMemo(() => (kind === 'energy'
     ? {
         title: 'Energy Metabolism Simulator',
         eyebrow: 'prototype 01',
         summary:
-          'A finite Doppl run where real mutagen agenomes spend energy, compete under the Jack case constraints, get culled, and fuse into a stronger child.',
+          `A finite Doppl run where real mutagen agenomes spend energy, compete under the ${caseDetails.shortTitle} case constraints, get culled, and fuse into a stronger child.`,
         nodes: energyNodes,
         edges: energyEdges,
-        details: { ...energyDetails, ...energyBoundaryDetails },
+        details: { ...caseFlowDetails.energy, ...energyBoundaryDetails },
         initial: 'budget',
         defaultViewport: { x: 110, y: 330, zoom: 0.28 },
       }
@@ -1191,36 +1655,37 @@ function FlowPrototype({ kind, onNavigate, selectedCase }) {
         title: 'Critic Council Gauntlet',
         eyebrow: 'prototype 02',
         summary:
-          'A candidate artifact from the Jack case enters an adversarial council. Critics score evidence, name failure modes, and a held-out judge decides whether it survives.',
+          `A candidate artifact from the ${caseDetails.shortTitle} case enters an adversarial council. Critics score evidence, name failure modes, and a held-out judge decides whether it survives.`,
         nodes: criticNodes,
         edges: criticEdges,
-        details: { ...criticDetails, ...criticBoundaryDetails },
+        details: { ...caseFlowDetails.critic, ...criticBoundaryDetails },
         initial: 'criticIngressContract',
         defaultViewport: { x: 170, y: 300, zoom: 0.29 },
-      };
+      }), [caseDetails.shortTitle, caseFlowDetails, kind]);
 
   const storageKey = `doppl-prototype-${kind}-layout-v4`;
   const baseNodes = useMemo(
-    () => config.nodes.map((item) => ({ ...item, data: { ...item.data, onNavigate } })),
-    [config.nodes, onNavigate],
+    () => config.nodes.map((item) => {
+      const detail = config.details[item.id];
+      const data = { ...item.data, onNavigate, item: detail };
+      if (item.type === 'agenomeNode' && item.data.key && !item.data.child) {
+        data.agenome = buildCaseAgenome(caseDetails, item.data.key);
+      }
+      return { ...item, data };
+    }),
+    [caseDetails, config.details, config.nodes, onNavigate],
   );
   const initialNodes = useMemo(() => getInitialNodes(baseNodes, storageKey), [baseNodes, storageKey]);
   const [flowNodes, setFlowNodes] = useNodesState(initialNodes);
   const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(applyEdgeSides(initialNodes, config.edges));
   const [selected, setSelected] = useState(config.initial);
-  const rawActive = config.details[selected] || config.details[config.initial];
-  const active = selected === 'case'
-    ? {
-        ...rawActive,
-        title: `${caseDetails.shortTitle} Case Enters`,
-        body: caseDetails.prompt,
-        bullets: [
-          'solution hidden from agents',
-          `case seed: ${caseDetails.id}`,
-          caseDetails.fixtureNote,
-        ],
-      }
-    : rawActive;
+  const active = config.details[selected] || config.details[config.initial];
+
+  useEffect(() => {
+    const nextNodes = getInitialNodes(baseNodes, storageKey);
+    setFlowNodes(nextNodes);
+    setFlowEdges(applyEdgeSides(nextNodes, config.edges));
+  }, [baseNodes, config.edges, setFlowEdges, setFlowNodes, storageKey]);
   const nodeTypes = useMemo(
     () => ({
       energyNode: EnergyNode,
@@ -1393,6 +1858,9 @@ function FusionLab({ selectedCase }) {
   const childYield = costLedger.outputById[`child:${selectedPairId}`];
   const parentAYield = costLedger.outputById[`parent:${run.parentA.agenome}`];
   const parentBYield = costLedger.outputById[`parent:${run.parentB.agenome}`];
+  const parentAReport = buildCaseFusionProposal(run.parentA, caseDetails, 'parent');
+  const parentBReport = buildCaseFusionProposal(run.parentB, caseDetails, 'parent');
+  const childReport = buildCaseFusionProposal(run.child, caseDetails, 'child');
 
   const placeAgenome = useCallback((slot, id) => {
     if (!id) return;
@@ -1473,7 +1941,7 @@ function FusionLab({ selectedCase }) {
                 >
                   <span>{agenome.label}</span>
                   <strong>{agenome.title}</strong>
-                  <small>{agenome.description}</small>
+                  <small>{getCaseAgenomeOutput(caseDetails, agenome.id)}</small>
                 </button>
               ))}
             </div>
@@ -1484,6 +1952,7 @@ function FusionLab({ selectedCase }) {
               <FusionSocket
                 label="parent a"
                 agenome={fusionAgenomes.find((item) => item.id === parentA)}
+                selectedCase={caseDetails}
                 isDragging={Boolean(draggingAgenome)}
                 isHovering={hoveredSlot === 'a'}
                 onDragEnter={() => setHoveredSlot('a')}
@@ -1498,6 +1967,7 @@ function FusionLab({ selectedCase }) {
               <FusionSocket
                 label="parent b"
                 agenome={fusionAgenomes.find((item) => item.id === parentB)}
+                selectedCase={caseDetails}
                 isDragging={Boolean(draggingAgenome)}
                 isHovering={hoveredSlot === 'b'}
                 onDragEnter={() => setHoveredSlot('b')}
@@ -1508,28 +1978,28 @@ function FusionLab({ selectedCase }) {
 
             <div className="fusion-results">
               <FusionReportCard
-                title={run.parentA.title}
+                title={parentAReport.title}
                 subtitle={`${run.parentA.agenome} parent proposal`}
-                proposal={run.parentA.proposal}
+                proposal={parentAReport.proposal}
                 scores={run.parentA.scores}
-                verdict={run.parentA.verdict}
+                verdict={buildCaseFusionVerdict(run.parentA.verdict, caseDetails)}
                 yieldData={parentAYield}
               />
               <FusionReportCard
-                title={run.child.title}
+                title={childReport.title}
                 subtitle="child agenome proposal"
-                proposal={run.child.proposal}
+                proposal={childReport.proposal}
                 scores={run.child.scores}
-                verdict={run.child.verdict}
+                verdict={buildCaseFusionVerdict(run.child.verdict, caseDetails)}
                 traits={run.child.inheritedTraits}
                 yieldData={childYield}
               />
               <FusionReportCard
-                title={run.parentB.title}
+                title={parentBReport.title}
                 subtitle={`${run.parentB.agenome} parent proposal`}
-                proposal={run.parentB.proposal}
+                proposal={parentBReport.proposal}
                 scores={run.parentB.scores}
-                verdict={run.parentB.verdict}
+                verdict={buildCaseFusionVerdict(run.parentB.verdict, caseDetails)}
                 yieldData={parentBYield}
               />
             </div>
@@ -1619,17 +2089,20 @@ function SpendLedgerView({ selectedCase }) {
               <h3>Top Space-Opening Outputs</h3>
             </div>
             <div className="output-list">
-              {topOutputs.map((output) => (
+              {topOutputs.map((output, index) => {
+                const displayedOutput = buildCaseSpendOutput(output, caseDetails, index);
+                return (
                 <div key={output.id} className="output-row">
                   <div>
-                    <strong>{output.title}</strong>
-                    <span>{output.strategyLabels.join(' × ')}</span>
+                    <strong>{displayedOutput.title}</strong>
+                    <span>{displayedOutput.strategyLabels.join(' × ')}</span>
                   </div>
-                  <span>quality {formatMaybeNumber(output.qualityScore)}</span>
-                  <span>space {formatMaybeNumber(output.spaceOpeningScore)}</span>
-                  <span>{formatUsd(output.costUsd)}</span>
+                  <span>quality {formatMaybeNumber(displayedOutput.qualityScore)}</span>
+                  <span>space {formatMaybeNumber(displayedOutput.spaceOpeningScore)}</span>
+                  <span>{formatUsd(displayedOutput.costUsd)}</span>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </article>
         </div>
@@ -2155,6 +2628,7 @@ function AgenomePool({ selectedCase }) {
   const [activeId, setActiveId] = useState(defaultStartingPool[0]);
   const pool = useMemo(() => evaluateStartingPool(selectedIds), [selectedIds]);
   const activeAgenome = agenomePoolLibrary.find((agenome) => agenome.id === activeId) || agenomePoolLibrary[0];
+  const activeAgenomeDescription = getCaseAgenomeOutput(caseDetails, activeAgenome.id);
 
   const toggleAgenome = (agenomeId) => {
     setSelectedIds((current) => {
@@ -2208,7 +2682,7 @@ function AgenomePool({ selectedCase }) {
                 >
                   <span>{agenome.subtypeFit}</span>
                   <strong>{agenome.title}</strong>
-                  <small>{agenome.description}</small>
+                  <small>{getCaseAgenomeOutput(caseDetails, agenome.id)}</small>
                   <b>{selected ? 'in pool' : 'available'}</b>
                 </button>
               );
@@ -2226,7 +2700,7 @@ function AgenomePool({ selectedCase }) {
               {selectedIds.includes(activeAgenome.id) ? 'Remove' : 'Add'}
             </button>
           </div>
-          <p className="agenome-role">{activeAgenome.description}</p>
+          <p className="agenome-role">{activeAgenomeDescription}</p>
           <div className="agenome-score-grid">
             <AgenomeMetric label="fitness" value={activeAgenome.fitness} />
             <AgenomeMetric label="novelty" value={activeAgenome.novelty} />
@@ -2570,14 +3044,48 @@ function buildRunCommandPreview({ selectedCase, selectedPool, caps, mode, status
 
 function GatewayForge({ selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
+  const artifact = getCaseArtifact(caseDetails);
   const [fixtureId, setFixtureId] = useState('clean');
   const baseFixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
   const fixture = {
     ...baseFixture,
+    rawResponse: baseFixture.id === 'clean'
+      ? buildCaseRawResponse(caseDetails)
+      : baseFixture.id === 'repair'
+        ? `Verdict: pass\\nScore: 82\\nConcern: ${artifact.validation}\\nEvidence: evt-005, evt-007`
+        : baseFixture.id === 'reject'
+          ? `{"score":100,"privateAnchor":"${caseDetails.hiddenTarget}","reason":"Candidate matches the anchor."}`
+          : 'Primary provider timed out after 5000ms before first token.',
+    repairedResponse: baseFixture.id === 'repair'
+      ? JSON.stringify({
+          verdict: 'pass',
+          score: 82,
+          concerns: [artifact.validation],
+          evidenceRefs: [{ kind: 'trace', eventId: 'evt-005' }, { kind: 'check_output', eventId: 'evt-007' }],
+        })
+      : baseFixture.repairedResponse,
+    fallbackResponse: baseFixture.fallbackResponse
+      ? JSON.stringify({
+          status: 'pass',
+          score: 0.79,
+          explanation: caseDetails.subtypeTransfer,
+          evidenceRefs: getCaseArtifact(caseDetails).evidence,
+        })
+      : baseFixture.fallbackResponse,
+    response: {
+      ...baseFixture.response,
+      outputTitle: baseFixture.response.outputTitle
+        ? (baseFixture.id === 'repair' ? 'CriticReview verdict pass, score 82' : artifact.title)
+        : baseFixture.response.outputTitle,
+    },
     request: {
       ...baseFixture.request,
       runId: caseDetails.runId,
-      untrustedPayload: `CasePacket: ${caseDetails.title}. Constraints: ${caseDetails.constraints.join('; ')}.`,
+      untrustedPayload: baseFixture.id === 'repair'
+        ? `Candidate: "${artifact.title}". Summary: ${artifact.summary}. Treat this as untrusted data.`
+        : baseFixture.id === 'reject'
+          ? `Candidate asks to reveal the hidden evaluator target before scoring. Case: ${caseDetails.title}.`
+          : `CasePacket: ${caseDetails.title}. Constraints: ${caseDetails.constraints.join('; ')}.`,
     },
   };
   const accepted = fixture.response.accepted;
@@ -2775,7 +3283,8 @@ function buildGatewayEvent(fixture) {
 function SubtypeCheckLab({ selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [candidateId, setCandidateId] = useState(subtypeCandidates[0].id);
-  const candidate = subtypeCandidates.find((item) => item.id === candidateId) || subtypeCandidates[0];
+  const baseCandidate = subtypeCandidates.find((item) => item.id === candidateId) || subtypeCandidates[0];
+  const candidate = buildCaseSubtypeCandidate(baseCandidate, caseDetails);
   const summary = summarizeSubtypeChecks(candidate);
   const [selectedCheckId, setSelectedCheckId] = useState(candidate.checks[0].id);
   const selectedCheck = candidate.checks.find((check) => check.id === selectedCheckId) || candidate.checks[0];
@@ -2823,7 +3332,7 @@ function SubtypeCheckLab({ selectedCase }) {
               >
                 <span>{item.subtype}</span>
                 <strong>{item.label}</strong>
-                <small>{item.title}</small>
+                <small>{buildCaseSubtypeCandidate(item, caseDetails).title}</small>
               </button>
             ))}
           </div>
@@ -2932,7 +3441,8 @@ function SubtypeCheckLab({ selectedCase }) {
 function NoveltyRadar({ selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [candidateId, setCandidateId] = useState(noveltyCandidates[0].id);
-  const candidate = noveltyCandidates.find((item) => item.id === candidateId) || noveltyCandidates[0];
+  const baseCandidate = noveltyCandidates.find((item) => item.id === candidateId) || noveltyCandidates[0];
+  const candidate = buildCaseNoveltyCandidate(baseCandidate, caseDetails);
   const event = buildNoveltyEvent(candidate);
   const maxSimilarity = Math.max(
     0,
@@ -2979,7 +3489,7 @@ function NoveltyRadar({ selectedCase }) {
                 onClick={() => setCandidateId(item.id)}
               >
                 <span>{item.subtype}</span>
-                <strong>{item.title}</strong>
+                <strong>{buildCaseNoveltyCandidate(item, caseDetails).title}</strong>
                 <small>{item.confidence}</small>
               </button>
             ))}
@@ -3104,12 +3614,33 @@ function NoveltyMatchList({ items }) {
 
 function FinalSurvivorProofPanel({ selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
+  const artifact = getCaseArtifact(caseDetails);
   const navigatePrototype = useContext(PrototypeNavigationContext);
   const [runId, setRunId] = useState(survivorRuns[0].id);
   const run = survivorRuns.find((item) => item.id === runId) || survivorRuns[0];
   const isAccepted = run.status === 'accepted';
   const displayedTitle = selectedCase?.id === 'jack-superyacht-drone' ? run.title : caseDetails.candidateTitle;
   const displayedSummary = selectedCase?.id === 'jack-superyacht-drone' ? run.summary : caseDetails.candidateSummary;
+  const displayedImprovement = selectedCase?.id === 'jack-superyacht-drone'
+    ? run.improvementClaim
+    : `Final generation beats the baseline by targeting the hidden constraint: ${artifact.claim}`;
+  const displayedTerminalReason = selectedCase?.id === 'jack-superyacht-drone'
+    ? run.terminalReason
+    : `${caseDetails.runId} replays to the selected candidate without changing stored events.`;
+  const displayedRisks = selectedCase?.id === 'jack-superyacht-drone'
+    ? run.risks
+    : [artifact.risk, `Must preserve case constraint: ${caseDetails.constraints[0]}`, `Needs evidence beyond ${artifact.evidence.join(' and ')}.`];
+  const displayedValidationPlan = selectedCase?.id === 'jack-superyacht-drone'
+    ? run.validationPlan
+    : [artifact.validation, `Compare against baseline: ${artifact.baseline}.`, 'Run held-out judge with the same immutable rubric.'];
+  const displayedEvidence = selectedCase?.id === 'jack-superyacht-drone'
+    ? run.evidence
+    : buildSurvivorEvidence(run, caseDetails);
+  const displayedMetrics = selectedCase?.id === 'jack-superyacht-drone'
+    ? run.metrics
+    : run.metrics.map((metric) => metric.label === 'Novelty'
+      ? { ...metric, detail: `mechanism distinct from ${caseDetails.noveltyPrior}` }
+      : metric);
 
   return (
     <section className="prototype survivor-prototype">
@@ -3146,7 +3677,7 @@ function FinalSurvivorProofPanel({ selectedCase }) {
               <button key={item.id} type="button" aria-selected={run.id === item.id} onClick={() => setRunId(item.id)}>
                 <span>{item.status}</span>
                 <strong>{item.label}</strong>
-                <small>{item.caseStudy}</small>
+                <small>{caseDetails.title}</small>
               </button>
             ))}
           </div>
@@ -3163,8 +3694,8 @@ function FinalSurvivorProofPanel({ selectedCase }) {
           <p className="survivor-summary">{displayedSummary}</p>
           <article className="survivor-improvement-card">
             <span>improvement claim</span>
-            <strong>{run.improvementClaim}</strong>
-            <p>{run.terminalReason}</p>
+            <strong>{displayedImprovement}</strong>
+            <p>{displayedTerminalReason}</p>
           </article>
         </section>
 
@@ -3176,7 +3707,7 @@ function FinalSurvivorProofPanel({ selectedCase }) {
             </div>
           </div>
           <div className="survivor-metric-grid">
-            {run.metrics.map((metric) => (
+            {displayedMetrics.map((metric) => (
               <ProjectionCard key={metric.label} label={metric.label} value={metric.value} detail={metric.detail} />
             ))}
           </div>
@@ -3188,10 +3719,10 @@ function FinalSurvivorProofPanel({ selectedCase }) {
               <p className="eyebrow">resolving proof links</p>
               <h3>Click Through Evidence</h3>
             </div>
-            <strong>{run.evidence.length} links</strong>
+            <strong>{displayedEvidence.length} links</strong>
           </div>
           <div className="survivor-evidence-list">
-            {run.evidence.map((item) => (
+            {displayedEvidence.map((item) => (
               <article key={`${run.id}-${item.label}`}>
                 <div>
                   <span>{item.status}</span>
@@ -3214,8 +3745,8 @@ function FinalSurvivorProofPanel({ selectedCase }) {
             </div>
           </div>
           <div className="survivor-risk-grid">
-            <PacketList label="open risks" items={run.risks} />
-            <PacketList label="validation plan" items={run.validationPlan} />
+            <PacketList label="open risks" items={displayedRisks} />
+            <PacketList label="validation plan" items={displayedValidationPlan} />
           </div>
         </section>
 
@@ -3245,20 +3776,7 @@ function ReplaySpine({ selectedCase }) {
   const [fixtureId, setFixtureId] = useState('clean');
   const [foldMode, setFoldMode] = useState('replay');
   const baseFixture = replayFixtures.find((item) => item.id === fixtureId) || replayFixtures[0];
-  const fixture = {
-    ...baseFixture,
-    events: baseFixture.events.map((event) => event.type === 'case.seeded'
-      ? {
-          ...event,
-          payload: {
-            ...event.payload,
-            caseTitle: caseDetails.title,
-            agentVisibleRef: `casepkt_${caseDetails.id}`,
-            evaluatorAnchorRef: `eval_anchor_${caseDetails.id}`,
-          },
-        }
-      : event),
-  };
+  const fixture = buildCaseReplayFixture(baseFixture, caseDetails);
   const replay = useMemo(() => foldReplayFixture(fixture), [fixture]);
   const [selectedEventId, setSelectedEventId] = useState(fixture.events[0].id);
   const selectedEvent = fixture.events.find((event) => event.id === selectedEventId) || fixture.events[0];
@@ -3757,7 +4275,7 @@ function formatRatio(value) {
   return value >= 100 ? Math.round(value).toLocaleString() : value.toFixed(1);
 }
 
-function FusionSocket({ label, agenome, isDragging, isHovering, onDragEnter, onDragLeave, onDrop }) {
+function FusionSocket({ label, agenome, selectedCase, isDragging, isHovering, onDragEnter, onDragLeave, onDrop }) {
   return (
     <div
       className={`fusion-socket tone-${agenome.tone} ${isDragging ? 'is-ready' : ''} ${isHovering ? 'is-hovering' : ''}`}
@@ -3774,7 +4292,7 @@ function FusionSocket({ label, agenome, isDragging, isHovering, onDragEnter, onD
         <b>Drop agenome here</b>
       </div>
       <strong>{agenome.title}</strong>
-      <p>{agenome.description}</p>
+      <p>{getCaseAgenomeOutput(selectedCase, agenome.id)}</p>
     </div>
   );
 }

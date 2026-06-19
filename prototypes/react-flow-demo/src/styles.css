@@ -4145,6 +4145,12 @@ article.module-node::after {
 /* ---------- Trace viewer (prototype 04) ---------- */
 
 .trace-board {
+  --trace-energy-color: var(--cyan);
+  --trace-fitness-color: var(--green);
+  --trace-novelty-color: var(--gold);
+  --trace-seed-color: var(--blue);
+  --trace-child-color: var(--violet);
+  --trace-survivor-color: var(--mint);
   display: flex;
   gap: 18px;
   overflow-x: auto;
@@ -4205,21 +4211,25 @@ article.module-node::after {
 }
 
 .trace-card {
-  --tone: var(--cyan);
+  --role-tone: var(--trace-seed-color);
   text-align: left;
   cursor: pointer;
   background: var(--panel-strong);
-  border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
-  border-left: 4px solid var(--tone);
+  border: 1px solid color-mix(in srgb, var(--role-tone) 45%, transparent);
+  border-left: 4px solid var(--role-tone);
   border-radius: 14px;
   padding: 12px 14px;
   color: var(--ink);
   transition: transform 0.12s ease, border-color 0.12s ease;
 }
 
+.trace-card.trace-role-seed { --role-tone: var(--trace-seed-color); }
+.trace-card.trace-role-child { --role-tone: var(--trace-child-color); }
+.trace-card.trace-role-survivor { --role-tone: var(--trace-survivor-color); }
+
 .trace-card:hover {
   transform: translateY(-2px);
-  border-color: var(--tone);
+  border-color: var(--role-tone);
 }
 
 .trace-card-head {
@@ -4233,7 +4243,7 @@ article.module-node::after {
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--tone);
+  color: var(--role-tone);
 }
 
 .trace-delta {
@@ -4282,8 +4292,11 @@ article.module-node::after {
 .trace-bar b {
   display: block;
   height: 100%;
-  background: var(--tone, var(--cyan));
 }
+
+.trace-bar-energy b { background: var(--trace-energy-color); }
+.trace-bar-fitness b { background: var(--trace-fitness-color); }
+.trace-bar-novelty b { background: var(--trace-novelty-color); }
 
 .trace-dive {
   display: inline-block;
@@ -4325,10 +4338,20 @@ article.module-node::after {
 /* detail (individual + atom) */
 
 .trace-detail {
-  --tone: var(--cyan);
+  --trace-energy-color: var(--cyan);
+  --trace-fitness-color: var(--green);
+  --trace-novelty-color: var(--gold);
+  --trace-seed-color: var(--blue);
+  --trace-child-color: var(--violet);
+  --trace-survivor-color: var(--mint);
+  --role-tone: var(--trace-seed-color);
   display: grid;
   gap: 16px;
 }
+
+.trace-detail.trace-role-seed { --role-tone: var(--trace-seed-color); }
+.trace-detail.trace-role-child { --role-tone: var(--trace-child-color); }
+.trace-detail.trace-role-survivor { --role-tone: var(--trace-survivor-color); }
 
 .trace-breadcrumb {
   display: flex;
@@ -4366,7 +4389,7 @@ article.module-node::after {
 }
 
 .trace-individual {
-  border-left: 4px solid var(--tone);
+  border-left: 4px solid var(--role-tone);
 }
 
 .trace-proposal {

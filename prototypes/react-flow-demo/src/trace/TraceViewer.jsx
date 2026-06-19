@@ -18,6 +18,13 @@ const ROLE_LABEL = {
   survivor: 'survivor',
 };
 
+const ROLE_CLASS = {
+  seed: 'trace-role-seed',
+  parent: 'trace-role-seed',
+  child: 'trace-role-child',
+  survivor: 'trace-role-survivor',
+};
+
 const EVENT_GLYPH = {
   breed: '⊕ breed',
   fuse: '✶ fuse',
@@ -338,6 +345,10 @@ function toneColor(tone) {
   return TONE_VARS[tone] || 'var(--cyan)';
 }
 
+function roleClass(role) {
+  return ROLE_CLASS[role] || 'trace-role-seed';
+}
+
 function deltaText(value) {
   if (value > 0) return `+${value}`;
   return `${value}`;
@@ -397,7 +408,7 @@ function Bars({ metrics }) {
   return (
     <div className="trace-bars">
       {['energy', 'fitness', 'novelty'].map((key) => (
-        <div key={key} className="trace-bar">
+        <div key={key} className={`trace-bar trace-bar-${key}`}>
           <span>{key}</span>
           <i><b style={{ width: `${metrics[key]}%` }} /></i>
           <strong>{metrics[key]}</strong>
@@ -412,7 +423,7 @@ function IndividualCard({ individual, onOpen }) {
   return (
     <button
       type="button"
-      className="trace-card"
+      className={`trace-card ${roleClass(individual.role)}`}
       style={{ '--tone': color }}
       onClick={() => onOpen(individual.id)}
     >
@@ -551,7 +562,7 @@ function DetailView({ trace, location, onBack, atomTab, setAtomTab }) {
   const { generation, individual } = location;
   const color = toneColor(individual.tone);
   return (
-    <div className="trace-detail" style={{ '--tone': color }}>
+    <div className={`trace-detail ${roleClass(individual.role)}`} style={{ '--tone': color }}>
       <div className="trace-breadcrumb">
         <button type="button" onClick={onBack}>{trace.title}</button>
         <span>▸</span>

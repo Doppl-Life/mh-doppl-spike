@@ -67,7 +67,32 @@ const { nodes, edges } = toReactFlow(graph);      // ready for @xyflow/react
 ## Dependencies
 
 `zod` (contracts, Prime's contract language) and `yaml` (frontmatter parse).
-No server, DB, or key. Tests: `pnpm test`.
+No server, DB, or key.
+
+## Verification
+
+Run the whole suite with `pnpm test` (or `node ./node_modules/vitest/vitest.mjs run`).
+Layers, cheapest first:
+
+1. **Unit** (`test/skill-lineage.test.ts`) — parse, snake→camel, build, host-dedupe,
+   drift, render round-trip, React Flow layout, boundary.
+2. **Contract freeze** (`test/contract.test.ts`) — a frozen field-name set per seam
+   model + closed-enum rejection, mirroring Prime's
+   `docs/prds/01-contract-freeze-prd.md`. A rename or new field fails here before it
+   can drift into Prime.
+3. **Drift gate** (`test/drift.live.test.ts`) — *authored-and-audited* model: builds
+   the studbook from the real `.cursor/skills/*` and asserts it stays in sync with
+   `skills/LINEAGE.md`; pins the known-accepted unlineaged set (a *new* unlineaged
+   skill fails). Skips automatically when the skills dir is absent (promoted context).
+   To flip to the *generated-artifact* model instead, have CI run
+   `renderLineageTable` and fail on a non-empty `git diff` of `LINEAGE.md`.
+
+Regenerate the React Flow view data + print a live drift report:
+
+```
+GEN_VIEW=1 node ./node_modules/vitest/vitest.mjs run test/generator.test.ts
+# or, in a normal terminal:  npx tsx scripts/build-view-data.ts
+```
 
 ## Lexicon stub
 

@@ -4,44 +4,19 @@
  * Reads the real `.cursor/skills/*` frontmatter, builds the studbook, diffs it
  * against `skills/LINEAGE.md`, and writes the React Flow view data. Run with:
  *
- *   npx tsx scripts/build-view-data.ts
+ *   GEN_VIEW=1 node ./node_modules/vitest/vitest.mjs run test/generator.test.ts
  *
- * Not part of the portable folder — it's a crucible-side harness tool.
+ * (or `npx tsx scripts/build-view-data.ts` in a normal terminal). Not part of
+ * the portable folder — it's a crucible-side harness tool.
  */
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import {
-  boundary,
-  buildStudbook,
-  diffStudbook,
-  parseSkill,
-  toReactFlow,
-} from '../skill-lineage/index';
-import type { Skill } from '../skill-lineage/index';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { boundary, buildStudbook, diffStudbook, toReactFlow } from '../skill-lineage/index';
+import { collectSkills, repoRootFrom } from './collect-skills';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const repoRoot = resolve(here, '../../..');
-const skillsDir = join(repoRoot, '.cursor/skills');
-const lineageMdPath = join(repoRoot, 'skills/LINEAGE.md');
+const repoRoot = repoRootFrom(import.meta.url);
+const { skills, unlineaged, lineageMdPath } = collectSkills(repoRoot);
 const outPath = join(repoRoot, 'prototypes/react-flow-demo/src/skillLineageData.generated.json');
-
-const skills: Skill[] = [];
-const unlineaged: Array<{ name: string; reason: string }> = [];
-for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
-  if (!entry.isDirectory()) continue;
-  const file = join(skillsDir, entry.name, 'SKILL.md');
-  if (!existsSync(file)) continue;
-  try {
-    skills.push(
-      parseSkill(readFileSync(file, 'utf8'), {
-        expressesAt: [`.cursor/skills/${entry.name}`],
-      }),
-    );
-  } catch (err) {
-    unlineaged.push({ name: entry.name, reason: (err as Error).message });
-  }
-}
 
 const graph = buildStudbook(skills);
 const drift = diffStudbook(graph, readFileSync(lineageMdPath, 'utf8'));

@@ -1815,10 +1815,49 @@ article.module-node::after {
   outline: none;
 }
 
+.boundary-group .module-chip.is-current {
+  border-color: rgba(110, 231, 255, 0.34);
+  background: rgba(110, 231, 255, 0.08);
+  color: #e8f5ff;
+}
+
+.boundary-group .module-chip.is-pending {
+  border-style: dashed;
+  border-color: rgba(159, 180, 215, 0.26);
+  background: rgba(4, 8, 23, 0.26);
+  color: #8ca0c4;
+}
+
+.boundary-group .module-chip.is-pending::after {
+  content: "not prototyped";
+  display: block;
+  margin-top: 4px;
+  color: var(--dim);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .boundary-group.tone-strong b {
   border-color: rgba(86, 255, 179, 0.24);
   color: #dfffee;
   background: rgba(86, 255, 179, 0.08);
+}
+
+.prototype-with-boundary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  align-items: start;
+}
+
+.prototype-with-boundary > * {
+  min-width: 0;
+}
+
+.trace-main {
+  min-width: 0;
 }
 
 /* ---------- Agenome pool (prototype 07) ---------- */
@@ -3602,6 +3641,7 @@ article.module-node::after {
   }
 
   .fusion-shell,
+  .prototype-with-boundary,
   .parent-sockets,
   .fusion-results {
     grid-template-columns: 1fr;
@@ -3656,7 +3696,10 @@ article.module-node::after {
   .fallback-rung-panel,
   .fallback-boundary-panel,
   .replay-control-panel,
-  .replay-boundary-panel {
+  .replay-boundary-panel,
+  .fusion-boundary-panel,
+  .trace-boundary-panel,
+  .spend-boundary-panel {
     position: static;
   }
 

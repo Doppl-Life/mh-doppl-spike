@@ -83,6 +83,7 @@ const prototypeModuleTargets = {
   'Demo Fallback Ladder': { tabId: 'fallback', label: 'Fallback ladder' },
   'Energy Metabolism': { tabId: 'energy', label: 'Energy metabolism' },
   'Event Store': { tabId: 'replay', label: 'Replay spine' },
+  'Fallback Ladder': { tabId: 'fallback', label: 'Fallback ladder' },
   'Final Survivor Proof Panel': { tabId: 'survivor', label: 'Survivor proof' },
   'Fusion / Mutation': { tabId: 'fusion', label: 'Fusion lab' },
   'Fusion Lab': { tabId: 'fusion', label: 'Fusion lab' },
@@ -99,7 +100,24 @@ const prototypeModuleTargets = {
   'Spend Ledger': { tabId: 'spend', label: 'Spend ledger' },
   'Subtype Check Lab': { tabId: 'subtype', label: 'Subtype checks' },
   'Trace Viewer': { tabId: 'trace', label: 'Trace viewer' },
+  'Verifier Council': { tabId: 'critic', label: 'Critic council' },
 };
+const moduleDisplayLabels = {
+  'Candidate Store': 'Replay Spine',
+  'Dashboard Mode Indicator': 'Fallback Ladder',
+  'Demo Fallback Ladder': 'Fallback Ladder',
+  'Event Store': 'Replay Spine',
+  'Fusion / Mutation': 'Fusion Lab',
+  'Live Run Operator Console': 'Operator Console',
+  'Model Gateway': 'Gateway Forge',
+  'Operator Run Config': 'Operator Console',
+  'Selection / Scoring': 'Novelty Radar',
+  'Verifier Council': 'Critic Council',
+};
+
+function displayModuleName(name) {
+  return moduleDisplayLabels[name] || name;
+}
 
 const caseStudy = {
   title: 'Superyacht Drone Privacy Problem',
@@ -299,7 +317,7 @@ const criticBoundaryDetails = {
       'Best guess: the runtime and breeding pass emit a normalized candidate artifact plus metered evidence. This gauntlet consumes that output as untrusted data.',
     bullets: ['opens prototype 01', 'source event: candidate.created', 'candidate text cannot instruct critics'],
     targetTab: 'energy',
-    targetLabel: 'Open Energy metabolism',
+    targetLabel: 'Energy metabolism',
   },
   criticIngressContract: {
     title: 'Verifier Ingress Contract',
@@ -380,7 +398,7 @@ const criticBoundaryDetails = {
       'Consumes verifier evidence plus novelty and energy signals, computes decomposed fitness, culls weak lineages, and breeds surviving parents.',
     bullets: ['opens prototype 03', 'consumes CriticReview and CheckResult', 'produces FitnessScore, culling, parent selection, reproduction'],
     targetTab: 'fusion',
-    targetLabel: 'Open Fusion lab',
+    targetLabel: 'Fusion lab',
   },
   sinkTrace: {
     title: 'Trace Viewer',
@@ -389,7 +407,7 @@ const criticBoundaryDetails = {
       'Uses event and evidence references to explain why the artifact survived, failed, or moved into reproduction.',
     bullets: ['opens prototype 04', 'reads event-derived evidence', 'replay requires no new model or web calls'],
     targetTab: 'trace',
-    targetLabel: 'Open Trace viewer',
+    targetLabel: 'Trace viewer',
   },
   sinkSpend: {
     title: 'Spend Ledger',
@@ -398,7 +416,7 @@ const criticBoundaryDetails = {
       'Reads metered gateway and energy evidence so review quality can be compared against cost and yield.',
     bullets: ['opens prototype 05', 'reads provider metadata and energy events', 'useful for allocation decisions'],
     targetTab: 'spend',
-    targetLabel: 'Open Spend ledger',
+    targetLabel: 'Spend ledger',
   },
 };
 
@@ -435,13 +453,52 @@ const energyBoundaryDetails = {
       'The next module treats the candidate as data and turns it into structured critic/check/judge evidence.',
     bullets: ['opens prototype 02', 'consumes CandidateIdea and EvidenceRef', 'produces CriticReview and CheckResult'],
     targetTab: 'critic',
-    targetLabel: 'Open Critic council',
+    targetLabel: 'Critic council',
   },
 };
 
 const boundaryDetails = {
   ...criticBoundaryDetails,
   ...energyBoundaryDetails,
+};
+
+const fusionBoundary = {
+  upstreamModules: ['Agenome Pool', 'Critic Council', 'Novelty Radar', 'Spend Ledger'],
+  upstreamContracts: ['Agenome', 'FitnessScore', 'NoveltyScore', 'EnergyEvent'],
+  downstreamContracts: ['ReproductionEvent', 'agenome.fused', 'agenome.mutated', 'LineageGraphProjection'],
+  downstreamModules: ['Energy Metabolism', 'Replay Spine', 'Trace Viewer', 'Final Survivor Proof Panel'],
+  invariants: [
+    'parentage is persisted before child evaluation',
+    'mutation and crossover outcomes are replayable',
+    'fitness evidence chooses parents, not critic preference alone',
+    'distant lineages are preferred when possible',
+  ],
+};
+
+const traceBoundary = {
+  upstreamModules: ['Replay Spine', 'Energy Metabolism', 'Fusion Lab', 'Critic Council'],
+  upstreamContracts: ['RunEventEnvelope', 'LineageGraphProjection', 'EvidenceRef', 'CriticReview'],
+  downstreamContracts: ['TraceSelectionState', 'EvidenceDrilldownRequest', 'ReplayReadRequest'],
+  downstreamModules: ['Final Survivor Proof Panel', 'Spend Ledger', 'Fallback Ladder'],
+  invariants: [
+    'trace views are projections, not event truth',
+    'atom views resolve persisted evidence only',
+    'lineage, critic, and inheritance details share one viewer',
+    'replay never triggers fresh model calls',
+  ],
+};
+
+const spendBoundary = {
+  upstreamModules: ['Gateway Forge', 'Energy Metabolism', 'Fusion Lab', 'Replay Spine'],
+  upstreamContracts: ['EnergyEvent', 'ModelGatewayResponse.providerMeta', 'RunEventEnvelope', 'FitnessScore'],
+  downstreamContracts: ['SpendProjection', 'YieldProjection', 'AllocationSignal'],
+  downstreamModules: ['Operator Console', 'Final Survivor Proof Panel', 'Fallback Ladder'],
+  invariants: [
+    'cost is derived from successful productive spend',
+    'provider metadata is scrubbed before display',
+    'yield metrics never rewrite historical events',
+    'allocation signals explain future budget decisions',
+  ],
 };
 
 const energyNodes = [
@@ -1016,91 +1073,94 @@ function FusionLab() {
         </div>
       </div>
 
-      <div className="fusion-shell">
-        <aside className="agenome-palette">
-          <p className="eyebrow">drag agenomes</p>
-          <div className="palette-heading">
-            <h3>Current mutagen pool</h3>
-            <p>Drag any card into Parent A or Parent B.</p>
-          </div>
-          <div className="palette-list">
-            {fusionAgenomes.map((agenome) => (
-              <button
-                draggable
-                type="button"
-                key={agenome.id}
-                className={`palette-card tone-${agenome.tone} ${parentA === agenome.id || parentB === agenome.id ? 'is-active' : ''}`}
-                onDragStart={(event) => {
-                  event.dataTransfer.effectAllowed = 'move';
-                  event.dataTransfer.setData('text/agenome-id', agenome.id);
-                  setDraggingAgenome(agenome.id);
-                }}
-                onDragEnd={handleDragEnd}
-                onClick={() => placeAgenome(parentA === agenome.id ? 'b' : 'a', agenome.id)}
-              >
-                <span>{agenome.label}</span>
-                <strong>{agenome.title}</strong>
-                <small>{agenome.description}</small>
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        <div className="fusion-stage">
-          <div className="parent-sockets">
-            <FusionSocket
-              label="parent a"
-              agenome={fusionAgenomes.find((item) => item.id === parentA)}
-              isDragging={Boolean(draggingAgenome)}
-              isHovering={hoveredSlot === 'a'}
-              onDragEnter={() => setHoveredSlot('a')}
-              onDragLeave={() => setHoveredSlot((slot) => (slot === 'a' ? null : slot))}
-              onDrop={(event) => handleDrop(event, 'a')}
-            />
-            <div className="fusion-core">
-              <span>fusion ratio</span>
-              <strong>{run.fusionRatio}</strong>
-              <p>{run.inheritanceLogic}</p>
+      <div className="prototype-with-boundary fusion-with-boundary">
+        <div className="fusion-shell">
+          <aside className="agenome-palette">
+            <p className="eyebrow">drag agenomes</p>
+            <div className="palette-heading">
+              <h3>Current mutagen pool</h3>
+              <p>Drag any card into Parent A or Parent B.</p>
             </div>
-            <FusionSocket
-              label="parent b"
-              agenome={fusionAgenomes.find((item) => item.id === parentB)}
-              isDragging={Boolean(draggingAgenome)}
-              isHovering={hoveredSlot === 'b'}
-              onDragEnter={() => setHoveredSlot('b')}
-              onDragLeave={() => setHoveredSlot((slot) => (slot === 'b' ? null : slot))}
-              onDrop={(event) => handleDrop(event, 'b')}
-            />
-          </div>
+            <div className="palette-list">
+              {fusionAgenomes.map((agenome) => (
+                <button
+                  draggable
+                  type="button"
+                  key={agenome.id}
+                  className={`palette-card tone-${agenome.tone} ${parentA === agenome.id || parentB === agenome.id ? 'is-active' : ''}`}
+                  onDragStart={(event) => {
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('text/agenome-id', agenome.id);
+                    setDraggingAgenome(agenome.id);
+                  }}
+                  onDragEnd={handleDragEnd}
+                  onClick={() => placeAgenome(parentA === agenome.id ? 'b' : 'a', agenome.id)}
+                >
+                  <span>{agenome.label}</span>
+                  <strong>{agenome.title}</strong>
+                  <small>{agenome.description}</small>
+                </button>
+              ))}
+            </div>
+          </aside>
 
-          <div className="fusion-results">
-            <FusionReportCard
-              title={run.parentA.title}
-              subtitle={`${run.parentA.agenome} parent proposal`}
-              proposal={run.parentA.proposal}
-              scores={run.parentA.scores}
-              verdict={run.parentA.verdict}
-              yieldData={parentAYield}
-            />
-            <FusionReportCard
-              title={run.child.title}
-              subtitle="child agenome proposal"
-              proposal={run.child.proposal}
-              scores={run.child.scores}
-              verdict={run.child.verdict}
-              traits={run.child.inheritedTraits}
-              yieldData={childYield}
-            />
-            <FusionReportCard
-              title={run.parentB.title}
-              subtitle={`${run.parentB.agenome} parent proposal`}
-              proposal={run.parentB.proposal}
-              scores={run.parentB.scores}
-              verdict={run.parentB.verdict}
-              yieldData={parentBYield}
-            />
+          <div className="fusion-stage">
+            <div className="parent-sockets">
+              <FusionSocket
+                label="parent a"
+                agenome={fusionAgenomes.find((item) => item.id === parentA)}
+                isDragging={Boolean(draggingAgenome)}
+                isHovering={hoveredSlot === 'a'}
+                onDragEnter={() => setHoveredSlot('a')}
+                onDragLeave={() => setHoveredSlot((slot) => (slot === 'a' ? null : slot))}
+                onDrop={(event) => handleDrop(event, 'a')}
+              />
+              <div className="fusion-core">
+                <span>fusion ratio</span>
+                <strong>{run.fusionRatio}</strong>
+                <p>{run.inheritanceLogic}</p>
+              </div>
+              <FusionSocket
+                label="parent b"
+                agenome={fusionAgenomes.find((item) => item.id === parentB)}
+                isDragging={Boolean(draggingAgenome)}
+                isHovering={hoveredSlot === 'b'}
+                onDragEnter={() => setHoveredSlot('b')}
+                onDragLeave={() => setHoveredSlot((slot) => (slot === 'b' ? null : slot))}
+                onDrop={(event) => handleDrop(event, 'b')}
+              />
+            </div>
+
+            <div className="fusion-results">
+              <FusionReportCard
+                title={run.parentA.title}
+                subtitle={`${run.parentA.agenome} parent proposal`}
+                proposal={run.parentA.proposal}
+                scores={run.parentA.scores}
+                verdict={run.parentA.verdict}
+                yieldData={parentAYield}
+              />
+              <FusionReportCard
+                title={run.child.title}
+                subtitle="child agenome proposal"
+                proposal={run.child.proposal}
+                scores={run.child.scores}
+                verdict={run.child.verdict}
+                traits={run.child.inheritedTraits}
+                yieldData={childYield}
+              />
+              <FusionReportCard
+                title={run.parentB.title}
+                subtitle={`${run.parentB.agenome} parent proposal`}
+                proposal={run.parentB.proposal}
+                scores={run.parentB.scores}
+                verdict={run.parentB.verdict}
+                yieldData={parentBYield}
+              />
+            </div>
           </div>
         </div>
+        <BoundaryRail title="Where Fusion Fits" boundary={fusionBoundary} className="fusion-boundary-panel" />
       </div>
     </section>
   );
@@ -1130,71 +1190,74 @@ function SpendLedgerView() {
         </div>
       </div>
 
-      <div className="spend-grid">
-        <SpendMetric label="total spend" value={formatUsd(costLedger.totalCostUsd)} detail={costLedger.totalCostExact ? 'exact provider usage' : 'awaiting metered rerun'} />
-        <SpendMetric label="paid calls" value={costLedger.paidCallCount} detail="generation + critique calls" />
-        <SpendMetric label="selected fruits" value={costLedger.selectedFruits} detail={`${costLedger.fruits} child fusions total`} />
-        <SpendMetric label="space opening" value={formatMaybeNumber(costLedger.averageSpaceOpening)} detail={`rubric ${costLedger.rubricVersion}`} />
+      <div className="prototype-with-boundary spend-with-boundary">
+        <div className="spend-grid">
+          <SpendMetric label="total spend" value={formatUsd(costLedger.totalCostUsd)} detail={costLedger.totalCostExact ? 'exact provider usage' : 'awaiting metered rerun'} />
+          <SpendMetric label="paid calls" value={costLedger.paidCallCount} detail="generation + critique calls" />
+          <SpendMetric label="selected fruits" value={costLedger.selectedFruits} detail={`${costLedger.fruits} child fusions total`} />
+          <SpendMetric label="space opening" value={formatMaybeNumber(costLedger.averageSpaceOpening)} detail={`rubric ${costLedger.rubricVersion}`} />
 
-        <article className="spend-panel spend-wide">
-          <div className="panel-heading">
-            <p className="eyebrow">marginal allocation signals</p>
-            <h3>Strategy Conversion</h3>
-          </div>
-          <div className="strategy-table">
-            <span>strategy</span>
-            <span>attempts</span>
-            <span>fruits</span>
-            <span>space</span>
-            <span>cost</span>
-            <span>space/$</span>
-            {costLedger.strategySummaries.map((strategy) => (
-              <React.Fragment key={strategy.id}>
-                <strong>{strategy.id}</strong>
-                <span>{strategy.attempts}</span>
-                <span>{strategy.fruitCount}</span>
-                <span>{formatMaybeNumber(strategy.spaceOpeningScore)}</span>
-                <span>{formatUsd(strategy.exactCostUsd)}</span>
-                <span>{formatRatio(strategy.spaceOpeningPerDollar)}</span>
-              </React.Fragment>
-            ))}
-          </div>
-        </article>
+          <article className="spend-panel spend-wide">
+            <div className="panel-heading">
+              <p className="eyebrow">marginal allocation signals</p>
+              <h3>Strategy Conversion</h3>
+            </div>
+            <div className="strategy-table">
+              <span>strategy</span>
+              <span>attempts</span>
+              <span>fruits</span>
+              <span>space</span>
+              <span>cost</span>
+              <span>space/$</span>
+              {costLedger.strategySummaries.map((strategy) => (
+                <React.Fragment key={strategy.id}>
+                  <strong>{strategy.id}</strong>
+                  <span>{strategy.attempts}</span>
+                  <span>{strategy.fruitCount}</span>
+                  <span>{formatMaybeNumber(strategy.spaceOpeningScore)}</span>
+                  <span>{formatUsd(strategy.exactCostUsd)}</span>
+                  <span>{formatRatio(strategy.spaceOpeningPerDollar)}</span>
+                </React.Fragment>
+              ))}
+            </div>
+          </article>
 
-        <article className="spend-panel">
-          <div className="panel-heading">
-            <p className="eyebrow">notifications</p>
-            <h3>Run Watch</h3>
-          </div>
-          <div className="notification-list">
-            {costLedger.notifications.map((note) => (
-              <div key={note.title} className={`notification tone-${note.tone}`}>
-                <strong>{note.title}</strong>
-                <p>{note.body}</p>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="spend-panel spend-wide">
-          <div className="panel-heading">
-            <p className="eyebrow">fruit ledger</p>
-            <h3>Top Space-Opening Outputs</h3>
-          </div>
-          <div className="output-list">
-            {topOutputs.map((output) => (
-              <div key={output.id} className="output-row">
-                <div>
-                  <strong>{output.title}</strong>
-                  <span>{output.strategyLabels.join(' × ')}</span>
+          <article className="spend-panel">
+            <div className="panel-heading">
+              <p className="eyebrow">notifications</p>
+              <h3>Run Watch</h3>
+            </div>
+            <div className="notification-list">
+              {costLedger.notifications.map((note) => (
+                <div key={note.title} className={`notification tone-${note.tone}`}>
+                  <strong>{note.title}</strong>
+                  <p>{note.body}</p>
                 </div>
-                <span>quality {formatMaybeNumber(output.qualityScore)}</span>
-                <span>space {formatMaybeNumber(output.spaceOpeningScore)}</span>
-                <span>{formatUsd(output.costUsd)}</span>
-              </div>
-            ))}
-          </div>
-        </article>
+              ))}
+            </div>
+          </article>
+
+          <article className="spend-panel spend-wide">
+            <div className="panel-heading">
+              <p className="eyebrow">fruit ledger</p>
+              <h3>Top Space-Opening Outputs</h3>
+            </div>
+            <div className="output-list">
+              {topOutputs.map((output) => (
+                <div key={output.id} className="output-row">
+                  <div>
+                    <strong>{output.title}</strong>
+                    <span>{output.strategyLabels.join(' × ')}</span>
+                  </div>
+                  <span>quality {formatMaybeNumber(output.qualityScore)}</span>
+                  <span>space {formatMaybeNumber(output.spaceOpeningScore)}</span>
+                  <span>{formatUsd(output.costUsd)}</span>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+        <BoundaryRail title="Where Spend Fits" boundary={spendBoundary} className="spend-boundary-panel" />
       </div>
     </section>
   );
@@ -1471,14 +1534,20 @@ function PacketList({ label, items, emptyText = 'None provided.' }) {
 
 function BoundaryPanel() {
   return (
-    <aside className="boundary-panel">
+    <BoundaryRail title="Where Intake Fits" boundary={intakeBoundary} />
+  );
+}
+
+function BoundaryRail({ title, boundary, className = '' }) {
+  return (
+    <aside className={`boundary-panel ${className}`.trim()}>
       <p className="eyebrow">boundary contracts</p>
-      <h3>Where Intake Fits</h3>
-      <BoundaryGroup title="Upstream Modules" items={intakeBoundary.upstreamModules} />
-      <BoundaryGroup title="Upstream Boundary Contracts" items={intakeBoundary.upstreamContracts} />
-      <BoundaryGroup title="Downstream Boundary Contracts" items={intakeBoundary.downstreamContracts} />
-      <BoundaryGroup title="Downstream Modules" items={intakeBoundary.downstreamModules} />
-      <BoundaryGroup title="Invariants Exercised" items={intakeBoundary.invariants} tone="strong" />
+      <h3>{title}</h3>
+      <BoundaryGroup title="Upstream Modules" items={boundary.upstreamModules} />
+      <BoundaryGroup title="Upstream Boundary Contracts" items={boundary.upstreamContracts} />
+      <BoundaryGroup title="Downstream Boundary Contracts" items={boundary.downstreamContracts} />
+      <BoundaryGroup title="Downstream Modules" items={boundary.downstreamModules} />
+      <BoundaryGroup title="Invariants Exercised" items={boundary.invariants} tone="strong" />
     </aside>
   );
 }
@@ -1495,16 +1564,29 @@ function BoundaryGroup({ title, items, tone = 'default' }) {
       <div>
         {items.map((item) => {
           const target = isModuleGroup ? prototypeModuleTargets[item] : null;
+          const label = isModuleGroup ? displayModuleName(item) : item;
+          const looksLikeModule = isModuleGroup && /^[A-Z]/.test(item);
           const isNavigable = target && target.tabId !== activeTab && !seenTargets.has(target.tabId);
           if (isNavigable) seenTargets.add(target.tabId);
           if (isNavigable) {
             return (
               <button key={item} type="button" onClick={() => navigatePrototype(target.tabId)}>
-                {item}
+                {label}
               </button>
             );
           }
-          return <b key={item}>{item}</b>;
+          return (
+            <b
+              key={item}
+              className={
+                isModuleGroup
+                  ? `module-chip ${target ? 'is-current' : looksLikeModule ? 'is-pending' : 'is-source'}`
+                  : undefined
+              }
+            >
+              {label}
+            </b>
+          );
         })}
       </div>
     </div>
@@ -2539,7 +2621,7 @@ function FinalSurvivorProofPanel() {
                   <p>{item.detail}</p>
                 </div>
                 <button type="button" onClick={() => navigatePrototype(item.tab)}>
-                  Open {item.label}
+                  {item.label}
                 </button>
               </article>
             ))}
@@ -3262,7 +3344,12 @@ function App() {
           {tab === 'survivor' && <FinalSurvivorProofPanel />}
           {tab === 'fallback' && <DemoFallbackLadder />}
           {tab === 'replay' && <ReplaySpine />}
-          {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
+          {tab === 'trace' && (
+            <TraceViewer
+              trace={sampleTrace}
+              boundaryRail={<BoundaryRail title="Where Trace Fits" boundary={traceBoundary} className="trace-boundary-panel" />}
+            />
+          )}
           {tab === 'spend' && <SpendLedgerView />}
           {tab === 'subtype' && <SubtypeCheckLab />}
           {tab === 'novelty' && <NoveltyRadar />}

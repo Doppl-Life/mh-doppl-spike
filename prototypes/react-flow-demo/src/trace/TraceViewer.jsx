@@ -241,7 +241,7 @@ function DetailView({ trace, location, onBack, atomTab, setAtomTab }) {
   );
 }
 
-export default function TraceViewer({ trace }) {
+export default function TraceViewer({ trace, boundaryRail = null }) {
   const [selectedId, setSelectedId] = useState(null);
   const [atomTab, setAtomTab] = useState('promptResponse');
 
@@ -278,26 +278,31 @@ export default function TraceViewer({ trace }) {
         </div>
       </div>
 
-      {location ? (
-        <DetailView
-          trace={trace}
-          location={location}
-          onBack={() => setSelectedId(null)}
-          atomTab={atomTab}
-          setAtomTab={setAtomTab}
-        />
-      ) : (
-        <div className="trace-board">
-          {trace.generations.map((generation, index) => (
-            <GenerationColumn
-              key={generation.index}
-              generation={generation}
-              isLast={index === trace.generations.length - 1}
-              onOpen={setSelectedId}
+      <div className="prototype-with-boundary trace-with-boundary">
+        <div className="trace-main">
+          {location ? (
+            <DetailView
+              trace={trace}
+              location={location}
+              onBack={() => setSelectedId(null)}
+              atomTab={atomTab}
+              setAtomTab={setAtomTab}
             />
-          ))}
+          ) : (
+            <div className="trace-board">
+              {trace.generations.map((generation, index) => (
+                <GenerationColumn
+                  key={generation.index}
+                  generation={generation}
+                  isLast={index === trace.generations.length - 1}
+                  onOpen={setSelectedId}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      )}
+        {boundaryRail}
+      </div>
     </section>
   );
 }

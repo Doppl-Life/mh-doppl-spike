@@ -1433,6 +1433,92 @@ textarea {
   overflow-wrap: anywhere;
 }
 
+.contract-pane {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 12px;
+}
+
+.contract-column {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.contract-note {
+  margin: 0;
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 12px;
+  color: var(--muted);
+  background: rgba(4, 8, 23, 0.42);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.contract-group {
+  display: grid;
+  gap: 10px;
+}
+
+.contract-shape,
+.contract-instance {
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.contract-shape span {
+  display: block;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.contract-shape h4 {
+  margin: 8px 0 12px;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.contract-shape dl,
+.contract-instance {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.65fr) minmax(0, 1fr);
+  gap: 0;
+}
+
+.contract-shape dt,
+.contract-shape dd,
+.contract-instance span,
+.contract-instance strong {
+  min-width: 0;
+  border-top: 1px solid rgba(110, 231, 255, 0.12);
+  padding: 8px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.contract-shape dt,
+.contract-instance span {
+  padding-right: 12px;
+  color: var(--cyan);
+  font-weight: 800;
+}
+
+.contract-shape dd,
+.contract-instance strong {
+  margin: 0;
+  color: #d8e5ff;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
 .intake-checks .panel-heading strong {
   color: var(--green);
   font-size: 28px;
@@ -1593,6 +1679,7 @@ textarea {
   }
 
   .check-grid,
+  .contract-pane,
   .packet-pane {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1627,6 +1714,9 @@ textarea {
   }
 
   .check-grid,
+  .contract-pane,
+  .contract-shape dl,
+  .contract-instance,
   .packet-pane,
   .run-seed {
     grid-template-columns: 1fr;

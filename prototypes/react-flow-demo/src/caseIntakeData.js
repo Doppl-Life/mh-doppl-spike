@@ -168,6 +168,123 @@ export const intakeBoundary = {
   ],
 };
 
+export const intakeContractShapes = {
+  ingress: [
+    {
+      anchor: 'Prototype-local · candidate for packages/contracts',
+      name: 'CasePacketDraft',
+      fields: [
+        ['id', 'string'],
+        ['title', 'string'],
+        ['sourceType', 'case-study packet | uploaded local draft | imported row'],
+        ['rawText?', 'string'],
+        ['agentVisible', 'AgentVisibleCaseContext'],
+        ['evaluatorOnly', 'EvaluatorOnlyCaseContext'],
+        ['sourceFidelity', 'SourceFidelityNote'],
+        ['visibilityBoundary', 'VisibilityBoundary'],
+      ],
+    },
+    {
+      anchor: 'Prototype-local · section 14 safety boundary',
+      name: 'VisibilityBoundary',
+      fields: [
+        ['agentVisibleFields', 'problem | context | constraints | successCriteria'],
+        ['evaluatorOnlyFields', 'knownSolution | hiddenAnchors | leakageTerms'],
+        ['sensitiveFields', 'string[]'],
+        ['publicSummaryAllowed', 'boolean'],
+        ['rule', 'evaluator-only fields never enter generation prompts'],
+      ],
+    },
+    {
+      anchor: 'Prototype-local · source traceability',
+      name: 'SourceFidelityNote',
+      fields: [
+        ['sourceKind', 'transcript | public article | anecdote | uploaded draft'],
+        ['confidence', 'high | medium | low | needs_review'],
+        ['knownGaps', 'string[]'],
+        ['reviewRequired', 'boolean'],
+      ],
+    },
+  ],
+  egress: [
+    {
+      anchor: 'Maps to ARCHITECTURE.md Appendix A RunConfig',
+      name: 'RunSeedPacket',
+      fields: [
+        ['caseId', 'string'],
+        ['agentPromptContext', 'agent-visible text only'],
+        ['constraints', 'string[]'],
+        ['successCriteria', 'string[]'],
+        ['sourceFidelity', 'SourceFidelityNote'],
+        ['visibilityBoundaryId', 'string'],
+      ],
+    },
+    {
+      anchor: 'Prototype-local · held outside breeding loop',
+      name: 'EvaluatorAnchorRef',
+      fields: [
+        ['caseId', 'string'],
+        ['hiddenTarget', 'string'],
+        ['rubricHints', 'string[]'],
+        ['leakageTerms', 'string[]'],
+        ['availableToAgents', 'false'],
+      ],
+    },
+    {
+      anchor: 'Maps downstream to Appendix A + verifier inputs',
+      name: 'DownstreamMapping',
+      fields: [
+        ['RunConfig.seed', 'RunSeedPacket.caseId'],
+        ['CandidateIdea.context', 'RunSeedPacket.agentPromptContext'],
+        ['CriticCouncil.trustedRubric', 'rubric + EvaluatorAnchorRef, never candidate text'],
+        ['EvidenceRef.label', 'case source + fidelity note'],
+      ],
+    },
+  ],
+};
+
+export function buildIntakeContractInstance(caseItem) {
+  const sourceKind = caseItem.id === 'uploaded-draft'
+    ? 'uploaded draft'
+    : caseItem.id.includes('loft')
+      ? 'public anecdote + policy context'
+      : caseItem.id.includes('heinz')
+        ? 'public article + campaign summary'
+        : 'expert transcript summary';
+  const confidence = caseItem.id === 'uploaded-draft'
+    ? 'needs_review'
+    : caseItem.checks.some((check) => check.status === 'warn')
+      ? 'medium'
+      : 'high';
+  const visibleFields = Object.entries(caseItem.agentVisible)
+    .filter(([, value]) => Array.isArray(value) ? value.length > 0 : Boolean(value))
+    .map(([key]) => key);
+  const hiddenFields = Object.entries(caseItem.evaluatorOnly)
+    .filter(([, value]) => Array.isArray(value) ? value.length > 0 : Boolean(value))
+    .map(([key]) => key);
+
+  return {
+    ingress: [
+      ['CasePacketDraft.id', caseItem.id],
+      ['CasePacketDraft.title', caseItem.title],
+      ['CasePacketDraft.sourceType', caseItem.source],
+      ['SourceFidelityNote.sourceKind', sourceKind],
+      ['SourceFidelityNote.confidence', confidence],
+      ['VisibilityBoundary.agentVisibleFields', visibleFields.join(', ')],
+      ['VisibilityBoundary.evaluatorOnlyFields', hiddenFields.join(', ')],
+    ],
+    egress: [
+      ['RunSeedPacket.caseId', caseItem.id],
+      ['RunConfig.seed', caseItem.downstreamPreview.runSeed],
+      ['EvaluatorAnchorRef.hiddenTarget', caseItem.downstreamPreview.evaluatorAnchor],
+      ['EvaluatorAnchorRef.availableToAgents', 'false'],
+      ['RunCaps.energyBudget', `${caseItem.downstreamPreview.initialEnergy} doppl_energy`],
+      ['CandidateIdea.context', 'agent-visible packet only'],
+      ['EvidenceRef.label', `${caseItem.title} · ${confidence} fidelity`],
+    ],
+  };
+}
+
 export function buildUploadedCase(fileName, body) {
   const trimmed = body.trim();
   const title = fileName?.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') || 'Uploaded Case Draft';

@@ -16,7 +16,13 @@ import '@xyflow/react/dist/style.css';
 import './styles.css';
 import { fusionAgenomes, fusionMetadata, getFusionRun, makeFusionPairId } from './fusionData.js';
 import { costLedger, formatMaybeNumber, formatUsd } from './costLedger.js';
-import { buildUploadedCase, intakeBoundary, intakeExamples } from './caseIntakeData.js';
+import {
+  buildIntakeContractInstance,
+  buildUploadedCase,
+  intakeBoundary,
+  intakeContractShapes,
+  intakeExamples,
+} from './caseIntakeData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -1134,6 +1140,7 @@ function CaseStudyIntake() {
   const cases = uploadedCase ? [...intakeExamples, uploadedCase] : intakeExamples;
   const selectedCase = cases.find((item) => item.id === selectedCaseId) || cases[0];
   const passCount = selectedCase.checks.filter((check) => check.status === 'pass').length;
+  const contractInstance = useMemo(() => buildIntakeContractInstance(selectedCase), [selectedCase]);
 
   const handleFile = useCallback((event) => {
     const file = event.target.files?.[0];
@@ -1217,6 +1224,7 @@ function CaseStudyIntake() {
                 ['visible', 'Agent-visible'],
                 ['hidden', 'Evaluator-only'],
                 ['run', 'Run seed'],
+                ['contracts', 'Contracts'],
               ].map(([id, label]) => (
                 <button key={id} type="button" aria-selected={activePane === id} onClick={() => setActivePane(id)}>
                   {label}
@@ -1226,6 +1234,7 @@ function CaseStudyIntake() {
             {activePane === 'visible' && <AgentVisiblePane packet={selectedCase.agentVisible} />}
             {activePane === 'hidden' && <EvaluatorPane packet={selectedCase.evaluatorOnly} />}
             {activePane === 'run' && <RunSeedPane caseItem={selectedCase} />}
+            {activePane === 'contracts' && <IntakeContractsPane instance={contractInstance} />}
           </section>
 
           <section className="intake-checks">
@@ -1249,6 +1258,66 @@ function CaseStudyIntake() {
         </div>
 
         <BoundaryPanel />
+      </div>
+    </section>
+  );
+}
+
+function IntakeContractsPane({ instance }) {
+  return (
+    <div className="contract-pane">
+      <div className="contract-column">
+        <p className="contract-note">
+          Stable prototype-local shapes. These are candidates for frozen contracts, not Appendix A
+          contracts until promoted.
+        </p>
+        <ContractShapeGroup label="Ingress" shapes={intakeContractShapes.ingress} />
+        <ContractShapeGroup label="Egress" shapes={intakeContractShapes.egress} />
+      </div>
+      <div className="contract-column contract-instance-column">
+        <p className="contract-note">
+          Selected-case instance values. These change when a different case packet or uploaded draft is chosen.
+        </p>
+        <ContractInstanceGroup label="Ingress Instance" rows={instance.ingress} />
+        <ContractInstanceGroup label="Egress Instance" rows={instance.egress} />
+      </div>
+    </div>
+  );
+}
+
+function ContractShapeGroup({ label, shapes }) {
+  return (
+    <section className="contract-group">
+      <p className="eyebrow">{label}</p>
+      {shapes.map((shape) => (
+        <article key={shape.name} className="contract-shape">
+          <span>{shape.anchor}</span>
+          <h4>{shape.name}</h4>
+          <dl>
+            {shape.fields.map(([field, type]) => (
+              <React.Fragment key={field}>
+                <dt>{field}</dt>
+                <dd>{type}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function ContractInstanceGroup({ label, rows }) {
+  return (
+    <section className="contract-group">
+      <p className="eyebrow">{label}</p>
+      <div className="contract-instance">
+        {rows.map(([field, value]) => (
+          <React.Fragment key={field}>
+            <span>{field}</span>
+            <strong>{value}</strong>
+          </React.Fragment>
+        ))}
       </div>
     </section>
   );

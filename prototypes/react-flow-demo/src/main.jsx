@@ -23,6 +23,7 @@ import {
   intakeContractShapes,
   intakeExamples,
 } from './caseIntakeData.js';
+import { replayBoundary, replayContractShapes, replayEventTypes, replayFixtures } from './replayData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -1417,6 +1418,322 @@ function BoundaryGroup({ title, items, tone = 'default' }) {
   );
 }
 
+function ReplaySpine() {
+  const [fixtureId, setFixtureId] = useState('clean');
+  const [foldMode, setFoldMode] = useState('replay');
+  const fixture = replayFixtures.find((item) => item.id === fixtureId) || replayFixtures[0];
+  const replay = useMemo(() => foldReplayFixture(fixture), [fixture]);
+  const [selectedEventId, setSelectedEventId] = useState(fixture.events[0].id);
+  const selectedEvent = fixture.events.find((event) => event.id === selectedEventId) || fixture.events[0];
+  const selectedIssue = replay.quarantine.find((issue) => issue.eventId === selectedEvent.id);
+  const validEventCount = replay.validEvents.length;
+  const parity = replay.quarantine.length === 0 && replay.missingSequences.length === 0;
+
+  return (
+    <section className="prototype replay-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 09 · replay spine</p>
+          <h2>Event Truth Workbench</h2>
+          <p>
+            Prove that every visible run state is a projection of append-only events. Live fold and
+            replay fold use the same envelopes; replay never calls models, tools, embeddings, or RNG.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{fixture.schemaVersion}</span>
+          <strong>{fixture.label}</strong>
+          <p>{validEventCount}/{fixture.events.length} events accepted · {replay.quarantine.length} quarantined</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${parity ? 100 : 74}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="replay-layout">
+        <aside className="replay-control-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">fixture</p>
+              <h3>Replay Source</h3>
+            </div>
+          </div>
+          <div className="replay-fixtures">
+            {replayFixtures.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={fixture.id === item.id}
+                onClick={() => {
+                  setFixtureId(item.id);
+                  setSelectedEventId(item.events[0].id);
+                }}
+              >
+                <strong>{item.label}</strong>
+                <span>{item.description}</span>
+              </button>
+            ))}
+          </div>
+          <div className="replay-mode-toggle" aria-label="Fold mode">
+            {[
+              ['live', 'Live ingest'],
+              ['replay', 'Replay only'],
+            ].map(([id, label]) => (
+              <button key={id} type="button" aria-selected={foldMode === id} onClick={() => setFoldMode(id)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="replay-proof-card">
+            <span>Fresh calls during replay</span>
+            <strong>0</strong>
+            <p>Projection state is reconstructed from stored event payloads only.</p>
+          </div>
+        </aside>
+
+        <section className="event-stream-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">append-only run_events</p>
+              <h3>{fixture.runId}</h3>
+            </div>
+            <strong>{foldMode === 'live' ? 'live fold' : 'replay fold'}</strong>
+          </div>
+          <div className="event-stream">
+            {fixture.events.map((event) => {
+              const issue = replay.quarantine.find((item) => item.eventId === event.id);
+              return (
+                <button
+                  key={event.id}
+                  type="button"
+                  className={issue ? 'is-quarantined' : 'is-accepted'}
+                  aria-selected={selectedEvent.id === event.id}
+                  onClick={() => setSelectedEventId(event.id)}
+                >
+                  <span>#{event.sequence}</span>
+                  <strong>{event.type}</strong>
+                  <small>{event.sourceModule}</small>
+                  {issue && <b>{issue.reason}</b>}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="replay-detail-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">selected envelope</p>
+              <h3>{selectedEvent.type}</h3>
+            </div>
+            <strong className={selectedIssue ? 'status-bad' : 'status-good'}>
+              {selectedIssue ? 'quarantined' : 'accepted'}
+            </strong>
+          </div>
+          <div className="event-envelope">
+            <ReplayRow label="id" value={selectedEvent.id} />
+            <ReplayRow label="sequence" value={selectedEvent.sequence} />
+            <ReplayRow label="schemaVersion" value={selectedEvent.schemaVersion || fixture.schemaVersion} />
+            <ReplayRow label="sourceModule" value={selectedEvent.sourceModule} />
+            <ReplayRow label="occurredAt" value={selectedEvent.occurredAt} />
+          </div>
+          {selectedIssue && (
+            <article className="quarantine-callout">
+              <span>quarantine reason</span>
+              <p>{selectedIssue.reason}. Replay keeps the event visible and refuses to silently repair state.</p>
+            </article>
+          )}
+          <pre className="payload-preview">{JSON.stringify(selectedEvent.payload, null, 2)}</pre>
+        </section>
+
+        <section className="projection-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">derived projections</p>
+              <h3>Fold Result</h3>
+            </div>
+            <strong>{parity ? 'equivalent' : 'degraded'}</strong>
+          </div>
+          <div className="projection-grid">
+            <ProjectionCard label="Run State" value={replay.projections.runState.status} detail={replay.projections.runState.caseTitle} />
+            <ProjectionCard label="Lineage Edges" value={replay.projections.lineage.edges.length} detail={replay.projections.lineage.lastFusion || 'no fusion yet'} />
+            <ProjectionCard label="Candidates" value={replay.projections.candidates.length} detail={`${replay.projections.candidates.filter((item) => item.status === 'selected').length} selected`} />
+            <ProjectionCard label="Spend" value={formatUsd(replay.projections.spend.totalCostUsd)} detail={`${replay.projections.spend.energySpent} energy spent`} />
+          </div>
+          <div className="candidate-projection-list">
+            {replay.projections.candidates.map((candidate) => (
+              <article key={candidate.id}>
+                <span>{candidate.status}</span>
+                <strong>{candidate.title}</strong>
+                <p>{candidate.reviews} critic review{candidate.reviews === 1 ? '' : 's'} · fitness {candidate.fitness || 'pending'}</p>
+              </article>
+            ))}
+          </div>
+          <div className="quarantine-list">
+            <span>Replay guardrails</span>
+            {replay.missingSequences.length > 0 && <b>Missing sequence: {replay.missingSequences.join(', ')}</b>}
+            {replay.quarantine.length === 0 && replay.missingSequences.length === 0 ? (
+              <b>All envelopes accepted in sequence order.</b>
+            ) : (
+              replay.quarantine.map((issue) => <b key={issue.eventId}>{issue.eventId}: {issue.reason}</b>)
+            )}
+          </div>
+        </section>
+
+        <aside className="boundary-panel replay-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Replay Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={replayBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={replayBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={replayBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={replayBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={replayBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="replay-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={replayContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={replayContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function ReplayRow({ label, value }) {
+  return (
+    <>
+      <span>{label}</span>
+      <strong>{String(value)}</strong>
+    </>
+  );
+}
+
+function ProjectionCard({ label, value, detail }) {
+  return (
+    <article className="projection-card">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <p>{detail}</p>
+    </article>
+  );
+}
+
+function foldReplayFixture(fixture) {
+  const seenSequences = new Set();
+  const validEvents = [];
+  const quarantine = [];
+
+  fixture.events.forEach((event) => {
+    const schemaVersion = event.schemaVersion || fixture.schemaVersion;
+    let reason = '';
+    if (!Number.isInteger(event.sequence) || event.sequence < 1) {
+      reason = 'invalid sequence';
+    } else if (seenSequences.has(event.sequence)) {
+      reason = 'duplicate sequence';
+    } else if (schemaVersion !== fixture.schemaVersion) {
+      reason = 'schema version mismatch';
+    } else if (!replayEventTypes.has(event.type)) {
+      reason = 'unknown event type';
+    } else if (!event.payload || typeof event.payload !== 'object') {
+      reason = 'invalid payload';
+    }
+
+    if (reason) {
+      quarantine.push({ eventId: event.id, sequence: event.sequence, reason });
+      return;
+    }
+
+    seenSequences.add(event.sequence);
+    validEvents.push(event);
+  });
+
+  const sortedEvents = [...validEvents].sort((a, b) => a.sequence - b.sequence);
+  const missingSequences = [];
+  const maxSequence = Math.max(0, ...fixture.events.map((event) => event.sequence || 0));
+  for (let sequence = 1; sequence <= maxSequence; sequence += 1) {
+    if (!seenSequences.has(sequence)) missingSequences.push(sequence);
+  }
+
+  return {
+    validEvents: sortedEvents,
+    quarantine,
+    missingSequences,
+    projections: projectRunEvents(sortedEvents),
+  };
+}
+
+function projectRunEvents(events) {
+  const runState = { status: 'pending', caseTitle: 'unseeded', survivorId: null, finalFitness: null };
+  const agenomes = new Map();
+  const candidates = new Map();
+  const lineage = { edges: [], lastFusion: '' };
+  const spend = { totalCostUsd: 0, energySpent: 0 };
+
+  events.forEach((event) => {
+    const payload = event.payload;
+    if (event.type === 'run.created') {
+      runState.status = payload.status;
+      runState.budgetUsd = payload.budgetUsd;
+    }
+    if (event.type === 'case.seeded') {
+      runState.caseTitle = payload.caseTitle;
+    }
+    if (event.type === 'agenome.spawned') {
+      agenomes.set(payload.agenomeId, { id: payload.agenomeId, label: payload.label, energy: payload.energy });
+    }
+    if (event.type === 'candidate.created') {
+      candidates.set(payload.candidateId, {
+        id: payload.candidateId,
+        title: payload.title,
+        agenomeId: payload.agenomeId,
+        status: payload.status,
+        reviews: 0,
+        fitness: null,
+      });
+    }
+    if (event.type === 'energy.spent') {
+      spend.totalCostUsd += payload.costUsd;
+      spend.energySpent += payload.energy;
+    }
+    if (event.type === 'critic.completed') {
+      const candidate = candidates.get(payload.candidateId);
+      if (candidate) {
+        candidate.reviews += 1;
+        candidate.lastVerdict = payload.verdict;
+      }
+    }
+    if (event.type === 'fusion.created') {
+      payload.parentIds.forEach((parentId) => {
+        lineage.edges.push({ from: parentId, to: payload.childAgenomeId });
+      });
+      lineage.lastFusion = payload.inheritance;
+    }
+    if (event.type === 'candidate.selected') {
+      const candidate = candidates.get(payload.candidateId);
+      if (candidate) {
+        candidate.status = 'selected';
+        candidate.fitness = payload.fitness;
+      }
+      runState.survivorId = payload.candidateId;
+    }
+    if (event.type === 'run.completed') {
+      runState.status = payload.status;
+      runState.survivorId = payload.survivorId;
+      runState.finalFitness = payload.finalFitness;
+    }
+  });
+
+  return {
+    runState,
+    lineage,
+    spend,
+    candidates: [...candidates.values()],
+    agenomes: [...agenomes.values()],
+  };
+}
+
 function formatRatio(value) {
   if (typeof value !== 'number' || !Number.isFinite(value)) return 'pending';
   return value >= 100 ? Math.round(value).toLocaleString() : value.toFixed(1);
@@ -1478,6 +1795,7 @@ const prototypeStages = [
   {
     label: 'Explain',
     items: [
+      { id: 'replay', label: 'Replay spine' },
       { id: 'trace', label: 'Trace viewer' },
       { id: 'spend', label: 'Spend ledger' },
     ],
@@ -1522,6 +1840,7 @@ function App() {
 
       {tab === 'intake' && <CaseStudyIntake />}
       {tab === 'fusion' && <FusionLab />}
+      {tab === 'replay' && <ReplaySpine />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}
       {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}

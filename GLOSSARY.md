@@ -22,6 +22,13 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 - **Def:** idea + organism — the whole self-replicating system, not any single agent. `status: stable`
 
+### Doppl Prime (Doppl-Prime)
+
+- **Def:** the **canonical, production-bound repo** for Doppl — the official documentation and binding source of truth where ideas that survive the crucible go to get **built and tested for real**. Lives at `/Users/michaelhabermas/repos/GAI/doppl-prime` (`github.com/Doppl-Life/doppl-prime`). `status: coined`
+- **Use the full name.** Refer to it as **"Doppl Prime"** / **"Doppl-Prime"** — be specific. Bare **"Doppl"** (idearganism vs. org vs. any repo) and bare **"prime"** are ambiguous; don't auto-resolve them to this repo without context.
+- **Why:** names the **anvil** opposite this **crucible** (`doppl-test`). Prime is the **measuring stick** — crucible spikes (often unfinished or deliberately wrong) are measured against it to find divergence and where the skill family (`breakthrough` & kin) can **add to** what prime already has. Same Git caution as canon: read for grounding, change deliberately.
+- **See:** `[AGENTS.md § Doppl Prime](./AGENTS.md)`; prime's `ARCHITECTURE.md`, `IMPLEMENTATION_PLAN.md`, `docs/planning/`, `docs/gap-audits/`
+
 ### Agarden
 
 - **Def:** Agentic Garden — the managed ecosystem in which spawncidences live, compete, and die — the garden we tend. `status: coined`
@@ -282,6 +289,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-19 | Doppl Prime      | Coined — the canonical, production-bound repo (`doppl-prime`, `Doppl-Life/doppl-prime`): official docs + binding source of truth, the **anvil** to this crucible. Surviving ideas land there; crucible work is measured against it. Referenced in [AGENTS.md](./AGENTS.md) + [README](./README.md) |
 | 2026-06-18 | Weed             | Coined — the negative class (sprout/afrit/**weed**); already live in `spikes/backyard`. Surfacing one on purpose = anti-survivorship (`exploration:true`). Polarity −1, aligns with `not-it`. Built the Agora verdict bus (`agora/`) that compares human vs judge vs council on this axis |
 | 2026-06-18 | `polymath` / `addition-by-subtraction` | Coined — two gen-1 skills built: `polymath` (the Renaissance man; **domain-transfer** mutagen = the Medici Effect; promotes the `transfer-hunter` archetype) + `addition-by-subtraction` (the sculptor; **valence-flip** convergent-DOWN, via-negativa). The latter completes the convergence×valence 2×2; the former adds a **4th** operator class (catalog is open) |
 | 2026-06-18 | Mutagen / Mutagen catalog | Coined — the injected external pressure that creates a skill's variation (`valence-flip` / `basis-transform` / `scarcity-operator`); **stratum-invariant** (mutates skills at the meta level, ideas at the object level). Progenitor donates the skeleton; mutagen is the allele. See [MEMORY](./MEMORY.md) |

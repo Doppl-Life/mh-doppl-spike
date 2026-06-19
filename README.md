@@ -4,6 +4,8 @@ A self-replicating idea organism: a population of agents under selection pressur
 
 > **Lα lives here.** The root is the witness layer — the conversation *about* the organism. Spikes are mortal; the lineage log survives.
 
+> **Crucible ↔ Prime.** This repo (`doppl-test`) is the **crucible** — where crazy ideas are tried. **[`doppl-prime`](/Users/michaelhabermas/repos/GAI/doppl-prime)** (`github.com/Doppl-Life/doppl-prime`) is the **canonical, production-bound repo** — the official docs and the binding source of truth (`ARCHITECTURE.md`, `IMPLEMENTATION_PLAN.md`, `docs/planning/`, gap-audits), where surviving ideas go to get built and tested for real. Measure crucible work against prime. See [AGENTS.md § Doppl Prime](./AGENTS.md#doppl-prime--the-canonical-landing-place) and [GLOSSARY](./GLOSSARY.md#doppl-prime-doppl-prime).
+
 ## Layout
 
 ```

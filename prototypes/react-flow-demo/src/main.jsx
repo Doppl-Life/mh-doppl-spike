@@ -718,7 +718,6 @@ function FusionLab() {
                 onDragEnd={handleDragEnd}
                 onClick={() => placeAgenome(parentA === agenome.id ? 'b' : 'a', agenome.id)}
               >
-                <em aria-hidden="true">drag</em>
                 <span>{agenome.label}</span>
                 <strong>{agenome.title}</strong>
                 <small>{agenome.description}</small>
@@ -943,9 +942,9 @@ function App() {
           <p className="eyebrow">Doppl prototype suite</p>
           <h1>Small organisms for the big organism.</h1>
           <p>
-            Three focused prototypes grounded in the Jack drone privacy case. They use real Doppl
-            mutagen agenomes and show how metabolism, criticism, selection, fusion, and held-out
-            evaluation could feel in the live product.
+            An evolving shelf of Doppl product organisms: small, testable views of metabolism,
+            criticism, selection, fusion, spend, and evaluation patterns that can grow as the live
+            product learns what it needs.
           </p>
         </div>
         <nav className="tabs" aria-label="Prototype tabs">

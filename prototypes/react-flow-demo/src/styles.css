@@ -643,7 +643,7 @@ textarea {
   gap: 6px;
   width: 100%;
   min-height: 156px;
-  padding: 38px 14px 14px;
+  padding: 14px;
   border: 1px solid rgba(110, 231, 255, 0.22);
   color: var(--ink);
   background: rgba(4, 8, 23, 0.62);
@@ -664,22 +664,6 @@ textarea {
   background: rgba(9, 18, 38, 0.92);
   box-shadow: 0 0 26px rgba(67, 232, 255, 0.14);
   outline: none;
-}
-
-.palette-card em {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 7px;
-  border: 1px solid rgba(67, 232, 255, 0.32);
-  color: #00121b;
-  background: linear-gradient(135deg, var(--cyan), var(--green));
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  box-shadow: 0 0 18px rgba(67, 232, 255, 0.18);
 }
 
 .palette-card span {

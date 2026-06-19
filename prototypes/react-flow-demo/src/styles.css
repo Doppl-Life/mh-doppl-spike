@@ -1666,10 +1666,23 @@ textarea {
   top: 18px;
 }
 
+.agenome-library-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  max-height: calc(100vh - 36px);
+  overflow: hidden;
+}
+
 .agenome-card-list,
 .selected-pool-list {
   display: grid;
   gap: 10px;
+}
+
+.agenome-card-list {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .agenome-card-list button {
@@ -2479,6 +2492,16 @@ textarea {
   .replay-control-panel,
   .replay-boundary-panel {
     position: static;
+  }
+
+  .agenome-library-panel {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .agenome-card-list {
+    overflow: visible;
+    padding-right: 0;
   }
 
   .check-grid,

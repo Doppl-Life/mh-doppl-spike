@@ -149,9 +149,11 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Def:** an interim idea surfaced mid-run ("one popped up along the way — *send it*"); a side-shoot. Judged on **process** (is this lineage a good idea-factory?), pays out to **generativity** fitness. `status: coined`
 - **See:** Afrit, Verdict, Agora; process-reward (PRM)
 
-### Afrit (agentic fruit)
+### Weed
 
-- **Def:** the converged, **harvestable** conclusion of a run ("this is what we came to") — the fruit you act on. Judged on **outcome** (did it arrive somewhere good?), pays out to **outcome** fitness. `status: coined`
+- **Def:** a surfaced idea the system **shouldn't** have surfaced — low-value, obvious, or dead-end; the negative class alongside sprout/afrit. Pulled, not harvested. In code it's the bottom band of the surfacing gate (`spikes/backyard/sprout.py`: `score < WEED_BAR → weed`). `status: coined`
+- **Why:** completes the tri-state the Agardeners react to ("sweet / sour / rotten → that's a weed"). Surfacing a weed **on purpose** is the anti-survivorship move (the `exploration: true` flag): a held-out judge that can only ever see winners can't be falsified. Polarity −1, so a human's "weed" and a machine's `not-it` land on the same axis.
+- **See:** Sprout, Afrit, Verdict, Agora; `[agora/README.md](./agora/README.md)`; the survivorship-leak test in `[bedrock/signal/README.md](./bedrock/signal/README.md)`
 - **Why:** sprout vs. afrit is the **process-reward vs. outcome-reward** split (PRM/ORM) applied to idea generation — two energy ledgers, not one. A lineage can sprout brilliantly and fruit weakly, or vice versa. (Name = A+fruit, per the A-prefix rule; "fruit" beats "bloom" because you *harvest and act on* fruit. Briefly called "Bloom" on 2026-06-17.)
 - **See:** Sprout, Verdict; `[bedrock/signal/README.md](./bedrock/signal/README.md)` (sprout vs afrit)
 
@@ -280,6 +282,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-18 | Weed             | Coined — the negative class (sprout/afrit/**weed**); already live in `spikes/backyard`. Surfacing one on purpose = anti-survivorship (`exploration:true`). Polarity −1, aligns with `not-it`. Built the Agora verdict bus (`agora/`) that compares human vs judge vs council on this axis |
 | 2026-06-18 | `polymath` / `addition-by-subtraction` | Coined — two gen-1 skills built: `polymath` (the Renaissance man; **domain-transfer** mutagen = the Medici Effect; promotes the `transfer-hunter` archetype) + `addition-by-subtraction` (the sculptor; **valence-flip** convergent-DOWN, via-negativa). The latter completes the convergence×valence 2×2; the former adds a **4th** operator class (catalog is open) |
 | 2026-06-18 | Mutagen / Mutagen catalog | Coined — the injected external pressure that creates a skill's variation (`valence-flip` / `basis-transform` / `scarcity-operator`); **stratum-invariant** (mutates skills at the meta level, ideas at the object level). Progenitor donates the skeleton; mutagen is the allele. See [MEMORY](./MEMORY.md) |
 | 2026-06-18 | Progenitor (vs parent) | Coined — the gen-1 skills demoted `rule-of-cool` from `parent` to `progenitor` (`parent: null` + `progenitor: rule-of-cool`): spiritual root + donor of the shared skeleton, not a direct idea-parent |

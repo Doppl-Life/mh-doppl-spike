@@ -15,6 +15,8 @@ import {
 import '@xyflow/react/dist/style.css';
 import './styles.css';
 import { fusionAgenomes, fusionMetadata, getFusionRun } from './fusionData.js';
+import TraceViewer from './trace/TraceViewer.jsx';
+import { sampleTrace } from './trace/sampleTrace.js';
 
 const HANDLE_SLOTS = [25, 37, 49, 61, 73];
 
@@ -788,10 +790,15 @@ function App() {
           <button type="button" aria-selected={tab === 'fusion'} onClick={() => setTab('fusion')}>
             Fusion lab
           </button>
+          <button type="button" aria-selected={tab === 'trace'} onClick={() => setTab('trace')}>
+            Trace viewer
+          </button>
         </nav>
       </header>
 
-      {tab === 'fusion' ? <FusionLab /> : <FlowPrototype key={tab} kind={tab} />}
+      {tab === 'fusion' && <FusionLab />}
+      {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
+      {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} />}
     </main>
   );
 }

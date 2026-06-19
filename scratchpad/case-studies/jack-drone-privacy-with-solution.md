@@ -283,6 +283,8 @@ This solution fits the constraints because it avoids the dangerous parts of obvi
 
 The insight is that the drone is not the real object to defeat. The real object is the footage. Once the target is removed from view, the drone can remain physically intact and still fail at its purpose.
 
+A second, subtler insight makes the protocol especially strong: nothing visibly changes. The party, the music, the guests, and the crew all continue exactly as before. Only the specific person of interest quietly steps inside when the cue plays. There is no scramble, no defensive maneuver, and no break in the scene for the drone or anyone watching to notice. The protected target simply disappears from frame while everything around them stays normal, so the response itself never becomes part of the story.
+
 ### Tradeoffs
 
 - The solution depends on early detection.

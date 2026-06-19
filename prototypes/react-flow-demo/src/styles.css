@@ -189,6 +189,36 @@ textarea {
   box-shadow: 0 0 34px rgba(67, 232, 255, 0.26);
 }
 
+.prototype-context-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  max-width: 1500px;
+  margin: -4px auto 18px;
+  border: 1px solid rgba(110, 231, 255, 0.18);
+  padding: 10px 12px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.prototype-context-strip span {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.prototype-context-strip strong {
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.prototype-context-strip strong + span {
+  margin-left: 10px;
+}
+
 .prototype {
   max-width: 1500px;
   margin: 0 auto;

@@ -2976,12 +2976,30 @@ const prototypeStages = [
 ];
 
 const prototypeStageRows = [
-  prototypeStages.slice(0, 3),
-  prototypeStages.slice(3),
+  prototypeStages.slice(0, 4),
+  prototypeStages.slice(4),
 ];
 
 const prototypeTabStorageKey = 'doppl-prototype-suite.active-tab';
 const prototypeTabIds = new Set(prototypeStages.flatMap((stage) => stage.items.map((item) => item.id)));
+const prototypeCaseStudyLabels = {
+  intake: 'Selectable case-study packets',
+  agenomes: 'Superyacht Drone Privacy',
+  operator: 'Superyacht Drone Privacy',
+  gateway: 'Superyacht Drone Privacy',
+  energy: 'Superyacht Drone Privacy',
+  fusion: 'Superyacht Drone Privacy',
+  critic: 'Superyacht Drone Privacy',
+  subtype: 'Superyacht Drone Privacy',
+  novelty: 'Superyacht Drone Privacy',
+  fallback: 'Superyacht Drone Privacy',
+  replay: 'Superyacht Drone Privacy',
+  trace: 'Superyacht Drone Privacy',
+  spend: 'Superyacht Drone Privacy',
+};
+const prototypeLabels = Object.fromEntries(
+  prototypeStages.flatMap((stage) => stage.items.map((item) => [item.id, item.label])),
+);
 
 function getInitialPrototypeTab() {
   try {
@@ -3039,6 +3057,13 @@ function App() {
           ))}
         </nav>
       </header>
+
+      <section className="prototype-context-strip" aria-label="Prototype case study context">
+        <span>active prototype</span>
+        <strong>{prototypeLabels[tab]}</strong>
+        <span>case study</span>
+        <strong>{prototypeCaseStudyLabels[tab] || 'Prototype fixture'}</strong>
+      </section>
 
       {tab === 'intake' && <CaseStudyIntake />}
       {tab === 'agenomes' && <AgenomePool />}

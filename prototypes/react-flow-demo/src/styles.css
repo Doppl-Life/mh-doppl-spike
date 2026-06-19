@@ -2549,11 +2549,15 @@ article.module-node::after {
 .subtype-check-list span,
 .subtype-explanation-card span,
 .subtype-evidence-list span {
+  display: block;
+  min-width: 0;
   color: var(--cyan);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.08em;
+  line-height: 1.25;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .subtype-candidate-list small,
@@ -2578,6 +2582,8 @@ article.module-node::after {
 .subtype-obligation-grid article,
 .subtype-explanation-card,
 .subtype-evidence-list article {
+  display: grid;
+  gap: 8px;
   border: 1px solid rgba(110, 231, 255, 0.16);
   padding: 14px;
   background: rgba(4, 8, 23, 0.42);
@@ -2664,7 +2670,7 @@ article.module-node::after {
 }
 
 .subtype-evidence-list {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 12px;
 }
 

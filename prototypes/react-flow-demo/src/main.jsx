@@ -1660,10 +1660,10 @@ function FlowPrototype({ kind, onNavigate, selectedCase }) {
         edges: criticEdges,
         details: { ...caseFlowDetails.critic, ...criticBoundaryDetails },
         initial: 'criticIngressContract',
-        defaultViewport: { x: 170, y: 300, zoom: 0.29 },
+        defaultViewport: { x: 180, y: 235, zoom: 0.34 },
       }), [caseDetails.shortTitle, caseFlowDetails, kind]);
 
-  const storageKey = `doppl-prototype-${kind}-layout-v4`;
+  const storageKey = `doppl-prototype-${kind}-layout-${kind === 'critic' ? 'v5' : 'v4'}`;
   const baseNodes = useMemo(
     () => config.nodes.map((item) => {
       const detail = config.details[item.id];
@@ -1720,7 +1720,7 @@ function FlowPrototype({ kind, onNavigate, selectedCase }) {
   }, [baseNodes, config.edges, setFlowEdges, setFlowNodes, storageKey]);
 
   return (
-    <section className="prototype">
+    <section className={`prototype flow-prototype flow-${kind}`}>
       <div className="prototype-heading">
         <div>
           <p className="eyebrow">{config.eyebrow}</p>

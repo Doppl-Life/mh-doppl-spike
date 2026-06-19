@@ -344,6 +344,7 @@ textarea {
 }
 
 .flow-frame {
+  height: 690px;
   min-height: 690px;
   border: 1px solid rgba(110, 231, 255, 0.24);
   background:
@@ -356,6 +357,15 @@ textarea {
   background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px, auto, auto;
   box-shadow: inset 0 0 80px rgba(67, 232, 255, 0.05);
   overflow: hidden;
+}
+
+.flow-critic .workspace {
+  min-height: 560px;
+}
+
+.flow-critic .flow-frame {
+  height: 560px;
+  min-height: 560px;
 }
 
 .react-flow__edge.animated path {
@@ -4149,7 +4159,7 @@ article.module-node::after {
   --trace-fitness-color: var(--green);
   --trace-novelty-color: var(--gold);
   --trace-seed-color: var(--blue);
-  --trace-child-color: var(--violet);
+  --trace-child-color: var(--pink);
   --trace-survivor-color: var(--mint);
   display: flex;
   gap: 18px;
@@ -4224,8 +4234,23 @@ article.module-node::after {
 }
 
 .trace-card.trace-role-seed { --role-tone: var(--trace-seed-color); }
-.trace-card.trace-role-child { --role-tone: var(--trace-child-color); }
-.trace-card.trace-role-survivor { --role-tone: var(--trace-survivor-color); }
+
+.trace-card.trace-role-child {
+  --role-tone: var(--trace-child-color);
+  border-left-width: 7px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--trace-child-color) 14%, transparent), transparent 55%),
+    var(--panel-strong);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--trace-child-color) 22%, transparent);
+}
+
+.trace-card.trace-role-survivor {
+  --role-tone: var(--trace-survivor-color);
+  border-left-width: 6px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--trace-survivor-color) 11%, transparent), transparent 58%),
+    var(--panel-strong);
+}
 
 .trace-card:hover {
   transform: translateY(-2px);
@@ -4244,6 +4269,10 @@ article.module-node::after {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--role-tone);
+}
+
+.trace-role-child .trace-role {
+  color: #ffd4e3;
 }
 
 .trace-delta {
@@ -4342,7 +4371,7 @@ article.module-node::after {
   --trace-fitness-color: var(--green);
   --trace-novelty-color: var(--gold);
   --trace-seed-color: var(--blue);
-  --trace-child-color: var(--violet);
+  --trace-child-color: var(--pink);
   --trace-survivor-color: var(--mint);
   --role-tone: var(--trace-seed-color);
   display: grid;

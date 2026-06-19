@@ -16,6 +16,7 @@ const ROLE_LABEL = {
   parent: 'parent',
   child: 'bred child',
   survivor: 'survivor',
+  carried: 'carried critic',
 };
 
 const ROLE_CLASS = {
@@ -23,6 +24,7 @@ const ROLE_CLASS = {
   parent: 'trace-role-seed',
   child: 'trace-role-child',
   survivor: 'trace-role-survivor',
+  carried: 'trace-role-survivor',
 };
 
 const EVENT_GLYPH = {
@@ -354,6 +356,12 @@ function deltaText(value) {
   return `${value}`;
 }
 
+function deltaLabel(individual) {
+  if (!individual.delta) return '';
+  if (individual.role === 'carried') return 'pressure kept';
+  return `fitness ${deltaText(individual.delta.fitness)}`;
+}
+
 function promptForCase(basePrompt, selectedCase) {
   if (!selectedCase) return basePrompt;
   return basePrompt
@@ -431,7 +439,7 @@ function IndividualCard({ individual, onOpen }) {
         <span className="trace-role">{ROLE_LABEL[individual.role] || individual.role}</span>
         {individual.delta && (
           <span className={`trace-delta ${individual.delta.fitness >= 0 ? 'up' : 'down'}`}>
-            fitness {deltaText(individual.delta.fitness)}
+            {deltaLabel(individual)}
           </span>
         )}
       </div>

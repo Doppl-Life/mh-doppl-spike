@@ -367,10 +367,10 @@ const gen1 = {
     {
       id: 'g1-blindside',
       skillId: 'blindside',
-      label: 'blindside (survivor)',
+      label: 'blindside (carried critic)',
       title: 'Blindside',
       tone: 'pink',
-      role: 'survivor',
+      role: 'carried',
       proposal:
         'Carried forward unchanged as living critic pressure: "if the response is detectable, ' +
         'paparazzi learn the cue and wait for the gap." Its job this generation is to keep ' +

@@ -111,7 +111,7 @@ textarea {
   right: 36px;
   bottom: 32px;
   display: grid;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(5, auto);
   gap: 10px;
   padding: 10px;
   border: 1px solid rgba(110, 231, 255, 0.24);
@@ -1634,6 +1634,248 @@ textarea {
   background: rgba(86, 255, 179, 0.08);
 }
 
+/* ---------- Gateway forge (prototype 08) ---------- */
+
+.gateway-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(280px, 0.9fr) minmax(320px, 1.1fr) 250px;
+  gap: 14px;
+  align-items: start;
+}
+
+.gateway-layout > * {
+  min-width: 0;
+}
+
+.gateway-scenario-panel,
+.gateway-request-panel,
+.gateway-pipeline-panel,
+.gateway-result-panel,
+.gateway-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.gateway-scenario-panel,
+.gateway-boundary-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.gateway-fixtures,
+.gateway-stage-list,
+.gateway-response-columns {
+  display: grid;
+  gap: 10px;
+}
+
+.gateway-fixtures button {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  min-width: 0;
+  gap: 6px 10px;
+  width: 100%;
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 13px;
+  background: rgba(4, 8, 23, 0.56);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.gateway-fixtures button:hover,
+.gateway-fixtures button:focus-visible,
+.gateway-fixtures button[aria-selected="true"] {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.94);
+  outline: none;
+}
+
+.gateway-fixtures button[aria-selected="true"] {
+  border-color: rgba(86, 255, 179, 0.62);
+}
+
+.gateway-fixtures strong,
+.gateway-fixtures small {
+  grid-column: 2;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.gateway-fixtures small,
+.gateway-payload-box p,
+.gateway-list li,
+.gateway-stage p,
+.gateway-code-card pre {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.gateway-status-dot {
+  grid-row: 1 / span 2;
+  width: 10px;
+  height: 10px;
+  margin-top: 3px;
+  border-radius: 999px;
+  background: var(--cyan);
+  box-shadow: 0 0 14px rgba(67, 232, 255, 0.6);
+}
+
+.gateway-status-dot.status-accepted,
+.gateway-status-dot.status-repaired,
+.gateway-status-dot.status-fallback {
+  background: var(--green);
+  box-shadow: 0 0 14px rgba(86, 255, 179, 0.6);
+}
+
+.gateway-status-dot.status-rejected {
+  background: var(--danger);
+  box-shadow: 0 0 14px rgba(255, 93, 143, 0.6);
+}
+
+.gateway-request-grid,
+.gateway-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gateway-request-grid div,
+.gateway-list,
+.gateway-payload-box,
+.gateway-stage,
+.gateway-code-card {
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.gateway-request-grid div {
+  min-height: 92px;
+}
+
+.gateway-request-grid span,
+.gateway-list span,
+.gateway-payload-box span,
+.gateway-code-card span {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gateway-request-grid strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--ink);
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.gateway-list,
+.gateway-payload-box {
+  margin-top: 10px;
+}
+
+.gateway-list ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.gateway-payload-box p {
+  margin: 10px 0 0;
+  color: #d8e5ff;
+}
+
+.gateway-stage {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 72px;
+  gap: 12px;
+  align-items: start;
+  border-left-width: 4px;
+}
+
+.gateway-stage > span,
+.gateway-stage b {
+  color: var(--cyan);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.gateway-stage strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.gateway-stage p {
+  margin: 0;
+}
+
+.gateway-stage.status-pass {
+  border-left-color: var(--green);
+}
+
+.gateway-stage.status-fail {
+  border-left-color: var(--danger);
+}
+
+.gateway-stage.status-skip {
+  border-left-color: var(--dim);
+}
+
+.gateway-stage.status-pass b {
+  color: var(--green);
+}
+
+.gateway-stage.status-fail b {
+  color: var(--danger);
+}
+
+.gateway-stage.status-skip b {
+  color: var(--dim);
+}
+
+.gateway-response-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.gateway-code-card pre {
+  max-height: 170px;
+  overflow: auto;
+  margin: 10px 0 0;
+  color: #d8e5ff;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.gateway-result-panel {
+  grid-column: 2 / 4;
+}
+
+.gateway-event-preview {
+  max-height: 360px;
+}
+
+.gateway-contract-panel {
+  grid-column: 2 / -1;
+}
+
 /* ---------- Replay spine (prototype 09) ---------- */
 
 .replay-layout {
@@ -1985,6 +2227,7 @@ textarea {
     min-height: auto;
   }
 
+  .gateway-layout,
   .intake-layout,
   .replay-layout,
   .spend-grid,
@@ -1994,6 +2237,8 @@ textarea {
   }
 
   .boundary-panel,
+  .gateway-scenario-panel,
+  .gateway-boundary-panel,
   .replay-control-panel,
   .replay-boundary-panel {
     position: static;
@@ -2001,11 +2246,15 @@ textarea {
 
   .check-grid,
   .contract-pane,
+  .gateway-response-columns,
+  .gateway-result-grid,
   .packet-pane,
   .projection-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .gateway-contract-panel,
+  .gateway-result-panel,
   .replay-contract-panel {
     grid-column: auto;
   }
@@ -2039,6 +2288,16 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .panel-heading {
+    display: grid;
+    justify-content: stretch;
+    align-items: start;
+  }
+
+  .panel-heading > strong {
+    overflow-wrap: anywhere;
+  }
+
   .palette-list {
     grid-template-columns: 1fr;
   }
@@ -2048,6 +2307,9 @@ textarea {
   .contract-shape dl,
   .contract-instance,
   .event-envelope,
+  .gateway-request-grid,
+  .gateway-response-columns,
+  .gateway-result-grid,
   .packet-pane,
   .projection-grid,
   .run-seed {

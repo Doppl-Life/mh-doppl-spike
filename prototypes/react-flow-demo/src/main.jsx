@@ -16,6 +16,7 @@ import '@xyflow/react/dist/style.css';
 import './styles.css';
 import { fusionAgenomes, fusionMetadata, getFusionRun, makeFusionPairId } from './fusionData.js';
 import { costLedger, formatMaybeNumber, formatUsd } from './costLedger.js';
+import { gatewayBoundary, gatewayContractShapes, gatewayFixtures } from './gatewayData.js';
 import {
   buildIntakeContractInstance,
   buildUploadedCase,
@@ -1418,6 +1419,201 @@ function BoundaryGroup({ title, items, tone = 'default' }) {
   );
 }
 
+function GatewayForge() {
+  const [fixtureId, setFixtureId] = useState('clean');
+  const fixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
+  const accepted = fixture.response.accepted;
+  const repairLabel = fixture.response.repairAttempted ? 'repair attempted' : 'no repair';
+
+  return (
+    <section className="prototype gateway-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 08 · gateway forge</p>
+          <h2>Structured Output Discipline</h2>
+          <p>
+            Route every model call through one accountable boundary. The forge validates raw model
+            output, allows one auditable repair, rejects unsafe payloads, preserves provider metadata,
+            and emits sanitized events for Replay Spine.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{fixture.role} · {fixture.schemaName}</span>
+          <strong>{fixture.label}</strong>
+          <p>{accepted ? 'accepted' : 'rejected'} · {repairLabel} · {fixture.providerMeta.latencyMs}ms</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${accepted ? 100 : 58}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="gateway-layout">
+        <aside className="gateway-scenario-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">recorded calls</p>
+              <h3>Choose Scenario</h3>
+            </div>
+          </div>
+          <div className="gateway-fixtures">
+            {gatewayFixtures.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={fixture.id === item.id}
+                onClick={() => setFixtureId(item.id)}
+              >
+                <span className={`gateway-status-dot status-${item.status}`} />
+                <strong>{item.label}</strong>
+                <small>{item.headline}</small>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className="gateway-request-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">gateway ingress</p>
+              <h3>ModelGatewayRequest</h3>
+            </div>
+            <strong>{fixture.request.id}</strong>
+          </div>
+          <div className="gateway-request-grid">
+            <GatewayField label="runId" value={fixture.request.runId} />
+            <GatewayField label="role" value={fixture.role} />
+            <GatewayField label="schema" value={fixture.schemaName} />
+            <GatewayField label="route" value={fixture.route} />
+            <GatewayField label="traceId" value={fixture.request.traceId} />
+          </div>
+          <GatewayList title="trusted instructions" items={fixture.request.trustedInstructions} />
+          <article className="gateway-payload-box">
+            <span>untrusted payload</span>
+            <p>{fixture.request.untrustedPayload}</p>
+          </article>
+        </section>
+
+        <section className="gateway-pipeline-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">validation pipeline</p>
+              <h3>Parse → Validate → Repair → Persist</h3>
+            </div>
+            <strong className={accepted ? 'status-good' : 'status-bad'}>
+              {accepted ? 'accepted' : 'rejected'}
+            </strong>
+          </div>
+          <div className="gateway-stage-list">
+            {fixture.stages.map((stage, index) => (
+              <article key={stage.id} className={`gateway-stage status-${stage.status}`}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <strong>{stage.label}</strong>
+                  <p>{stage.detail}</p>
+                </div>
+                <b>{stage.status}</b>
+              </article>
+            ))}
+          </div>
+          <div className="gateway-response-columns">
+            <GatewayCodeBlock title="raw response" body={fixture.rawResponse} />
+            {fixture.repairPrompt && <GatewayCodeBlock title="repair prompt" body={fixture.repairPrompt} />}
+            {fixture.repairedResponse && <GatewayCodeBlock title="repaired response" body={fixture.repairedResponse} />}
+            {fixture.fallbackResponse && <GatewayCodeBlock title="fallback response" body={fixture.fallbackResponse} />}
+          </div>
+        </section>
+
+        <section className="gateway-result-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">gateway egress</p>
+              <h3>Response + Event</h3>
+            </div>
+            <strong>{fixture.response.eventType}</strong>
+          </div>
+          <div className="gateway-result-grid">
+            <ProjectionCard label="Accepted" value={accepted ? 'true' : 'false'} detail={fixture.response.rejectionReason || fixture.response.outputTitle} />
+            <ProjectionCard label="Repair" value={fixture.response.repairAttempted ? '1 / 1' : '0 / 1'} detail="repair budget is capped" />
+            <ProjectionCard label="Cost" value={formatUsd(fixture.providerMeta.costUsd)} detail={`${fixture.providerMeta.promptTokens + fixture.providerMeta.completionTokens} tokens`} />
+            <ProjectionCard label="Latency" value={`${fixture.providerMeta.latencyMs}ms`} detail={`${fixture.providerMeta.provider} · ${fixture.providerMeta.model}`} />
+          </div>
+          <pre className="payload-preview gateway-event-preview">
+            {JSON.stringify(buildGatewayEvent(fixture), null, 2)}
+          </pre>
+        </section>
+
+        <aside className="boundary-panel gateway-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Gateway Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={gatewayBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={gatewayBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={gatewayBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={gatewayBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={gatewayBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="gateway-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={gatewayContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={gatewayContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function GatewayField({ label, value }) {
+  return (
+    <div>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function GatewayList({ title, items }) {
+  return (
+    <article className="gateway-list">
+      <span>{title}</span>
+      <ul>
+        {items.map((item) => <li key={item}>{item}</li>)}
+      </ul>
+    </article>
+  );
+}
+
+function GatewayCodeBlock({ title, body }) {
+  return (
+    <article className="gateway-code-card">
+      <span>{title}</span>
+      <pre>{body}</pre>
+    </article>
+  );
+}
+
+function buildGatewayEvent(fixture) {
+  return {
+    type: fixture.response.eventType,
+    requestId: fixture.request.id,
+    runId: fixture.request.runId,
+    role: fixture.role,
+    accepted: fixture.response.accepted,
+    repairAttempted: fixture.response.repairAttempted,
+    rejectionReason: fixture.response.rejectionReason || undefined,
+    providerMeta: {
+      provider: fixture.providerMeta.provider,
+      model: fixture.providerMeta.model,
+      promptTokens: fixture.providerMeta.promptTokens,
+      completionTokens: fixture.providerMeta.completionTokens,
+      costUsd: fixture.providerMeta.costUsd,
+      latencyMs: fixture.providerMeta.latencyMs,
+      traceId: fixture.request.traceId,
+    },
+    secretPolicy: 'scrubbed before run_events append',
+  };
+}
+
 function ReplaySpine() {
   const [fixtureId, setFixtureId] = useState('clean');
   const [foldMode, setFoldMode] = useState('replay');
@@ -1782,6 +1978,10 @@ const prototypeStages = [
     items: [{ id: 'intake', label: 'Case intake' }],
   },
   {
+    label: 'Route',
+    items: [{ id: 'gateway', label: 'Gateway forge' }],
+  },
+  {
     label: 'Evolve',
     items: [
       { id: 'energy', label: 'Energy metabolism' },
@@ -1839,6 +2039,7 @@ function App() {
       </header>
 
       {tab === 'intake' && <CaseStudyIntake />}
+      {tab === 'gateway' && <GatewayForge />}
       {tab === 'fusion' && <FusionLab />}
       {tab === 'replay' && <ReplaySpine />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}

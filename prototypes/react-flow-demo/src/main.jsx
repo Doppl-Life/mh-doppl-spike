@@ -44,6 +44,13 @@ import {
   operatorPoolPresets,
   validateRunCaps,
 } from './operatorData.js';
+import {
+  buildFallbackEvents,
+  fallbackBoundary,
+  fallbackContractShapes,
+  fallbackRehearsals,
+  fallbackRungs,
+} from './fallbackData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -2240,6 +2247,176 @@ function ReplayRow({ label, value }) {
   );
 }
 
+function DemoFallbackLadder() {
+  const [rungId, setRungId] = useState('live');
+  const activeRung = fallbackRungs.find((rung) => rung.id === rungId) || fallbackRungs[0];
+  const activeEvents = buildFallbackEvents(activeRung.id);
+  const activeIndex = fallbackRungs.findIndex((rung) => rung.id === activeRung.id);
+  const readiness = activeRung.id === 'live' ? 82 : activeRung.id === 'prepared' ? 92 : 100;
+
+  return (
+    <section className="prototype fallback-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 14 · demo fallback ladder</p>
+          <h2>Honest Demo Survival</h2>
+          <p>
+            Keep the showcase alive without lying about liveness. The operator can move from
+            low-cap live to prepared run to labeled replay, while every rung preserves event truth.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{activeRung.mode} · {activeRung.status}</span>
+          <strong>{activeRung.label}</strong>
+          <p>{activeRung.freshCallsAllowed ? 'fresh calls allowed' : 'fresh calls disabled'} · readiness {readiness}%</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${readiness}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="fallback-layout">
+        <aside className="fallback-rung-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">operator choice</p>
+              <h3>Fallback Rungs</h3>
+            </div>
+            <strong>{activeIndex + 1}/3</strong>
+          </div>
+          <div className="fallback-rung-list">
+            {fallbackRungs.map((rung, index) => (
+              <button
+                key={rung.id}
+                type="button"
+                aria-selected={activeRung.id === rung.id}
+                onClick={() => setRungId(rung.id)}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{rung.label}</strong>
+                <small>{rung.headline}</small>
+              </button>
+            ))}
+          </div>
+          <article className="fallback-disclosure-card">
+            <span>audience disclosure</span>
+            <p>{activeRung.disclosure}</p>
+          </article>
+        </aside>
+
+        <section className="fallback-mode-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">{activeRung.eyebrow}</p>
+              <h3>{activeRung.headline}</h3>
+            </div>
+            <strong className={activeRung.id === 'live' ? 'status-good' : 'status-bad'}>
+              {activeRung.freshCallsAllowed ? 'live' : 'not live'}
+            </strong>
+          </div>
+          <div className="projection-grid">
+            <ProjectionCard label="Provider" value={activeRung.health.provider} detail="from health projection" />
+            <ProjectionCard label="Gateway Queue" value={activeRung.health.gatewayQueue} detail="in-flight fresh calls" />
+            <ProjectionCard label="Event Lag" value={`${activeRung.health.eventLagMs}ms`} detail="delivery lag, not truth lag" />
+            <ProjectionCard label="Langfuse" value={activeRung.health.langfuse} detail="optional and non-authoritative" />
+          </div>
+          <div className="fallback-cap-grid">
+            {Object.entries(activeRung.caps).map(([key, value]) => (
+              <article key={key}>
+                <span>{key}</span>
+                <strong>{value}</strong>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="fallback-actions-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">allowed actions</p>
+              <h3>What The Operator May Do</h3>
+            </div>
+          </div>
+          <div className="fallback-action-list">
+            {activeRung.allowedActions.map((action) => (
+              <article key={action}>
+                <span>allowed</span>
+                <strong>{action}</strong>
+              </article>
+            ))}
+          </div>
+          <div className="quarantine-list fallback-warning-list">
+            <span>hard rule</span>
+            <b>Fallback changes append new control events. They never edit prior run_events or hide the current mode label.</b>
+            {activeRung.id === 'live' && <b>Low-cap override can only lower caps from the prepared default.</b>}
+          </div>
+        </section>
+
+        <section className="fallback-rehearsal-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">runbook rehearsals</p>
+              <h3>Failure Drills</h3>
+            </div>
+            <strong>{activeRung.label}</strong>
+          </div>
+          <div className="gateway-stage-list">
+            {fallbackRehearsals.map((item, index) => {
+              const status = item.statusByRung[activeRung.id] || 'skip';
+              return (
+                <article key={item.id} className={`gateway-stage status-${status === 'warn' ? 'skip' : status}`}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <strong>{item.label}</strong>
+                    <p>{item.detail}</p>
+                  </div>
+                  <b>{status}</b>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="fallback-event-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">append-only evidence</p>
+              <h3>Decision Events</h3>
+            </div>
+            <strong>{activeEvents.length} events</strong>
+          </div>
+          <div className="operator-event-list fallback-event-list">
+            {activeEvents.map((event) => (
+              <article key={`${event.sequence}-${event.type}`}>
+                <span>#{event.sequence} · {event.source}</span>
+                <strong>{event.type}</strong>
+                <p>{event.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <aside className="boundary-panel fallback-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Fallback Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={fallbackBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={fallbackBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={fallbackBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={fallbackBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={fallbackBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="fallback-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={fallbackContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={fallbackContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function ProjectionCard({ label, value, detail }) {
   return (
     <article className="projection-card">
@@ -2436,6 +2613,7 @@ const prototypeStages = [
   {
     label: 'Explain',
     items: [
+      { id: 'fallback', label: 'Fallback ladder' },
       { id: 'replay', label: 'Replay spine' },
       { id: 'trace', label: 'Trace viewer' },
       { id: 'spend', label: 'Spend ledger' },
@@ -2513,6 +2691,7 @@ function App() {
       {tab === 'operator' && <OperatorConsole />}
       {tab === 'gateway' && <GatewayForge />}
       {tab === 'fusion' && <FusionLab />}
+      {tab === 'fallback' && <DemoFallbackLadder />}
       {tab === 'replay' && <ReplaySpine />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}

@@ -16,6 +16,7 @@ import '@xyflow/react/dist/style.css';
 import './styles.css';
 import { fusionAgenomes, fusionMetadata, getFusionRun, makeFusionPairId } from './fusionData.js';
 import { costLedger, formatMaybeNumber, formatUsd } from './costLedger.js';
+import { buildUploadedCase, intakeBoundary, intakeExamples } from './caseIntakeData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -1126,6 +1127,227 @@ function SpendMetric({ label, value, detail }) {
   );
 }
 
+function CaseStudyIntake() {
+  const [selectedCaseId, setSelectedCaseId] = useState(intakeExamples[0].id);
+  const [uploadedCase, setUploadedCase] = useState(null);
+  const [activePane, setActivePane] = useState('visible');
+  const cases = uploadedCase ? [...intakeExamples, uploadedCase] : intakeExamples;
+  const selectedCase = cases.find((item) => item.id === selectedCaseId) || cases[0];
+  const passCount = selectedCase.checks.filter((check) => check.status === 'pass').length;
+
+  const handleFile = useCallback((event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const draft = buildUploadedCase(file.name, String(reader.result || ''));
+      setUploadedCase(draft);
+      setSelectedCaseId(draft.id);
+      setActivePane('visible');
+    };
+    reader.readAsText(file);
+  }, []);
+
+  return (
+    <section className="prototype intake-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 06 · case intake</p>
+          <h2>Withheld-Solution Harness</h2>
+          <p>
+            Prepare a case for a fair Doppl run. The workbench separates what agents may see from
+            evaluator-only anchors, checks for solution leakage, and previews the boundary contracts
+            that downstream prototypes consume.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{selectedCase.source} · {selectedCase.leakageRisk} leakage risk</span>
+          <strong>{selectedCase.title}</strong>
+          <p>{passCount}/{selectedCase.checks.length} intake checks passing · readiness {selectedCase.readiness}%</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${Math.min(100, selectedCase.readiness)}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="intake-layout">
+        <aside className="intake-case-list">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">example packets</p>
+              <h3>Choose Input</h3>
+            </div>
+          </div>
+          <div className="intake-examples">
+            {cases.map((example) => (
+              <button
+                key={example.id}
+                type="button"
+                aria-selected={selectedCase.id === example.id}
+                onClick={() => {
+                  setSelectedCaseId(example.id);
+                  setActivePane('visible');
+                }}
+              >
+                <span>{example.source}</span>
+                <strong>{example.title}</strong>
+                <small>readiness {example.readiness}% · {example.leakageRisk} risk</small>
+              </button>
+            ))}
+          </div>
+
+          <label className="upload-drop">
+            <span>Upload markdown/text case</span>
+            <strong>Local draft parser</strong>
+            <small>Creates an untrusted draft preview. Nothing leaves the browser.</small>
+            <input type="file" accept=".md,.txt,text/markdown,text/plain" onChange={handleFile} />
+          </label>
+        </aside>
+
+        <div className="intake-main">
+          <section className="intake-summary">
+            <p className="eyebrow">case packet</p>
+            <h3>{selectedCase.title}</h3>
+            <p>{selectedCase.summary}</p>
+          </section>
+
+          <section className="intake-packet">
+            <div className="intake-tabs" aria-label="Case packet panes">
+              {[
+                ['visible', 'Agent-visible'],
+                ['hidden', 'Evaluator-only'],
+                ['run', 'Run seed'],
+              ].map(([id, label]) => (
+                <button key={id} type="button" aria-selected={activePane === id} onClick={() => setActivePane(id)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            {activePane === 'visible' && <AgentVisiblePane packet={selectedCase.agentVisible} />}
+            {activePane === 'hidden' && <EvaluatorPane packet={selectedCase.evaluatorOnly} />}
+            {activePane === 'run' && <RunSeedPane caseItem={selectedCase} />}
+          </section>
+
+          <section className="intake-checks">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">leakage + runnability</p>
+                <h3>Intake Checks</h3>
+              </div>
+              <strong>{passCount}/{selectedCase.checks.length}</strong>
+            </div>
+            <div className="check-grid">
+              {selectedCase.checks.map((check) => (
+                <article key={check.id} className={`check-card status-${check.status}`}>
+                  <span>{check.status}</span>
+                  <strong>{check.label}</strong>
+                  <p>{check.detail}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <BoundaryPanel />
+      </div>
+    </section>
+  );
+}
+
+function AgentVisiblePane({ packet }) {
+  return (
+    <div className="packet-pane">
+      <PacketBlock label="problem" body={packet.problem} />
+      <PacketList label="context" items={packet.context} />
+      <PacketList label="constraints" items={packet.constraints} />
+      <PacketList label="success criteria" items={packet.successCriteria} />
+    </div>
+  );
+}
+
+function EvaluatorPane({ packet }) {
+  return (
+    <div className="packet-pane evaluator-pane">
+      <PacketBlock label="withheld known target" body={packet.knownSolution} />
+      <PacketList label="hidden anchors" items={packet.hiddenAnchors} />
+      <PacketList label="leakage terms" items={packet.solutionLeakageTerms} emptyText="No exact leakage terms saved." />
+    </div>
+  );
+}
+
+function RunSeedPane({ caseItem }) {
+  const preview = caseItem.downstreamPreview;
+  return (
+    <div className="run-seed">
+      <div>
+        <span>RunConfig.seed</span>
+        <strong>{preview.runSeed}</strong>
+      </div>
+      <div>
+        <span>enabled subtypes</span>
+        <strong>{preview.enabledSubtypes.join(' + ')}</strong>
+      </div>
+      <div>
+        <span>EvaluatorAnchorRef</span>
+        <strong>{preview.evaluatorAnchor}</strong>
+      </div>
+      <div>
+        <span>initial energy</span>
+        <strong>{preview.initialEnergy} doppl_energy</strong>
+      </div>
+    </div>
+  );
+}
+
+function PacketBlock({ label, body }) {
+  return (
+    <article className="packet-block">
+      <span>{label}</span>
+      <p>{body}</p>
+    </article>
+  );
+}
+
+function PacketList({ label, items, emptyText = 'None provided.' }) {
+  return (
+    <article className="packet-block">
+      <span>{label}</span>
+      {items?.length ? (
+        <ul>
+          {items.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      ) : (
+        <p>{emptyText}</p>
+      )}
+    </article>
+  );
+}
+
+function BoundaryPanel() {
+  return (
+    <aside className="boundary-panel">
+      <p className="eyebrow">boundary contracts</p>
+      <h3>Where Intake Fits</h3>
+      <BoundaryGroup title="Upstream Modules" items={intakeBoundary.upstreamModules} />
+      <BoundaryGroup title="Upstream Boundary Contracts" items={intakeBoundary.upstreamContracts} />
+      <BoundaryGroup title="Downstream Boundary Contracts" items={intakeBoundary.downstreamContracts} />
+      <BoundaryGroup title="Downstream Modules" items={intakeBoundary.downstreamModules} />
+      <BoundaryGroup title="Invariants Exercised" items={intakeBoundary.invariants} tone="strong" />
+    </aside>
+  );
+}
+
+function BoundaryGroup({ title, items, tone = 'default' }) {
+  return (
+    <div className={`boundary-group tone-${tone}`}>
+      <span>{title}</span>
+      <div>
+        {items.map((item) => <b key={item}>{item}</b>)}
+      </div>
+    </div>
+  );
+}
+
 function formatRatio(value) {
   if (typeof value !== 'number' || !Number.isFinite(value)) return 'pending';
   return value >= 100 ? Math.round(value).toLocaleString() : value.toFixed(1);
@@ -1169,7 +1391,7 @@ function persistNodePositions(nextNodes, storageKey) {
 }
 
 function App() {
-  const [tab, setTab] = useState('fusion');
+  const [tab, setTab] = useState('intake');
 
   return (
     <main className="app-shell">
@@ -1184,6 +1406,9 @@ function App() {
           </p>
         </div>
         <nav className="tabs" aria-label="Prototype tabs">
+          <button type="button" aria-selected={tab === 'intake'} onClick={() => setTab('intake')}>
+            Case intake
+          </button>
           <button type="button" aria-selected={tab === 'energy'} onClick={() => setTab('energy')}>
             Energy metabolism
           </button>
@@ -1202,6 +1427,7 @@ function App() {
         </nav>
       </header>
 
+      {tab === 'intake' && <CaseStudyIntake />}
       {tab === 'fusion' && <FusionLab />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}

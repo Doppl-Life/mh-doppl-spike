@@ -14,6 +14,15 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './styles.css';
+import {
+  agenomeContractShapes,
+  agenomePoolBoundary,
+  agenomePoolLibrary,
+  defaultStartingPool,
+  evaluateStartingPool,
+  maximumPoolSize,
+  minimumPoolSize,
+} from './agenomePoolData.js';
 import { fusionAgenomes, fusionMetadata, getFusionRun, makeFusionPairId } from './fusionData.js';
 import { costLedger, formatMaybeNumber, formatUsd } from './costLedger.js';
 import { gatewayBoundary, gatewayContractShapes, gatewayFixtures } from './gatewayData.js';
@@ -1419,6 +1428,212 @@ function BoundaryGroup({ title, items, tone = 'default' }) {
   );
 }
 
+function AgenomePool() {
+  const [selectedIds, setSelectedIds] = useState(defaultStartingPool);
+  const [activeId, setActiveId] = useState(defaultStartingPool[0]);
+  const pool = useMemo(() => evaluateStartingPool(selectedIds), [selectedIds]);
+  const activeAgenome = agenomePoolLibrary.find((agenome) => agenome.id === activeId) || agenomePoolLibrary[0];
+
+  const toggleAgenome = (agenomeId) => {
+    setSelectedIds((current) => {
+      const exists = current.includes(agenomeId);
+      if (exists) return current.filter((id) => id !== agenomeId);
+      return [...current, agenomeId];
+    });
+    setActiveId(agenomeId);
+  };
+
+  return (
+    <section className="prototype agenome-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 07 · agenome pool</p>
+          <h2>Mutagen Starting Population</h2>
+          <p>
+            Compose the bounded set of agenomes that enter a run. Each mutagen carries strategy,
+            traits, tool permissions, prior performance, and mutation hints before the runtime
+            spawns generation zero.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>RunConfig.startingPopulation</span>
+          <strong>{pool.selected.length}/{maximumPoolSize} selected</strong>
+          <p>{pool.ready ? 'ready for runtime spawn' : `${pool.warnings.length} pool warning${pool.warnings.length === 1 ? '' : 's'}`}</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${pool.ready ? 100 : Math.max(35, 100 - pool.warnings.length * 18)}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="agenome-layout">
+        <aside className="agenome-library-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">mutagen library</p>
+              <h3>Choose Pool</h3>
+            </div>
+          </div>
+          <div className="agenome-card-list">
+            {agenomePoolLibrary.map((agenome) => {
+              const selected = selectedIds.includes(agenome.id);
+              return (
+                <button
+                  key={agenome.id}
+                  type="button"
+                  className={`tone-${agenome.tone}`}
+                  aria-selected={activeAgenome.id === agenome.id}
+                  onClick={() => setActiveId(agenome.id)}
+                >
+                  <span>{agenome.subtypeFit}</span>
+                  <strong>{agenome.title}</strong>
+                  <small>{agenome.description}</small>
+                  <b>{selected ? 'in pool' : 'available'}</b>
+                </button>
+              );
+            })}
+          </div>
+        </aside>
+
+        <section className="agenome-inspector-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">agenome inspector</p>
+              <h3>{activeAgenome.title}</h3>
+            </div>
+            <button type="button" className="pool-toggle-button" onClick={() => toggleAgenome(activeAgenome.id)}>
+              {selectedIds.includes(activeAgenome.id) ? 'Remove' : 'Add'}
+            </button>
+          </div>
+          <p className="agenome-role">{activeAgenome.description}</p>
+          <div className="agenome-score-grid">
+            <AgenomeMetric label="fitness" value={activeAgenome.fitness} />
+            <AgenomeMetric label="novelty" value={activeAgenome.novelty} />
+            <AgenomeMetric label="efficiency" value={activeAgenome.energyEfficiency} />
+          </div>
+          <div className="agenome-detail-grid">
+            <AgenomePillGroup title="Traits" items={activeAgenome.traits} />
+            <AgenomePillGroup title="Tool Permissions" items={activeAgenome.tools} />
+            <AgenomePillGroup title="Prior Events" items={activeAgenome.priorEvents} />
+          </div>
+          <div className="agenome-notes">
+            <article>
+              <span>mutation hint</span>
+              <p>{activeAgenome.mutationHint}</p>
+            </article>
+            <article>
+              <span>selection risk</span>
+              <p>{activeAgenome.risk}</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="pool-diagnostics-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">pool diagnostics</p>
+              <h3>Run Readiness</h3>
+            </div>
+            <strong className={pool.ready ? 'status-good' : 'status-bad'}>
+              {pool.ready ? 'ready' : 'needs review'}
+            </strong>
+          </div>
+          <div className="projection-grid">
+            <ProjectionCard label="Fitness Avg" value={pool.avgFitness} detail="historical fixture projection" />
+            <ProjectionCard label="Novelty Avg" value={pool.avgNovelty} detail="anti-collapse pressure" />
+            <ProjectionCard label="Efficiency Avg" value={pool.avgEfficiency} detail="energy behavior prior" />
+            <ProjectionCard label="Trait Count" value={pool.traitCount} detail={`${pool.toolSet.size} tool permissions covered`} />
+          </div>
+          <div className="selected-pool-list">
+            {pool.selected.map((agenome) => (
+              <article key={agenome.id}>
+                <span>{agenome.subtypeFit}</span>
+                <strong>{agenome.title}</strong>
+                <p>{agenome.traits.slice(0, 2).join(' · ')}</p>
+              </article>
+            ))}
+          </div>
+          <div className="quarantine-list pool-warning-list">
+            <span>composition guardrails</span>
+            {pool.warnings.length ? (
+              pool.warnings.map((warning) => <b key={warning}>{warning}</b>)
+            ) : (
+              <b>Pool meets size, subtype, trait, and critic-readiness constraints.</b>
+            )}
+          </div>
+        </section>
+
+        <aside className="boundary-panel agenome-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Pool Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={agenomePoolBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={agenomePoolBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={agenomePoolBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={agenomePoolBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={agenomePoolBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="agenome-runconfig-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">runtime egress</p>
+              <h3>Spawn Preview</h3>
+            </div>
+            <strong>gen-0</strong>
+          </div>
+          <pre className="payload-preview">{JSON.stringify(buildAgenomeRunConfig(pool), null, 2)}</pre>
+        </section>
+
+        <section className="agenome-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={agenomeContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={agenomeContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function AgenomeMetric({ label, value }) {
+  return (
+    <article className="agenome-metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <i><b style={{ width: `${value}%` }} /></i>
+    </article>
+  );
+}
+
+function AgenomePillGroup({ title, items }) {
+  return (
+    <article className="agenome-pill-group">
+      <span>{title}</span>
+      <div>
+        {items.map((item) => <b key={item}>{item}</b>)}
+      </div>
+    </article>
+  );
+}
+
+function buildAgenomeRunConfig(pool) {
+  return {
+    caseId: 'case_superyacht_drone_privacy',
+    populationCap: maximumPoolSize,
+    minimumPoolSize,
+    selectedAgenomeIds: pool.selected.map((agenome) => agenome.id),
+    spawnEvents: pool.selected.map((agenome, index) => ({
+      type: 'agenome.spawned',
+      generationId: 'gen-0',
+      sequenceHint: index + 1,
+      agenomeId: agenome.id,
+      initialEnergy: Math.max(60, agenome.energyEfficiency),
+      mutationPolicyRef: `mutation_policy.${agenome.id}`,
+      toolPermissions: agenome.tools,
+    })),
+    diversityWarnings: pool.warnings,
+  };
+}
+
 function GatewayForge() {
   const [fixtureId, setFixtureId] = useState('clean');
   const fixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
@@ -1975,7 +2190,10 @@ function persistNodePositions(nextNodes, storageKey) {
 const prototypeStages = [
   {
     label: 'Seed',
-    items: [{ id: 'intake', label: 'Case intake' }],
+    items: [
+      { id: 'intake', label: 'Case intake' },
+      { id: 'agenomes', label: 'Agenome pool' },
+    ],
   },
   {
     label: 'Route',
@@ -2059,6 +2277,7 @@ function App() {
       </header>
 
       {tab === 'intake' && <CaseStudyIntake />}
+      {tab === 'agenomes' && <AgenomePool />}
       {tab === 'gateway' && <GatewayForge />}
       {tab === 'fusion' && <FusionLab />}
       {tab === 'replay' && <ReplaySpine />}

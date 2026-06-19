@@ -1634,6 +1634,221 @@ textarea {
   background: rgba(86, 255, 179, 0.08);
 }
 
+/* ---------- Agenome pool (prototype 07) ---------- */
+
+.agenome-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(390px, 1fr) minmax(330px, 0.82fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.agenome-layout > * {
+  min-width: 0;
+}
+
+.agenome-library-panel,
+.agenome-inspector-panel,
+.pool-diagnostics-panel,
+.agenome-runconfig-panel,
+.agenome-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.agenome-library-panel,
+.agenome-boundary-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.agenome-card-list,
+.selected-pool-list {
+  display: grid;
+  gap: 10px;
+}
+
+.agenome-card-list button {
+  position: relative;
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.2);
+  border-left-width: 4px;
+  padding: 13px;
+  background: rgba(4, 8, 23, 0.54);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.agenome-card-list button:hover,
+.agenome-card-list button:focus-visible,
+.agenome-card-list button[aria-selected="true"] {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.94);
+  outline: none;
+}
+
+.agenome-card-list button.tone-cyan { border-left-color: var(--cyan); }
+.agenome-card-list button.tone-blue { border-left-color: var(--blue); }
+.agenome-card-list button.tone-green { border-left-color: var(--green); }
+.agenome-card-list button.tone-gold { border-left-color: var(--gold); }
+.agenome-card-list button.tone-mint { border-left-color: var(--mint); }
+.agenome-card-list button.tone-pink { border-left-color: var(--pink); }
+.agenome-card-list button.tone-violet { border-left-color: var(--violet); }
+
+.agenome-card-list span,
+.agenome-card-list b,
+.agenome-metric span,
+.agenome-pill-group span,
+.agenome-notes span,
+.selected-pool-list span {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.agenome-card-list strong,
+.selected-pool-list strong {
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+.agenome-card-list small,
+.selected-pool-list p,
+.agenome-role,
+.agenome-notes p {
+  color: var(--muted);
+  line-height: 1.42;
+}
+
+.agenome-card-list b {
+  color: var(--green);
+}
+
+.pool-toggle-button {
+  border: 1px solid rgba(110, 231, 255, 0.28);
+  padding: 10px 14px;
+  background: rgba(4, 8, 23, 0.64);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 850;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.pool-toggle-button:hover,
+.pool-toggle-button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.92);
+  outline: none;
+}
+
+.agenome-role {
+  margin: 0 0 14px;
+  color: #d8e5ff;
+}
+
+.agenome-score-grid,
+.agenome-detail-grid,
+.agenome-notes {
+  display: grid;
+  gap: 10px;
+}
+
+.agenome-score-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.agenome-detail-grid,
+.agenome-notes {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 10px;
+}
+
+.agenome-metric,
+.agenome-pill-group,
+.agenome-notes article,
+.selected-pool-list article {
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.agenome-metric strong {
+  display: block;
+  margin: 8px 0;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+}
+
+.agenome-metric i,
+.agenome-metric b {
+  display: block;
+  height: 7px;
+}
+
+.agenome-metric i {
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.agenome-metric b {
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+}
+
+.agenome-pill-group div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.agenome-pill-group b {
+  border: 1px solid rgba(110, 231, 255, 0.2);
+  padding: 7px 8px;
+  color: #d8e5ff;
+  background: rgba(4, 8, 23, 0.42);
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.agenome-notes p {
+  margin: 8px 0 0;
+}
+
+.selected-pool-list {
+  margin-top: 12px;
+}
+
+.selected-pool-list p {
+  margin: 6px 0 0;
+}
+
+.pool-warning-list {
+  border-color: rgba(110, 231, 255, 0.16);
+}
+
+.agenome-runconfig-panel {
+  grid-column: 2 / -1;
+}
+
+.agenome-contract-panel {
+  grid-column: 2 / -1;
+}
+
 /* ---------- Gateway forge (prototype 08) ---------- */
 
 .gateway-layout {
@@ -2246,6 +2461,7 @@ textarea {
     min-height: auto;
   }
 
+  .agenome-layout,
   .gateway-layout,
   .intake-layout,
   .replay-layout,
@@ -2255,6 +2471,8 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .agenome-library-panel,
+  .agenome-boundary-panel,
   .boundary-panel,
   .gateway-scenario-panel,
   .gateway-boundary-panel,
@@ -2265,6 +2483,9 @@ textarea {
 
   .check-grid,
   .contract-pane,
+  .agenome-detail-grid,
+  .agenome-notes,
+  .agenome-score-grid,
   .gateway-response-columns,
   .gateway-result-grid,
   .packet-pane,
@@ -2272,6 +2493,8 @@ textarea {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .agenome-contract-panel,
+  .agenome-runconfig-panel,
   .gateway-contract-panel,
   .gateway-result-panel,
   .replay-contract-panel {
@@ -2325,6 +2548,9 @@ textarea {
   .contract-pane,
   .contract-shape dl,
   .contract-instance,
+  .agenome-detail-grid,
+  .agenome-notes,
+  .agenome-score-grid,
   .event-envelope,
   .gateway-request-grid,
   .gateway-response-columns,

@@ -51,6 +51,12 @@ import {
   fallbackRehearsals,
   fallbackRungs,
 } from './fallbackData.js';
+import {
+  subtypeCandidates,
+  subtypeCheckBoundary,
+  subtypeCheckContractShapes,
+  summarizeSubtypeChecks,
+} from './subtypeCheckData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -2055,6 +2061,162 @@ function buildGatewayEvent(fixture) {
   };
 }
 
+function SubtypeCheckLab() {
+  const [candidateId, setCandidateId] = useState(subtypeCandidates[0].id);
+  const candidate = subtypeCandidates.find((item) => item.id === candidateId) || subtypeCandidates[0];
+  const summary = summarizeSubtypeChecks(candidate);
+  const [selectedCheckId, setSelectedCheckId] = useState(candidate.checks[0].id);
+  const selectedCheck = candidate.checks.find((check) => check.id === selectedCheckId) || candidate.checks[0];
+
+  useEffect(() => {
+    setSelectedCheckId(candidate.checks[0].id);
+  }, [candidate.id]);
+
+  return (
+    <section className="prototype subtype-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 11 · subtype check lab</p>
+          <h2>Subtype-Specific Evidence</h2>
+          <p>
+            Show that candidate subtype changes the required checks. Cross-domain transfer and
+            zeitgeist synthesis produce different evidence, penalties, and check.completed events.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{candidate.subtype}</span>
+          <strong>{candidate.shortLabel} checks</strong>
+          <p>{summary.pass}/{summary.completed} passing · readiness {summary.readiness}%</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${summary.readiness}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="subtype-layout">
+        <aside className="subtype-selector-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">candidate subtype</p>
+              <h3>Choose Check Set</h3>
+            </div>
+          </div>
+          <div className="subtype-candidate-list">
+            {subtypeCandidates.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={candidate.id === item.id}
+                onClick={() => setCandidateId(item.id)}
+              >
+                <span>{item.subtype}</span>
+                <strong>{item.label}</strong>
+                <small>{item.title}</small>
+              </button>
+            ))}
+          </div>
+          <article className="subtype-summary-card">
+            <span>{candidate.payloadLabel}</span>
+            <pre>{JSON.stringify(candidate.payload, null, 2)}</pre>
+          </article>
+        </aside>
+
+        <section className="subtype-candidate-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">candidate idea</p>
+              <h3>{candidate.title}</h3>
+            </div>
+            <strong>{candidate.shortLabel}</strong>
+          </div>
+          <p className="subtype-summary-text">{candidate.summary}</p>
+          <div className="subtype-obligation-grid">
+            {candidate.obligations.map((obligation) => (
+              <article key={obligation}>
+                <span>required</span>
+                <strong>{obligation}</strong>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="subtype-checks-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">check results</p>
+              <h3>Evidence Obligations</h3>
+            </div>
+            <strong>{summary.pass} pass · {summary.degraded} degraded · {summary.skipped} skipped</strong>
+          </div>
+          <div className="subtype-check-list">
+            {candidate.checks.map((check) => (
+              <button
+                key={check.id}
+                type="button"
+                className={`status-${check.status}`}
+                aria-selected={selectedCheck.id === check.id}
+                onClick={() => setSelectedCheckId(check.id)}
+              >
+                <span>{check.status}</span>
+                <strong>{check.dimension}</strong>
+                <small>{check.runner}</small>
+                <b>{check.score === null ? 'penalty' : `${Math.round(check.score * 100)}%`}</b>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="subtype-detail-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">selected check</p>
+              <h3>{selectedCheck.dimension}</h3>
+            </div>
+            <strong className={selectedCheck.status === 'fail' ? 'status-bad' : 'status-good'}>
+              {selectedCheck.status}
+            </strong>
+          </div>
+          <div className="event-envelope subtype-check-envelope">
+            <ReplayRow label="runner" value={selectedCheck.runner} />
+            <ReplayRow label="status" value={selectedCheck.status} />
+            <ReplayRow label="score" value={selectedCheck.score === null ? 'null' : selectedCheck.score.toFixed(2)} />
+            <ReplayRow label="event" value="check.completed" />
+          </div>
+          <article className="subtype-explanation-card">
+            <span>explanation</span>
+            <p>{selectedCheck.detail}</p>
+          </article>
+          <div className="subtype-evidence-list">
+            {selectedCheck.evidenceRefs.map((item) => (
+              <article key={item}>
+                <span>EvidenceRef</span>
+                <strong>{item}</strong>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <aside className="boundary-panel subtype-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Checks Fit</h3>
+          <BoundaryGroup title="Upstream Modules" items={subtypeCheckBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={subtypeCheckBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={subtypeCheckBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={subtypeCheckBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={subtypeCheckBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="subtype-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={subtypeCheckContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={subtypeCheckContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function ReplaySpine() {
   const [fixtureId, setFixtureId] = useState('clean');
   const [foldMode, setFoldMode] = useState('replay');
@@ -2323,7 +2485,7 @@ function DemoFallbackLadder() {
           <div className="fallback-cap-grid">
             {Object.entries(activeRung.caps).map(([key, value]) => (
               <article key={key}>
-                <span>{key}</span>
+                <span>{formatFallbackCapLabel(key)}</span>
                 <strong>{value}</strong>
               </article>
             ))}
@@ -2415,6 +2577,16 @@ function DemoFallbackLadder() {
       </div>
     </section>
   );
+}
+
+function formatFallbackCapLabel(key) {
+  return {
+    populationCap: 'Population',
+    generationCap: 'Generations',
+    energyBudget: 'Energy',
+    wallClockMinutes: 'Minutes',
+    toolCallCap: 'Tool calls',
+  }[key] || key;
 }
 
 function ProjectionCard({ label, value, detail }) {
@@ -2608,7 +2780,10 @@ const prototypeStages = [
   },
   {
     label: 'Judge',
-    items: [{ id: 'critic', label: 'Critic council' }],
+    items: [
+      { id: 'critic', label: 'Critic council' },
+      { id: 'subtype', label: 'Subtype checks' },
+    ],
   },
   {
     label: 'Explain',
@@ -2695,6 +2870,7 @@ function App() {
       {tab === 'replay' && <ReplaySpine />}
       {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
       {tab === 'spend' && <SpendLedgerView />}
+      {tab === 'subtype' && <SubtypeCheckLab />}
       {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
     </main>
   );

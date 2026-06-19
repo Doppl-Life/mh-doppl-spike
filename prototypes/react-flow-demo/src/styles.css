@@ -2450,6 +2450,228 @@ article.module-node::after {
   grid-column: 2 / -1;
 }
 
+/* ---------- Subtype check lab (prototype 11) ---------- */
+
+.subtype-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 0.95fr) minmax(0, 1fr) 240px;
+  grid-template-areas:
+    "selector candidate checks boundary"
+    "selector detail detail boundary"
+    "contracts contracts contracts contracts";
+  gap: 14px;
+  align-items: start;
+}
+
+.subtype-layout > * {
+  min-width: 0;
+}
+
+.subtype-selector-panel,
+.subtype-candidate-panel,
+.subtype-checks-panel,
+.subtype-detail-panel,
+.subtype-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.subtype-selector-panel { grid-area: selector; }
+.subtype-candidate-panel { grid-area: candidate; }
+.subtype-checks-panel { grid-area: checks; }
+.subtype-detail-panel { grid-area: detail; }
+.subtype-boundary-panel { grid-area: boundary; }
+.subtype-contract-panel { grid-area: contracts; }
+
+.subtype-selector-panel,
+.subtype-boundary-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.subtype-candidate-list,
+.subtype-check-list,
+.subtype-obligation-grid,
+.subtype-evidence-list {
+  display: grid;
+  gap: 10px;
+}
+
+.subtype-candidate-list button,
+.subtype-check-list button {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 13px;
+  background: rgba(4, 8, 23, 0.56);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.subtype-candidate-list button {
+  display: grid;
+  gap: 7px;
+}
+
+.subtype-check-list button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 58px;
+  gap: 5px 10px;
+  border-left-width: 4px;
+}
+
+.subtype-candidate-list button:hover,
+.subtype-candidate-list button:focus-visible,
+.subtype-candidate-list button[aria-selected="true"],
+.subtype-check-list button:hover,
+.subtype-check-list button:focus-visible,
+.subtype-check-list button[aria-selected="true"] {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.94);
+  outline: none;
+}
+
+.subtype-candidate-list button[aria-selected="true"],
+.subtype-check-list button[aria-selected="true"] {
+  border-color: rgba(86, 255, 179, 0.62);
+}
+
+.subtype-candidate-list span,
+.subtype-summary-card span,
+.subtype-obligation-grid span,
+.subtype-check-list span,
+.subtype-explanation-card span,
+.subtype-evidence-list span {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.subtype-candidate-list small,
+.subtype-summary-text,
+.subtype-check-list small,
+.subtype-explanation-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.subtype-candidate-list strong,
+.subtype-obligation-grid strong,
+.subtype-check-list strong,
+.subtype-evidence-list strong {
+  color: var(--ink);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.subtype-summary-card,
+.subtype-obligation-grid article,
+.subtype-explanation-card,
+.subtype-evidence-list article {
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.subtype-summary-card {
+  margin-top: 12px;
+}
+
+.subtype-summary-card pre {
+  max-height: 270px;
+  overflow: auto;
+  margin: 10px 0 0;
+  color: #d8e5ff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.subtype-summary-text {
+  margin: 0 0 14px;
+  color: #d8e5ff;
+  font-size: 15px;
+}
+
+.subtype-obligation-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.subtype-obligation-grid article:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.subtype-check-list button.status-pass {
+  border-left-color: var(--green);
+}
+
+.subtype-check-list button.status-degraded,
+.subtype-check-list button.status-skipped {
+  border-left-color: var(--gold);
+}
+
+.subtype-check-list button.status-fail {
+  border-left-color: var(--danger);
+}
+
+.subtype-check-list button.status-pass span {
+  color: var(--green);
+}
+
+.subtype-check-list button.status-degraded span,
+.subtype-check-list button.status-skipped span {
+  color: var(--gold);
+}
+
+.subtype-check-list button.status-fail span {
+  color: var(--danger);
+}
+
+.subtype-check-list small,
+.subtype-check-list b {
+  grid-column: 1;
+}
+
+.subtype-check-list b {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  color: var(--cyan);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.subtype-check-envelope {
+  margin-bottom: 12px;
+}
+
+.subtype-explanation-card p {
+  margin: 8px 0 0;
+  color: #d8e5ff;
+}
+
+.subtype-evidence-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.subtype-contract-panel {
+  grid-column: 1 / -1;
+}
+
 /* ---------- Replay spine (prototype 09) ---------- */
 
 .replay-layout {
@@ -2860,8 +3082,14 @@ article.module-node::after {
 }
 
 .fallback-cap-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 12px;
+}
+
+.fallback-cap-grid span {
+  display: block;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .fallback-cap-grid strong {
@@ -2950,6 +3178,7 @@ article.module-node::after {
   .gateway-layout,
   .intake-layout,
   .operator-layout,
+  .subtype-layout,
   .fallback-layout,
   .replay-layout,
   .spend-grid,
@@ -2964,6 +3193,8 @@ article.module-node::after {
   .boundary-panel,
   .gateway-scenario-panel,
   .gateway-boundary-panel,
+  .subtype-selector-panel,
+  .subtype-boundary-panel,
   .fallback-rung-panel,
   .fallback-boundary-panel,
   .replay-control-panel,
@@ -2984,6 +3215,12 @@ article.module-node::after {
   .operator-boundary-panel,
   .operator-payload-panel,
   .operator-contract-panel,
+  .subtype-selector-panel,
+  .subtype-candidate-panel,
+  .subtype-checks-panel,
+  .subtype-detail-panel,
+  .subtype-boundary-panel,
+  .subtype-contract-panel,
   .fallback-rung-panel,
   .fallback-mode-panel,
   .fallback-actions-panel,
@@ -3008,6 +3245,8 @@ article.module-node::after {
   .gateway-result-grid,
   .operator-event-list,
   .operator-mode-row,
+  .subtype-obligation-grid,
+  .subtype-evidence-list,
   .fallback-action-list,
   .fallback-event-list,
   .packet-pane,
@@ -3019,6 +3258,7 @@ article.module-node::after {
   .agenome-runconfig-panel,
   .gateway-contract-panel,
   .gateway-result-panel,
+  .subtype-contract-panel,
   .fallback-contract-panel,
   .replay-contract-panel {
     grid-column: auto;
@@ -3101,6 +3341,8 @@ article.module-node::after {
   .operator-command-grid,
   .operator-event-list,
   .operator-mode-row,
+  .subtype-obligation-grid,
+  .subtype-evidence-list,
   .fallback-action-list,
   .fallback-cap-grid,
   .fallback-event-list,

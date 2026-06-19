@@ -59,7 +59,7 @@ textarea {
   align-items: end;
   max-width: 1500px;
   margin: 0 auto 28px;
-  padding: 36px 36px 104px;
+  padding: 36px 36px 184px;
   border: 1px solid rgba(110, 231, 255, 0.24);
   background:
     linear-gradient(130deg, rgba(11, 24, 50, 0.92), rgba(6, 13, 30, 0.74)),
@@ -1638,7 +1638,7 @@ textarea {
 
 .gateway-layout {
   display: grid;
-  grid-template-columns: 230px minmax(280px, 0.9fr) minmax(320px, 1.1fr) 250px;
+  grid-template-columns: 230px minmax(330px, 0.85fr) minmax(420px, 1.15fr);
   gap: 14px;
   align-items: start;
 }
@@ -1664,6 +1664,21 @@ textarea {
 .gateway-boundary-panel {
   position: sticky;
   top: 18px;
+}
+
+.gateway-request-panel .panel-heading {
+  display: grid;
+  justify-content: stretch;
+  align-items: start;
+}
+
+.gateway-request-panel .panel-heading > strong {
+  max-width: 100%;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .gateway-fixtures,
@@ -1865,11 +1880,15 @@ textarea {
 }
 
 .gateway-result-panel {
-  grid-column: 2 / 4;
+  grid-column: 2 / -1;
 }
 
 .gateway-event-preview {
   max-height: 360px;
+}
+
+.gateway-boundary-panel {
+  grid-column: 1;
 }
 
 .gateway-contract-panel {

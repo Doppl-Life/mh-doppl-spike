@@ -219,6 +219,36 @@ textarea {
   margin-left: 10px;
 }
 
+.prototype-context-strip small {
+  flex-basis: 100%;
+  color: var(--dim);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.suite-case-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: min(100%, 360px);
+}
+
+.suite-case-picker select {
+  min-width: 250px;
+  border: 1px solid rgba(86, 255, 179, 0.34);
+  padding: 8px 34px 8px 10px;
+  color: var(--ink);
+  background: rgba(4, 8, 23, 0.86);
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.suite-case-picker select:focus-visible {
+  border-color: rgba(86, 255, 179, 0.72);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(86, 255, 179, 0.12);
+}
+
 .prototype {
   max-width: 1500px;
   margin: 0 auto;
@@ -3838,6 +3868,12 @@ article.module-node::after {
     display: grid;
     justify-content: stretch;
     align-items: start;
+  }
+
+  .suite-case-picker,
+  .suite-case-picker select {
+    width: 100%;
+    min-width: 0;
   }
 
   .panel-heading > strong {

@@ -241,18 +241,30 @@ function DetailView({ trace, location, onBack, atomTab, setAtomTab }) {
   );
 }
 
-export default function TraceViewer({ trace, boundaryRail = null }) {
+export default function TraceViewer({ trace, selectedCase = null, boundaryRail = null }) {
+  const displayTrace = selectedCase
+    ? {
+        ...trace,
+        title: `Lineage over time — ${selectedCase.title}`,
+        case: {
+          ...trace.case,
+          id: selectedCase.id,
+          title: selectedCase.title,
+          prompt: selectedCase.prompt,
+        },
+      }
+    : trace;
   const [selectedId, setSelectedId] = useState(null);
   const [atomTab, setAtomTab] = useState('promptResponse');
 
   const location = useMemo(() => {
     if (!selectedId) return null;
-    for (const generation of trace.generations) {
+    for (const generation of displayTrace.generations) {
       const individual = generation.individuals.find((item) => item.id === selectedId);
       if (individual) return { generation, individual };
     }
     return null;
-  }, [selectedId, trace]);
+  }, [selectedId, displayTrace]);
 
   return (
     <section className="prototype trace-viewer">
@@ -270,10 +282,10 @@ export default function TraceViewer({ trace, boundaryRail = null }) {
         </div>
         <div className="case-card">
           <span>{trace.source === 'live' ? 'live model run' : 'sample trace'} · {trace.kind}</span>
-          <strong>{trace.case.title}</strong>
+          <strong>{displayTrace.case.title}</strong>
           <p>
-            {trace.generations.length} generations · gen/critic model {trace.models.generation}.
-            {trace.source === 'sample' && ' Seed data — replaced wholesale by the live runner (step 2).'}
+            {displayTrace.generations.length} generations · gen/critic model {displayTrace.models.generation}.
+            {displayTrace.source === 'sample' && ' Sample mechanics shown with selected case packet context.'}
           </p>
         </div>
       </div>
@@ -282,7 +294,7 @@ export default function TraceViewer({ trace, boundaryRail = null }) {
         <div className="trace-main">
           {location ? (
             <DetailView
-              trace={trace}
+              trace={displayTrace}
               location={location}
               onBack={() => setSelectedId(null)}
               atomTab={atomTab}
@@ -290,11 +302,11 @@ export default function TraceViewer({ trace, boundaryRail = null }) {
             />
           ) : (
             <div className="trace-board">
-              {trace.generations.map((generation, index) => (
+              {displayTrace.generations.map((generation, index) => (
                 <GenerationColumn
                   key={generation.index}
                   generation={generation}
-                  isLast={index === trace.generations.length - 1}
+                  isLast={index === displayTrace.generations.length - 1}
                   onOpen={setSelectedId}
                 />
               ))}

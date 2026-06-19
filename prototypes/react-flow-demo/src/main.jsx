@@ -127,6 +127,69 @@ const caseStudy = {
     'Known evaluator target: early detection should trigger a discreet onboard protocol that denies the drone useful footage before it exists.',
 };
 
+const selectableCaseIds = ['jack-superyacht-drone', 'loft-insulation-adoption', 'heinz-ketchup-authenticity'];
+const selectableCases = intakeExamples.filter((item) => selectableCaseIds.includes(item.id));
+const caseStudyDetails = Object.fromEntries(selectableCases.map((item) => [
+  item.id,
+  {
+    id: item.id,
+    title: item.title,
+    shortTitle: item.id === 'jack-superyacht-drone'
+      ? 'Superyacht'
+      : item.id === 'loft-insulation-adoption'
+        ? 'Loft'
+        : 'Heinz',
+    prompt: [
+      item.agentVisible.problem,
+      `Context: ${item.agentVisible.context.join(' ')}`,
+      `Constraints: ${item.agentVisible.constraints.join(' ')}`,
+      `Success criteria: ${item.agentVisible.successCriteria.join(' ')}`,
+    ].join(' '),
+    evaluatorAnchor: `Known evaluator target: ${item.evaluatorOnly.knownSolution}`,
+    hiddenTarget: item.evaluatorOnly.knownSolution,
+    problemStatement: item.agentVisible.problem,
+    constraints: item.agentVisible.constraints,
+    successCriteria: item.agentVisible.successCriteria,
+    runId: item.id === 'jack-superyacht-drone'
+      ? 'run-jack-privacy-042'
+      : item.id === 'loft-insulation-adoption'
+        ? 'run-loft-friction-027'
+        : 'run-heinz-auth-018',
+    fixtureNote: item.id === 'jack-superyacht-drone'
+      ? 'Saved model traces were generated for this case.'
+      : 'Case packet and evaluator target switch here; saved trace mechanics are reused for prototype continuity.',
+    candidateTitle: item.id === 'jack-superyacht-drone'
+      ? 'Discreet Scene-Shift Protocol'
+      : item.id === 'loft-insulation-adoption'
+        ? 'Loft Clearing Bundle'
+        : 'Tabletop Color-Match Cue',
+    candidateSummary: item.id === 'jack-superyacht-drone'
+      ? 'Detect early, trigger a quiet onboard signal, and move exposed guests out of view before useful footage exists.'
+      : item.id === 'loft-insulation-adoption'
+        ? 'Bundle low-cost clearing help with insulation so the practical blocker is removed before installers arrive.'
+        : 'Use the bottle and label as a visible authenticity check so substitution becomes easier to notice at the table.',
+    subtypeTransfer: item.id === 'jack-superyacht-drone'
+      ? 'Transfer quiet-alert protocols from aviation and hospitals into yacht privacy operations.'
+      : item.id === 'loft-insulation-adoption'
+        ? 'Transfer concierge prep and moving-service patterns into home energy retrofit delivery.'
+        : 'Transfer color-calibration and anti-counterfeit packaging cues into restaurant-table authenticity.',
+    noveltyPrior: item.id === 'jack-superyacht-drone'
+      ? 'anti-drone jamming, physical capture, generic VIP alerts'
+      : item.id === 'loft-insulation-adoption'
+        ? 'education campaigns, subsidies, general energy-saving reminders'
+        : 'audits, warnings, tamper-proof packaging, taste-based detection',
+    spendSignal: item.id === 'jack-superyacht-drone'
+      ? 'privacy-preserving operational protocol per dollar'
+      : item.id === 'loft-insulation-adoption'
+        ? 'hidden-friction removal per dollar'
+        : 'visible trust cue per dollar',
+  },
+]));
+
+function getCaseDetails(caseId) {
+  return caseStudyDetails[caseId] || caseStudyDetails['jack-superyacht-drone'];
+}
+
 const agenomes = {
   firstPrinciples: {
     label: 'first-principles',
@@ -811,7 +874,8 @@ function Metric({ label, value }) {
   );
 }
 
-function FlowPrototype({ kind, onNavigate }) {
+function FlowPrototype({ kind, onNavigate, selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const config = kind === 'energy'
     ? {
         title: 'Energy Metabolism Simulator',
@@ -845,7 +909,19 @@ function FlowPrototype({ kind, onNavigate }) {
   const [flowNodes, setFlowNodes] = useNodesState(initialNodes);
   const [flowEdges, setFlowEdges, onEdgesChange] = useEdgesState(applyEdgeSides(initialNodes, config.edges));
   const [selected, setSelected] = useState(config.initial);
-  const active = config.details[selected] || config.details[config.initial];
+  const rawActive = config.details[selected] || config.details[config.initial];
+  const active = selected === 'case'
+    ? {
+        ...rawActive,
+        title: `${caseDetails.shortTitle} Case Enters`,
+        body: caseDetails.prompt,
+        bullets: [
+          'solution hidden from agents',
+          `case seed: ${caseDetails.id}`,
+          caseDetails.fixtureNote,
+        ],
+      }
+    : rawActive;
   const nodeTypes = useMemo(
     () => ({
       energyNode: EnergyNode,
@@ -889,8 +965,8 @@ function FlowPrototype({ kind, onNavigate }) {
         </div>
         <div className="case-card">
           <span>case</span>
-          <strong>{caseStudy.title}</strong>
-          <p>{caseStudy.evaluatorAnchor}</p>
+          <strong>{caseDetails.title}</strong>
+          <p>{caseDetails.evaluatorAnchor}</p>
         </div>
       </div>
 
@@ -1007,7 +1083,8 @@ function YieldStrip({ yieldData }) {
   );
 }
 
-function FusionLab() {
+function FusionLab({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [parentA, setParentA] = useState('first-principles');
   const [parentB, setParentB] = useState('breakthrough');
   const [draggingAgenome, setDraggingAgenome] = useState(null);
@@ -1048,22 +1125,21 @@ function FusionLab() {
           <p className="eyebrow">prototype 03</p>
           <h2>Fusion Lab</h2>
           <p>
-            Pick any two mutagen agenomes for the withheld yacht case. The fixture shows what each
+            Pick any two mutagen agenomes for the selected withheld case. The fixture shows what each
             parent proposes, how the critic council scores them, and what the bred child contributes
             after inheriting weighted traits from both parents.
           </p>
           <p className="problem-statement">
-            Problem: a high-profile guest wants private time on a superyacht, but paparazzi drones
-            can film from outside the vessel. The solution must avoid jamming, physical takedown,
-            spectacle, and late reactions that still leave the drone with useful footage.
+            Problem: {caseDetails.problemStatement} The answer should respect these constraints:
+            {' '}{caseDetails.constraints.slice(0, 3).join('; ')}.
           </p>
         </div>
         <div className="case-card">
           <span>saved model batch · {costLedger.meteringStatus}</span>
-          <strong>{caseStudy.title}</strong>
+          <strong>{caseDetails.title}</strong>
           <p>
             {fusionMetadata.parentCount} parent agenomes, {fusionMetadata.runCount} child fusions,
-            generated by {fusionMetadata.generationModel}. No model calls happen in this browser demo.
+            generated by {fusionMetadata.generationModel}. {caseDetails.fixtureNote}
           </p>
           <div className="cost-pills">
             <span>{formatUsd(costLedger.totalCostUsd)}</span>
@@ -1166,7 +1242,8 @@ function FusionLab() {
   );
 }
 
-function SpendLedgerView() {
+function SpendLedgerView({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const topOutputs = [...costLedger.outputs]
     .filter((output) => output.kind === 'fruit')
     .sort((a, b) => (b.spaceOpeningScore || 0) - (a.spaceOpeningScore || 0))
@@ -1185,8 +1262,8 @@ function SpendLedgerView() {
         </div>
         <div className="case-card">
           <span>{costLedger.arcadeId} · {costLedger.meteringStatus}</span>
-          <strong>{formatUsd(costLedger.totalCostUsd)}</strong>
-          <p>{costLedger.meteringNote}</p>
+          <strong>{caseDetails.shortTitle}: {formatUsd(costLedger.totalCostUsd)}</strong>
+          <p>{caseDetails.spendSignal}. {costLedger.meteringNote}</p>
         </div>
       </div>
 
@@ -1273,8 +1350,8 @@ function SpendMetric({ label, value, detail }) {
   );
 }
 
-function CaseStudyIntake() {
-  const [selectedCaseId, setSelectedCaseId] = useState(intakeExamples[0].id);
+function CaseStudyIntake({ selectedCaseId: suiteCaseId, onSelectCase }) {
+  const [selectedCaseId, setSelectedCaseId] = useState(suiteCaseId || intakeExamples[0].id);
   const [uploadedCase, setUploadedCase] = useState(null);
   const [activePane, setActivePane] = useState('visible');
   const cases = uploadedCase ? [...intakeExamples, uploadedCase] : intakeExamples;
@@ -1294,6 +1371,13 @@ function CaseStudyIntake() {
     };
     reader.readAsText(file);
   }, []);
+
+  useEffect(() => {
+    if (suiteCaseId && suiteCaseId !== selectedCaseId) {
+      setSelectedCaseId(suiteCaseId);
+      setActivePane('visible');
+    }
+  }, [suiteCaseId, selectedCaseId]);
 
   return (
     <section className="prototype intake-prototype">
@@ -1333,6 +1417,7 @@ function CaseStudyIntake() {
                 aria-selected={selectedCase.id === example.id}
                 onClick={() => {
                   setSelectedCaseId(example.id);
+                  if (selectableCaseIds.includes(example.id)) onSelectCase?.(example.id);
                   setActivePane('visible');
                 }}
               >
@@ -1593,7 +1678,8 @@ function BoundaryGroup({ title, items, tone = 'default' }) {
   );
 }
 
-function AgenomePool() {
+function AgenomePool({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [selectedIds, setSelectedIds] = useState(defaultStartingPool);
   const [activeId, setActiveId] = useState(defaultStartingPool[0]);
   const pool = useMemo(() => evaluateStartingPool(selectedIds), [selectedIds]);
@@ -1622,8 +1708,8 @@ function AgenomePool() {
         </div>
         <div className="case-card">
           <span>RunConfig.startingPopulation</span>
-          <strong>{pool.selected.length}/{maximumPoolSize} selected</strong>
-          <p>{pool.ready ? 'ready for runtime spawn' : `${pool.warnings.length} pool warning${pool.warnings.length === 1 ? '' : 's'}`}</p>
+          <strong>{caseDetails.shortTitle}: {pool.selected.length}/{maximumPoolSize} selected</strong>
+          <p>{pool.ready ? `ready for ${caseDetails.title}` : `${pool.warnings.length} pool warning${pool.warnings.length === 1 ? '' : 's'}`}</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${pool.ready ? 100 : Math.max(35, 100 - pool.warnings.length * 18)}%` }} /></i>
           </div>
@@ -1745,7 +1831,7 @@ function AgenomePool() {
             </div>
             <strong>gen-0</strong>
           </div>
-          <pre className="payload-preview">{JSON.stringify(buildAgenomeRunConfig(pool), null, 2)}</pre>
+          <pre className="payload-preview">{JSON.stringify(buildAgenomeRunConfig(pool, caseDetails), null, 2)}</pre>
         </section>
 
         <section className="agenome-contract-panel">
@@ -1780,9 +1866,10 @@ function AgenomePillGroup({ title, items }) {
   );
 }
 
-function buildAgenomeRunConfig(pool) {
+function buildAgenomeRunConfig(pool, selectedCase = getCaseDetails('jack-superyacht-drone')) {
   return {
-    caseId: 'case_superyacht_drone_privacy',
+    caseId: selectedCase.id,
+    caseTitle: selectedCase.title,
     populationCap: maximumPoolSize,
     minimumPoolSize,
     selectedAgenomeIds: pool.selected.map((agenome) => agenome.id),
@@ -1799,13 +1886,14 @@ function buildAgenomeRunConfig(pool) {
   };
 }
 
-function OperatorConsole() {
-  const [caseId, setCaseId] = useState(operatorCasePresets[0].id);
+function OperatorConsole({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
+  const [caseId, setCaseId] = useState(caseDetails.id);
   const [poolId, setPoolId] = useState(operatorPoolPresets[0].id);
   const [mode, setMode] = useState('live');
   const [caps, setCaps] = useState(defaultRunCaps);
   const [status, setStatus] = useState('configured');
-  const selectedCase = operatorCasePresets.find((item) => item.id === caseId) || operatorCasePresets[0];
+  const selectedCasePreset = operatorCasePresets.find((item) => item.id === caseId) || operatorCasePresets[0];
   const selectedPool = operatorPoolPresets.find((item) => item.id === poolId) || operatorPoolPresets[0];
   const capWarnings = validateRunCaps(caps);
   const events = buildOperatorEvents(status, mode);
@@ -1813,6 +1901,11 @@ function OperatorConsole() {
   const isActive = status === 'running' || status === 'paused';
   const progress = status === 'configured' ? 0 : status === 'running' ? 42 : status === 'paused' ? 46 : 100;
   const generation = status === 'configured' ? 0 : status === 'running' ? 1 : status === 'paused' ? 1 : 2;
+
+  useEffect(() => {
+    setCaseId(caseDetails.id);
+    setStatus('configured');
+  }, [caseDetails.id]);
 
   const setCap = (key, value) => {
     setCaps((current) => ({ ...current, [key]: Number(value) }));
@@ -1836,7 +1929,7 @@ function OperatorConsole() {
         </div>
         <div className="case-card">
           <span>{mode} mode · {status}</span>
-          <strong>{selectedCase.title}</strong>
+          <strong>{caseDetails.title}</strong>
           <p>generation {generation}/{caps.generationCap} · energy {Math.max(0, caps.energyBudget - 146)}/{caps.energyBudget}</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${progress}%` }} /></i>
@@ -1952,7 +2045,7 @@ function OperatorConsole() {
             </div>
             <strong>{status === 'configured' ? 'create_run' : `run.${status}`}</strong>
           </div>
-          <pre className="payload-preview">{JSON.stringify(buildRunCommandPreview({ selectedCase, selectedPool, caps, mode, status }), null, 2)}</pre>
+          <pre className="payload-preview">{JSON.stringify(buildRunCommandPreview({ selectedCase: selectedCasePreset, selectedPool, caps, mode, status }), null, 2)}</pre>
         </section>
 
         <section className="operator-contract-panel">
@@ -2004,9 +2097,18 @@ function buildRunCommandPreview({ selectedCase, selectedPool, caps, mode, status
   };
 }
 
-function GatewayForge() {
+function GatewayForge({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [fixtureId, setFixtureId] = useState('clean');
-  const fixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
+  const baseFixture = gatewayFixtures.find((item) => item.id === fixtureId) || gatewayFixtures[0];
+  const fixture = {
+    ...baseFixture,
+    request: {
+      ...baseFixture.request,
+      runId: caseDetails.runId,
+      untrustedPayload: `CasePacket: ${caseDetails.title}. Constraints: ${caseDetails.constraints.join('; ')}.`,
+    },
+  };
   const accepted = fixture.response.accepted;
   const repairLabel = fixture.response.repairAttempted ? 'repair attempted' : 'no repair';
 
@@ -2024,8 +2126,8 @@ function GatewayForge() {
         </div>
         <div className="case-card">
           <span>{fixture.role} · {fixture.schemaName}</span>
-          <strong>{fixture.label}</strong>
-          <p>{accepted ? 'accepted' : 'rejected'} · {repairLabel} · {fixture.providerMeta.latencyMs}ms</p>
+          <strong>{caseDetails.title}</strong>
+          <p>{fixture.label} · {accepted ? 'accepted' : 'rejected'} · {repairLabel} · {fixture.providerMeta.latencyMs}ms</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${accepted ? 100 : 58}%` }} /></i>
           </div>
@@ -2199,7 +2301,8 @@ function buildGatewayEvent(fixture) {
   };
 }
 
-function SubtypeCheckLab() {
+function SubtypeCheckLab({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [candidateId, setCandidateId] = useState(subtypeCandidates[0].id);
   const candidate = subtypeCandidates.find((item) => item.id === candidateId) || subtypeCandidates[0];
   const summary = summarizeSubtypeChecks(candidate);
@@ -2223,8 +2326,8 @@ function SubtypeCheckLab() {
         </div>
         <div className="case-card">
           <span>{candidate.subtype}</span>
-          <strong>{candidate.shortLabel} checks</strong>
-          <p>{summary.pass}/{summary.completed} passing · readiness {summary.readiness}%</p>
+          <strong>{caseDetails.shortTitle}: {candidate.shortLabel}</strong>
+          <p>{summary.pass}/{summary.completed} passing · {caseDetails.subtypeTransfer}</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${summary.readiness}%` }} /></i>
           </div>
@@ -2355,7 +2458,8 @@ function SubtypeCheckLab() {
   );
 }
 
-function NoveltyRadar() {
+function NoveltyRadar({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [candidateId, setCandidateId] = useState(noveltyCandidates[0].id);
   const candidate = noveltyCandidates.find((item) => item.id === candidateId) || noveltyCandidates[0];
   const event = buildNoveltyEvent(candidate);
@@ -2379,8 +2483,8 @@ function NoveltyRadar() {
         </div>
         <div className="case-card">
           <span>{candidate.method} · {riskLabel}</span>
-          <strong>{Math.round(candidate.score * 100)} novelty</strong>
-          <p>{candidate.comparisonSetSize || candidate.neighbors.length + candidate.priorArt.length + candidate.signals.length} persisted comparisons</p>
+          <strong>{caseDetails.shortTitle}: {Math.round(candidate.score * 100)} novelty</strong>
+          <p>Compared against {caseDetails.noveltyPrior}.</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${Math.round(candidate.score * 100)}%` }} /></i>
           </div>
@@ -2527,11 +2631,14 @@ function NoveltyMatchList({ items }) {
   );
 }
 
-function FinalSurvivorProofPanel() {
+function FinalSurvivorProofPanel({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const navigatePrototype = useContext(PrototypeNavigationContext);
   const [runId, setRunId] = useState(survivorRuns[0].id);
   const run = survivorRuns.find((item) => item.id === runId) || survivorRuns[0];
   const isAccepted = run.status === 'accepted';
+  const displayedTitle = selectedCase?.id === 'jack-superyacht-drone' ? run.title : caseDetails.candidateTitle;
+  const displayedSummary = selectedCase?.id === 'jack-superyacht-drone' ? run.summary : caseDetails.candidateSummary;
 
   return (
     <section className="prototype survivor-prototype">
@@ -2546,9 +2653,9 @@ function FinalSurvivorProofPanel() {
           </p>
         </div>
         <div className="case-card">
-          <span>{run.caseStudy} · {run.mode}</span>
+          <span>{caseDetails.title} · {run.mode}</span>
           <strong>{run.label}</strong>
-          <p>{run.runId} · {run.status}</p>
+          <p>{caseDetails.runId} · {run.status} · {caseDetails.fixtureNote}</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${isAccepted ? 91 : 38}%` }} /></i>
           </div>
@@ -2578,11 +2685,11 @@ function FinalSurvivorProofPanel() {
           <div className="panel-heading">
             <div>
               <p className="eyebrow">surviving candidate</p>
-              <h3>{run.title}</h3>
+              <h3>{displayedTitle}</h3>
             </div>
             <strong className={isAccepted ? 'status-good' : 'status-bad'}>{run.status}</strong>
           </div>
-          <p className="survivor-summary">{run.summary}</p>
+          <p className="survivor-summary">{displayedSummary}</p>
           <article className="survivor-improvement-card">
             <span>improvement claim</span>
             <strong>{run.improvementClaim}</strong>
@@ -2662,10 +2769,25 @@ function FinalSurvivorProofPanel() {
   );
 }
 
-function ReplaySpine() {
+function ReplaySpine({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [fixtureId, setFixtureId] = useState('clean');
   const [foldMode, setFoldMode] = useState('replay');
-  const fixture = replayFixtures.find((item) => item.id === fixtureId) || replayFixtures[0];
+  const baseFixture = replayFixtures.find((item) => item.id === fixtureId) || replayFixtures[0];
+  const fixture = {
+    ...baseFixture,
+    events: baseFixture.events.map((event) => event.type === 'case.seeded'
+      ? {
+          ...event,
+          payload: {
+            ...event.payload,
+            caseTitle: caseDetails.title,
+            agentVisibleRef: `casepkt_${caseDetails.id}`,
+            evaluatorAnchorRef: `eval_anchor_${caseDetails.id}`,
+          },
+        }
+      : event),
+  };
   const replay = useMemo(() => foldReplayFixture(fixture), [fixture]);
   const [selectedEventId, setSelectedEventId] = useState(fixture.events[0].id);
   const selectedEvent = fixture.events.find((event) => event.id === selectedEventId) || fixture.events[0];
@@ -2686,8 +2808,8 @@ function ReplaySpine() {
         </div>
         <div className="case-card">
           <span>{fixture.schemaVersion}</span>
-          <strong>{fixture.label}</strong>
-          <p>{validEventCount}/{fixture.events.length} events accepted · {replay.quarantine.length} quarantined</p>
+          <strong>{caseDetails.title}</strong>
+          <p>{fixture.label} · {validEventCount}/{fixture.events.length} events accepted · {replay.quarantine.length} quarantined</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${parity ? 100 : 74}%` }} /></i>
           </div>
@@ -2854,7 +2976,8 @@ function ReplayRow({ label, value }) {
   );
 }
 
-function DemoFallbackLadder() {
+function DemoFallbackLadder({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const [rungId, setRungId] = useState('live');
   const activeRung = fallbackRungs.find((rung) => rung.id === rungId) || fallbackRungs[0];
   const activeEvents = buildFallbackEvents(activeRung.id);
@@ -2874,8 +2997,8 @@ function DemoFallbackLadder() {
         </div>
         <div className="case-card">
           <span>{activeRung.mode} · {activeRung.status}</span>
-          <strong>{activeRung.label}</strong>
-          <p>{activeRung.freshCallsAllowed ? 'fresh calls allowed' : 'fresh calls disabled'} · readiness {readiness}%</p>
+          <strong>{caseDetails.title}</strong>
+          <p>{activeRung.label} · {activeRung.freshCallsAllowed ? 'fresh calls allowed' : 'fresh calls disabled'} · readiness {readiness}%</p>
           <div className="readiness-meter">
             <i><b style={{ width: `${readiness}%` }} /></i>
           </div>
@@ -3249,23 +3372,8 @@ const prototypeStageRows = [
 ];
 
 const prototypeTabStorageKey = 'doppl-prototype-suite.active-tab';
+const prototypeCaseStorageKey = 'doppl-prototype-suite.active-case';
 const prototypeTabIds = new Set(prototypeStages.flatMap((stage) => stage.items.map((item) => item.id)));
-const prototypeCaseStudyLabels = {
-  intake: 'Selectable case-study packets',
-  agenomes: 'Superyacht Drone Privacy',
-  operator: 'Superyacht Drone Privacy',
-  gateway: 'Superyacht Drone Privacy',
-  energy: 'Superyacht Drone Privacy',
-  fusion: 'Superyacht Drone Privacy',
-  critic: 'Superyacht Drone Privacy',
-  subtype: 'Superyacht Drone Privacy',
-  novelty: 'Superyacht Drone Privacy',
-  survivor: 'Selectable terminal proof runs',
-  fallback: 'Superyacht Drone Privacy',
-  replay: 'Superyacht Drone Privacy',
-  trace: 'Superyacht Drone Privacy',
-  spend: 'Superyacht Drone Privacy',
-};
 const prototypeLabels = Object.fromEntries(
   prototypeStages.flatMap((stage) => stage.items.map((item) => [item.id, item.label])),
 );
@@ -3279,8 +3387,19 @@ function getInitialPrototypeTab() {
   }
 }
 
+function getInitialPrototypeCase() {
+  try {
+    const savedCase = window.localStorage.getItem(prototypeCaseStorageKey);
+    return selectableCaseIds.includes(savedCase) ? savedCase : selectableCases[0].id;
+  } catch {
+    return selectableCases[0].id;
+  }
+}
+
 function App() {
   const [tab, setTab] = useState(getInitialPrototypeTab);
+  const [selectedCaseId, setSelectedCaseId] = useState(getInitialPrototypeCase);
+  const selectedCase = getCaseDetails(selectedCaseId);
 
   useEffect(() => {
     try {
@@ -3289,6 +3408,14 @@ function App() {
       // Ignore storage failures; tab navigation should still work.
     }
   }, [tab]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(prototypeCaseStorageKey, selectedCaseId);
+    } catch {
+      // Ignore storage failures; case selection still works for the current session.
+    }
+  }, [selectedCaseId]);
 
   return (
     <PrototypeNavigationContext.Provider value={setTab}>
@@ -3332,28 +3459,36 @@ function App() {
           <section className="prototype-context-strip" aria-label="Prototype case study context">
             <span>active prototype</span>
             <strong>{prototypeLabels[tab]}</strong>
-            <span>case study</span>
-            <strong>{prototypeCaseStudyLabels[tab] || 'Prototype fixture'}</strong>
+            <label className="suite-case-picker">
+              <span>case study</span>
+              <select value={selectedCaseId} onChange={(event) => setSelectedCaseId(event.target.value)}>
+                {selectableCases.map((caseItem) => (
+                  <option key={caseItem.id} value={caseItem.id}>{caseItem.title}</option>
+                ))}
+              </select>
+            </label>
+            <small>{selectedCase.fixtureNote}</small>
           </section>
 
-          {tab === 'intake' && <CaseStudyIntake />}
-          {tab === 'agenomes' && <AgenomePool />}
-          {tab === 'operator' && <OperatorConsole />}
-          {tab === 'gateway' && <GatewayForge />}
-          {tab === 'fusion' && <FusionLab />}
-          {tab === 'survivor' && <FinalSurvivorProofPanel />}
-          {tab === 'fallback' && <DemoFallbackLadder />}
-          {tab === 'replay' && <ReplaySpine />}
+          {tab === 'intake' && <CaseStudyIntake selectedCaseId={selectedCaseId} onSelectCase={setSelectedCaseId} />}
+          {tab === 'agenomes' && <AgenomePool selectedCase={selectedCase} />}
+          {tab === 'operator' && <OperatorConsole selectedCase={selectedCase} />}
+          {tab === 'gateway' && <GatewayForge selectedCase={selectedCase} />}
+          {tab === 'fusion' && <FusionLab selectedCase={selectedCase} />}
+          {tab === 'survivor' && <FinalSurvivorProofPanel selectedCase={selectedCase} />}
+          {tab === 'fallback' && <DemoFallbackLadder selectedCase={selectedCase} />}
+          {tab === 'replay' && <ReplaySpine selectedCase={selectedCase} />}
           {tab === 'trace' && (
             <TraceViewer
               trace={sampleTrace}
+              selectedCase={selectedCase}
               boundaryRail={<BoundaryRail title="Where Trace Fits" boundary={traceBoundary} className="trace-boundary-panel" />}
             />
           )}
-          {tab === 'spend' && <SpendLedgerView />}
-          {tab === 'subtype' && <SubtypeCheckLab />}
-          {tab === 'novelty' && <NoveltyRadar />}
-          {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
+          {tab === 'spend' && <SpendLedgerView selectedCase={selectedCase} />}
+          {tab === 'subtype' && <SubtypeCheckLab selectedCase={selectedCase} />}
+          {tab === 'novelty' && <NoveltyRadar selectedCase={selectedCase} />}
+          {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} selectedCase={selectedCase} />}
         </main>
       </PrototypeActiveTabContext.Provider>
     </PrototypeNavigationContext.Provider>

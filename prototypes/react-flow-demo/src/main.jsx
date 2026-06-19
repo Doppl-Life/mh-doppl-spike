@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   applyNodeChanges,
@@ -63,10 +63,34 @@ import {
   noveltyCandidates,
   noveltyContractShapes,
 } from './noveltyRadarData.js';
+import {
+  survivorBoundary,
+  survivorContractShapes,
+  survivorRuns,
+} from './survivorProofData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
 const HANDLE_SLOTS = [25, 37, 49, 61, 73];
+const PrototypeNavigationContext = createContext(() => {});
+const prototypeModuleTargets = {
+  'Agenome Pool': { tabId: 'agenomes', label: 'Agenome pool' },
+  'Case Study Intake': { tabId: 'intake', label: 'Case intake' },
+  'Critic Council': { tabId: 'critic', label: 'Critic council' },
+  'Demo Fallback Ladder': { tabId: 'fallback', label: 'Fallback ladder' },
+  'Energy Metabolism': { tabId: 'energy', label: 'Energy metabolism' },
+  'Final Survivor Proof Panel': { tabId: 'survivor', label: 'Survivor proof' },
+  'Fusion / Mutation': { tabId: 'fusion', label: 'Fusion lab' },
+  'Fusion Lab': { tabId: 'fusion', label: 'Fusion lab' },
+  'Gateway Forge': { tabId: 'gateway', label: 'Gateway forge' },
+  'Model Gateway': { tabId: 'gateway', label: 'Gateway forge' },
+  'Novelty Radar': { tabId: 'novelty', label: 'Novelty radar' },
+  'Operator Console': { tabId: 'operator', label: 'Operator console' },
+  'Replay Spine': { tabId: 'replay', label: 'Replay spine' },
+  'Spend Ledger': { tabId: 'spend', label: 'Spend ledger' },
+  'Subtype Check Lab': { tabId: 'subtype', label: 'Subtype checks' },
+  'Trace Viewer': { tabId: 'trace', label: 'Trace viewer' },
+};
 
 const caseStudy = {
   title: 'Superyacht Drone Privacy Problem',
@@ -1451,12 +1475,33 @@ function BoundaryPanel() {
 }
 
 function BoundaryGroup({ title, items, tone = 'default' }) {
+  const navigatePrototype = useContext(PrototypeNavigationContext);
+  const navigableItems = title.includes('Modules')
+    ? [
+        ...new Map(
+          items
+            .map((item) => prototypeModuleTargets[item])
+            .filter(Boolean)
+            .map((target) => [target.tabId, target]),
+        ).values(),
+      ]
+    : [];
+
   return (
     <div className={`boundary-group tone-${tone}`}>
       <span>{title}</span>
       <div>
         {items.map((item) => <b key={item}>{item}</b>)}
       </div>
+      {navigableItems.length > 0 && (
+        <div className="boundary-nav-buttons">
+          {navigableItems.map(({ label, tabId }) => (
+            <button key={`${label}-${tabId}`} type="button" onClick={() => navigatePrototype(tabId)}>
+              Open {label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -2395,6 +2440,141 @@ function NoveltyMatchList({ items }) {
   );
 }
 
+function FinalSurvivorProofPanel() {
+  const navigatePrototype = useContext(PrototypeNavigationContext);
+  const [runId, setRunId] = useState(survivorRuns[0].id);
+  const run = survivorRuns.find((item) => item.id === runId) || survivorRuns[0];
+  const isAccepted = run.status === 'accepted';
+
+  return (
+    <section className="prototype survivor-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 13 · final survivor proof panel</p>
+          <h2>{isAccepted ? 'Why This Idea Won' : 'No Winner Fabricated'}</h2>
+          <p>
+            End a Doppl run with one audience-ready proof artifact. The panel gathers lineage,
+            critic pressure, subtype checks, novelty, spend, replay truth, unresolved risks, and
+            the validation plan in one place.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{run.caseStudy} · {run.mode}</span>
+          <strong>{run.label}</strong>
+          <p>{run.runId} · {run.status}</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${isAccepted ? 91 : 38}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="survivor-layout">
+        <aside className="survivor-run-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">terminal run</p>
+              <h3>Select State</h3>
+            </div>
+          </div>
+          <div className="survivor-run-list">
+            {survivorRuns.map((item) => (
+              <button key={item.id} type="button" aria-selected={run.id === item.id} onClick={() => setRunId(item.id)}>
+                <span>{item.status}</span>
+                <strong>{item.label}</strong>
+                <small>{item.caseStudy}</small>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className="survivor-claim-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">surviving candidate</p>
+              <h3>{run.title}</h3>
+            </div>
+            <strong className={isAccepted ? 'status-good' : 'status-bad'}>{run.status}</strong>
+          </div>
+          <p className="survivor-summary">{run.summary}</p>
+          <article className="survivor-improvement-card">
+            <span>improvement claim</span>
+            <strong>{run.improvementClaim}</strong>
+            <p>{run.terminalReason}</p>
+          </article>
+        </section>
+
+        <section className="survivor-metric-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">proof metrics</p>
+              <h3>Evidence Bundle</h3>
+            </div>
+          </div>
+          <div className="survivor-metric-grid">
+            {run.metrics.map((metric) => (
+              <ProjectionCard key={metric.label} label={metric.label} value={metric.value} detail={metric.detail} />
+            ))}
+          </div>
+        </section>
+
+        <section className="survivor-evidence-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">resolving proof links</p>
+              <h3>Click Through Evidence</h3>
+            </div>
+            <strong>{run.evidence.length} links</strong>
+          </div>
+          <div className="survivor-evidence-list">
+            {run.evidence.map((item) => (
+              <article key={`${run.id}-${item.label}`}>
+                <div>
+                  <span>{item.status}</span>
+                  <strong>{item.label}</strong>
+                  <p>{item.detail}</p>
+                </div>
+                <button type="button" onClick={() => navigatePrototype(item.tab)}>
+                  Open {item.label}
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="survivor-risk-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">not hidden</p>
+              <h3>Risks + Validation</h3>
+            </div>
+          </div>
+          <div className="survivor-risk-grid">
+            <PacketList label="open risks" items={run.risks} />
+            <PacketList label="validation plan" items={run.validationPlan} />
+          </div>
+        </section>
+
+        <aside className="boundary-panel survivor-boundary-panel">
+          <p className="eyebrow">boundary contracts</p>
+          <h3>Where Proof Fits</h3>
+          <BoundaryGroup title="Upstream Modules" items={survivorBoundary.upstreamModules} />
+          <BoundaryGroup title="Upstream Boundary Contracts" items={survivorBoundary.upstreamContracts} />
+          <BoundaryGroup title="Downstream Boundary Contracts" items={survivorBoundary.downstreamContracts} />
+          <BoundaryGroup title="Downstream Modules" items={survivorBoundary.downstreamModules} />
+          <BoundaryGroup title="Invariants Exercised" items={survivorBoundary.invariants} tone="strong" />
+        </aside>
+
+        <section className="survivor-contract-panel">
+          <div className="contract-pane">
+            <ContractShapeGroup label="Ingress" shapes={survivorContractShapes.ingress} />
+            <ContractShapeGroup label="Egress" shapes={survivorContractShapes.egress} />
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function ReplaySpine() {
   const [fixtureId, setFixtureId] = useState('clean');
   const [foldMode, setFoldMode] = useState('replay');
@@ -2967,6 +3147,7 @@ const prototypeStages = [
   {
     label: 'Explain',
     items: [
+      { id: 'survivor', label: 'Survivor proof' },
       { id: 'fallback', label: 'Fallback ladder' },
       { id: 'replay', label: 'Replay spine' },
       { id: 'trace', label: 'Trace viewer' },
@@ -2992,6 +3173,7 @@ const prototypeCaseStudyLabels = {
   critic: 'Superyacht Drone Privacy',
   subtype: 'Superyacht Drone Privacy',
   novelty: 'Superyacht Drone Privacy',
+  survivor: 'Selectable terminal proof runs',
   fallback: 'Superyacht Drone Privacy',
   replay: 'Superyacht Drone Privacy',
   trace: 'Superyacht Drone Privacy',
@@ -3022,62 +3204,65 @@ function App() {
   }, [tab]);
 
   return (
-    <main className="app-shell">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">Doppl prototype suite</p>
-          <h1>Small organisms for the big organism.</h1>
-          <p>
-            An evolving shelf of Doppl product organisms: small, testable views of metabolism,
-            criticism, selection, fusion, spend, and evaluation patterns that can grow as the live
-            product learns what it needs.
-          </p>
-        </div>
-        <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
-          {prototypeStageRows.map((row, rowIndex) => (
-            <div className="process-tab-row" key={`prototype-row-${rowIndex}`}>
-              {row.map((stage) => (
-                <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
-                  <span>{stage.label}</span>
-                  <div>
-                    {stage.items.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        aria-selected={tab === item.id}
-                        onClick={() => setTab(item.id)}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
+    <PrototypeNavigationContext.Provider value={setTab}>
+      <main className="app-shell">
+        <header className="hero">
+          <div>
+            <p className="eyebrow">Doppl prototype suite</p>
+            <h1>Small organisms for the big organism.</h1>
+            <p>
+              An evolving shelf of Doppl product organisms: small, testable views of metabolism,
+              criticism, selection, fusion, spend, and evaluation patterns that can grow as the live
+              product learns what it needs.
+            </p>
+          </div>
+          <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
+            {prototypeStageRows.map((row, rowIndex) => (
+              <div className="process-tab-row" key={`prototype-row-${rowIndex}`}>
+                {row.map((stage) => (
+                  <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
+                    <span>{stage.label}</span>
+                    <div>
+                      {stage.items.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          aria-selected={tab === item.id}
+                          onClick={() => setTab(item.id)}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </nav>
-      </header>
+                ))}
+              </div>
+            ))}
+          </nav>
+        </header>
 
-      <section className="prototype-context-strip" aria-label="Prototype case study context">
-        <span>active prototype</span>
-        <strong>{prototypeLabels[tab]}</strong>
-        <span>case study</span>
-        <strong>{prototypeCaseStudyLabels[tab] || 'Prototype fixture'}</strong>
-      </section>
+        <section className="prototype-context-strip" aria-label="Prototype case study context">
+          <span>active prototype</span>
+          <strong>{prototypeLabels[tab]}</strong>
+          <span>case study</span>
+          <strong>{prototypeCaseStudyLabels[tab] || 'Prototype fixture'}</strong>
+        </section>
 
-      {tab === 'intake' && <CaseStudyIntake />}
-      {tab === 'agenomes' && <AgenomePool />}
-      {tab === 'operator' && <OperatorConsole />}
-      {tab === 'gateway' && <GatewayForge />}
-      {tab === 'fusion' && <FusionLab />}
-      {tab === 'fallback' && <DemoFallbackLadder />}
-      {tab === 'replay' && <ReplaySpine />}
-      {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
-      {tab === 'spend' && <SpendLedgerView />}
-      {tab === 'subtype' && <SubtypeCheckLab />}
-      {tab === 'novelty' && <NoveltyRadar />}
-      {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
-    </main>
+        {tab === 'intake' && <CaseStudyIntake />}
+        {tab === 'agenomes' && <AgenomePool />}
+        {tab === 'operator' && <OperatorConsole />}
+        {tab === 'gateway' && <GatewayForge />}
+        {tab === 'fusion' && <FusionLab />}
+        {tab === 'survivor' && <FinalSurvivorProofPanel />}
+        {tab === 'fallback' && <DemoFallbackLadder />}
+        {tab === 'replay' && <ReplaySpine />}
+        {tab === 'trace' && <TraceViewer trace={sampleTrace} />}
+        {tab === 'spend' && <SpendLedgerView />}
+        {tab === 'subtype' && <SubtypeCheckLab />}
+        {tab === 'novelty' && <NoveltyRadar />}
+        {(tab === 'energy' || tab === 'critic') && <FlowPrototype key={tab} kind={tab} onNavigate={setTab} />}
+      </main>
+    </PrototypeNavigationContext.Provider>
   );
 }
 

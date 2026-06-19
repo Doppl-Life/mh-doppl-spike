@@ -1785,6 +1785,30 @@ article.module-node::after {
   background: rgba(86, 255, 179, 0.08);
 }
 
+.boundary-nav-buttons {
+  margin-top: 2px;
+}
+
+.boundary-nav-buttons button {
+  border: 1px solid rgba(86, 255, 179, 0.28);
+  padding: 8px 9px;
+  background: rgba(86, 255, 179, 0.08);
+  color: #dfffee;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.15;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.boundary-nav-buttons button:hover,
+.boundary-nav-buttons button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(86, 255, 179, 0.72);
+  background: rgba(86, 255, 179, 0.14);
+  outline: none;
+}
+
 /* ---------- Agenome pool (prototype 07) ---------- */
 
 .agenome-layout {
@@ -2902,6 +2926,192 @@ article.module-node::after {
   grid-column: 1 / -1;
 }
 
+/* ---------- Final survivor proof panel (prototype 13) ---------- */
+
+.survivor-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) minmax(320px, 0.82fr) 270px;
+  grid-template-areas:
+    "runs claim metrics boundary"
+    "runs evidence evidence boundary"
+    "runs risks risks boundary"
+    "contracts contracts contracts contracts";
+  gap: 14px;
+  align-items: start;
+}
+
+.survivor-layout > * {
+  min-width: 0;
+}
+
+.survivor-run-panel,
+.survivor-claim-panel,
+.survivor-metric-panel,
+.survivor-evidence-panel,
+.survivor-risk-panel,
+.survivor-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.survivor-run-panel { grid-area: runs; }
+.survivor-claim-panel { grid-area: claim; }
+.survivor-metric-panel { grid-area: metrics; }
+.survivor-evidence-panel { grid-area: evidence; }
+.survivor-risk-panel { grid-area: risks; }
+.survivor-boundary-panel { grid-area: boundary; }
+.survivor-contract-panel { grid-area: contracts; }
+
+.survivor-run-panel,
+.survivor-boundary-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.survivor-run-list,
+.survivor-metric-grid,
+.survivor-evidence-list,
+.survivor-risk-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.survivor-run-list button {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 13px;
+  background: rgba(4, 8, 23, 0.56);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.survivor-run-list button:hover,
+.survivor-run-list button:focus-visible,
+.survivor-run-list button[aria-selected="true"] {
+  transform: translateY(-1px);
+  border-color: rgba(110, 231, 255, 0.72);
+  background: rgba(9, 18, 38, 0.94);
+  outline: none;
+}
+
+.survivor-run-list button[aria-selected="true"] {
+  border-color: rgba(86, 255, 179, 0.62);
+}
+
+.survivor-run-list span,
+.survivor-improvement-card span,
+.survivor-evidence-list span {
+  display: block;
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.survivor-run-list strong,
+.survivor-improvement-card strong,
+.survivor-evidence-list strong {
+  color: var(--ink);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.survivor-run-list small,
+.survivor-summary,
+.survivor-improvement-card p,
+.survivor-evidence-list p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.survivor-summary {
+  margin: 0 0 14px;
+  color: #d8e5ff;
+  font-size: 15px;
+}
+
+.survivor-improvement-card,
+.survivor-evidence-list article {
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.42);
+}
+
+.survivor-improvement-card {
+  display: grid;
+  gap: 8px;
+  border-left: 4px solid var(--green);
+}
+
+.survivor-improvement-card p,
+.survivor-evidence-list p {
+  margin: 0;
+}
+
+.survivor-metric-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.survivor-evidence-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.survivor-evidence-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 12px;
+  align-items: start;
+}
+
+.survivor-evidence-list article > div {
+  min-width: 0;
+}
+
+.survivor-evidence-list button {
+  border: 1px solid rgba(86, 255, 179, 0.28);
+  padding: 9px 10px;
+  background: rgba(86, 255, 179, 0.08);
+  color: #dfffee;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.survivor-evidence-list button:hover,
+.survivor-evidence-list button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(86, 255, 179, 0.72);
+  background: rgba(86, 255, 179, 0.14);
+  outline: none;
+}
+
+.survivor-risk-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.survivor-risk-grid .packet-block:first-child {
+  grid-column: auto;
+}
+
+.survivor-contract-panel {
+  grid-column: 1 / -1;
+}
+
 /* ---------- Replay spine (prototype 09) ---------- */
 
 .replay-layout {
@@ -3410,6 +3620,7 @@ article.module-node::after {
   .operator-layout,
   .subtype-layout,
   .novelty-layout,
+  .survivor-layout,
   .fallback-layout,
   .replay-layout,
   .spend-grid,
@@ -3428,6 +3639,8 @@ article.module-node::after {
   .subtype-boundary-panel,
   .novelty-candidate-panel,
   .novelty-boundary-panel,
+  .survivor-run-panel,
+  .survivor-boundary-panel,
   .fallback-rung-panel,
   .fallback-boundary-panel,
   .replay-control-panel,
@@ -3462,6 +3675,13 @@ article.module-node::after {
   .novelty-event-panel,
   .novelty-boundary-panel,
   .novelty-contract-panel,
+  .survivor-run-panel,
+  .survivor-claim-panel,
+  .survivor-metric-panel,
+  .survivor-evidence-panel,
+  .survivor-risk-panel,
+  .survivor-boundary-panel,
+  .survivor-contract-panel,
   .fallback-rung-panel,
   .fallback-mode-panel,
   .fallback-actions-panel,
@@ -3489,6 +3709,9 @@ article.module-node::after {
   .subtype-obligation-grid,
   .subtype-evidence-list,
   .novelty-component-grid,
+  .survivor-metric-grid,
+  .survivor-evidence-list,
+  .survivor-risk-grid,
   .fallback-action-list,
   .fallback-event-list,
   .packet-pane,
@@ -3502,6 +3725,7 @@ article.module-node::after {
   .gateway-result-panel,
   .subtype-contract-panel,
   .novelty-contract-panel,
+  .survivor-contract-panel,
   .fallback-contract-panel,
   .replay-contract-panel {
     grid-column: auto;
@@ -3587,6 +3811,9 @@ article.module-node::after {
   .subtype-obligation-grid,
   .subtype-evidence-list,
   .novelty-component-grid,
+  .survivor-metric-grid,
+  .survivor-evidence-list,
+  .survivor-risk-grid,
   .fallback-action-list,
   .fallback-cap-grid,
   .fallback-event-list,

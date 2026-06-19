@@ -239,6 +239,18 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Why:** it is the live container for the Lα Fusant fusion — where a [Homology](#homology) gets found and turned into an experiment to spawn. This very session (sprout/afrit → PRM/ORM → Agora) is an instance.
 - **See:** Homology, Fusant, Lα; `[LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md)` (Homology)
 
+### Frame recovery
+
+- **Def:** the precursor move before idea generation: recover what the problem actually is, not the problem as first stated. `status: coined`
+- **Why:** it does not matter how good the answers are if the question is wrong. In Doppl case studies, this is scored separately from sprout/afrit quality: first identify the hidden variable, then generate.
+- **See:** Problem recovery; Hidden variable before fruit; `[scratchpad/case-studies/case-study-schema.md](./scratchpad/case-studies/case-study-schema.md)` (`evaluation_focus`)
+
+### Problem recovery
+
+- **Def:** the generated artifact that turns an observed situation and stated complaint into the actual problem, deleted assumptions, hidden variable, and solution class before idea generation begins. `status: coined`
+- **Why:** makes frame recovery judgeable by humans and domain experts instead of burying it inside the final answer.
+- **See:** Frame recovery; `[scratchpad/case-studies/evaluation-rubric.md](./scratchpad/case-studies/evaluation-rubric.md)`
+
 ### Tool-to-make-a-tool (bootstrapping)
 
 - **Def:** the deserted-island principle: early agenomes/skills exist not to do the job but to make the next, better tool. Iterate tools until one is generally useful. `status: coined`
@@ -289,6 +301,8 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-19 | Problem recovery | Coined — the explicit generated artifact for case studies: symptom report → actual problem → hidden variable → solution class before solution generation. |
+| 2026-06-19 | Frame recovery   | Coined — the precursor before idea generation: recover the actual question/problem before judging sprouts or afrits. Added to case-study `evaluation_focus` |
 | 2026-06-19 | Doppl Prime      | Coined — the canonical, production-bound repo (`doppl-prime`, `Doppl-Life/doppl-prime`): official docs + binding source of truth, the **anvil** to this crucible. Surviving ideas land there; crucible work is measured against it. Referenced in [AGENTS.md](./AGENTS.md) + [README](./README.md) |
 | 2026-06-18 | Weed             | Coined — the negative class (sprout/afrit/**weed**); already live in `spikes/backyard`. Surfacing one on purpose = anti-survivorship (`exploration:true`). Polarity −1, aligns with `not-it`. Built the Agora verdict bus (`agora/`) that compares human vs judge vs council on this axis |
 | 2026-06-18 | `polymath` / `addition-by-subtraction` | Coined — two gen-1 skills built: `polymath` (the Renaissance man; **domain-transfer** mutagen = the Medici Effect; promotes the `transfer-hunter` archetype) + `addition-by-subtraction` (the sculptor; **valence-flip** convergent-DOWN, via-negativa). The latter completes the convergence×valence 2×2; the former adds a **4th** operator class (catalog is open) |
@@ -317,5 +331,3 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 | 2026-06-17 | Witness          | Renamed **L5 → Lα** — moved outside the tree, not a fifth stratum                     |
 | 2026-06-17 | Amemetics        | Coined as the name for antifragile memetic inheritance                                |
 | 2026-06-17 | —                | Glossary created                                                                      |
-
-

@@ -311,3 +311,10 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** This is the will-be tense with the loop closed — reality-verdicts (reactor = "the world / the price") flow into the same [Agora ledger](./bedrock/signal/README.md) and pay out energy; even virtual bets earn "energies." Markets are slow + adversarial (Tesla's fundamentals waited years for price to agree), so paper-first buys falsifiable signal without the wait costing money.
 - **Evidence:** Design discussion 2026-06-17 — prediction-market angle; "mark when and where we did the things"; real-money vs virtual bets.
 - **Carry forward:** **Pre-register every call** (all bets, not just winners) or it's cherry-picking ([BUGS](./BUGS_AND_MITIGATIONS.md)). A pre-registered paper-bet harness is a strong, safe first Insight-Machine spike — see [MEMORY fork](./MEMORY.md#first-insight-machine-domain-prediction-markets-not-alzheimers--2026-06-17).
+
+### Hidden variable before fruit — 2026-06-19
+
+- **Banger:** A good Doppl case has two separable wins: **frame recovery** first, **generated ideas** second. The path is: "This is happening. This is what I think the problem is. **This is what the problem actually is.** Here's an interesting solution." Before judging sprouts or afrits, ask whether the system recovered the question that should have been asked.
+- **Lesson:** Treat the user's stated problem as a symptom report, not as the target. Judge two outputs separately: Problem Recovery first, then Solution Generation. If the recovered problem is wrong, cap the solution score no matter how clever the answer sounds.
+- **Evidence:** Public case-study triage for `scratchpad/case-studies/`: Houston baggage walk, airport liquid congestion, A&E aggression, Singapore pre-peak MRT, and London Tube map distortion all depend on a non-obvious hidden variable more than on a clever final artifact.
+- **Carry forward:** Give every withheld benchmark a model-facing `Problem Recovery` output and every evaluator version an `evaluation_focus` target with actual problem, hidden variable, deleted assumptions, generated idea target, and scoring notes.

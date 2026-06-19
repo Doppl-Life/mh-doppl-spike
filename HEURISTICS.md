@@ -17,6 +17,8 @@ something we actually saw or a known bias/fallacy — not invented wisdom.
 ## Moves — where to go right
 
 - **Solve the real problem** — attack where the problem actually lives, not the loudest object. *(yacht: protect the person from being filmed, not "stop the drone")*
+- **Recover the frame first** — before answering, translate the symptom report into the actual problem; a strong answer to the wrong question is still wrong.
+- **Question the requirement** — treat every "must" as a claim with an owner and a reason, not as law.
 - **Job to be done** — optimize the outcome someone actually wants, not the obvious metric. *(yacht wifi: continuity, not cheap bandwidth)*
 - **Redraw the perimeter** — check you're defending the right boundary before adding force. *(yacht: nobody was watching the water)*
 - **Hide in plain sight** — change the target, not the attacker; remove what's valuable instead of fighting for it. *(move the person inside; the drone arrives too late)*
@@ -41,6 +43,7 @@ something we actually saw or a known bias/fallacy — not invented wisdom.
 - **Herding** — agreement read as truth; the room converges and calls it quality.
 - **Confirmation** — collecting what supports the frame, ignoring what breaks it.
 - **More-of-the-same** — scaling the current approach when the gap is elsewhere. *(more guards, same unwatched water)*
+- **Optimizing a thing that should not exist** — improving the inherited process before asking whether that process or requirement belongs.
 - **Premature lock-in** — closing a fork because deciding feels like progress.
 - **Infinite regress / turtles all the way down** — "fixing" it by adding a backup, then a backup for the backup, with no stopping rule. A fix you keep needing *more* of isn't a fix; it's a counter you keep incrementing. *(yacht: redundancy → redundancy for the redundancy → …)*
 - **Relocated single point of failure (quis custodiet)** — redundancy doesn't remove the SPOF, it moves it into the thing that chooses between the redundant parts. *(yacht: the failover controller is now the thing that can't go down)*

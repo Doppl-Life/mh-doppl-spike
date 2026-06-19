@@ -265,9 +265,45 @@ The crew needs an action they can execute quickly. The solution cannot depend on
 
 **Lesson:** Timing matters. The response likely needs to happen before visual contact becomes valuable.
 
+## Problem Recovery
+
+This section is intentionally blank for the Doppl run. Before proposing a solution, the agenome should recover the actual problem using only the problem, purpose, constraints, failed attempts, user, and environment sections above. Treat the stated problem as a symptom report, not as a binding requirement.
+
+### Observed Situation
+
+_To be generated._
+
+### Stated Problem Or Symptom
+
+_To be generated._
+
+### Source-Proposed Solution Or Assumption
+
+_To be generated._
+
+### Deleted Assumptions
+
+_To be generated._
+
+### Actual Problem
+
+_To be generated._
+
+### Hidden Variable
+
+_To be generated._
+
+### Solution Class
+
+_To be generated._
+
+### Confidence And Open Questions
+
+_To be generated._
+
 ## Solution
 
-This section is intentionally blank for the Doppl run. The agenome should generate a proposed solution using only the problem, purpose, constraints, failed attempts, user, and environment sections above.
+This section is intentionally blank for the Doppl run. The agenome should generate a proposed solution after completing Problem Recovery.
 
 ### Summary
 

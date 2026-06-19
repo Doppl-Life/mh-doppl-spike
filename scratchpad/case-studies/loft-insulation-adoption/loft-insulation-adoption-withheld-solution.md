@@ -265,37 +265,73 @@ The reported fivefold result should be labeled as source-reported unless a prima
 
 **Lesson:** The right nudge may be a service redesign, not just a message.
 
+## Problem Recovery
+
+This section is intentionally blank for the Doppl run. Before proposing a solution, the agenome should recover the actual problem using only the problem, purpose, constraints, failed attempts, user, and environment sections above. Treat the stated problem as a symptom report, not as a binding requirement.
+
+### Observed Situation
+
+_To be generated._
+
+### Stated Problem Or Symptom
+
+_To be generated._
+
+### Source-Proposed Solution Or Assumption
+
+_To be generated._
+
+### Deleted Assumptions
+
+_To be generated._
+
+### Actual Problem
+
+_To be generated._
+
+### Hidden Variable
+
+_To be generated._
+
+### Solution Class
+
+_To be generated._
+
+### Confidence And Open Questions
+
+_To be generated._
+
 ## Solution
+
+This section is intentionally blank for the Doppl run. The agenome should generate a proposed intervention after completing Problem Recovery.
 
 ### Summary
 
-Withheld for evaluation.
+_To be generated._
 
 ### Details
 
-The known solution is intentionally omitted from this version. A candidate solution should be evaluated on whether it identifies the hidden practical friction in the household installation journey and removes it with a low-cost operational add-on.
+_To be generated._
+
+The proposed solution should explain:
+
+- what service, workflow, or household-journey intervention should be used
+- where it enters the path from interest to completed installation
+- who does what, and with what consent
+- how it protects privacy, liability, and installer workflow
+- how completion rates and cost per completed installation would be measured
 
 ### Why This Solution
 
-Withheld for evaluation.
+_To be generated._
 
 ### Tradeoffs
 
-- The intervention may add some service cost per attempted installation.
-- Household trust and consent are important because the work happens in private space.
-- The solution may need safeguards around liability, damage, disposal, and appointment timing.
-- The approach may not help households whose barrier is structural, damp-related, financial, or distrust-based.
+_To be generated._
 
-### Expected Outcome
+### Validation Plan
 
-If the hidden bottleneck is correctly removed, the proportion of households completing installation should rise substantially relative to the standard offer.
-
-### Next Steps
-
-- Interview installers about why appointments fail or are postponed.
-- Observe the installation journey from booking through completion.
-- Compare completion rates across a standard offer and a modified service offer.
-- Track cost per completed installation, not just uptake of the offer.
+_To be generated._
 
 ## Reproducible
 

@@ -262,34 +262,73 @@ The company should be able to compare damage rates before and after the interven
 
 **Lesson:** The intervention should prevent damage before it reaches the customer.
 
+## Problem Recovery
+
+This section is intentionally blank for the Doppl run. Before proposing a solution, the agenome should recover the actual problem using only the problem, purpose, constraints, failed attempts, user, and environment sections above. Treat the stated problem as a symptom report, not as a binding requirement.
+
+### Observed Situation
+
+_To be generated._
+
+### Stated Problem Or Symptom
+
+_To be generated._
+
+### Source-Proposed Solution Or Assumption
+
+_To be generated._
+
+### Deleted Assumptions
+
+_To be generated._
+
+### Actual Problem
+
+_To be generated._
+
+### Hidden Variable
+
+_To be generated._
+
+### Solution Class
+
+_To be generated._
+
+### Confidence And Open Questions
+
+_To be generated._
+
 ## Solution
+
+This section is intentionally blank for the Doppl run. The agenome should generate a proposed intervention after completing Problem Recovery.
 
 ### Summary
 
-Withheld for evaluation.
+_To be generated._
 
 ### Details
 
-The known solution is intentionally omitted from this version. A generated answer should infer a practical intervention from the problem, constraints, failed approaches, and environment.
+_To be generated._
+
+The proposed solution should explain:
+
+- what packaging, signal, carrier-flow, or handling intervention should be used
+- where it acts before damage occurs
+- why it can work without retraining every handler
+- how it avoids heavy overpackaging
+- how the company would compare damage rates before and after
 
 ### Why This Solution
 
-Withheld for evaluation.
+_To be generated._
 
 ### Tradeoffs
 
-- Withheld.
+_To be generated._
 
-### Expected Outcome
+### Validation Plan
 
-A strong solution should reduce the rate of damaged bike deliveries without substantially increasing packaging cost, weight, or operational complexity.
-
-### Next Steps
-
-- Ask the model to propose an intervention.
-- Compare the answer against the known solution.
-- Evaluate whether the answer reduces risk before damage occurs.
-- Check whether the proposed intervention can be tested through an A/B comparison of damage rates.
+_To be generated._
 
 ## Reproducible
 

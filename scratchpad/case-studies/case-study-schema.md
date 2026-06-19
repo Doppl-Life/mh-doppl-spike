@@ -2,6 +2,8 @@
 
 This schema defines the information needed to describe a case study clearly and consistently. It is intentionally simple: the case study should explain the situation, the person or group affected, the surrounding conditions, what was tried, what solution emerged, and whether someone else could reproduce the result.
 
+Case studies should separate evaluator-only targets from generated outputs. In withheld-solution prompts, the agenome should produce two artifacts in order: `problem_recovery` first, then `solution_generation`. The evaluator version stores the target answer in `evaluation_focus` and `solution`.
+
 ## Case Study
 
 | Field | Type | Required | Description |
@@ -17,10 +19,34 @@ This schema defines the information needed to describe a case study clearly and 
 | `user` | object | Yes | The person, group, or role affected by the problem. |
 | `environment` | object | Yes | The context in which the problem and solution exist. |
 | `solution` | object | Yes | The resulting answer, design, intervention, or recommendation. |
+| `evaluation_focus` | object | Optional | Evaluator-only targets for scoring problem recovery and solution generation, especially the hidden variable, actual problem, and frame recovery target. |
 | `reproducible` | object | Yes | Whether and how the case study can be reproduced. |
 | `validator` | object | Optional | Domain expert, reviewer, or stakeholder who can judge whether the case and solution are plausible. |
 | `open_questions` | list<string> | Recommended | Missing facts, follow-up questions, or uncertainties that would improve the case study. |
 | `notes` | text | Optional | Extra context that does not fit elsewhere. |
+
+## Generated Output Contract
+
+Withheld-solution prompts should ask the agenome to generate two outputs in this order.
+
+### Problem Recovery
+
+Problem Recovery translates the symptom report into the actual problem before any solution is proposed. The user's complaint is treated as evidence. Any user-proposed fix, status quo process, or obvious requirement is treated as a claim to examine, not as a binding instruction.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `observed_situation` | text | Yes | What is happening in the case before interpretation. |
+| `stated_problem_or_symptom` | text | Yes | The complaint, request, or obvious framing presented by the source. |
+| `source_proposed_solution_or_assumption` | text | Recommended | Any implied solution, requirement, or inherited process the source appears to assume. |
+| `deleted_assumptions` | list<string> | Recommended | Assumptions, requirements, or process parts the system chooses not to optimize prematurely. |
+| `actual_problem` | text | Yes | The causal problem that should be solved. |
+| `hidden_variable` | text | Recommended | The non-obvious factor that changes what the problem is. |
+| `solution_class` | text | Recommended | The type of intervention implied by the recovered problem. |
+| `confidence_and_open_questions` | list<string> | Recommended | Uncertainties or checks that would improve confidence in the recovered frame. |
+
+### Solution Generation
+
+Solution Generation is the second judged output. It may include sprouts, afrits, or a single proposed intervention, but it should explicitly build from Problem Recovery rather than from the surface complaint alone. Use the existing `solution` fields below for the generated structure.
 
 ## Source
 
@@ -131,6 +157,20 @@ The `solution` section describes what was produced or recommended.
 | `tradeoffs` | list<string> | Recommended | What the solution gives up or risks. |
 | `expected_outcome` | text | Recommended | What should happen if the solution works. |
 | `next_steps` | list<string> | Optional | Concrete follow-up actions. |
+
+## Evaluation Focus
+
+The `evaluation_focus` section explains what the case should test beyond whether the final answer matches the known solution. It is especially useful for public cases where the answer may be present in model pretraining, because the benchmark can still score whether the system identifies the real problem and hidden variable before generating ideas.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `stated_problem_or_symptom` | text | Recommended | The complaint, request, or obvious frame that the system should not treat as final. |
+| `actual_problem` | text | Recommended | The evaluator's target for what the system should recover as the real problem. |
+| `deleted_assumptions` | list<string> | Optional | Requirements, status quo processes, or proposed fixes a strong answer should question or remove. |
+| `hidden_variable` | text | Recommended | The non-obvious causal factor, constraint, behavior, representation, or timing issue that changes what the real problem is. |
+| `frame_recovery_target` | text | Recommended | What a strong system should realize before proposing a solution. |
+| `generated_idea_target` | text | Recommended | What kind of solution, protocol, intervention, or artifact the system should then generate. |
+| `scoring_notes` | list<string> | Optional | How to score frame recovery, constraint handling, novelty, operational fit, and validation plan quality. |
 
 ## Reproducible
 

@@ -2480,7 +2480,7 @@ function App() {
         </div>
         <nav className="tabs process-tabs" aria-label="Prototype tabs by Doppl process stage">
           {prototypeStages.map((stage) => (
-            <div className="process-tab-stage" key={stage.label}>
+            <div className={`process-tab-stage item-count-${stage.items.length}`} key={stage.label}>
               <span>{stage.label}</span>
               <div>
                 {stage.items.map((item) => (

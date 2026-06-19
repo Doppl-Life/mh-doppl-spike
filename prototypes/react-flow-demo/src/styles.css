@@ -109,11 +109,12 @@ textarea {
 .tabs {
   position: absolute;
   right: 36px;
+  left: 36px;
   bottom: 32px;
   display: grid;
-  grid-template-columns: repeat(6, auto);
-  gap: 10px;
-  padding: 10px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px;
   border: 1px solid rgba(110, 231, 255, 0.24);
   background: rgba(3, 7, 17, 0.72);
   box-shadow: 0 18px 54px rgba(0, 0, 0, 0.32);
@@ -123,7 +124,7 @@ textarea {
 .process-tab-stage {
   display: grid;
   align-content: start;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -136,9 +137,21 @@ textarea {
 }
 
 .process-tab-stage > div {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 8px;
+}
+
+.process-tab-stage.item-count-2 > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.process-tab-stage.item-count-3 > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.process-tab-stage.item-count-3 > div button:first-child {
+  grid-column: 1 / -1;
 }
 
 .tabs button,
@@ -153,8 +166,11 @@ textarea {
 
 .tabs button {
   min-height: 44px;
-  padding: 10px 14px;
-  white-space: nowrap;
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  line-height: 1.15;
+  white-space: normal;
 }
 
 .tabs button:hover,
@@ -2744,16 +2760,7 @@ article.module-node::after {
   .tabs {
     position: static;
     width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .tabs button {
-    flex: 1;
-  }
-
-  .process-tab-stage > div {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .flow-frame {
@@ -2877,6 +2884,15 @@ article.module-node::after {
 
   .process-tab-stage > div {
     grid-template-columns: 1fr;
+  }
+
+  .process-tab-stage.item-count-2 > div,
+  .process-tab-stage.item-count-3 > div {
+    grid-template-columns: 1fr;
+  }
+
+  .process-tab-stage.item-count-3 > div button:first-child {
+    grid-column: auto;
   }
 
   .panel-heading {

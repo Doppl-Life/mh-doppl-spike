@@ -788,6 +788,21 @@ article.module-node::after {
   overflow-wrap: anywhere;
 }
 
+.contract-interface {
+  margin: 0;
+  border: 1px solid rgba(110, 231, 255, 0.14);
+  border-left: 3px solid var(--gold);
+  padding: 12px 14px;
+  color: #d8e5ff;
+  background: rgba(3, 7, 17, 0.72);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 11.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
 .inspector ul {
   display: grid;
   gap: 10px;

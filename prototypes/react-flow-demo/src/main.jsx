@@ -794,12 +794,7 @@ function FlowPrototype({ kind, onNavigate }) {
               {active.contracts.map((contractItem) => (
                 <article key={contractItem.name} className="contract-detail">
                   <span>{contractItem.source}</span>
-                  <h4>{contractItem.name}</h4>
-                  <div className="contract-fields">
-                    {contractItem.fields.map((field) => (
-                      <code key={field}>{field}</code>
-                    ))}
-                  </div>
+                  <pre className="contract-interface">{formatContractInterface(contractItem)}</pre>
                 </article>
               ))}
             </div>
@@ -831,6 +826,14 @@ function CriticScoreGrid({ scores }) {
 
 function formatScoreLabel(label) {
   return label.replace(/([A-Z])/g, ' $1').toLowerCase();
+}
+
+function formatContractInterface(contract) {
+  const interfaceName = contract.name.replace(/[^A-Za-z0-9_$]/g, '');
+  const lines = contract.fields.map((field) =>
+    field.includes(': ') ? `  ${field};` : `  // ${field}`,
+  );
+  return `interface ${interfaceName} {\n${lines.join('\n')}\n}`;
 }
 
 function FusionReportCard({ title, subtitle, proposal, scores, verdict, traits, yieldData }) {

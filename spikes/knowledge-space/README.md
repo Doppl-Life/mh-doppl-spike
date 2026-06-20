@@ -69,6 +69,24 @@ cd spikes/knowledge-space
 python3 -m unittest test_knowledge_space.py
 ```
 
+Research an arbitrary problem statement against the local case-study corpus:
+
+```bash
+python3 knowledge_space.py \
+  --research-problem-file ../../case-studies/fsd-ownership-unwind/problem-statement.md \
+  --exclude-case fsd-ownership-unwind
+```
+
+Optional cheap OpenRouter enrichment is available, but off by default:
+
+```bash
+python3 knowledge_space.py --demo --openrouter
+```
+
+The OpenRouter key is read from `OPENROUTER_API_KEY` or the workspace-level
+`tokens and keys.md` file outside this Git repo. Do not copy keys into this
+folder or commit them.
+
 ## One Sentence
 
 Doppl Knowledge Space ingests every useful research artifact and run lesson into

@@ -1,0 +1,101 @@
+{
+  "chosen_sources": [
+    {
+      "case": "fsd-enforcement-economy",
+      "matched_tags": [
+        "accident",
+        "autonomy",
+        "cluster",
+        "crash",
+        "economy",
+        "enforcement",
+        "fsd",
+        "mobility",
+        "ownership",
+        "sibling",
+        "substrate",
+        "time"
+      ],
+      "matched_terms": [
+        "accident",
+        "actual",
+        "adoption-asymmetry",
+        "ago",
+        "analytical",
+        "ask",
+        "audited",
+        "autonomy",
+        "bets",
+        "breadth",
+        "built",
+        "car"
+      ],
+      "reason": "case-name overlap: economy, enforcement; shared tags: accident, autonomy, cluster, crash, economy, enforcement, fsd, mobility, ownership, sibling, substrate, time; shared terms: accident, actual, adoption-asymmetry, ago, analytical, ask, audited, autonomy; same FSD cluster",
+      "score": 138
+    },
+    {
+      "case": "fsd-mobility-and-time",
+      "matched_tags": [
+        "accident",
+        "autonomy",
+        "cluster",
+        "crash",
+        "economy",
+        "fsd",
+        "mobility",
+        "sibling",
+        "substrate",
+        "time"
+      ],
+      "matched_terms": [
+        "accident",
+        "actual",
+        "ago",
+        "analytical",
+        "around",
+        "ask",
+        "audited",
+        "autonomy",
+        "becomes",
+        "bets",
+        "built",
+        "car"
+      ],
+      "reason": "case-name overlap: mobility, time; shared tags: accident, autonomy, cluster, crash, economy, fsd, mobility, sibling, substrate, time; shared terms: accident, actual, ago, analytical, around, ask, audited, autonomy; same FSD cluster",
+      "score": 131
+    },
+    {
+      "case": "fsd-accident-economy",
+      "matched_tags": [
+        "accident",
+        "autonomy",
+        "cluster",
+        "crash",
+        "economy",
+        "enforcement",
+        "fsd",
+        "sibling",
+        "substrate"
+      ],
+      "matched_terms": [
+        "accident",
+        "actual",
+        "ago",
+        "analytical",
+        "ask",
+        "audited",
+        "autonomy",
+        "breadth",
+        "built",
+        "car",
+        "cited",
+        "cluster"
+      ],
+      "reason": "case-name overlap: accident, economy; shared tags: accident, autonomy, cluster, crash, economy, enforcement, fsd, sibling, substrate; shared terms: accident, actual, ago, analytical, ask, audited, autonomy, breadth; same FSD cluster",
+      "score": 114
+    }
+  ],
+  "ledger": "/Users/dalton/Desktop/GauntletAI/capstone/mh-doppl-spike/spikes/knowledge-space/data/knowledge.jsonl",
+  "problem_summary": "# Problem Statement: The Ownership Unwind / Car-as-a-Service After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`). > **Cluster:** **Sub-cluster D** of the `full-self-driving-unlock` fa...",
+  "records_ingested": 47
+}

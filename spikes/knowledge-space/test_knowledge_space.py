@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from knowledge_space import KnowledgeSpace
+from knowledge_space import KnowledgeSpace, load_openrouter_key
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -85,6 +85,54 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertIn("fsd-accident-economy", html)
             self.assertIn("KnowledgeRecord", html)
             self.assertIn("FROM_CASE", html)
+
+    def test_research_problem_finds_and_ingests_relevant_cases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            problem = """
+            Autonomy is about to change car ownership. I want to understand the
+            neighboring FSD cases: accident substrate, mobility and time, and the
+            enforcement economy, before working on ownership unwind.
+            """
+
+            report = space.research_problem(problem, CASES, limit=3)
+
+            chosen_cases = {item["case"] for item in report["chosen_sources"]}
+            self.assertIn("fsd-accident-economy", chosen_cases)
+            self.assertIn("fsd-mobility-and-time", chosen_cases)
+            self.assertGreaterEqual(report["records_ingested"], 10)
+
+            query = (CASES / "fsd-ownership-unwind" / "problem-statement.md").read_text(
+                encoding="utf-8"
+            )
+            packet = space.retrieve(query, limit=8)
+            packet_cases = {item.record.source_case for item in packet.items}
+            self.assertTrue(chosen_cases & packet_cases)
+
+    def test_research_problem_excludes_target_case_when_requested(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            problem = (CASES / "fsd-ownership-unwind" / "problem-statement.md").read_text(
+                encoding="utf-8"
+            )
+
+            report = space.research_problem(
+                problem,
+                CASES,
+                limit=4,
+                exclude_cases={"fsd-ownership-unwind"},
+            )
+
+            chosen_cases = {item["case"] for item in report["chosen_sources"]}
+            self.assertNotIn("fsd-ownership-unwind", chosen_cases)
+            self.assertTrue(any(case.startswith("fsd-") for case in chosen_cases))
+
+    def test_load_openrouter_key_reads_secret_file_without_exposing_value(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            key_file = Path(tmp) / "tokens and keys.md"
+            key_file.write_text("openrouter api key: placeholder-value\n", encoding="utf-8")
+
+            self.assertEqual(load_openrouter_key(key_file), "placeholder-value")
 
 
 if __name__ == "__main__":

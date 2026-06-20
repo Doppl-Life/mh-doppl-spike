@@ -48,6 +48,46 @@
       "score": 29.5
     },
     {
+      "reason": "shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory",
+      "record": {
+        "id": "ks_3939f5a0799cd8bc",
+        "kind": "hidden_variable",
+        "source_case": "fsd-enforcement-economy",
+        "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
+        "tags": [
+          "enforcement",
+          "fsd",
+          "substrate"
+        ],
+        "text": "Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not \"fewer tickets\"), map the web (breadth), game out the non-obvious second/third-order effects (depth) \u2014 including the state's revenue-replacement fight \u2014 and synthesize what it converges to.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 26.5
+    },
+    {
+      "reason": "shared tags: accident, economy, fsd, mobility, ownership, sibling, time; shared terms: accident, adoption-asymmetry, economy, governed, lens, mobility, ownership, sibling; sibling-cluster reference; warning memory",
+      "record": {
+        "id": "ks_11109aa0df49ddaf",
+        "kind": "warning",
+        "source_case": "fsd-enforcement-economy",
+        "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
+        "tags": [
+          "accident",
+          "economy",
+          "fsd",
+          "mobility",
+          "ownership",
+          "sibling",
+          "time"
+        ],
+        "text": "Sibling to the accident > economy (A, harm), mobility & time (B), and the ownership unwind (D); governed by > the adoption-asymmetry lens.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 25.5
+    },
+    {
       "reason": "shared tags: accident, fsd, substrate; shared terms: accident, actual, ask, breadth, converges, depth, game, map; hidden_variable memory",
       "record": {
         "id": "ks_8a464491ea6290ab",
@@ -64,6 +104,25 @@
         "visibility": "public"
       },
       "score": 23.5
+    },
+    {
+      "reason": "shared tags: autonomy, economy, enforcement, fsd; shared terms: autonomy, doppl, economy, enforcement, problem, statement, subtype, subtype-index",
+      "record": {
+        "id": "ks_e810e181edfba949",
+        "kind": "case_frame",
+        "source_case": "fsd-enforcement-economy",
+        "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
+        "tags": [
+          "autonomy",
+          "economy",
+          "enforcement",
+          "fsd"
+        ],
+        "text": "# Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\") > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 19.5
     },
     {
       "reason": "shared tags: autonomy, fsd, mobility, time; shared terms: autonomy, doppl, mobility, problem, statement, subtype, subtype-index, synthesis",
@@ -121,29 +180,12 @@
       "score": 17.5
     },
     {
-      "reason": "shared tags: autonomy, fsd; shared terms: autonomy, crossing, deployment, full-self-driving-unlock, load-bearing, synthesis, system, timing",
-      "record": {
-        "id": "ks_5e2dec158c8d0cc5",
-        "kind": "case_frame",
-        "source_case": "fsd-mobility-and-time",
-        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
-        "tags": [
-          "autonomy",
-          "fsd"
-        ],
-        "text": "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing to deployment (see the umbrella `full-self-driving-unlock` case) colliding with a short-haul air system already in secular decline and a commute/work pattern reverting to pre-pandemic norms.",
-        "trust_tier": "candidate",
-        "visibility": "public"
-      },
-      "score": 17.5
-    },
-    {
       "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
       "record": {
-        "id": "ks_98a75e563469dec5",
+        "id": "ks_58a24eaeebb5f84c",
         "kind": "signal",
-        "source_case": "fsd-mobility-and-time",
-        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "source_case": "fsd-enforcement-economy",
+        "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
         "tags": [
           "fsd"
         ],
@@ -152,43 +194,6 @@
         "visibility": "public"
       },
       "score": 17.5
-    },
-    {
-      "reason": "shared tags: autonomy, fsd, time; shared terms: ago, autonomy, car, consensus, five, out, there, time",
-      "record": {
-        "id": "ks_de6275f81d0cd314",
-        "kind": "claim",
-        "source_case": "fsd-mobility-and-time",
-        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
-        "tags": [
-          "autonomy",
-          "driver",
-          "fsd",
-          "time"
-        ],
-        "text": "Five years ago the car trip was capped by driver fatigue and there was no autonomy; five years out the substitution and the labor/time/geography re-pricing are consensus.",
-        "trust_tier": "candidate",
-        "visibility": "public"
-      },
-      "score": 17.5
-    },
-    {
-      "reason": "shared tags: autonomy, economy, fsd; shared terms: autonomy, doppl, economy, problem, statement, subtype, subtype-index, synthesis",
-      "record": {
-        "id": "ks_ffe2bb2bd9b115d7",
-        "kind": "case_frame",
-        "source_case": "fsd-accident-economy",
-        "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
-        "tags": [
-          "autonomy",
-          "economy",
-          "fsd"
-        ],
-        "text": "# Problem Statement: The Accident-Dependent Economy After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).",
-        "trust_tier": "candidate",
-        "visibility": "public"
-      },
-      "score": 16.5
     }
   ],
   "query_tags": [

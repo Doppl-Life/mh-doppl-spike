@@ -1,9 +1,15 @@
 # Knowledge Space Demo Report
 
-## Ingested Research
+## Local Research Pass
 
-- `fsd-accident-economy`: 12 knowledge records
-- `fsd-mobility-and-time`: 19 knowledge records
+Problem summary: # Problem Statement: The Ownership Unwind / Car-as-a-Service After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`). > **Cluster:** **Sub-cluster D** of the `full-self-driving-unlock` fa...
+
+- `fsd-enforcement-economy`: score `138`; case-name overlap: economy, enforcement; shared tags: accident, autonomy, cluster, crash, economy, enforcement, fsd, mobility, ownership, sibling, substrate, time; shared terms: accident, actual, adoption-asymmetry, ago, analytical, ask, audited, autonomy; same FSD cluster
+- `fsd-mobility-and-time`: score `131`; case-name overlap: mobility, time; shared tags: accident, autonomy, cluster, crash, economy, fsd, mobility, sibling, substrate, time; shared terms: accident, actual, ago, analytical, around, ask, audited, autonomy; same FSD cluster
+- `fsd-accident-economy`: score `114`; case-name overlap: accident, economy; shared tags: accident, autonomy, cluster, crash, economy, enforcement, fsd, sibling, substrate; shared terms: accident, actual, ago, analytical, ask, audited, autonomy, breadth; same FSD cluster
+
+Records ingested: `47`
+
 
 ## Later Problem
 
@@ -33,7 +39,27 @@ Reason: shared tags: accident, autonomy, cluster, economy, fsd, sibling, substra
 
 Source: `case-studies/fsd-accident-economy/problem-statement.md`
 
-### 3. hidden_variable from `fsd-accident-economy`
+### 3. hidden_variable from `fsd-enforcement-economy`
+
+Score: `26.5`
+
+Reason: shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory
+
+Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not "fewer tickets"), map the web (breadth), game out the non-obvious second/third-order effects (depth) — including the state's revenue-replacement fight — and synthesize what it converges to.
+
+Source: `case-studies/fsd-enforcement-economy/problem-statement.md`
+
+### 4. warning from `fsd-enforcement-economy`
+
+Score: `25.5`
+
+Reason: shared tags: accident, economy, fsd, mobility, ownership, sibling, time; shared terms: accident, adoption-asymmetry, economy, governed, lens, mobility, ownership, sibling; sibling-cluster reference; warning memory
+
+Sibling to the accident > economy (A, harm), mobility & time (B), and the ownership unwind (D); governed by > the adoption-asymmetry lens.
+
+Source: `case-studies/fsd-enforcement-economy/problem-statement.md`
+
+### 5. hidden_variable from `fsd-accident-economy`
 
 Score: `23.5`
 
@@ -43,7 +69,17 @@ Ask the system to recover the actual problem (the removal of a ~$1T+ accident *s
 
 Source: `case-studies/fsd-accident-economy/problem-statement.md`
 
-### 4. case_frame from `fsd-mobility-and-time`
+### 6. case_frame from `fsd-enforcement-economy`
+
+Score: `19.5`
+
+Reason: shared tags: autonomy, economy, enforcement, fsd; shared terms: autonomy, doppl, economy, enforcement, problem, statement, subtype, subtype-index
+
+# Problem Statement: The Enforcement & Compliance Economy After Autonomy (the "Traffic-State") > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).
+
+Source: `case-studies/fsd-enforcement-economy/problem-statement.md`
+
+### 7. case_frame from `fsd-mobility-and-time`
 
 Score: `19.5`
 
@@ -53,7 +89,7 @@ Reason: shared tags: autonomy, fsd, mobility, time; shared terms: autonomy, dopp
 
 Source: `case-studies/fsd-mobility-and-time/problem-statement.md`
 
-### 5. case_frame from `fsd-mobility-and-time`
+### 8. case_frame from `fsd-mobility-and-time`
 
 Score: `18.5`
 
@@ -63,7 +99,7 @@ Reason: shared tags: cluster, fsd, mobility, time; shared terms: cluster, family
 
 Source: `case-studies/fsd-mobility-and-time/problem-statement.md`
 
-### 6. signal from `fsd-accident-economy`
+### 9. signal from `fsd-accident-economy`
 
 Score: `17.5`
 
@@ -73,17 +109,7 @@ Reason: shared tags: fsd; shared terms: analytical, audited, built, eval, fixtur
 
 Source: `case-studies/fsd-accident-economy/problem-statement.md`
 
-### 7. case_frame from `fsd-mobility-and-time`
-
-Score: `17.5`
-
-Reason: shared tags: autonomy, fsd; shared terms: autonomy, crossing, deployment, full-self-driving-unlock, load-bearing, synthesis, system, timing
-
-This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing to deployment (see the umbrella `full-self-driving-unlock` case) colliding with a short-haul air system already in secular decline and a commute/work pattern reverting to pre-pandemic norms.
-
-Source: `case-studies/fsd-mobility-and-time/problem-statement.md`
-
-### 8. signal from `fsd-mobility-and-time`
+### 10. signal from `fsd-enforcement-economy`
 
 Score: `17.5`
 
@@ -91,24 +117,4 @@ Reason: shared tags: fsd; shared terms: analytical, audited, built, eval, fixtur
 
 ## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.
 
-Source: `case-studies/fsd-mobility-and-time/problem-statement.md`
-
-### 9. claim from `fsd-mobility-and-time`
-
-Score: `17.5`
-
-Reason: shared tags: autonomy, fsd, time; shared terms: ago, autonomy, car, consensus, five, out, there, time
-
-Five years ago the car trip was capped by driver fatigue and there was no autonomy; five years out the substitution and the labor/time/geography re-pricing are consensus.
-
-Source: `case-studies/fsd-mobility-and-time/problem-statement.md`
-
-### 10. case_frame from `fsd-accident-economy`
-
-Score: `16.5`
-
-Reason: shared tags: autonomy, economy, fsd; shared terms: autonomy, doppl, economy, problem, statement, subtype, subtype-index, synthesis
-
-# Problem Statement: The Accident-Dependent Economy After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).
-
-Source: `case-studies/fsd-accident-economy/problem-statement.md`
+Source: `case-studies/fsd-enforcement-economy/problem-statement.md`

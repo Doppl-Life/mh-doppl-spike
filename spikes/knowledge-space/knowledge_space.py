@@ -5,7 +5,9 @@ import argparse
 import html
 import hashlib
 import json
+import os
 import re
+import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -13,9 +15,12 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 REPO_ROOT = ROOT.parents[1]
+WORKSPACE_ROOT = REPO_ROOT.parent
 CASE_ROOT = REPO_ROOT / "case-studies"
 DEFAULT_LEDGER = ROOT / "data" / "knowledge.jsonl"
 OUT_DIR = ROOT / "out"
+DEFAULT_KEY_FILE = WORKSPACE_ROOT / "tokens and keys.md"
+DEFAULT_OPENROUTER_MODEL = "openai/gpt-4.1-nano"
 
 STOPWORDS = {
     "a",
@@ -240,6 +245,113 @@ def cypher_value(value: str) -> str:
     return json.dumps(value)
 
 
+def read_public_case_text(case_dir: Path) -> str:
+    chunks: list[str] = []
+    for path in sorted(case_dir.glob("*.md")):
+        if source_visibility(path) == "public":
+            chunks.append(path.read_text(encoding="utf-8"))
+    return "\n\n".join(chunks)
+
+
+def summarize_problem(problem_statement: str) -> str:
+    text = re.sub(r"\s+", " ", problem_statement).strip()
+    if len(text) <= 220:
+        return text
+    return text[:217].rstrip() + "..."
+
+
+def research_reason(
+    overlap: set[str],
+    tag_overlap: set[str],
+    name_overlap: set[str],
+    case_name: str,
+) -> str:
+    parts: list[str] = []
+    if name_overlap:
+        parts.append("case-name overlap: " + ", ".join(sorted(name_overlap)))
+    if tag_overlap:
+        parts.append("shared tags: " + ", ".join(sorted(tag_overlap)))
+    if overlap:
+        parts.append("shared terms: " + ", ".join(sorted(overlap)[:8]))
+    if case_name.startswith("fsd-"):
+        parts.append("same FSD cluster")
+    return "; ".join(parts) or "ranked by local corpus similarity"
+
+
+def infer_target_cases(problem_statement: str, corpus_root: Path) -> set[str]:
+    lowered = problem_statement.lower()
+    target_fragments = []
+    for marker in ("working on", "work on", "later problem", "separate problem"):
+        if marker in lowered:
+            target_fragments.append(lowered.split(marker, 1)[1])
+    excluded: set[str] = set()
+    for fragment in target_fragments:
+        fragment_tokens = tokenize(fragment)
+        for case_dir in (path for path in corpus_root.iterdir() if path.is_dir()):
+            name_tokens = set(case_dir.name.replace("-", " ").split()) - {"fsd"}
+            if name_tokens and name_tokens.issubset(fragment_tokens):
+                excluded.add(case_dir.name)
+    return excluded
+
+
+def load_openrouter_key(key_file: Path = DEFAULT_KEY_FILE) -> str | None:
+    env_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if env_key:
+        return env_key
+    if not key_file.exists():
+        return None
+    text = key_file.read_text(encoding="utf-8")
+    patterns = [
+        r"OPENROUTER_API_KEY\s*=\s*([^\s`]+)",
+        r"openrouter[_ -]?api[_ -]?key\s*[:=]\s*([^\s`]+)",
+        r"(sk" r"-or-v1-[A-Za-z0-9_-]+)",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
+def openrouter_research_summary(
+    problem_statement: str,
+    report: dict[str, Any],
+    api_key: str,
+    model: str = DEFAULT_OPENROUTER_MODEL,
+) -> str:
+    chosen = "\n".join(
+        f"- {item['case']}: {item['reason']}" for item in report["chosen_sources"]
+    )
+    prompt = (
+        "You are enriching a Doppl Knowledge Space research pass. "
+        "Given a problem statement and the local sources selected, write a compact "
+        "research memo with: reusable priors, warnings, and what should be retrieved "
+        "for a later run. Do not invent external citations.\n\n"
+        f"Problem:\n{problem_statement[:4000]}\n\n"
+        f"Selected local sources:\n{chosen}\n"
+    )
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 500,
+    }
+    request = urllib.request.Request(
+        "https://openrouter.ai/api/v1/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://github.com/Doppl-Life/mh-doppl-spike",
+            "X-Title": "Doppl Knowledge Space Spike",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=45) as response:
+        data = json.loads(response.read().decode("utf-8"))
+    return str(data["choices"][0]["message"]["content"]).strip()
+
+
 class KnowledgeSpace:
     def __init__(self, ledger_path: Path = DEFAULT_LEDGER) -> None:
         self.ledger_path = ledger_path
@@ -289,6 +401,75 @@ class KnowledgeSpace:
 
         self._append(created)
         return created
+
+    def research_problem(
+        self,
+        problem_statement: str,
+        corpus_root: Path = CASE_ROOT,
+        limit: int = 3,
+        exclude_cases: set[str] | None = None,
+    ) -> dict[str, Any]:
+        excluded = set(exclude_cases or set()) | infer_target_cases(problem_statement, corpus_root)
+        ranked_sources = self.rank_case_sources(
+            problem_statement,
+            corpus_root,
+            exclude_cases=excluded,
+        )
+        chosen_sources = ranked_sources[:limit]
+        records_ingested = 0
+        for source in chosen_sources:
+            created = self.ingest_case(corpus_root / source["case"])
+            records_ingested += len(created)
+        return {
+            "problem_summary": summarize_problem(problem_statement),
+            "chosen_sources": chosen_sources,
+            "records_ingested": records_ingested,
+            "ledger": str(self.ledger_path),
+        }
+
+    def rank_case_sources(
+        self,
+        problem_statement: str,
+        corpus_root: Path = CASE_ROOT,
+        exclude_cases: set[str] | None = None,
+    ) -> list[dict[str, Any]]:
+        exclude_cases = exclude_cases or set()
+        query_tokens = tokenize(problem_statement)
+        query_tags = set(infer_tags(problem_statement, "query"))
+        if "fsd" in problem_statement.lower() or "autonom" in problem_statement.lower():
+            query_tags.add("fsd")
+        ranked: list[dict[str, Any]] = []
+
+        for case_dir in sorted(path for path in corpus_root.iterdir() if path.is_dir()):
+            if case_dir.name in exclude_cases:
+                continue
+            public_text = read_public_case_text(case_dir)
+            if not public_text.strip():
+                continue
+            source_tokens = tokenize(public_text)
+            source_tags = set(infer_tags(public_text, case_dir.name))
+            overlap = query_tokens & source_tokens
+            tag_overlap = query_tags & source_tags
+            name_overlap = query_tokens & set(case_dir.name.replace("-", " ").split())
+            score = len(overlap) + 2 * len(tag_overlap) + 3 * len(name_overlap)
+            if case_dir.name.startswith("fsd-") and "fsd" in query_tags:
+                score += 4
+            if "sibling" in public_text.lower() and "sibling" in problem_statement.lower():
+                score += 3
+            if score <= 0:
+                continue
+            ranked.append(
+                {
+                    "case": case_dir.name,
+                    "score": score,
+                    "matched_terms": sorted(overlap)[:12],
+                    "matched_tags": sorted(tag_overlap),
+                    "reason": research_reason(overlap, tag_overlap, name_overlap, case_dir.name),
+                }
+            )
+
+        ranked.sort(key=lambda item: (-int(item["score"]), str(item["case"])))
+        return ranked
 
     def retrieve(self, problem_statement: str, limit: int = 8) -> KnowledgePacket:
         query_tokens = tokenize(problem_statement)
@@ -443,30 +624,46 @@ class KnowledgeSpace:
         return "; ".join(parts) or "lexical relevance"
 
 
-def demo() -> None:
+def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) -> None:
     ledger = DEFAULT_LEDGER
     if ledger.exists():
         ledger.unlink()
     space = KnowledgeSpace(ledger)
-    seed_cases = ["fsd-accident-economy", "fsd-mobility-and-time"]
-    ingest_counts: dict[str, int] = {}
-    for case in seed_cases:
-        ingest_counts[case] = len(space.ingest_case(CASE_ROOT / case))
 
     target_case = CASE_ROOT / "fsd-ownership-unwind"
     query = (target_case / "problem-statement.md").read_text(encoding="utf-8")
+    research_report = space.research_problem(
+        query,
+        CASE_ROOT,
+        limit=3,
+        exclude_cases={target_case.name},
+    )
     packet = space.retrieve(query, limit=10)
+    openrouter_summary = None
+    if use_openrouter:
+        api_key = load_openrouter_key()
+        if not api_key:
+            raise RuntimeError("OPENROUTER_API_KEY not found in environment or tokens and keys.md")
+        openrouter_summary = openrouter_research_summary(query, research_report, api_key, model=model)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "research_report.json").write_text(
+        json.dumps(research_report, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     (OUT_DIR / "knowledge_packet.json").write_text(
         json.dumps(packet.to_json(), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    (OUT_DIR / "report.md").write_text(render_report(ingest_counts, target_case.name, packet), encoding="utf-8")
+    (OUT_DIR / "report.md").write_text(
+        render_report(research_report, target_case.name, packet, openrouter_summary),
+        encoding="utf-8",
+    )
     space.write_cypher(OUT_DIR / "neo4j.cypher")
     space.write_graph_html(OUT_DIR / "graph.html")
 
     print(f"Knowledge ledger: {ledger.relative_to(ROOT)}")
+    print(f"Research report: {(OUT_DIR / 'research_report.json').relative_to(ROOT)}")
     print(f"Report: {(OUT_DIR / 'report.md').relative_to(ROOT)}")
     print(f"Packet: {(OUT_DIR / 'knowledge_packet.json').relative_to(ROOT)}")
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
@@ -475,16 +672,39 @@ def demo() -> None:
 
 
 def render_report(
-    ingest_counts: dict[str, int], target_case: str, packet: KnowledgePacket
+    research_report: dict[str, Any],
+    target_case: str,
+    packet: KnowledgePacket,
+    openrouter_summary: str | None = None,
 ) -> str:
     lines = [
         "# Knowledge Space Demo Report",
         "",
-        "## Ingested Research",
+        "## Local Research Pass",
+        "",
+        f"Problem summary: {research_report['problem_summary']}",
         "",
     ]
-    for case, count in ingest_counts.items():
-        lines.append(f"- `{case}`: {count} knowledge records")
+    for source in research_report["chosen_sources"]:
+        lines.append(
+            f"- `{source['case']}`: score `{source['score']}`; {source['reason']}"
+        )
+    lines.extend(
+        [
+            "",
+            f"Records ingested: `{research_report['records_ingested']}`",
+            "",
+        ]
+    )
+    if openrouter_summary:
+        lines.extend(
+            [
+                "## OpenRouter Research Memo",
+                "",
+                openrouter_summary,
+                "",
+            ]
+        )
     lines.extend(
         [
             "",
@@ -538,14 +758,16 @@ def render_graph_html(graph: dict[str, Any]) -> str:
             target = node_lookup.get(edge["target"], {"label": edge["target"], "type": "Unknown"})
             related.append(f"{html.escape(edge['type'])} -> {html.escape(str(target['label']))}")
         rows.append(
-            f"""
-            <article class="node-card" style="border-left-color:{color}">
-              <div class="node-type">[{html.escape(node['type'])}]</div>
-              <h2>{html.escape(str(node['label']))}</h2>
-              <p>{text}</p>
-              <ul>{''.join(f'<li>{item}</li>' for item in related[:8])}</ul>
-            </article>
-            """
+            "\n".join(
+                [
+                    f'<article class="node-card" style="border-left-color:{color}">',
+                    f'  <div class="node-type">[{html.escape(node["type"])}]</div>',
+                    f"  <h2>{html.escape(str(node['label']))}</h2>",
+                    f"  <p>{text}</p>",
+                    f"  <ul>{''.join(f'<li>{item}</li>' for item in related[:8])}</ul>",
+                    "</article>",
+                ]
+            )
         )
 
     edge_rows = "\n".join(
@@ -673,13 +895,35 @@ def main() -> None:
     parser.add_argument("--demo", action="store_true", help="run the FSD memory demo")
     parser.add_argument("--ingest-case", action="append", default=[], help="case-study folder name to ingest")
     parser.add_argument("--query-case", help="case-study folder name to query")
+    parser.add_argument("--research-problem-file", help="problem statement file to research against the local corpus")
+    parser.add_argument("--exclude-case", action="append", default=[], help="case folder name to exclude from research")
+    parser.add_argument("--openrouter", action="store_true", help="use a cheap OpenRouter call to enrich the research report")
+    parser.add_argument("--openrouter-model", default=DEFAULT_OPENROUTER_MODEL, help="OpenRouter model id")
     args = parser.parse_args()
 
-    if args.demo or (not args.ingest_case and not args.query_case):
-        demo()
+    if args.demo or (not args.ingest_case and not args.query_case and not args.research_problem_file):
+        demo(use_openrouter=args.openrouter, model=args.openrouter_model)
         return
 
     space = KnowledgeSpace(DEFAULT_LEDGER)
+    if args.research_problem_file:
+        problem = Path(args.research_problem_file).read_text(encoding="utf-8")
+        report = space.research_problem(
+            problem,
+            CASE_ROOT,
+            exclude_cases=set(args.exclude_case),
+        )
+        if args.openrouter:
+            api_key = load_openrouter_key()
+            if not api_key:
+                raise RuntimeError("OPENROUTER_API_KEY not found in environment or tokens and keys.md")
+            report["openrouter_summary"] = openrouter_research_summary(
+                problem,
+                report,
+                api_key,
+                model=args.openrouter_model,
+            )
+        print(json.dumps(report, indent=2, sort_keys=True))
     for case in args.ingest_case:
         created = space.ingest_case(CASE_ROOT / case)
         print(f"ingested {len(created)} record(s) from {case}")

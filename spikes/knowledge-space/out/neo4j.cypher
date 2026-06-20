@@ -5,6 +5,20 @@ CREATE CONSTRAINT case_id IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE;
 CREATE CONSTRAINT tag_id IF NOT EXISTS FOR (t:Tag) REQUIRE t.id IS UNIQUE;
 CREATE CONSTRAINT source_id IF NOT EXISTS FOR (s:Source) REQUIRE s.id IS UNIQUE;
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_013d66ad76779d55"})
+  SET r.kind = "signal", r.text = "Figures are real/cited but applied to a forward projection; the municipal-fine dependency is drawn at its *concentrated* edge (fine-reliant towns) and flagged, not overstated as a macro line.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_013d66ad76779d55"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_013d66ad76779d55"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_013d66ad76779d55"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-accident-economy"})
   SET c.title = "fsd-accident-economy";
 MERGE (s:Source {id: "case-studies/fsd-accident-economy/problem-statement.md"})
@@ -20,6 +34,38 @@ MATCH (r:KnowledgeRecord {id: "ks_0770e6e35816d3df"}), (t:Tag {id: "crash"})
 MERGE (r)-[:HAS_TAG]->(t);
 MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
 MATCH (r:KnowledgeRecord {id: "ks_0770e6e35816d3df"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"})
+  SET r.kind = "warning", r.text = "Sibling to the accident > economy (A, harm), mobility & time (B), and the ownership unwind (D); governed by > the adoption-asymmetry lens.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "accident"}) SET t.name = "accident";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "accident"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "economy"}) SET t.name = "economy";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "economy"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "mobility"}) SET t.name = "mobility";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "mobility"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "ownership"}) SET t.name = "ownership";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "ownership"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "sibling"}) SET t.name = "sibling";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "sibling"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "time"}) SET t.name = "time";
+MATCH (r:KnowledgeRecord {id: "ks_11109aa0df49ddaf"}), (t:Tag {id: "time"})
 MERGE (r)-[:HAS_TAG]->(t);
 
 MERGE (c:Case {id: "fsd-accident-economy"})
@@ -65,6 +111,26 @@ MERGE (t:Tag {id: "time"}) SET t.name = "time";
 MATCH (r:KnowledgeRecord {id: "ks_24a61e27c77ae552"}), (t:Tag {id: "time"})
 MERGE (r)-[:HAS_TAG]->(t);
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_3939f5a0799cd8bc"})
+  SET r.kind = "hidden_variable", r.text = "Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not \"fewer tickets\"), map the web (breadth), game out the non-obvious second/third-order effects (depth) \u2014 including the state's revenue-replacement fight \u2014 and synthesize what it converges to.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_3939f5a0799cd8bc"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_3939f5a0799cd8bc"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "enforcement"}) SET t.name = "enforcement";
+MATCH (r:KnowledgeRecord {id: "ks_3939f5a0799cd8bc"}), (t:Tag {id: "enforcement"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_3939f5a0799cd8bc"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "substrate"}) SET t.name = "substrate";
+MATCH (r:KnowledgeRecord {id: "ks_3939f5a0799cd8bc"}), (t:Tag {id: "substrate"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-mobility-and-time"})
   SET c.title = "fsd-mobility-and-time";
 MERGE (s:Source {id: "case-studies/fsd-mobility-and-time/problem-statement.md"})
@@ -100,6 +166,20 @@ MATCH (r:KnowledgeRecord {id: "ks_5823561ddc53b2c9"}), (t:Tag {id: "crash"})
 MERGE (r)-[:HAS_TAG]->(t);
 MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
 MATCH (r:KnowledgeRecord {id: "ks_5823561ddc53b2c9"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_58a24eaeebb5f84c"})
+  SET r.kind = "signal", r.text = "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_58a24eaeebb5f84c"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_58a24eaeebb5f84c"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_58a24eaeebb5f84c"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
 MERGE (c:Case {id: "fsd-mobility-and-time"})
@@ -262,6 +342,23 @@ MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
 MATCH (r:KnowledgeRecord {id: "ks_7a95906b90ef92b9"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_7b5b0fa1c63b8e70"})
+  SET r.kind = "signal", r.text = "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing from solved-demo to legal-deployment in 2025\u20132026 (the umbrella `full-self-driving-unlock` case).", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_7b5b0fa1c63b8e70"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_7b5b0fa1c63b8e70"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "autonomy"}) SET t.name = "autonomy";
+MATCH (r:KnowledgeRecord {id: "ks_7b5b0fa1c63b8e70"}), (t:Tag {id: "autonomy"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_7b5b0fa1c63b8e70"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-mobility-and-time"})
   SET c.title = "fsd-mobility-and-time";
 MERGE (s:Source {id: "case-studies/fsd-mobility-and-time/problem-statement.md"})
@@ -294,6 +391,20 @@ MATCH (r:KnowledgeRecord {id: "ks_837ccfab0442f7f1"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 MERGE (t:Tag {id: "insurance"}) SET t.name = "insurance";
 MATCH (r:KnowledgeRecord {id: "ks_837ccfab0442f7f1"}), (t:Tag {id: "insurance"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_85c44099a7d75b41"})
+  SET r.kind = "hidden_variable", r.text = "The non-obvious counter-current: **the state wants its money.** Governments don't let a revenue line die quietly.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_85c44099a7d75b41"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_85c44099a7d75b41"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_85c44099a7d75b41"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
 MERGE (c:Case {id: "fsd-mobility-and-time"})
@@ -410,6 +521,34 @@ MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
 MATCH (r:KnowledgeRecord {id: "ks_9f8f2741ae730d9d"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_a75fae561994a53b"})
+  SET r.kind = "claim", r.text = "The **culpability unit vanishes** \u2014 you can't cite a passenger \u2014 so liability moves from ~240M individual drivers to a few fleet operators/OEMs, emptying the highest-volume court docket in the country.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_a75fae561994a53b"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_a75fae561994a53b"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_a75fae561994a53b"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_acf838257ae1c4f7"})
+  SET r.kind = "hidden_variable", r.text = "United States*) to vehicle searches, drug interdiction, warrant service, and **civil-asset forfeiture** \u2014 a pipeline that forfeits **$2\u20133B/yr federally** and mostly funds law-enforcement budgets.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_acf838257ae1c4f7"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_acf838257ae1c4f7"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_acf838257ae1c4f7"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-accident-economy"})
   SET c.title = "fsd-accident-economy";
 MERGE (s:Source {id: "case-studies/fsd-accident-economy/problem-statement.md"})
@@ -425,6 +564,54 @@ MATCH (r:KnowledgeRecord {id: "ks_b1d1b823e80fac95"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 MERGE (t:Tag {id: "insurance"}) SET t.name = "insurance";
 MATCH (r:KnowledgeRecord {id: "ks_b1d1b823e80fac95"}), (t:Tag {id: "insurance"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_b4644feff268b3c8"})
+  SET r.kind = "hidden_variable", r.text = "These revenues and powers are collected *whether or not anyone ever crashes*, so they are their own substrate and their own convergence.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_b4644feff268b3c8"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_b4644feff268b3c8"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_b4644feff268b3c8"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "substrate"}) SET t.name = "substrate";
+MATCH (r:KnowledgeRecord {id: "ks_b4644feff268b3c8"}), (t:Tag {id: "substrate"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_bba9e18c2abc9cac"})
+  SET r.kind = "signal", r.text = "The traffic stop is the single **most common reason for police-citizen contact in America** (~12.4M drivers + 3.8M passengers stopped in 2022; 58% of all police-initiated contact), and it is the **legal gateway** (the pretext stop, blessed by *Whren v.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_bba9e18c2abc9cac"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_bba9e18c2abc9cac"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_bba9e18c2abc9cac"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_c29339ea5782e73b"})
+  SET r.kind = "claim", r.text = "Five years ago there was no credible removal of the violating driver; five years out the unwind \u2014 and the metering regime that replaces it \u2014 is consensus.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_c29339ea5782e73b"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_c29339ea5782e73b"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "driver"}) SET t.name = "driver";
+MATCH (r:KnowledgeRecord {id: "ks_c29339ea5782e73b"}), (t:Tag {id: "driver"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_c29339ea5782e73b"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
 MERGE (c:Case {id: "fsd-mobility-and-time"})
@@ -490,6 +677,23 @@ MERGE (t:Tag {id: "substrate"}) SET t.name = "substrate";
 MATCH (r:KnowledgeRecord {id: "ks_c9b4e98f2fe4425f"}), (t:Tag {id: "substrate"})
 MERGE (r)-[:HAS_TAG]->(t);
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_d5e1dc3982822856"})
+  SET r.kind = "case_frame", r.text = "> **Cluster:** **Sub-cluster C** of the `full-self-driving-unlock` family (the > \"perfect Pepsis\" \u2014 see `../zeitgeist-synthesis-notes.md`).", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_d5e1dc3982822856"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_d5e1dc3982822856"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "cluster"}) SET t.name = "cluster";
+MATCH (r:KnowledgeRecord {id: "ks_d5e1dc3982822856"}), (t:Tag {id: "cluster"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_d5e1dc3982822856"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-mobility-and-time"})
   SET c.title = "fsd-mobility-and-time";
 MERGE (s:Source {id: "case-studies/fsd-mobility-and-time/problem-statement.md"})
@@ -530,6 +734,26 @@ MERGE (t:Tag {id: "time"}) SET t.name = "time";
 MATCH (r:KnowledgeRecord {id: "ks_dea97fbb794cbca4"}), (t:Tag {id: "time"})
 MERGE (r)-[:HAS_TAG]->(t);
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_e0f4610d97be57f3"})
+  SET r.kind = "claim", r.text = "This case is about removing something different that autonomy also takes away: the human driver as a **policeable, fineable, registrable subject** \u2014 and the privately-operated vehicle as a registrable, inspectable object.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_e0f4610d97be57f3"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_e0f4610d97be57f3"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "autonomy"}) SET t.name = "autonomy";
+MATCH (r:KnowledgeRecord {id: "ks_e0f4610d97be57f3"}), (t:Tag {id: "autonomy"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "driver"}) SET t.name = "driver";
+MATCH (r:KnowledgeRecord {id: "ks_e0f4610d97be57f3"}), (t:Tag {id: "driver"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_e0f4610d97be57f3"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-accident-economy"})
   SET c.title = "fsd-accident-economy";
 MERGE (s:Source {id: "case-studies/fsd-accident-economy/problem-statement.md"})
@@ -558,6 +782,43 @@ MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
 MATCH (r:KnowledgeRecord {id: "ks_e6090356b4ae7272"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_e810e181edfba949"})
+  SET r.kind = "case_frame", r.text = "# Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\") > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_e810e181edfba949"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_e810e181edfba949"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "autonomy"}) SET t.name = "autonomy";
+MATCH (r:KnowledgeRecord {id: "ks_e810e181edfba949"}), (t:Tag {id: "autonomy"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "economy"}) SET t.name = "economy";
+MATCH (r:KnowledgeRecord {id: "ks_e810e181edfba949"}), (t:Tag {id: "economy"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "enforcement"}) SET t.name = "enforcement";
+MATCH (r:KnowledgeRecord {id: "ks_e810e181edfba949"}), (t:Tag {id: "enforcement"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_e810e181edfba949"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_e965efcb5505b5ee"})
+  SET r.kind = "signal", r.text = "Signal sources (cited in the with-solution file and `../sources.md` Signal Set D9): BJS Police-Public Contact Survey (traffic stops); *Whren v.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_e965efcb5505b5ee"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_e965efcb5505b5ee"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_e965efcb5505b5ee"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
 MERGE (c:Case {id: "fsd-mobility-and-time"})
   SET c.title = "fsd-mobility-and-time";
 MERGE (s:Source {id: "case-studies/fsd-mobility-and-time/problem-statement.md"})
@@ -570,6 +831,23 @@ MATCH (r:KnowledgeRecord {id: "ks_eda848ab218b06ac"}), (s:Source {id: "case-stud
 MERGE (r)-[:SUPPORTED_BY]->(s);
 MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
 MATCH (r:KnowledgeRecord {id: "ks_eda848ab218b06ac"}), (t:Tag {id: "fsd"})
+MERGE (r)-[:HAS_TAG]->(t);
+
+MERGE (c:Case {id: "fsd-enforcement-economy"})
+  SET c.title = "fsd-enforcement-economy";
+MERGE (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+  SET s.path = "case-studies/fsd-enforcement-economy/problem-statement.md";
+MERGE (r:KnowledgeRecord {id: "ks_f7c9e70e2c539ef8"})
+  SET r.kind = "claim", r.text = "And the **compliance apparatus** \u2014 registration, inspection, emissions (already dying via EVs), driver licensing and the **driver's-license-as-national-ID** \u2014 loses its subject.", r.trustTier = "candidate", r.visibility = "public";
+MATCH (r:KnowledgeRecord {id: "ks_f7c9e70e2c539ef8"}), (c:Case {id: "fsd-enforcement-economy"})
+MERGE (r)-[:FROM_CASE]->(c);
+MATCH (r:KnowledgeRecord {id: "ks_f7c9e70e2c539ef8"}), (s:Source {id: "case-studies/fsd-enforcement-economy/problem-statement.md"})
+MERGE (r)-[:SUPPORTED_BY]->(s);
+MERGE (t:Tag {id: "driver"}) SET t.name = "driver";
+MATCH (r:KnowledgeRecord {id: "ks_f7c9e70e2c539ef8"}), (t:Tag {id: "driver"})
+MERGE (r)-[:HAS_TAG]->(t);
+MERGE (t:Tag {id: "fsd"}) SET t.name = "fsd";
+MATCH (r:KnowledgeRecord {id: "ks_f7c9e70e2c539ef8"}), (t:Tag {id: "fsd"})
 MERGE (r)-[:HAS_TAG]->(t);
 
 MERGE (c:Case {id: "fsd-accident-economy"})

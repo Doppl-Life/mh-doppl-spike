@@ -190,3 +190,11 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Because:** substrate grouping prevented double-counting and found the fertile seams: A stays harm-only, C owns enforcement/licensing/forfeiture, D owns ownership/finance/dealers, and B keeps door-to-door/labor/geography as chapters of one time-distance case
 - **Revisit if:** a later branch proves it removes a distinct substrate not covered by A/B/C/D/lens, or if Starlink/Starship form their own cluster needing the same treatment
 - **Spirit note:** do not flatten a cluster into a list; breadth, then depth, then convergence — see [Perfect Pepsis](./LESSONS_AND_BANGERS.md#perfect-pepsis--2026-06-20)
+
+### Ponytail as pressure, not dependency — 2026-06-20
+
+- **Chose:** absorb Ponytail as Doppl-native Least-Action Fitness: a verifier/scoring pressure over mechanism cost, with Ponytail kept as prior art and optional developer-process review tooling
+- **Over:** installing Ponytail as an always-on runtime dependency or letting it silently steer every Doppl agent
+- **Because:** Doppl needs measurable heritable variation, not an invisible global persona; if every lineage inherits the same deletion bias from the harness, we cannot tell whether frugality is a trait, a judge artifact, or contamination. The useful mechanism is the ladder, not the plugin.
+- **Revisit if:** a bounded Ponytail-controlled arm is needed as an experimental baseline against a Doppl-native least-action critic, or if the native critic fails to preserve Ponytail's safety distinction between lazy and careless
+- **Spirit note:** make laziness selectable; do not make the harness secretly lazy for everyone. See [Least-action fitness](./LESSONS_AND_BANGERS.md#least-action-fitness--2026-06-20) and [`proposals/least-action-fitness.md`](./proposals/least-action-fitness.md).

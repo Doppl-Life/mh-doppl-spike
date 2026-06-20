@@ -353,3 +353,17 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** Do not average a regime change into "it is coming." Map where it is already real, who cannot yet see it, and what arbitrage appears at the boundary.
 - **Evidence:** `fsd-adoption-asymmetry` turned the user's "fist coming for the back of their head" intuition into a full `zeitgeist_synthesis` fixture and the governing lens for every FSD sub-cluster.
 - **Carry forward:** Add an asymmetry lens to zeitgeist cases whenever deployment is geofenced, regulated region-by-region, or gated by infrastructure.
+
+### Least-action fitness — 2026-06-20
+
+- **Banger:** Laziness can be a selectable phenotype, not just a coding style. A lineage that reaches the same useful outcome while owning fewer mechanisms, fewer assumptions, and fewer future obligations should get fitness credit, provided it does not cut safety, evidence, or correctness.
+- **Lesson:** Score mechanism cost separately from token/energy cost: new dependencies, bespoke glue, speculative abstractions, irreversible commitments, and human workflow burden are all ownership costs. Necessary validation, security, accessibility, and falsification are exempt.
+- **Evidence:** Ponytail's ladder (`Does this need to exist?` -> stdlib/platform/dependency -> one line -> minimum build) and the Doppl proposal in [`proposals/least-action-fitness.md`](./proposals/least-action-fitness.md).
+- **Carry forward:** Start as a feasibility/subtype-specific critic plus `FitnessScore.components.mechanismCost`; promote to a first-class mandate only if it adds signal beyond energy.
+
+### Anti-pattern inversion — 2026-06-20
+
+- **Banger:** A zeitgeist unlock often appears when an old warning flips sign: the advice was correct yesterday because a constraint was real, but the constraint weakened today, so the taboo becomes tomorrow's strategy. "Do not boil the ocean" may be entering this class.
+- **Lesson:** For every live zeitgeist thesis, ask: old taboo, load-bearing constraint, substrate removed, new rational strategy, tomorrow implication, dated falsifier. If no constraint actually disappeared, it is just fashion.
+- **Evidence:** Theo-video notes on agentic loops and breadth-first "boil the ocean" plays; maps onto [Timing is load-bearing](#timing-is-load-bearing--2026-06-20), [Latent-asset unlock](#latent-asset-unlock--2026-06-20), and the proposal in [`proposals/least-action-fitness.md`](./proposals/least-action-fitness.md).
+- **Carry forward:** Add anti-pattern inversion as a `zeitgeist_synthesis` generator/checker lens: "What used to be a trap, and what changed enough that it is not?"

@@ -1,0 +1,6 @@
+.venv/
+.env
+ledgers/
+discovery_trace.html
+__pycache__/
+*.pyc

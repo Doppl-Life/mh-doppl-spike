@@ -76,6 +76,7 @@ import {
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 import DiscoveryRadar from './discovery.jsx';
+import ProcessChain from './processChain.jsx';
 
 const HANDLE_SLOTS = [25, 37, 49, 61, 73];
 const PrototypeNavigationContext = createContext(() => {});
@@ -4867,6 +4868,7 @@ const prototypeStages = [
     label: 'Discover',
     items: [
       { id: 'discovery', label: 'Discovery radar' },
+      { id: 'journey', label: 'Run journey' },
     ],
   },
   {
@@ -5018,6 +5020,7 @@ function App() {
           </section>
 
           {tab === 'discovery' && <DiscoveryRadar />}
+          {tab === 'journey' && <ProcessChain selectedCase={selectedCase} onOpenPrototype={setTab} />}
           {tab === 'contracts' && <ContractFreezeLab selectedCase={selectedCase} />}
           {tab === 'intake' && <CaseStudyIntake selectedCaseId={selectedCaseId} onSelectCase={setSelectedCaseId} />}
           {tab === 'agenomes' && <AgenomePool selectedCase={selectedCase} />}

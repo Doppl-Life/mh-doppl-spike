@@ -1,7 +1,7 @@
 ---
 name: lateral-thinking
 description: >
-  Use this skill when the user wants to solve a puzzle-like problem, case study, or innovation prompt by finding the hidden frame before proposing an answer. Trigger on requests for lateral thinking, non-obvious solutions, hidden constraints, problem recovery, "what's really going on?", "solve this case", "find the trick", or Doppl case-study runs where a withheld solution must not leak. Especially useful for `case-studies/*-withheld-solution.md`: recover the real problem first, then generate a cross-domain transfer or zeitgeist synthesis candidate.
+  Use this skill when the user wants to identify the actual problem underneath a stated problem, then solve that recovered problem with a non-obvious mechanism. Trigger on lateral thinking, non-obvious solutions, hidden constraints, problem recovery, "what's really going on?", "solve this case", "find the trick", or Doppl case-study runs where a withheld solution must not leak. Especially useful for `case-studies/*-withheld-solution.md`: recover the real problem first, then generate a cross-domain transfer or zeitgeist synthesis candidate that fits the recovered frame.
 ---
 
 # Lateral Thinking
@@ -15,22 +15,23 @@ description: >
 - stratum: `Lalpha / case-study reasoning`
 - bedrock: `problem_recovery before solution_generation`; withheld solution text is evaluator-only
 
-Your job is to answer one question: **What hidden frame makes the strange facts ordinary, and what solution follows once that frame is recovered?**
+Your job is to answer one question: **What is the actual problem underneath the stated problem, and what solution follows once that real problem is recovered?**
 
-Do not jump straight to the clever answer. Lateral thinking is not random weirdness. It is disciplined frame recovery: find which assumption, unit, domain, rule, physical affordance, time boundary, or incentive has been misread.
+Do not jump straight to the clever answer. Lateral thinking is not random weirdness. It is disciplined problem recovery: find which assumption, unit, domain, rule, physical affordance, time boundary, actor, or incentive has been misread. Then solve the recovered problem, not the surface complaint.
 
 ## Core Workflow
 
 Think privately in this order:
 
 1. **Separate observation from interpretation.** Rewrite the facts without the source's implied explanation. Treat the stated problem, proposed fix, and obvious requirement as claims to test.
-2. **Find the trap door.** Ask which hidden variable would make all clues fit: domain, identity, scale, physical medium, timing convention, legal rule, incentive, visibility, measurement unit, or social meaning.
-3. **Delete false requirements.** Remove the requirement the prompt smuggles in: faster movement, stronger enforcement, more information, more money, more capacity, more protection, more complexity.
-4. **Choose a lateral move.** Prefer the smallest mechanism that changes behavior or interpretation at the real bottleneck.
-5. **Check subtype fit.**
+2. **Recover the actual problem.** Ask which hidden variable would make all clues fit: domain, identity, scale, physical medium, timing convention, legal rule, incentive, visibility, measurement unit, actor, or social meaning.
+3. **Name the surface trap.** State how the original problem statement points attention at the wrong target.
+4. **Delete false requirements.** Remove the requirement the prompt smuggles in: faster movement, stronger enforcement, more information, more money, more capacity, more protection, more complexity.
+5. **Choose a lateral move.** Prefer the smallest mechanism that changes behavior or interpretation at the real bottleneck.
+6. **Check subtype fit.**
    - For `cross_domain_transfer`, name the source-domain pattern and how it maps to the target problem.
    - For `zeitgeist_synthesis`, name the timing/substrate shift, current signals, why-now, and at least one dated falsifiable prediction.
-6. **Self-grade against the withheld-answer bar.** Does the answer recover the actual problem before solving? Does it respect constraints? Could it be tested?
+7. **Self-grade against the withheld-answer bar.** Does the answer recover the actual problem before solving? Does it respect constraints? Could it be tested?
 
 ## Output Shape
 

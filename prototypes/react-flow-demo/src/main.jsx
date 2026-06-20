@@ -1318,6 +1318,27 @@ const spendBoundary = {
   ],
 };
 
+const energyRailBoundary = {
+  upstreamModules: ['Operator Console', 'Agenome Pool'],
+  upstreamContracts: ['RunConfig', 'Agenome', 'RunCaps'],
+  downstreamContracts: ['CandidateIdea', 'EnergyEvent', 'ReproductionEvent'],
+  downstreamModules: ['Critic Council'],
+  invariants: [],
+};
+
+const criticRailBoundary = {
+  upstreamModules: ['Energy Metabolism', 'Gateway Forge'],
+  upstreamContracts: ['CandidateIdea', 'EvidenceRef', 'ModelGatewayResponse'],
+  downstreamContracts: ['CriticReview', 'CheckResult', 'FitnessScore'],
+  downstreamModules: ['Fusion Lab', 'Trace Viewer', 'Spend Ledger'],
+  invariants: [],
+};
+
+const flowBoundaryByKind = {
+  energy: { title: 'Where Energy Fits', boundary: energyRailBoundary },
+  critic: { title: 'Where Critic Fits', boundary: criticRailBoundary },
+};
+
 const energyNodes = [
   node('case', 'energyNode', -180, 35, { tone: 'case' }),
   node('budget', 'budgetNode', 220, 35, { level: 350 }),
@@ -1639,6 +1660,7 @@ function Metric({ label, value }) {
 function FlowPrototype({ kind, onNavigate, selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
   const caseFlowDetails = useMemo(() => buildCaseFlowDetails(caseDetails), [caseDetails]);
+  const flowBoundary = flowBoundaryByKind[kind];
   const config = useMemo(() => (kind === 'energy'
     ? {
         title: 'Energy Metabolism Simulator',
@@ -1783,6 +1805,13 @@ function FlowPrototype({ kind, onNavigate, selectedCase }) {
           </ul>
         </aside>
       </div>
+      {flowBoundary && (
+        <BoundaryRail
+          title={flowBoundary.title}
+          boundary={flowBoundary.boundary}
+          className="flow-boundary-summary"
+        />
+      )}
     </section>
   );
 }
@@ -2567,31 +2596,301 @@ function BoundaryPanel() {
   );
 }
 
+const boundaryModuleOverrides = {
+  'Where Contracts Fit': {
+    upstreamModules: ['Case Study Intake', 'Operator Console'],
+    downstreamModules: ['Runtime Kernel', 'Model Gateway'],
+  },
+  'Where Intake Fits': {
+    upstreamModules: ['case-study markdown', 'operator upload'],
+    downstreamModules: ['Operator Console'],
+  },
+  'Where Pool Fits': {
+    upstreamModules: ['Operator Console'],
+    downstreamModules: ['Runtime Kernel'],
+  },
+  'Where Console Fits': {
+    upstreamModules: ['Case Study Intake', 'Agenome Pool'],
+    downstreamModules: ['Runtime Kernel'],
+  },
+  'Where Gateway Fits': {
+    upstreamModules: ['Runtime Kernel', 'Critic Council'],
+    downstreamModules: ['Replay Spine'],
+  },
+  'Where Energy Fits': {
+    upstreamModules: ['Operator Console', 'Agenome Pool'],
+    downstreamModules: ['Critic Council'],
+  },
+  'Where Critic Fits': {
+    upstreamModules: ['Energy Metabolism', 'Gateway Forge'],
+    downstreamModules: ['Fusion Lab', 'Trace Viewer'],
+  },
+  'Where Fusion Fits': {
+    upstreamModules: ['Critic Council', 'Novelty Radar'],
+    downstreamModules: ['Replay Spine'],
+  },
+  'Where Spend Fits': {
+    upstreamModules: ['Gateway Forge', 'Replay Spine'],
+    downstreamModules: ['Operator Console'],
+  },
+  'Where Checks Fit': {
+    upstreamModules: ['Critic Council', 'Gateway Forge'],
+    downstreamModules: ['Novelty Radar'],
+  },
+  'Where Novelty Fits': {
+    upstreamModules: ['Subtype Check Lab', 'Model Gateway'],
+    downstreamModules: ['Fusion Lab'],
+  },
+  'Where Proof Fits': {
+    upstreamModules: ['Replay Spine', 'Novelty Radar', 'Spend Ledger'],
+    downstreamModules: ['Trace Viewer'],
+  },
+  'Where Replay Fits': {
+    upstreamModules: ['Model Gateway', 'Fusion Lab'],
+    downstreamModules: ['Trace Viewer', 'Spend Ledger'],
+  },
+  'Where Fallback Fits': {
+    upstreamModules: ['Operator Console', 'Replay Spine'],
+    downstreamModules: ['Trace Viewer'],
+  },
+  'Where Trace Fits': {
+    upstreamModules: ['Replay Spine', 'Critic Council'],
+    downstreamModules: ['Final Survivor Proof Panel'],
+  },
+};
+
+const boundaryProofStatements = {
+  'Where Contracts Fit': [
+    'Every producer and consumer imports the same frozen schema.',
+    'Bad payloads fail visibly before they move downstream.',
+  ],
+  'Where Intake Fits': [
+    'Agents see the case problem, not the hidden solution.',
+    'The run seed keeps source and leakage notes attached.',
+  ],
+  'Where Pool Fits': [
+    'The run starts with a bounded, named agenome set.',
+    'Tool permissions and diversity problems are visible before spawn.',
+  ],
+  'Where Console Fits': [
+    'Operators can start, stop, and cap runs without editing truth.',
+    'Commands append events instead of silently changing state.',
+  ],
+  'Where Gateway Fits': [
+    'All model calls pass through one schema-validating boundary.',
+    'Untrusted candidate text stays data, not instructions.',
+  ],
+  'Where Energy Fits': [
+    'The runtime spends a bounded energy budget across spawned agenomes.',
+    'Candidate and reproduction events are emitted for downstream review.',
+  ],
+  'Where Critic Fits': [
+    'Reviewer outputs are structured evidence, not winner selection.',
+    'Critic and check results move downstream for scoring and fusion.',
+  ],
+  'Where Fusion Fits': [
+    'Parent choice is backed by persisted fitness evidence.',
+    'Child lineage and mutation details can be replayed later.',
+  ],
+  'Where Spend Fits': [
+    'Spend is derived from productive model/tool events.',
+    'Allocation signals explain future budget choices without rewriting history.',
+  ],
+  'Where Checks Fit': [
+    'Subtype determines which evidence checks are required.',
+    'Skipped or degraded checks stay visible for scoring.',
+  ],
+  'Where Novelty Fits': [
+    'Novelty is shown as evidence, not a magic score.',
+    'Prior-art overlap and degraded retrieval are visible.',
+  ],
+  'Where Proof Fits': [
+    'A winner is only shown when persisted evidence supports it.',
+    'Open risks and validation work remain part of the artifact.',
+  ],
+  'Where Replay Fits': [
+    'Stored events rebuild visible state without fresh calls.',
+    'Invalid or out-of-order events are quarantined, not guessed.',
+  ],
+  'Where Fallback Fits': [
+    'Demo mode changes are labeled for the audience.',
+    'Fallback switches append control events instead of hiding liveness.',
+  ],
+  'Where Trace Fits': [
+    'The viewer reads persisted run evidence only.',
+    'Prompt, critic, lineage, and score atoms resolve from the same trace.',
+  ],
+};
+
+function displayBoundaryFor(title, boundary) {
+  const moduleOverride = boundaryModuleOverrides[title] || {};
+  return {
+    ...boundary,
+    ...moduleOverride,
+    invariants: boundaryProofStatements[title] || simplifyInvariants(boundary.invariants),
+  };
+}
+
+function simplifyInvariants(items = []) {
+  return items.slice(0, 3).map((item) => {
+    const text = String(item).replace(/_/g, ' ');
+    return text.charAt(0).toUpperCase() + text.slice(1).replace(/\.$/, '') + '.';
+  });
+}
+
+const contractShapeSources = [
+  intakeContractShapes,
+  agenomeContractShapes,
+  operatorContractShapes,
+  gatewayContractShapes,
+  replayContractShapes,
+  fallbackContractShapes,
+  subtypeCheckContractShapes,
+  noveltyContractShapes,
+  survivorContractShapes,
+];
+
+const contractShapeIndex = buildContractShapeIndex();
+
+function buildContractShapeIndex() {
+  const entries = new Map();
+  contractShapeSources.forEach((source) => {
+    ['ingress', 'egress'].forEach((direction) => {
+      (source[direction] || []).forEach((shape) => {
+        entries.set(normalizeContractName(shape.name), { ...shape, direction });
+      });
+    });
+  });
+  canonicalContracts.forEach((contract) => {
+    entries.set(normalizeContractName(contract.name), {
+      name: contract.name,
+      anchor: contract.file,
+      direction: 'canonical',
+      fields: contract.fields.map((field) => [field, 'invariant']),
+      zodSnippet: contract.zodSnippet,
+    });
+  });
+  return entries;
+}
+
+function normalizeContractName(name) {
+  return String(name || '')
+    .split('.')[0]
+    .replace(/Input$|Payload$|Projection$/i, '')
+    .replace(/[^a-z0-9]/gi, '')
+    .toLowerCase();
+}
+
+function getBoundaryContract(name) {
+  const normalized = normalizeContractName(name);
+  const alias = {
+    agentvisiblecasecontext: 'casepacketdraft',
+    candidateideacontext: 'candidateidea',
+    evaluatoranchorref: 'casepacketdraft',
+    sourcefidelitynote: 'casepacketdraft',
+    visibilityboundary: 'casepacketdraft',
+    trustedrubric: 'modelgatewayrequest',
+    untrustedcandidatepayload: 'modelgatewayrequest',
+    providercapability: 'gatewayroutepolicy',
+    gatewayeventenvelope: 'runeventenvelope',
+    energyevent: 'runeventenvelope',
+    reproductionevent: 'runeventenvelope',
+    checkcompleted: 'checkresult',
+    noveltyscored: 'noveltyscore',
+    noveltyscoringdegraded: 'noveltyscore',
+    fitnessscoreinput: 'fitnessscore',
+    noveltyscoreinput: 'noveltyscore',
+    demomodestate: 'runstateprojection',
+    fallbackdecisionevent: 'runeventenvelope',
+    replayfixturemetadata: 'replayreadrequest',
+    finalrunsummary: 'terminalrunsummary',
+    shareableproofartifact: 'shareableproofartifact',
+    traceslectionstate: 'replayreadrequest',
+    traceselectionstate: 'replayreadrequest',
+    evidencedrilldownrequest: 'replayreadrequest',
+    spendprojection: 'projectionbundle',
+    yieldprojection: 'spendprojection',
+    allocationsignal: 'spendprojection',
+    candidateprojection: 'projectionbundle',
+    fusioncreatedpayload: 'runeventenvelope',
+    mutationpolicy: 'agenome',
+    toolpermissionset: 'agenome',
+    runcaps: 'runconfig',
+    runmode: 'runconfig',
+    healthprojection: 'healthprojection',
+  }[normalized] || normalized;
+  const shape = contractShapeIndex.get(normalized) || contractShapeIndex.get(alias);
+  if (!shape) {
+    return {
+      name,
+      source: 'Prototype boundary contract',
+      code: `type ${String(name).replace(/[^A-Za-z0-9_$]/g, '') || 'BoundaryContract'} = {\n  // Shape is not expanded in this prototype yet.\n  id: string;\n  sourceModule: string;\n  payload: unknown;\n};`,
+    };
+  }
+
+  const fields = shape.fields?.map(([field, type]) => `  ${field}: ${type};`) || [];
+  const code = shape.zodSnippet || `interface ${shape.name.replace(/[^A-Za-z0-9_$]/g, '')} {\n${fields.join('\n')}\n}`;
+  return {
+    name,
+    source: shape.anchor || shape.source || shape.direction,
+    code,
+  };
+}
+
 function BoundaryRail({ title, boundary, className = '' }) {
+  const displayBoundary = displayBoundaryFor(title, boundary);
   return (
     <aside className={`boundary-panel ${className}`.trim()}>
       <p className="eyebrow">boundary contracts</p>
       <h3>{title}</h3>
-      <BoundaryGroup title="Upstream Modules" items={boundary.upstreamModules} />
-      <BoundaryGroup title="Upstream Boundary Contracts" items={boundary.upstreamContracts} />
-      <BoundaryGroup title="Downstream Boundary Contracts" items={boundary.downstreamContracts} />
-      <BoundaryGroup title="Downstream Modules" items={boundary.downstreamModules} />
-      <BoundaryGroup title="Invariants Exercised" items={boundary.invariants} tone="strong" />
+      <BoundaryGroup title="Immediate Upstream Modules" items={displayBoundary.upstreamModules} />
+      <BoundaryGroup title="Upstream Boundary Contracts" items={displayBoundary.upstreamContracts} contractGroup />
+      <BoundaryGroup title="Downstream Boundary Contracts" items={displayBoundary.downstreamContracts} contractGroup />
+      <BoundaryGroup title="Immediate Downstream Modules" items={displayBoundary.downstreamModules} />
+      <BoundaryGroup title="What This Proves" items={displayBoundary.invariants} tone="strong" />
     </aside>
   );
 }
 
-function BoundaryGroup({ title, items, tone = 'default' }) {
+function BoundaryGroup({ title, items, tone = 'default', contractGroup = false }) {
   const navigatePrototype = useContext(PrototypeNavigationContext);
   const activeTab = useContext(PrototypeActiveTabContext);
+  const [activeContract, setActiveContract] = useState(null);
+  const [copied, setCopied] = useState(false);
   const isModuleGroup = title.includes('Modules');
   const seenTargets = new Set();
+
+  const copyContract = useCallback(() => {
+    if (!activeContract) return;
+    setCopied(false);
+    navigator.clipboard?.writeText(activeContract.code).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1200);
+    }).catch(() => setCopied(false));
+  }, [activeContract]);
 
   return (
     <div className={`boundary-group tone-${tone}`}>
       <span>{title}</span>
       <div>
         {items.map((item) => {
+          if (contractGroup) {
+            const contract = getBoundaryContract(item);
+            return (
+              <button
+                key={item}
+                type="button"
+                className="contract-chip-button"
+                aria-pressed={activeContract?.name === item}
+                onClick={() => {
+                  setCopied(false);
+                  setActiveContract((current) => (current?.name === item ? null : contract));
+                }}
+              >
+                {item}
+              </button>
+            );
+          }
           const target = isModuleGroup ? prototypeModuleTargets[item] : null;
           const label = isModuleGroup ? displayModuleName(item) : item;
           const looksLikeModule = isModuleGroup && /^[A-Z]/.test(item);
@@ -2618,6 +2917,19 @@ function BoundaryGroup({ title, items, tone = 'default' }) {
           );
         })}
       </div>
+      {activeContract && (
+        <article className="boundary-contract-popover">
+          <button className="popover-close" type="button" aria-label="Close contract preview" onClick={() => setActiveContract(null)}>
+            ×
+          </button>
+          <span>{activeContract.source}</span>
+          <strong>{activeContract.name}</strong>
+          <pre>{activeContract.code}</pre>
+          <button type="button" className="copy-contract-button" onClick={copyContract}>
+            {copied ? 'Copied' : 'Copy contract'}
+          </button>
+        </article>
+      )}
     </div>
   );
 }
@@ -2758,15 +3070,7 @@ function AgenomePool({ selectedCase }) {
           </div>
         </section>
 
-        <aside className="boundary-panel agenome-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Pool Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={agenomePoolBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={agenomePoolBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={agenomePoolBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={agenomePoolBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={agenomePoolBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Pool Fits" boundary={agenomePoolBoundary} className="agenome-boundary-panel" />
 
         <section className="agenome-runconfig-panel">
           <div className="panel-heading">
@@ -2972,15 +3276,7 @@ function OperatorConsole({ selectedCase }) {
           </div>
         </section>
 
-        <aside className="boundary-panel operator-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Console Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={operatorBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={operatorBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={operatorBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={operatorBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={operatorBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Console Fits" boundary={operatorBoundary} className="operator-boundary-panel" />
 
         <section className="operator-payload-panel">
           <div className="panel-heading">
@@ -3208,15 +3504,7 @@ function GatewayForge({ selectedCase }) {
           </pre>
         </section>
 
-        <aside className="boundary-panel gateway-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Gateway Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={gatewayBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={gatewayBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={gatewayBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={gatewayBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={gatewayBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Gateway Fits" boundary={gatewayBoundary} className="gateway-boundary-panel" />
 
         <section className="gateway-contract-panel">
           <div className="contract-pane">
@@ -3417,15 +3705,7 @@ function SubtypeCheckLab({ selectedCase }) {
           </div>
         </section>
 
-        <aside className="boundary-panel subtype-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Checks Fit</h3>
-          <BoundaryGroup title="Upstream Modules" items={subtypeCheckBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={subtypeCheckBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={subtypeCheckBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={subtypeCheckBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={subtypeCheckBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Checks Fit" boundary={subtypeCheckBoundary} className="subtype-boundary-panel" />
 
         <section className="subtype-contract-panel">
           <div className="contract-pane">
@@ -3573,15 +3853,7 @@ function NoveltyRadar({ selectedCase }) {
           <pre className="payload-preview novelty-event-preview">{JSON.stringify(event, null, 2)}</pre>
         </section>
 
-        <aside className="boundary-panel novelty-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Novelty Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={noveltyBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={noveltyBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={noveltyBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={noveltyBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={noveltyBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Novelty Fits" boundary={noveltyBoundary} className="novelty-boundary-panel" />
 
         <section className="novelty-contract-panel">
           <div className="contract-pane">
@@ -3750,15 +4022,7 @@ function FinalSurvivorProofPanel({ selectedCase }) {
           </div>
         </section>
 
-        <aside className="boundary-panel survivor-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Proof Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={survivorBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={survivorBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={survivorBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={survivorBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={survivorBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Proof Fits" boundary={survivorBoundary} className="survivor-boundary-panel" />
 
         <section className="survivor-contract-panel">
           <div className="contract-pane">
@@ -3935,15 +4199,7 @@ function ReplaySpine({ selectedCase }) {
           </div>
         </section>
 
-        <aside className="boundary-panel replay-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Replay Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={replayBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={replayBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={replayBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={replayBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={replayBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Replay Fits" boundary={replayBoundary} className="replay-boundary-panel" />
 
         <section className="replay-contract-panel">
           <div className="contract-pane">
@@ -4115,15 +4371,7 @@ function DemoFallbackLadder({ selectedCase }) {
           </div>
         </section>
 
-        <aside className="boundary-panel fallback-boundary-panel">
-          <p className="eyebrow">boundary contracts</p>
-          <h3>Where Fallback Fits</h3>
-          <BoundaryGroup title="Upstream Modules" items={fallbackBoundary.upstreamModules} />
-          <BoundaryGroup title="Upstream Boundary Contracts" items={fallbackBoundary.upstreamContracts} />
-          <BoundaryGroup title="Downstream Boundary Contracts" items={fallbackBoundary.downstreamContracts} />
-          <BoundaryGroup title="Downstream Modules" items={fallbackBoundary.downstreamModules} />
-          <BoundaryGroup title="Invariants Exercised" items={fallbackBoundary.invariants} tone="strong" />
-        </aside>
+        <BoundaryRail title="Where Fallback Fits" boundary={fallbackBoundary} className="fallback-boundary-panel" />
 
         <section className="fallback-contract-panel">
           <div className="contract-pane">

@@ -2013,6 +2013,36 @@ article.module-node::after {
   background: rgba(110, 231, 255, 0.42);
 }
 
+.flow-boundary-summary {
+  position: relative;
+  top: auto;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  max-height: none;
+  margin-top: 18px;
+  overflow: visible;
+}
+
+.flow-boundary-summary > .eyebrow,
+.flow-boundary-summary > h3 {
+  grid-column: 1;
+}
+
+.flow-boundary-summary .boundary-group {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.flow-boundary-summary .boundary-contract-popover {
+  position: absolute;
+  right: 16px;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: min(520px, calc(100vw - 64px));
+}
+
 .boundary-group {
   display: grid;
   gap: 8px;
@@ -2055,6 +2085,19 @@ article.module-node::after {
   outline: none;
 }
 
+.boundary-group .contract-chip-button {
+  border-color: rgba(255, 209, 102, 0.32);
+  background: rgba(255, 209, 102, 0.08);
+  color: #fff0bd;
+}
+
+.boundary-group .contract-chip-button[aria-pressed="true"],
+.boundary-group .contract-chip-button:hover,
+.boundary-group .contract-chip-button:focus-visible {
+  border-color: rgba(255, 209, 102, 0.74);
+  background: rgba(255, 209, 102, 0.14);
+}
+
 .boundary-group .module-chip.is-current {
   border-color: rgba(110, 231, 255, 0.34);
   background: rgba(110, 231, 255, 0.08);
@@ -2083,6 +2126,71 @@ article.module-node::after {
   border-color: rgba(86, 255, 179, 0.24);
   color: #dfffee;
   background: rgba(86, 255, 179, 0.08);
+}
+
+.boundary-contract-popover {
+  position: relative;
+  margin-top: 10px;
+  border: 1px solid rgba(255, 209, 102, 0.36);
+  border-left: 4px solid var(--gold);
+  background:
+    linear-gradient(145deg, rgba(255, 209, 102, 0.1), transparent 44%),
+    rgba(4, 8, 23, 0.92);
+  padding: 12px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.boundary-contract-popover > span {
+  display: block;
+  max-width: calc(100% - 28px);
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.boundary-contract-popover > strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.boundary-contract-popover pre {
+  max-height: 240px;
+  margin: 10px 0;
+  overflow: auto;
+  border: 1px solid rgba(110, 231, 255, 0.18);
+  background: rgba(0, 0, 0, 0.24);
+  padding: 10px;
+  color: #dfffee;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.boundary-group .copy-contract-button {
+  border-color: rgba(86, 255, 179, 0.42);
+  background: rgba(86, 255, 179, 0.1);
+  color: #dfffee;
+}
+
+.boundary-group .popover-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  padding: 0;
+  border-color: rgba(159, 180, 215, 0.26);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
 }
 
 .prototype-with-boundary {
@@ -4398,6 +4506,33 @@ article.module-node::after {
   cursor: pointer;
   padding: 0;
   font-size: 13px;
+}
+
+.trace-breadcrumb .trace-lineage-back {
+  border: 1px solid rgba(67, 232, 255, 0.48);
+  border-left: 5px solid var(--cyan);
+  background:
+    linear-gradient(90deg, rgba(67, 232, 255, 0.16), rgba(67, 232, 255, 0.04)),
+    rgba(4, 8, 23, 0.72);
+  padding: 8px 12px;
+  color: #dcfbff;
+  font-size: 15px;
+  font-weight: 950;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  box-shadow: 0 0 0 1px rgba(67, 232, 255, 0.06), 0 10px 26px rgba(67, 232, 255, 0.08);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.trace-breadcrumb .trace-lineage-back:hover,
+.trace-breadcrumb .trace-lineage-back:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(67, 232, 255, 0.86);
+  background:
+    linear-gradient(90deg, rgba(67, 232, 255, 0.24), rgba(67, 232, 255, 0.08)),
+    rgba(4, 8, 23, 0.84);
+  outline: none;
 }
 
 .trace-breadcrumb strong { color: var(--ink); }

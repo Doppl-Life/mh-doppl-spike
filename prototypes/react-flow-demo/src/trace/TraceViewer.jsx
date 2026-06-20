@@ -572,7 +572,9 @@ function DetailView({ trace, location, onBack, atomTab, setAtomTab }) {
   return (
     <div className={`trace-detail ${roleClass(individual.role)}`} style={{ '--tone': color }}>
       <div className="trace-breadcrumb">
-        <button type="button" onClick={onBack}>{trace.title}</button>
+        <button type="button" className="trace-lineage-back" onClick={onBack}>
+          ← {trace.title}
+        </button>
         <span>▸</span>
         <button type="button" onClick={onBack}>{generation.label}</button>
         <span>▸</span>

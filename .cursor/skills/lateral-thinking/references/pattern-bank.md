@@ -2,6 +2,8 @@
 
 This reference distills recurring moves from the 390-row lateral-thinking corpus in the shared Google Sheet and adapts them to Doppl case studies. Use it as a checklist, not a lookup table.
 
+The raw exported corpus is preserved at `references/lateral-thinking-corpus.csv` for future re-analysis.
+
 ## 1. Question The Named Unit
 
 Many lateral answers work because the noun in the question is not the unit that matters.

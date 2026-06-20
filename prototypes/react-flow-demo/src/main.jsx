@@ -4867,8 +4867,8 @@ const prototypeStages = [
   {
     label: 'Discover',
     items: [
+      { id: 'journey', label: 'Run summary' },
       { id: 'discovery', label: 'Discovery radar' },
-      { id: 'journey', label: 'Run journey' },
     ],
   },
   {

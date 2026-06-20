@@ -138,18 +138,61 @@ const caseStudy = {
     'Known evaluator target: early detection should trigger a discreet onboard protocol that denies the drone useful footage before it exists.',
 };
 
-const selectableCaseIds = ['jack-superyacht-drone', 'loft-insulation-adoption', 'heinz-ketchup-authenticity'];
+const selectableCaseIds = [
+  'jack-superyacht-drone',
+  'loft-insulation-adoption',
+  'heinz-ketchup-authenticity',
+  'fsd-accident-economy',
+];
 const selectableCases = intakeExamples.filter((item) => selectableCaseIds.includes(item.id));
+const caseDetailOverrides = {
+  'jack-superyacht-drone': {
+    shortTitle: 'Superyacht',
+    runId: 'run-jack-privacy-042',
+    fixtureNote: 'Saved model traces were generated for this case.',
+    candidateTitle: 'Discreet Scene-Shift Protocol',
+    candidateSummary: 'Detect early, trigger a quiet onboard signal, and move exposed guests out of view before useful footage exists.',
+    subtypeTransfer: 'Transfer quiet-alert protocols from aviation and hospitals into yacht privacy operations.',
+    noveltyPrior: 'anti-drone jamming, physical capture, generic VIP alerts',
+    spendSignal: 'privacy-preserving operational protocol per dollar',
+  },
+  'loft-insulation-adoption': {
+    shortTitle: 'Loft',
+    runId: 'run-loft-friction-027',
+    fixtureNote: 'Case packet and evaluator target switch here; saved trace mechanics are reused for prototype continuity.',
+    candidateTitle: 'Loft Clearing Bundle',
+    candidateSummary: 'Bundle low-cost clearing help with insulation so the practical blocker is removed before installers arrive.',
+    subtypeTransfer: 'Transfer concierge prep and moving-service patterns into home energy retrofit delivery.',
+    noveltyPrior: 'education campaigns, subsidies, general energy-saving reminders',
+    spendSignal: 'hidden-friction removal per dollar',
+  },
+  'heinz-ketchup-authenticity': {
+    shortTitle: 'Heinz',
+    runId: 'run-heinz-auth-018',
+    fixtureNote: 'Case packet and evaluator target switch here; saved trace mechanics are reused for prototype continuity.',
+    candidateTitle: 'Tabletop Color-Match Cue',
+    candidateSummary: 'Use the bottle and label as a visible authenticity check so substitution becomes easier to notice at the table.',
+    subtypeTransfer: 'Transfer color-calibration and anti-counterfeit packaging cues into restaurant-table authenticity.',
+    noveltyPrior: 'audits, warnings, tamper-proof packaging, taste-based detection',
+    spendSignal: 'visible trust cue per dollar',
+  },
+  'fsd-accident-economy': {
+    shortTitle: 'FSD Accident',
+    runId: 'run-fsd-accident-031',
+    fixtureNote: 'Zeitgeist case packet switches every proof surface to accident-economy breadth, depth, timing, and hidden dependencies.',
+    candidateTitle: 'Accident Substrate Unwind',
+    candidateSummary: 'Map the crash-dependent web, then follow insurer ad spend and trauma-organ supply as hidden second-order breakages.',
+    subtypeTransfer: 'Synthesize current autonomy deployment signals into a timing-bound substrate-removal thesis.',
+    noveltyPrior: 'cheaper insurance, body-shop decline, generic AV safety forecasts',
+    spendSignal: 'hidden dependency surfaced per dollar',
+  },
+};
 const caseStudyDetails = Object.fromEntries(selectableCases.map((item) => [
   item.id,
   {
     id: item.id,
     title: item.title,
-    shortTitle: item.id === 'jack-superyacht-drone'
-      ? 'Superyacht'
-      : item.id === 'loft-insulation-adoption'
-        ? 'Loft'
-        : 'Heinz',
+    shortTitle: caseDetailOverrides[item.id].shortTitle,
     prompt: [
       item.agentVisible.problem,
       `Context: ${item.agentVisible.context.join(' ')}`,
@@ -161,39 +204,7 @@ const caseStudyDetails = Object.fromEntries(selectableCases.map((item) => [
     problemStatement: item.agentVisible.problem,
     constraints: item.agentVisible.constraints,
     successCriteria: item.agentVisible.successCriteria,
-    runId: item.id === 'jack-superyacht-drone'
-      ? 'run-jack-privacy-042'
-      : item.id === 'loft-insulation-adoption'
-        ? 'run-loft-friction-027'
-        : 'run-heinz-auth-018',
-    fixtureNote: item.id === 'jack-superyacht-drone'
-      ? 'Saved model traces were generated for this case.'
-      : 'Case packet and evaluator target switch here; saved trace mechanics are reused for prototype continuity.',
-    candidateTitle: item.id === 'jack-superyacht-drone'
-      ? 'Discreet Scene-Shift Protocol'
-      : item.id === 'loft-insulation-adoption'
-        ? 'Loft Clearing Bundle'
-        : 'Tabletop Color-Match Cue',
-    candidateSummary: item.id === 'jack-superyacht-drone'
-      ? 'Detect early, trigger a quiet onboard signal, and move exposed guests out of view before useful footage exists.'
-      : item.id === 'loft-insulation-adoption'
-        ? 'Bundle low-cost clearing help with insulation so the practical blocker is removed before installers arrive.'
-        : 'Use the bottle and label as a visible authenticity check so substitution becomes easier to notice at the table.',
-    subtypeTransfer: item.id === 'jack-superyacht-drone'
-      ? 'Transfer quiet-alert protocols from aviation and hospitals into yacht privacy operations.'
-      : item.id === 'loft-insulation-adoption'
-        ? 'Transfer concierge prep and moving-service patterns into home energy retrofit delivery.'
-        : 'Transfer color-calibration and anti-counterfeit packaging cues into restaurant-table authenticity.',
-    noveltyPrior: item.id === 'jack-superyacht-drone'
-      ? 'anti-drone jamming, physical capture, generic VIP alerts'
-      : item.id === 'loft-insulation-adoption'
-        ? 'education campaigns, subsidies, general energy-saving reminders'
-        : 'audits, warnings, tamper-proof packaging, taste-based detection',
-    spendSignal: item.id === 'jack-superyacht-drone'
-      ? 'privacy-preserving operational protocol per dollar'
-      : item.id === 'loft-insulation-adoption'
-        ? 'hidden-friction removal per dollar'
-        : 'visible trust cue per dollar',
+    ...caseDetailOverrides[item.id],
   },
 ]));
 
@@ -274,6 +285,31 @@ const caseArtifactOverlays = {
       ['Social sharing of substitutions', 'Makes table-visible detection commercially relevant.'],
     ],
   },
+  'fsd-accident-economy': {
+    candidateId: 'cand_fsd_accident_substrate',
+    title: 'Accident Substrate Unwind',
+    summary: 'Map the crash-dependent web, then follow insurer ad spend and trauma-organ supply as hidden second-order breakages.',
+    claim: 'Autonomy does not merely cheapen insurance; it removes the crash as the substrate beneath several institutions.',
+    baseline: 'cheaper insurance forecast',
+    risk: 'AV penetration may be slower, uneven, or liability-shifted rather than a clean crash collapse',
+    validation: 'track crash-related injury claims, trauma admissions, insurer ad spend, and organ-supply statements in high-AV metros',
+    evidence: ['NHTSA crash cost signals', 'Treasury FIO personal-auto premium pool', 'Trauma donor supply literature'],
+    priorCandidates: [
+      ['Insurance Premium Compression', 'Correct first-order effect, weak on the broader accident-dependent web.'],
+      ['Body Shop Volume Decline', 'Names a visible loser but misses litigation, trauma care, media, and transplant supply.'],
+      ['Generic AV Safety Dividend', 'Captures social benefit without institution-level depth chains.'],
+    ],
+    priorArt: [
+      ['Seatbelts and airbags', 'Same safety-improvement direction, weaker substrate removal.'],
+      ['Refrigeration ending ice delivery', 'Comparable vanished substrate with new winners and stranded intermediaries.'],
+      ['ADAS crash-rate reductions', 'Leading indicator, but not the full autonomy timing trigger.'],
+    ],
+    signals: [
+      ['2025-2026 autonomy deployment and legalization', 'Makes the timing load-bearing rather than speculative futurism.'],
+      ['Personal-auto premium pool concentration', 'Shows the crash-price substrate is institutionally large.'],
+      ['Trauma donor mix shift', 'Shows a hidden dependent already sensitive to safety improvements.'],
+    ],
+  },
 };
 
 const caseAgenomeOutputs = {
@@ -306,6 +342,16 @@ const caseAgenomeOutputs = {
     blindside: 'If the cue is easy to ignore or copy, substitution remains invisible.',
     breakout: 'Make the table itself the authenticity check.',
     child: 'Breed visible authenticity, low-enforcement detection, and brand-protection constraints into one packaging cue.',
+  },
+  'fsd-accident-economy': {
+    firstPrinciples: 'The crash is the substrate; insurance premiums, injury law, trauma care, and repair all sit downstream.',
+    constraintInjection: 'Any answer must map breadth first, go deep on hidden dependencies, and stay falsifiable by date.',
+    polymath: 'Borrow substrate-removal cases like refrigeration, ATMs, and safety-device adoption to game the unwind.',
+    breakthrough: 'Follow insurer ad spend and high-yield trauma organ supply as the non-obvious dependents.',
+    additionBySubtraction: 'Delete the shallow cheaper-insurance frame; force every claim to name the institution losing its substrate.',
+    blindside: 'If AV penetration stalls or liability shifts to OEM fleets, the pool may transform before it collapses.',
+    breakout: 'Treat the accident economy as one FSD cluster branch, not as a standalone auto-insurance story.',
+    child: 'Breed substrate framing, hidden-dependency depth chains, and timed falsifiers into one accident-economy thesis.',
   },
 };
 
@@ -348,7 +394,8 @@ function buildCaseRawResponse(caseDetails) {
   });
 }
 
-function caseSpecificText(caseDetails, jackText, loftText, heinzText) {
+function caseSpecificText(caseDetails, jackText, loftText, heinzText, fsdText) {
+  if (caseDetails.id === 'fsd-accident-economy') return fsdText ?? heinzText;
   if (caseDetails.id === 'loft-insulation-adoption') return loftText;
   if (caseDetails.id === 'heinz-ketchup-authenticity') return heinzText;
   return jackText;
@@ -364,12 +411,14 @@ function buildCaseSubtypeCandidate(baseCandidate, caseDetails) {
           'aviation + hospital operations',
           'moving services + concierge retrofit prep',
           'color calibration + anti-counterfeit packaging',
+          'substrate-removal history + mobility safety economics',
         ),
         targetDomain: caseSpecificText(
           caseDetails,
           'superyacht privacy operations',
           'home insulation retrofit adoption',
           'restaurant ketchup authenticity',
+          'autonomy-driven accident-economy strategy',
         ),
         transferMechanism: caseDetails.subtypeTransfer,
         adaptationRisk: artifact.risk,
@@ -382,6 +431,7 @@ function buildCaseSubtypeCandidate(baseCandidate, caseDetails) {
           'public appetite favors quiet operational competence over visible countermeasures',
           'energy retrofits need concierge friction removal more than another savings reminder',
           'brand authenticity is more persuasive when the check is visible at point of use',
+          'autonomy crossing into deployment makes the accident-economy unwind falsifiable now',
         ),
         falsifier: artifact.risk,
       };
@@ -393,6 +443,7 @@ function buildCaseSubtypeCandidate(baseCandidate, caseDetails) {
       'Privacy Theater Exhaustion',
       'Hassle-First Retrofit Framing',
       'Tabletop Authenticity Moment',
+      'Accident Substrate Timing Window',
     ),
     summary: isTransfer
       ? `${caseDetails.subtypeTransfer} ${artifact.summary}`
@@ -415,7 +466,7 @@ function buildCaseNoveltyCandidate(baseCandidate, caseDetails) {
   return {
     ...baseCandidate,
     title: baseCandidate.id === 'cand_drone_jamming'
-      ? caseSpecificText(caseDetails, 'Soft Jamming Umbrella', 'Generic Rebate Reminder', 'Restaurant Audit Threat')
+      ? caseSpecificText(caseDetails, 'Soft Jamming Umbrella', 'Generic Rebate Reminder', 'Restaurant Audit Threat', 'Cheaper Premium Forecast')
       : artifact.title,
     summary: baseCandidate.id === 'cand_drone_jamming'
       ? caseSpecificText(
@@ -423,6 +474,7 @@ function buildCaseNoveltyCandidate(baseCandidate, caseDetails) {
           'Deploy a temporary interference umbrella that prevents drone camera transmission near the vessel.',
           'Send another financial reminder explaining that insulation pays for itself.',
           'Warn restaurants that Heinz may inspect whether bottles are refilled with off-brand ketchup.',
+          'Forecast lower auto premiums after safer autonomous driving without mapping the accident-dependent institutions.',
         )
       : artifact.summary,
     explanation: baseCandidate.id === 'cand_drone_jamming'
@@ -506,6 +558,7 @@ function buildCaseReplayFixture(baseFixture, caseDetails) {
           next.payload.inheritance,
           '66% hidden-friction discovery, 34% failure sensing around clearing labor',
           '66% authenticity-cue mechanism, 34% counterfeiting failure sensing',
+          '58% substrate framing, 42% hidden-dependency depth chains',
         );
       }
       if (next.type === 'candidate.selected') {

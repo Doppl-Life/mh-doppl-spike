@@ -379,6 +379,114 @@ export const distillationLearningByCase = {
       ],
     },
   ],
+  'fsd-accident-economy': [
+    {
+      id: 'fsd-constraint-substrate-before-industry',
+      kind: 'constraint_rule',
+      status: 'promoted',
+      title: 'Find The Substrate Before The Industry List',
+      shortLabel: 'Substrate rule',
+      body:
+        'When a technology removes a repeated event, identify the event-substrate first, then map which institutions price, litigate, repair, advertise against, or treat that event.',
+      sourcePattern:
+        'FSD Accident Economy Collapse showed that the crash, not auto insurance, is the substrate; insurance is one downstream institution.',
+      nextRunEffect:
+        'Future zeitgeist cases must name the disappearing substrate before listing winners and losers.',
+      scope: 'case_family',
+      reviewerReason:
+        'Promote as a soft problem-recovery constraint. It captures the accident-economy frame without leaking the specific hidden dependents.',
+      artifact: {
+        id: 'learn_fsd_substrate_before_industry',
+        kind: 'constraint_rule',
+        scope: 'case_family',
+        status: 'promoted',
+        evidenceRefs: ['critic-402', 'novelty-119', 'fitness-031'],
+      },
+      proposedContract: {
+        id: 'constraint_substrate_before_industry_list',
+        artifactId: 'learn_fsd_substrate_before_industry',
+        appliesTo: 'problem_recovery',
+        severity: 'soft',
+        sourceRunId: 'run-fsd-accident-031',
+      },
+      checks: [
+        ['leakage', 'pass', 'Does not name insurer advertising or organ supply as required answers.'],
+        ['generality', 'pass', 'Applies to substrate-removal cases beyond autonomy.'],
+        ['evidence', 'pass', 'Supported by final proof and novelty evidence.'],
+        ['contract fit', 'pass', 'Valid LearningArtifact plus ConstraintRule egress.'],
+      ],
+    },
+    {
+      id: 'fsd-skill-breadth-depth-map',
+      kind: 'skill_candidate',
+      status: 'promoted',
+      title: 'Breadth Then Depth Skill',
+      shortLabel: 'Breadth-depth skill',
+      body:
+        'For visible-entry zeitgeist cases, first map the whole dependent web, then choose the weirdest high-leverage nodes for two- and three-step depth chains.',
+      sourcePattern:
+        'The accident-economy run gained value only after moving from insurance/body shops into media funding and trauma-organ supply.',
+      nextRunEffect:
+        'Future agenomes must separate first-order obvious effects, hidden dependents, counter-currents, and dated falsifiers.',
+      scope: 'project',
+      reviewerReason:
+        'Promote as a skill candidate because it preserves the scoring shape of the case without hard-coding a target industry.',
+      artifact: {
+        id: 'learn_fsd_breadth_depth_skill',
+        kind: 'skill_candidate',
+        scope: 'project',
+        status: 'promoted',
+        evidenceRefs: ['trace-031', 'critic-406', 'fitness-031'],
+      },
+      proposedContract: {
+        id: 'skill_breadth_then_depth',
+        expectedInputs: ['visible first-order consensus', 'technology timing signal', 'dependent institutions'],
+        expectedOutput: 'CandidateIdea with substrate, breadth map, depth chains, synthesis, and falsifiers',
+        sourceRunId: 'run-fsd-accident-031',
+      },
+      checks: [
+        ['leakage', 'pass', 'Names the method, not the evaluator-only hidden dependencies.'],
+        ['generality', 'pass', 'Useful across autonomy, AI distribution, energy, and infrastructure cases.'],
+        ['evidence', 'pass', 'Grounded by the FSD case scoring notes and trace evidence.'],
+        ['contract fit', 'pass', 'Valid LearningArtifact egress with skill-candidate metadata.'],
+      ],
+    },
+    {
+      id: 'fsd-reject-insurance-only',
+      kind: 'evaluation_rule',
+      status: 'rejected',
+      title: 'Score Insurance Collapse As The Whole Answer',
+      shortLabel: 'Shallow FSD rule',
+      body:
+        'Accept an FSD accident-economy answer if it says auto insurance premiums and body shops decline.',
+      sourcePattern:
+        'Those effects are true but visible; the case exists to test hidden-dependency discovery and depth chains.',
+      nextRunEffect:
+        'None. The artifact is quarantined so future FSD cluster cases do not reward obvious first-order lists.',
+      scope: 'global',
+      reviewerReason:
+        'Reject because it would collapse the benchmark to the consensus play the case is designed to beat.',
+      artifact: {
+        id: 'learn_fsd_rejected_insurance_only',
+        kind: 'evaluation_rule',
+        scope: 'global',
+        status: 'rejected',
+        evidenceRefs: ['critic-409', 'check-121'],
+      },
+      proposedContract: {
+        id: 'rule_rejected_fsd_insurance_only',
+        appliesTo: 'verification',
+        severity: 'hard',
+        sourceRunId: 'run-fsd-accident-031',
+      },
+      checks: [
+        ['leakage', 'pass', 'Does not reveal the hidden dependents.'],
+        ['generality', 'fail', 'Rewards a visible-entry answer and misses the benchmark shape.'],
+        ['evidence', 'warn', 'Insurance is evidence, but not sufficient evidence.'],
+        ['contract fit', 'pass', 'The rejection itself is valid and replayable.'],
+      ],
+    },
+  ],
 };
 
 export function getDistillationLearningExamples(caseId) {

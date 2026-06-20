@@ -153,6 +153,60 @@ export const intakeExamples = [
       initialEnergy: 300,
     },
   },
+  {
+    id: 'fsd-accident-economy',
+    title: 'FSD Accident Economy Collapse',
+    source: 'case-study packet',
+    readiness: 84,
+    leakageRisk: 'medium',
+    summary:
+      'If autonomy removes most crashes, it removes the substrate for a web of institutions that price, litigate, repair, and treat human driving error. The case tests whether Doppl can move past the obvious insurance/body-shop answer into the hidden dependencies.',
+    agentVisible: {
+      problem:
+        'If vehicle autonomy removes most crashes, what happens to the institutions whose work depends on human driving error?',
+      context: [
+        'Road crashes support insurance underwriting, injury litigation, trauma medicine, collision repair, towing, salvage, and related labor.',
+        'The obvious first-order answer is that insurance and body shops shrink.',
+        'The stronger answer should map the full accident-dependent web and follow second- and third-order effects.',
+      ],
+      constraints: [
+        'Do not stop at cheaper insurance.',
+        'Map breadth before choosing depth chains.',
+        'Surface hidden dependencies beyond cars.',
+        'Keep deaths, injuries, and organ supply soberly framed.',
+        'Do not present the output as investment advice.',
+      ],
+      successCriteria: [
+        'Recover the crash as a substrate, not just a cost center.',
+        'Name multiple accident-dependent institutions.',
+        'Surface at least two hidden dependents.',
+        'Include why-now timing and a dated falsifiable prediction.',
+      ],
+    },
+    evaluatorOnly: {
+      knownSolution:
+        'Autonomy removes the accident substrate: a ~$1T+ human-error economy spanning insurance, litigation, trauma care, collision repair, media ad spend, and high-yield organ supply.',
+      hiddenAnchors: [
+        'The crash is the substrate.',
+        'Insurer ad spend underwrites parts of media.',
+        'Young trauma deaths are a high-yield organ source.',
+        'Breadth then depth is the scoring shape.',
+      ],
+      solutionLeakageTerms: ['accident substrate', 'insurer ad spend', 'high-yield organ supply'],
+    },
+    checks: [
+      { id: 'visible-packet', label: 'Agent-visible packet complete', status: 'pass', detail: 'The prompt includes accident-economy context, visible failed answers, constraints, and success criteria.' },
+      { id: 'withheld-boundary', label: 'Evaluator target withheld', status: 'pass', detail: 'The hidden media-ad and organ-supply anchors stay evaluator-only.' },
+      { id: 'leakage', label: 'Solution leakage scan', status: 'warn', detail: 'The visible prompt names hidden dependencies abstractly but withholds the specific expected dependents.' },
+      { id: 'runnability', label: 'Doppl runnability', status: 'pass', detail: 'The case has enough visible first-order consensus for Doppl to show value through breadth, depth, and timing.' },
+    ],
+    downstreamPreview: {
+      runSeed: 'case:fsd-accident-economy',
+      enabledSubtypes: ['zeitgeist_synthesis'],
+      evaluatorAnchor: 'withheld:accident-substrate-breadth-depth',
+      initialEnergy: 360,
+    },
+  },
 ];
 
 export const intakeBoundary = {
@@ -246,7 +300,9 @@ export const intakeContractShapes = {
 export function buildIntakeContractInstance(caseItem) {
   const sourceKind = caseItem.id === 'uploaded-draft'
     ? 'uploaded draft'
-    : caseItem.id.includes('loft')
+    : caseItem.id.includes('fsd')
+      ? 'public signal synthesis'
+      : caseItem.id.includes('loft')
       ? 'public anecdote + policy context'
       : caseItem.id.includes('heinz')
         ? 'public article + campaign summary'

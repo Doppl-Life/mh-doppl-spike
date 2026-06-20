@@ -341,6 +341,157 @@ const traceCaseOverlays = {
       2: ['Promoted to the run artifact; table-visible authenticity becomes the check.'],
     },
   },
+  'fsd-accident-economy': {
+    title: 'Lineage over time — FSD Accident Economy Collapse',
+    generationSummaries: {
+      0: 'Four mutagen agenomes propose against the withheld FSD accident-economy case; critic scores breadth, timing, and hidden-dependency depth.',
+      1: 'Two children breed around the crash as substrate, not the insurance industry as the whole story.',
+      2: 'A single fused champion maps the accident-dependent web and surfaces hidden dependents with dated falsifiers.',
+    },
+    individuals: {
+      'g0-blindside': {
+        title: 'The Crash Funds More Than Cars',
+        proposal:
+          'Do not stop at insurers and body shops. The crash funds injury lawyers, trauma care, salvage, towing, insurer advertising, and a high-yield slice of organ supply. The hidden breakages are outside the obvious auto stack.',
+        verdict:
+          'Strong hidden-dependency diagnosis. It finds the benchmark pressure: the visible answer is true but too shallow.',
+        rawResponse:
+          '{"title":"The Crash Funds More Than Cars","proposal":"Map the crash-funded web and follow hidden dependents beyond insurance.","whyThisFits":"The case rewards breadth then depth, not the first-order answer.","inheritedTrait":"find the dependent institutions no one prices"}',
+        criticReasons: {
+          grounding: 'Grounded in the case packet: insurance, litigation, trauma care, repair, towing, media, and transplant supply are all downstream of crashes.',
+          novelty: 'Moves beyond the consensus insurance/body-shop frame.',
+          feasibility: 'The map can be checked against public insurer, trauma, ad-spend, and transplant signals.',
+          falsification: 'Needs dated signals for whether the pool actually contracts in high-AV metros.',
+          operationalFit: 'Good candidate for a zeitgeist payload because timing is load-bearing.',
+        },
+      },
+      'g0-addition-by-subtraction': {
+        title: 'Delete The Cheaper-Insurance Frame',
+        proposal:
+          'Remove every answer that only says premiums fall. Force the thesis to name the disappearing event, the institutions it supports, and the counter-current where repair becomes lower-volume but higher-calibration.',
+        verdict:
+          'Elegant subtraction move. It prevents the run from rewarding the obvious first-order forecast.',
+        rawResponse:
+          '{"title":"Delete The Cheaper-Insurance Frame","proposal":"Reject insurance-only answers and require substrate plus depth chains.","inheritedTrait":"remove the shallow consensus play"}',
+        criticReasons: {
+          grounding: 'Matches the failed-attempt section: cheaper insurance is true but shallow.',
+          novelty: 'The deletion creates room for hidden dependents and counter-currents.',
+          feasibility: 'Works as a scoring constraint, not a standalone market thesis.',
+          falsification: 'Must still allow insurance as one branch of the map.',
+          operationalFit: 'Strong guardrail for the next generation.',
+        },
+      },
+      'g0-breakthrough': {
+        title: 'Follow The Hidden Dependents',
+        proposal:
+          'The non-obvious unlock is to trace where crash-money travels: insurer ad spend underwrites media attention, and young trauma deaths supply a high-yield part of the organ system. These are small-looking edges with sharp consequences.',
+        verdict:
+          'Strong accretive addition. It adds the two hidden dependents the evaluator cares about while preserving sober tone.',
+        rawResponse:
+          '{"title":"Follow The Hidden Dependents","proposal":"Use insurer media spend and trauma organ supply as depth chains.","inheritedTrait":"add the hidden dependency layer"}',
+        criticReasons: {
+          grounding: 'Directly supported by evaluator signal sets on insurer advertising and trauma donors.',
+          novelty: 'Most FSD safety takes do not connect crashes to media funding or transplant supply.',
+          feasibility: 'Can be monitored through ad-spend, trauma admission, claim, and transplant-body signals.',
+          falsification: 'Weak if AV deployment does not materially reduce crash volume.',
+          operationalFit: 'Turns the case into a concrete watchlist.',
+        },
+      },
+      'g0-first-principles': {
+        title: 'Crash As Substrate',
+        proposal:
+          'The protected or removed object is not a premium, shop visit, or lawsuit. It is the recurring human-error event itself. Once the crash disappears, every institution that prices, repairs, litigates, or treats the crash must rebase.',
+        verdict:
+          'Cleanest frame recovery. Needs depth chains and falsifiable timing to become a full synthesis.',
+        rawResponse:
+          '{"title":"Crash As Substrate","proposal":"Treat crashes as the event-substrate beneath the accident economy.","inheritedTrait":"recover the real object under the visible industries"}',
+        criticReasons: {
+          grounding: 'Anchors on the source document language: the crash is the substrate.',
+          novelty: 'Good first-principles reframe of a visible FSD consequence.',
+          feasibility: 'The frame is sound but incomplete without branches and dates.',
+          falsification: 'Must separate harm-only accident effects from enforcement/licensing sibling cases.',
+          operationalFit: 'Strong aiming rule for the next generation.',
+        },
+      },
+      'g1-masking-mist': {
+        title: 'Accident Web Depth Map',
+        proposal:
+          'Start with the crash as substrate, map personal auto insurance, injury law, trauma care, collision repair, salvage, towing, media ad spend, and organ supply, then choose the media and trauma-supply branches for depth.',
+        verdict:
+          'The child combines frame recovery with hidden dependents. Highest fitness so far.',
+        rawResponse:
+          '{"title":"Accident Web Depth Map","proposal":"Map the accident-dependent web, then take media and organ-supply branches deep.","fusionLogic":"Blindside finds hidden dependents; first-principles names the crash substrate.","inheritedTraits":["substrate framing","breadth map","hidden dependents"]}',
+        criticReasons: {
+          grounding: 'Every branch is represented in the source packet or evaluator target.',
+          novelty: 'Specific depth selection beats a generic sector list.',
+          feasibility: 'Can be tracked by public datasets and disclosures.',
+          falsification: 'Needs high-AV metro evidence before claiming system-wide collapse.',
+          operationalFit: 'Good fit for a replayable proof surface.',
+        },
+      },
+      'g1-dark-asset': {
+        title: 'Falsifiable Timing Watchlist',
+        proposal:
+          'Turn the synthesis into dated tests: premium-pool contraction by 2032, crash-related ER and injury-claim declines by 2030 in at least one high-AV metro, and structural personal-auto ad-spend decline by 2030.',
+        verdict:
+          'Inherits the subtraction guardrail and turns the thesis into a watchable zeitgeist payload.',
+        rawResponse:
+          '{"title":"Falsifiable Timing Watchlist","proposal":"Require dated tests for premiums, injury claims, ER volume, and ad spend.","fusionLogic":"Subtraction removes shallow answers; breakthrough supplies hidden-dependency targets.","inheritedTraits":["dated falsifiers","hidden dependents","why-now timing"]}',
+        criticReasons: {
+          grounding: 'Uses the evaluator file predictions rather than inventing vague future claims.',
+          novelty: 'The watchlist makes hidden dependencies inspectable.',
+          feasibility: 'Needs metro-level AV penetration and claims data that may lag.',
+          falsification: 'Clear dates can miss if deployment is delayed.',
+          operationalFit: 'Excellent for the subtype check lab and survivor proof.',
+        },
+      },
+      'g1-blindside': {
+        title: 'Standing Objection',
+        proposal:
+          'Carried forward as a falsifier: do not double-count enforcement, fines, forfeiture, or licensing here. Those ride the driver-as-policeable-subject substrate and belong to the sibling FSD enforcement case.',
+        verdict:
+          'Kept as pressure, not a contender. It protects the harm-only boundary of this case.',
+        rawResponse:
+          '{"title":"Standing Objection","proposal":"Keep enforcement and licensing out of accident-substrate scoring.","inheritedTrait":"protect the cluster boundary"}',
+        criticReasons: {
+          grounding: 'Grounded in the source docs: enforcement/fines/licensing are Sub-cluster C.',
+          novelty: 'Same objection as gen 0, so novelty decays.',
+          feasibility: 'Not a plan; a boundary condition.',
+          falsification: 'Valuable because it prevents an impressive but wrong sprawling answer.',
+          operationalFit: 'Keeps the accident-economy case scoped.',
+        },
+      },
+      'g2-champion': {
+        title: 'Accident Substrate Unwind',
+        proposal:
+          'Autonomy removes the crash as a substrate. The run maps the accident-dependent web, then follows insurer media spend and high-yield trauma organ supply as hidden dependents, while tracking premium-pool, ER, injury-claim, ad-spend, and transplant-signal falsifiers.',
+        verdict:
+          'Passes the held-out bar: it beats the insurance/body-shop consensus by mapping breadth, taking depth chains seriously, staying sober, and naming dated predictions.',
+        rawResponse:
+          '{"title":"Accident Substrate Unwind","proposal":"Crash-substrate map plus media and organ-supply depth chains.","fusionLogic":"Substrate frame supplies the map; hidden-dependency branch adds depth; timing watchlist supplies falsifiers.","inheritedTraits":["breadth map","media ad-spend chain","trauma organ-supply chain","dated predictions","Sub-cluster C boundary"]}',
+        criticReasons: {
+          grounding: 'Directly matches the evaluator target and named signal sets.',
+          novelty: 'The hidden dependents are the non-obvious value beyond the visible first move.',
+          feasibility: 'Predictions can be tracked, though AV penetration uncertainty remains.',
+          falsification: 'Explicit 2030-2032 tests make the thesis missable.',
+          operationalFit: 'Strong final survivor for a zeitgeist synthesis prototype.',
+        },
+      },
+    },
+    events: {
+      0: [
+        'Two highest-fitness seeds combine hidden-dependency diagnosis with crash-as-substrate framing.',
+        'Subtraction move deletes the shallow insurance-only answer and becomes a scoring guardrail.',
+        'Kept as living critic evidence: do not import enforcement/fine/licensing material from the sibling case.',
+        'Strong frame, weak falsifier list; its value was donated into g1-dark-asset.',
+      ],
+      1: [
+        'Best breadth map fused with dated timing watchlist.',
+        'Boundary objection satisfied by keeping enforcement and licensing in Sub-cluster C, so pressure retires.',
+      ],
+      2: ['Promoted to the run artifact; accident-substrate breadth, hidden depth, and falsifiers are visible.'],
+    },
+  },
 };
 
 function toneColor(tone) {

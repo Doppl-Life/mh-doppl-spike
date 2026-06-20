@@ -66,6 +66,7 @@ export const operatorCasePresets = [
   { id: 'jack-superyacht-drone', title: 'Superyacht Drone Privacy', readiness: 92 },
   { id: 'loft-insulation-adoption', title: 'Loft Insulation Adoption Failure', readiness: 88 },
   { id: 'heinz-ketchup-authenticity', title: 'Heinz Ketchup Authenticity', readiness: 86 },
+  { id: 'fsd-accident-economy', title: 'FSD Accident Economy Collapse', readiness: 84 },
 ];
 
 export const operatorPoolPresets = [

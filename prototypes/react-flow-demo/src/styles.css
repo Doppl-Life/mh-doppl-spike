@@ -1617,11 +1617,11 @@ article.module-node::after {
 
 .distillation-layout {
   display: grid;
-  grid-template-columns: minmax(270px, 0.76fr) minmax(0, 1.1fr) minmax(280px, 0.7fr);
+  grid-template-columns: minmax(300px, 0.72fr) minmax(460px, 1.04fr) minmax(300px, 0.72fr);
   grid-template-areas:
-    "source review boundary"
     "candidates review boundary"
-    "next contracts boundary";
+    "source review boundary"
+    "contracts contracts next";
   gap: 14px;
   align-items: start;
 }
@@ -1650,7 +1650,6 @@ article.module-node::after {
 .distillation-contract-panel { grid-area: contracts; }
 .distillation-boundary-panel { grid-area: boundary; }
 
-.distillation-candidate-panel,
 .distillation-boundary-panel {
   position: sticky;
   top: 18px;

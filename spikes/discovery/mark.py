@@ -22,6 +22,7 @@ from ledgers import LEDGER_DIR, latest_statuses, mark_status, promotion_rates
 
 
 def _list(limit: int = 30) -> None:
+    import decay
     feed = LEDGER_DIR / "candidate_feed.jsonl"
     if not feed.exists():
         print("no candidate feed yet — run ./demo first")
@@ -33,13 +34,17 @@ def _list(limit: int = 30) -> None:
         if r["id"] not in by_id or r["lens_score"] > by_id[r["id"]]["lens_score"]:
             by_id[r["id"]] = r
     statuses = latest_statuses()
-    ranked = sorted(by_id.values(), key=lambda x: x["lens_score"], reverse=True)[:limit]
-    print(f"{'id':14} {'score':>5}  {'status':9} {'source':18} title")
-    print("-" * 92)
+    # rank by EFFECTIVE (decayed) score — fresh zeitgeist rises, stale sinks
+    annotated = [decay.annotate(r) for r in by_id.values()]
+    ranked = sorted(annotated, key=lambda x: x["effective_score"], reverse=True)[:limit]
+    print(f"{'id':14} {'eff':>5} {'raw':>4} {'age':>5}  {'status':9} {'source':16} title")
+    print("-" * 100)
     for r in ranked:
         st = statuses.get(r["id"], {}).get("status", "—")
-        sc = f"+{r['lens_score']}" if r["lens_score"] > 0 else str(r["lens_score"])
-        print(f"{r['id']:14} {sc:>5}  {st:9} {r['source'][:18]:18} {r['title'][:40]}")
+        eff = f"{r['effective_score']:+.1f}"
+        raw = f"{r['lens_score']:+d}"
+        age = f"{r['age_days']:.0f}d"
+        print(f"{r['id']:14} {eff:>5} {raw:>4} {age:>5}  {st:9} {r['source'][:16]:16} {r['title'][:38]}")
 
 
 def _rates() -> None:

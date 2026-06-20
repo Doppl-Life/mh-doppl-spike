@@ -62,6 +62,33 @@ def fetch_free(url: str, timeout: int = 12) -> str | None:
 
 
 # --------------------------------------------------------------------------- #
+# Tier 1.5 — CURL_CFFI: a stealth GET that mimics a real browser's TLS/JA3
+# fingerprint. Defeats Cloudflare/Akamai/in-house bot walls that 403 a plain GET
+# (Reddit is the canonical case) WITHOUT spinning up a full browser — so it sits
+# between free and browser: cheap, fast, no JS engine. Optional dep (`curl_cffi`);
+# if not installed, this rung is dark and the ladder falls through to browser.
+# (Limitation: no JS, so it won't pass JS challenges like Turnstile — that's the
+# browser tier's job.)
+# --------------------------------------------------------------------------- #
+
+def fetch_curl_cffi(url: str, timeout: int = 15) -> str | None:
+    if not url.startswith("http"):
+        return None
+    try:
+        from curl_cffi import requests as cffi_requests  # optional dep
+    except Exception:
+        return None
+    try:
+        r = cffi_requests.get(url, impersonate="chrome", timeout=timeout)
+        if r.status_code != 200:
+            return None
+        text = _strip_html(r.text)
+        return text[:6000] if text else None
+    except Exception:
+        return None
+
+
+# --------------------------------------------------------------------------- #
 # Tier 2 — FIRECRAWL: clean markdown, per-page. Gated behind FIRECRAWL_API_KEY.
 # Stub-but-real: the call is implemented; without a key it returns None (seam open).
 # --------------------------------------------------------------------------- #
@@ -142,23 +169,54 @@ def fetch_via_gemini(url_or_query: str, instruction: str = "", timeout: int = 90
         return None
 
 
+def fetch_via_grok(url_or_query: str, instruction: str = "", timeout: int = 90) -> str | None:
+    """Dispatch to Grok Build (xAI CLI). Grok has native, privileged access to the
+    live X/Twitter firehose — which is exactly why it beats scraping for x.com — and
+    runs flat-rate on a SuperGrok / X Premium+ subscription, not metered tokens.
+
+    SEAM: requires the Grok CLI on PATH (`grok`). Without it, returns None. The exact
+    invocation/flags are pinned when you wire your install; conservative for the spike.
+    This is the X dispatch route the `worth_unlocking` signal will recommend turning on.
+    """
+    grok_bin = "grok" if dispatch_available("grok") else None
+    if not grok_bin:
+        return None
+    prompt = (
+        f"{instruction or 'Summarize the current X/Twitter discussion and live signal around this.'}\n"
+        f"Topic/URL: {url_or_query}\nReturn plain text only."
+    )
+    try:
+        proc = subprocess.run(
+            [grok_bin, "-p", prompt],
+            capture_output=True, text=True, timeout=timeout,
+        )
+        out = (proc.stdout or "").strip()
+        return out[:6000] if out else None
+    except Exception:
+        return None
+
+
 # --------------------------------------------------------------------------- #
 # The ladder.
 # --------------------------------------------------------------------------- #
 
 def fetch_body(url: str) -> tuple[str | None, str]:
-    """Return (body_text, tier_used). Walks free -> firecrawl -> browser."""
+    """Return (body_text, tier_used). Walks free -> curl_cffi -> firecrawl -> browser."""
     body = fetch_free(url)
     if body and len(body) >= THIN_CHARS:
         return body, "free"
+    cf = fetch_curl_cffi(url)        # stealth GET: defeats TLS-fingerprint walls
+    if cf and len(cf) >= THIN_CHARS:
+        return cf, "curl_cffi"
     fc = fetch_firecrawl(url)
     if fc and len(fc) >= THIN_CHARS:
         return fc, "firecrawl"
     br = fetch_browser(url)
     if br and len(br) >= THIN_CHARS:
         return br, "browser"
-    # nothing better than the free attempt (possibly thin/None)
-    return (body or fc or br), ("free" if body else "firecrawl" if fc else "browser" if br else "none")
+    best = body or cf or fc or br
+    tier = ("free" if body else "curl_cffi" if cf else "firecrawl" if fc else "browser" if br else "none")
+    return best, tier
 
 
 def enrich_thin_items(items: list[dict], enabled: bool = True) -> list[dict]:

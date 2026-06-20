@@ -182,7 +182,7 @@ def mark_status(candidate_id: str, status: str, reason: str = "") -> dict:
     OUTCOME signal it otherwise lacks: promotion is realized value (a real decision),
     versus the lens score, which is only predicted value.
     """
-    assert status in {"promoted", "rejected", "surfaced"}, f"bad status: {status}"
+    assert status in {"promoted", "rejected", "surfaced", "expired"}, f"bad status: {status}"
     path = LEDGER_DIR / "promotions.jsonl"
     row = {"at": _now(), "id": candidate_id, "status": status, "reason": reason}
     _append_jsonl(path, [row])
@@ -201,6 +201,37 @@ def latest_statuses() -> dict[str, dict]:
         row = json.loads(line)
         latest[row["id"]] = row  # later lines overwrite earlier -> current status
     return latest
+
+
+def sweep_expired() -> int:
+    """Auto-expire zeitgeist candidates that missed their why-now window.
+
+    Scans the feed, and for each candidate not already decided, asks decay.should_expire
+    (zeitgeist + old enough + decayed past the floor). Marks it `expired` (append-only —
+    the candidate stays in the feed, it's just flagged 'window closed'). Idempotent:
+    skips anything already promoted/rejected/expired. Returns how many it expired.
+    """
+    import decay
+    feed_path = LEDGER_DIR / "candidate_feed.jsonl"
+    if not feed_path.exists():
+        return 0
+    # latest row per id
+    by_id: dict[str, dict] = {}
+    for line in feed_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        by_id[r["id"]] = r
+    statuses = latest_statuses()
+    n = 0
+    for cid, row in by_id.items():
+        cur = statuses.get(cid, {}).get("status")
+        if cur in ("promoted", "rejected", "expired"):
+            continue
+        if decay.should_expire(row, cur):
+            mark_status(cid, "expired", f"why-now window closed (age {decay.age_days(row.get('harvested_at',''))//1:.0f}d, decayed)")
+            n += 1
+    return n
 
 
 def promotion_rates() -> dict[str, dict]:

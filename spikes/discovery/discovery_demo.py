@@ -329,6 +329,12 @@ def main() -> None:
     exe_path = write_exemplar_keep(analyzed)
     trap_path, n_traps = write_trap_register(analyzed)
 
+    # why-now decay sweep: auto-expire zeitgeist candidates that missed their window
+    from ledgers import sweep_expired
+    n_expired = sweep_expired()
+    if n_expired:
+        console.print(f"[dim]⏳ {n_expired} stale zeitgeist candidate(s) auto-expired (why-now window closed)[/]")
+
     print_feed(analyzed, args.lens)
 
     acc = verify_classifier(analyzed)
@@ -381,8 +387,18 @@ def main() -> None:
         lines = [f"[yellow]{b['source']}[/] ([dim]{b['tier']}/{b['status']}[/]) → {b['mcp_candidate']}" for b in backlog]
         console.print(Panel("\n".join(lines), title="🔌 Connector backlog (valuable but hard to traverse)", border_style="yellow"))
 
-    # realized value: promotion rate per source (if anything's been marked)
+    # evidence-gated unlock: walled sources that PROVED they pay (promotion rate)
     rates = promotion_rates()
+    unlock = recipe_ledger.worth_unlocking(rates)
+    if unlock:
+        lines = [
+            f"[green]{u['source']}[/] (promo-rate {u['promotion_rate']}, {u['tier']}-tier) "
+            f"→ worth the cost: {u['mcp_candidate'] or 'unlock access'}"
+            for u in unlock
+        ]
+        console.print(Panel("\n".join(lines), title="💎 Worth unlocking — evidence says spend the expensive access", border_style="green"))
+
+    # realized value: promotion rate per source (if anything's been marked)
     if rates:
         pr_tbl = Table(title="Realized value — promotion rate per source", expand=True)
         for c in ["source", "marked", "promoted", "rejected", "promo-rate"]:

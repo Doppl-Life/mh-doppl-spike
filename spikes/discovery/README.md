@@ -256,7 +256,9 @@ Flags:
 | `fetch.py` | The **fetch ladder**: free GET → Firecrawl (per-page, gated by `FIRECRAWL_API_KEY`) → browser-use/Browserbase (seam, gated by `BROWSER_FETCH=1`). Enriches thin items; records the tier used. |
 | `brain.py` | The interesting half: Problem Recovery + subtype classify (±5-year test) + **signed −5..+5 lens score**. One OpenRouter call per item, strict-JSON validated with one repair. Lenses live here. |
 | `ledgers.py` | The append-only ledgers + per-`(source × lens)` scoring (`productive` / `polluting` / …) + candidate lifecycle (promote/reject) + promotion rates. |
-| `recipes.py` | **Source recipes**: how to traverse each source, self-correcting on break. Emits the evidence-based MCP/connector backlog. |
+| `recipes.py` | **Source recipes**: how to traverse each source, self-correcting on break. Emits the MCP/connector backlog + the `worth_unlocking` (evidence-gated access) signal. |
+| `calibrate.py` / `calibrate` | **Calibration loop**: joins predicted (lens) vs realized (promotion) and reports where the lens is mis-calibrated. The keystone. |
+| `decay.py` | **Why-now decay**: ages scores by subtype (zeitgeist fast, transfer not) → effective score + auto-expire of stale zeitgeist. The feed's metabolism. |
 | `mark.py` / `mark` | CLI to mark a candidate `promoted`/`rejected` (append-only) and view promotion rates per source. |
 | `discovery_demo.py` | Orchestrator: harvest → enrich → brain (concurrent) → ledgers → ranked feed + held-out check + trap panel + connector backlog + promotion rates + HTML trace. |
 | `ledgers/` | Output (gitignored): `candidate_feed.jsonl`, `source_registry.json`, `exemplar_keep.jsonl`, `trap_register.jsonl`, `source_recipes.json`, `promotions.jsonl`. |
@@ -396,6 +398,64 @@ read-only `arbitrage`-lens sources; (5) let the registry throttle crawl budget b
 per-lens hit-rate (the budgeted bandit), weighting cost by fetch tier.
 
 ---
+
+### Calibration loop — predicted vs realized (the keystone)
+
+The engine produces two signals that now *touch*: `lens_score` (predicted value, the
+engine's guess) and `promotion` (realized value, a real decision). `./calibrate` joins
+them and measures the gap, per lens and per source:
+
+- **Re-tune the lens.** If promoted items don't out-score rejected ones, the lens isn't
+  discriminating; if a source's promoted items skew low, the lens under-rates it. Verified:
+  with a deliberately-promoted low-scorer, the loop reported *"lens barely discriminates
+  (Δ0.75) — the rubric needs work."* That's the sprout/afrit reward idea wired — the engine
+  learns what "good" means to *you*, from your choices.
+- **Unlock expensive sources that earn it.** `worth_unlocking` flags a walled/expensive
+  source (browser/dispatch tier) whose promotion rate clears a threshold — *evidence says
+  spend the costly access here.* Verified: an X candidate promoted at 1.0 surfaced as
+  *"x (promo-rate 1.0, dispatch-tier) → spend on grok-cli."* The budgeted-bandit made real,
+  with promotion rate as the payoff signal.
+
+```bash
+./calibrate                 # predicted-vs-realized gap + per-source flags
+```
+
+### Why-now decay — the feed gets a metabolism
+
+The two subtypes age oppositely, and the feed now knows it (`decay.py`). Effective score =
+signed lens score × an age factor with a per-subtype half-life:
+
+- **`zeitgeist_synthesis` decays fast** (~14-day half-life): its value is a dated why-now, and
+  windows close. A +4 zeitgeist falls to +2.0 at two weeks, +0.2 by two months.
+- **`cross_domain_transfer` barely decays** (~10-year half-life): a mechanism analogy is
+  timeless. A +4 transfer is still ~+3.95 at two months.
+
+So an always-on harvester doesn't just pile up — fresh signal rises, stale signal sinks.
+`./mark --list` ranks by **effective** score and shows `eff / raw / age`. The run also runs an
+**auto-expire sweep**: a zeitgeist candidate that decayed past a floor, is old enough to judge,
+and was never promoted gets an `expired` status (append-only — "why-now window closed," not
+deleted). Verified end-to-end: a 60-day +4 zeitgeist auto-expired while a same-age +4 transfer
+held at +4.0. This is the metabolic counterpart to the ±5-year discriminator — that test
+*classifies* timing-dependence; decay *acts* on it.
+
+### Access tiers, in full (cheapest that works)
+
+```
+FREE (API/RSS or GET)
+  → CURL_CFFI   stealth GET, mimics Chrome TLS/JA3 — defeats fingerprint walls, no JS (optional dep)
+  → FIRECRAWL   clean markdown, per-page (FIRECRAWL_API_KEY)
+  → BROWSER     browser-use / Browserbase — JS/auth/anti-bot, costly last resort (BROWSER_FETCH=1)
+
+DISPATCH (route to an agent natively good at it, flat-rate on a sub you already pay for):
+  → gemini-cli  YouTube (native transcript/search access)
+  → grok-cli    X/Twitter (native live-firehose access — beats scraping)
+```
+
+All tiers are gated and degrade gracefully — the ladder runs free-only with nothing
+installed, and each rung lights up when its tool/key is present. **Honest note:** curl_cffi
+defeats TLS-fingerprint walls in general, but tested against Reddit from a datacenter IP it
+still 403s (Reddit also blocks by IP) — so it's a cheap *attempt* the ladder tries before
+escalating to browser, not a guaranteed fix. The recipe records that.
 
 ## Running on a schedule (the "scheduled runners" vision)
 

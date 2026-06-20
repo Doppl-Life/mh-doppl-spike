@@ -79,18 +79,18 @@ SEED_RECIPES: dict[str, dict] = {
         "notes": "RSS is shallow; the official GraphQL API (OAuth) gives votes/topics.",
     },
     "reddit": {
-        "tier": "browser",
-        "method": "JSON endpoints (/top.json) require a real browser session",
+        "tier": "curl_cffi",
+        "method": "JSON endpoints 403 a plain GET (TLS/JA3 wall); curl_cffi (chrome impersonate) should pass without a full browser",
         "tried_and_failed": ["plain httpx GET -> 403", "custom UA -> 403"],
-        "mcp_candidate": "reddit (or browser-use) — REQUIRED; free GET is blocked",
-        "notes": "Canonical browser-tier source. Needs BROWSER_FETCH=1 or a Reddit MCP/OAuth app.",
+        "mcp_candidate": "curl_cffi (cheap stealth GET) — else a Reddit MCP/OAuth app",
+        "notes": "Was browser-tier; curl_cffi is the cheaper attempt (chrome TLS impersonate). NOTE: tested from a datacenter IP it still 403s — Reddit also blocks by IP, so curl_cffi may need a residential proxy, else falls through to browser. The ladder tries cheap-first and escalates correctly.",
     },
     "x": {
-        "tier": "browser",
-        "method": "UNVERIFIED — trends/search need login; anti-bot heavy",
+        "tier": "dispatch",
+        "method": "dispatch:grok-cli — Grok has native live-firehose access (beats scraping); flat-rate on SuperGrok/X Premium+",
         "tried_and_failed": [],
-        "mcp_candidate": "x/twitter MCP or browser-use — almost certainly required",
-        "notes": "Highest-value zeitgeist source, hardest to traverse. Build the connector here first.",
+        "mcp_candidate": "grok-cli (native X access) — else x/twitter MCP or browser-use",
+        "notes": "Highest-value zeitgeist source. Grok (xAI) is the right traversal: privileged firehose, subscription-priced. Build/turn on here first.",
     },
     "youtube": {
         "tier": "dispatch",
@@ -226,4 +226,33 @@ def mcp_backlog(registry: dict | None = None) -> list[dict]:
     # hardest-to-reach first: browser, then dispatch, then the rest
     tier_rank = {"browser": 0, "dispatch": 1}
     out.sort(key=lambda x: tier_rank.get(x["tier"], 2))
+    return out
+
+
+def worth_unlocking(promo_rates: dict, threshold: float = 0.5, min_marked: int = 2) -> list[dict]:
+    """Evidence-gated access: a walled/expensive source that PROVES it pays.
+
+    The budgeted-bandit ('is the juice worth the squeeze') made real, with promotion
+    rate as the payoff signal. A source whose recipe is browser/dispatch/broken but
+    whose promotion rate clears `threshold` is the engine saying: *spend the costly
+    access here* (Grok for X, curl_cffi/browser for Reddit). Takes the promotion_rates
+    dict from ledgers.promotion_rates().
+    """
+    recipes = load_recipes()
+    out = []
+    for src, d in promo_rates.items():
+        if d.get("marked", 0) < min_marked or d.get("promotion_rate", 0) < threshold:
+            continue
+        key = src.split(":")[0]
+        r = recipes.get(key, {})
+        tier = r.get("tier")
+        if tier in ("browser", "dispatch") or r.get("status") == "broken":
+            out.append({
+                "source": src,
+                "tier": tier,
+                "promotion_rate": d["promotion_rate"],
+                "marked": d["marked"],
+                "mcp_candidate": r.get("mcp_candidate"),
+            })
+    out.sort(key=lambda x: x["promotion_rate"], reverse=True)
     return out

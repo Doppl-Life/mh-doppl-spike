@@ -31,6 +31,7 @@ doppl-test/
     agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
     crucible/                   ← belief-revision sibling spawner (built)
     discovery/                  ← source radar: harvest opportunities into typed seeds
+    knowledge-space/            ← durable graph/vector memory for real Doppl runs
     least-action/               ← mechanism-economy calibration for Least-Action Fitness
 ```
 

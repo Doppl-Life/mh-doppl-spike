@@ -71,7 +71,7 @@ import {
 import {
   distillationBoundary,
   distillationContractShapes,
-  distillationLearningExamples,
+  getDistillationLearningExamples,
 } from './distillationData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
@@ -2443,10 +2443,11 @@ function ContractFreezeLab({ selectedCase }) {
 
 function DistillationGate({ selectedCase }) {
   const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
-  const [activeId, setActiveId] = useState(distillationLearningExamples[0].id);
-  const activeLearning = distillationLearningExamples.find((item) => item.id === activeId) || distillationLearningExamples[0];
+  const learningExamples = useMemo(() => getDistillationLearningExamples(caseDetails.id), [caseDetails.id]);
+  const [activeId, setActiveId] = useState(learningExamples[0].id);
+  const activeLearning = learningExamples.find((item) => item.id === activeId) || learningExamples[0];
   const artifact = getCaseArtifact(caseDetails);
-  const promotedCount = distillationLearningExamples.filter((item) => item.status === 'promoted').length;
+  const promotedCount = learningExamples.filter((item) => item.status === 'promoted').length;
   const reviewVerdict = activeLearning.status === 'promoted' ? 'promote' : 'reject';
   const checkCounts = activeLearning.checks.reduce((counts, [, status]) => ({
     ...counts,
@@ -2465,6 +2466,10 @@ function DistillationGate({ selectedCase }) {
     reason: activeLearning.reviewerReason,
   };
 
+  useEffect(() => {
+    setActiveId(learningExamples[0].id);
+  }, [learningExamples]);
+
   return (
     <section className="prototype distillation-prototype">
       <div className="prototype-heading">
@@ -2479,9 +2484,9 @@ function DistillationGate({ selectedCase }) {
         <div className="case-card">
           <span>{caseDetails.shortTitle} · post-run learning</span>
           <strong>{caseDetails.title}</strong>
-          <p>{promotedCount}/{distillationLearningExamples.length} lessons promoted · replay truth unchanged</p>
+          <p>{promotedCount}/{learningExamples.length} lessons promoted · replay truth unchanged</p>
           <div className="readiness-meter">
-            <i><b style={{ width: `${Math.round((promotedCount / distillationLearningExamples.length) * 100)}%` }} /></i>
+            <i><b style={{ width: `${Math.round((promotedCount / learningExamples.length) * 100)}%` }} /></i>
           </div>
         </div>
       </div>
@@ -2529,7 +2534,7 @@ function DistillationGate({ selectedCase }) {
             <strong>{activeLearning.status}</strong>
           </div>
           <div className="distillation-learning-list">
-            {distillationLearningExamples.map((item) => (
+            {learningExamples.map((item) => (
               <button
                 key={item.id}
                 type="button"

@@ -49,6 +49,18 @@ Outputs:
 - `data/knowledge.jsonl` - durable local memory ledger.
 - `out/knowledge_packet.json` - retrieved packet for the later problem.
 - `out/report.md` - human-readable demo report.
+- `out/graph.html` - local visual graph projection you can open in a browser.
+- `out/neo4j.cypher` - Neo4j import projection generated from the ledger.
+
+To inspect the graph locally:
+
+```bash
+open out/graph.html
+```
+
+Neo4j is intentionally a projection at this stage. Import `out/neo4j.cypher` into
+Neo4j when you want graph queries, but keep `data/knowledge.jsonl` as the portable
+ledger the projection is generated from.
 
 Run tests:
 

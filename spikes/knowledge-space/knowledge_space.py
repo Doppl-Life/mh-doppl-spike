@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import hashlib
 import json
 import re
@@ -235,6 +236,10 @@ def record_id(kind: str, source_case: str, source_path: str, text: str) -> str:
     return f"ks_{digest}"
 
 
+def cypher_value(value: str) -> str:
+    return json.dumps(value)
+
+
 class KnowledgeSpace:
     def __init__(self, ledger_path: Path = DEFAULT_LEDGER) -> None:
         self.ledger_path = ledger_path
@@ -314,6 +319,97 @@ class KnowledgeSpace:
         scored.sort(key=lambda item: (-item.score, item.record.source_case, item.record.id))
         return KnowledgePacket(query_tags=query_tags, items=scored[:limit])
 
+    def graph_projection(self) -> dict[str, Any]:
+        nodes: dict[str, dict[str, Any]] = {}
+        edges: list[dict[str, str]] = []
+
+        for record in sorted(self.records.values(), key=lambda item: item.id):
+            case_id = f"case:{record.source_case}"
+            source_id = f"source:{record.source_path}"
+            record_id_value = f"record:{record.id}"
+
+            nodes.setdefault(
+                case_id,
+                {"id": case_id, "label": record.source_case, "type": "Case"},
+            )
+            nodes.setdefault(
+                source_id,
+                {"id": source_id, "label": record.source_path, "type": "Source"},
+            )
+            nodes[record_id_value] = {
+                "id": record_id_value,
+                "label": record.kind,
+                "type": "KnowledgeRecord",
+                "kind": record.kind,
+                "text": record.text,
+                "trustTier": record.trust_tier,
+                "visibility": record.visibility,
+            }
+            edges.append({"source": record_id_value, "target": case_id, "type": "FROM_CASE"})
+            edges.append({"source": record_id_value, "target": source_id, "type": "SUPPORTED_BY"})
+
+            for tag in record.tags:
+                tag_id = f"tag:{tag}"
+                nodes.setdefault(tag_id, {"id": tag_id, "label": tag, "type": "Tag"})
+                edges.append({"source": record_id_value, "target": tag_id, "type": "HAS_TAG"})
+
+        return {"nodes": list(nodes.values()), "edges": edges}
+
+    def to_cypher(self) -> str:
+        lines = [
+            "// Neo4j projection generated from the portable knowledge.jsonl ledger.",
+            "// The ledger remains the durable substrate; this is a query/read projection.",
+            "CREATE CONSTRAINT knowledge_record_id IF NOT EXISTS FOR (r:KnowledgeRecord) REQUIRE r.id IS UNIQUE;",
+            "CREATE CONSTRAINT case_id IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE;",
+            "CREATE CONSTRAINT tag_id IF NOT EXISTS FOR (t:Tag) REQUIRE t.id IS UNIQUE;",
+            "CREATE CONSTRAINT source_id IF NOT EXISTS FOR (s:Source) REQUIRE s.id IS UNIQUE;",
+            "",
+        ]
+        for record in sorted(self.records.values(), key=lambda item: item.id):
+            case_id = record.source_case
+            source_id = record.source_path
+            lines.extend(
+                [
+                    f"MERGE (c:Case {{id: {cypher_value(case_id)}}})",
+                    f"  SET c.title = {cypher_value(case_id)};",
+                    f"MERGE (s:Source {{id: {cypher_value(source_id)}}})",
+                    f"  SET s.path = {cypher_value(source_id)};",
+                    f"MERGE (r:KnowledgeRecord {{id: {cypher_value(record.id)}}})",
+                    "  SET "
+                    + ", ".join(
+                        [
+                            f"r.kind = {cypher_value(record.kind)}",
+                            f"r.text = {cypher_value(record.text)}",
+                            f"r.trustTier = {cypher_value(record.trust_tier)}",
+                            f"r.visibility = {cypher_value(record.visibility)}",
+                        ]
+                    )
+                    + ";",
+                    f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (c:Case {{id: {cypher_value(case_id)}}})",
+                    "MERGE (r)-[:FROM_CASE]->(c);",
+                    f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (s:Source {{id: {cypher_value(source_id)}}})",
+                    "MERGE (r)-[:SUPPORTED_BY]->(s);",
+                ]
+            )
+            for tag in record.tags:
+                lines.extend(
+                    [
+                        f"MERGE (t:Tag {{id: {cypher_value(tag)}}}) SET t.name = {cypher_value(tag)};",
+                        f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (t:Tag {{id: {cypher_value(tag)}}})",
+                        "MERGE (r)-[:HAS_TAG]->(t);",
+                    ]
+                )
+            lines.append("")
+        return "\n".join(lines).rstrip() + "\n"
+
+    def write_cypher(self, path: Path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(self.to_cypher(), encoding="utf-8")
+
+    def write_graph_html(self, path: Path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(render_graph_html(self.graph_projection()), encoding="utf-8")
+
     def _append(self, records: list[KnowledgeRecord]) -> None:
         if not records:
             return
@@ -367,10 +463,14 @@ def demo() -> None:
         encoding="utf-8",
     )
     (OUT_DIR / "report.md").write_text(render_report(ingest_counts, target_case.name, packet), encoding="utf-8")
+    space.write_cypher(OUT_DIR / "neo4j.cypher")
+    space.write_graph_html(OUT_DIR / "graph.html")
 
     print(f"Knowledge ledger: {ledger.relative_to(ROOT)}")
     print(f"Report: {(OUT_DIR / 'report.md').relative_to(ROOT)}")
     print(f"Packet: {(OUT_DIR / 'knowledge_packet.json').relative_to(ROOT)}")
+    print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
+    print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")
     print(f"Retrieved {len(packet.items)} memory item(s) for {target_case.name}")
 
 
@@ -414,6 +514,158 @@ def render_report(
             ]
         )
     return "\n".join(lines)
+
+
+def render_graph_html(graph: dict[str, Any]) -> str:
+    nodes = graph["nodes"]
+    edges = graph["edges"]
+    type_colors = {
+        "Case": "#0f766e",
+        "KnowledgeRecord": "#7c3aed",
+        "Source": "#475569",
+        "Tag": "#c2410c",
+    }
+    node_lookup = {node["id"]: node for node in nodes}
+    adjacency: dict[str, list[dict[str, Any]]] = {}
+    for edge in edges:
+        adjacency.setdefault(edge["source"], []).append(edge)
+    rows = []
+    for node in sorted(nodes, key=lambda item: (item["type"], item["label"])):
+        color = type_colors.get(node["type"], "#334155")
+        text = html.escape(str(node.get("text", "")))
+        related = []
+        for edge in adjacency.get(node["id"], []):
+            target = node_lookup.get(edge["target"], {"label": edge["target"], "type": "Unknown"})
+            related.append(f"{html.escape(edge['type'])} -> {html.escape(str(target['label']))}")
+        rows.append(
+            f"""
+            <article class="node-card" style="border-left-color:{color}">
+              <div class="node-type">[{html.escape(node['type'])}]</div>
+              <h2>{html.escape(str(node['label']))}</h2>
+              <p>{text}</p>
+              <ul>{''.join(f'<li>{item}</li>' for item in related[:8])}</ul>
+            </article>
+            """
+        )
+
+    edge_rows = "\n".join(
+        f"<tr><td>{html.escape(edge['type'])}</td><td>{html.escape(edge['source'])}</td><td>{html.escape(edge['target'])}</td></tr>"
+        for edge in edges
+    )
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doppl Knowledge Space</title>
+  <style>
+    body {{
+      margin: 0;
+      background: #f8fafc;
+      color: #0f172a;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }}
+    header {{
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 24px 32px;
+    }}
+    h1 {{
+      margin: 0 0 8px;
+      font-size: 28px;
+    }}
+    main {{
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+      padding: 24px;
+    }}
+    .summary {{
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }}
+    .metric {{
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 12px 16px;
+    }}
+    .cards {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }}
+    .node-card {{
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-left: 6px solid #334155;
+      padding: 14px;
+      min-height: 140px;
+    }}
+    .node-card h2 {{
+      margin: 4px 0 8px;
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }}
+    .node-card p {{
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.45;
+      max-height: 110px;
+      overflow: auto;
+    }}
+    .node-type {{
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 700;
+    }}
+    li {{
+      font-size: 12px;
+      margin-bottom: 4px;
+      overflow-wrap: anywhere;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 12px;
+    }}
+    th, td {{
+      border: 1px solid #e2e8f0;
+      padding: 8px;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }}
+    th {{
+      background: #e2e8f0;
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Doppl Knowledge Space</h1>
+    <div>Local graph projection from the durable JSONL ledger. Neo4j can import the sibling Cypher file.</div>
+  </header>
+  <main>
+    <section class="summary">
+      <div class="metric"><strong>{len(nodes)}</strong><br>nodes</div>
+      <div class="metric"><strong>{len(edges)}</strong><br>edges</div>
+      <div class="metric"><strong>{sum(1 for node in nodes if node['type'] == 'KnowledgeRecord')}</strong><br>KnowledgeRecord nodes</div>
+    </section>
+    <section class="cards">
+      {''.join(rows)}
+    </section>
+    <section>
+      <h2>Edges</h2>
+      <table>
+        <thead><tr><th>Type</th><th>Source</th><th>Target</th></tr></thead>
+        <tbody>{edge_rows}</tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
+"""
 
 
 def main() -> None:

@@ -58,6 +58,34 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertEqual(packet.items[0].record.source_case, "fsd-accident-economy")
             self.assertIn("fsd", packet.query_tags)
 
+    def test_exports_neo4j_projection_without_replacing_ledger(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+
+            cypher = space.to_cypher()
+
+            self.assertIn("MERGE (c:Case", cypher)
+            self.assertIn("MERGE (r:KnowledgeRecord", cypher)
+            self.assertIn("[:FROM_CASE]", cypher)
+            self.assertIn("[:HAS_TAG]", cypher)
+            self.assertIn("fsd-accident-economy", cypher)
+            self.assertTrue(space.ledger_path.exists())
+
+    def test_writes_local_html_graph_for_visual_inspection(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            html_path = Path(tmp) / "graph.html"
+
+            space.write_graph_html(html_path)
+            html = html_path.read_text(encoding="utf-8")
+
+            self.assertIn("Doppl Knowledge Space", html)
+            self.assertIn("fsd-accident-economy", html)
+            self.assertIn("KnowledgeRecord", html)
+            self.assertIn("FROM_CASE", html)
+
 
 if __name__ == "__main__":
     unittest.main()

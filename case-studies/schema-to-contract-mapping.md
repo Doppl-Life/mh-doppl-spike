@@ -24,6 +24,7 @@ The case packet becomes the structured `seed` of a `RunConfig` (Appendix A: `Run
 | `failed_attempts[]` | `failedAttempts[]` | Treated as data, not requirements. |
 | `user.*` | `user{...}` | Affected person/role. |
 | `environment.*` | `environment{...}` | Setting, tools, inputs, external factors, assumptions. |
+| agent-visible zeitgeist signal context (usually `environment.external_factors`, `source_notes`, or case prose) | `seed.currentSignals[]` (proposed) | Dated signals the agenome may use to synthesize a thesis. These are input evidence, not evaluator targets. |
 | `subtype` (`subtype-index.md`) | `RunConfig.enabledSubtypes[]` + candidate `subtype` | Routes subtype-specific checks (§7, PRD 11). |
 | `source.type` / `fidelity` | `seed.provenance{...}` | `source_file` / links are **withheld** when previews reveal the answer (per case `Source Notes`). |
 | `visibility.*` | seed redaction/sharing policy | Drives the §14 redaction filter and content-logging toggle (§13). |
@@ -36,6 +37,8 @@ The case packet becomes the structured `seed` of a `RunConfig` (Appendix A: `Run
 | `evaluation_focus.actual_problem` | `final_judge` target | Problem Recovery gate target. |
 | `evaluation_focus.deleted_assumptions` | `final_judge` target | Assumptions a strong answer removes. |
 | `evaluation_focus.hidden_variable` | `final_judge` target | Frame-recovery gate target. |
+| `evaluation_focus.required_current_signals` | `final_judge` target | For `zeitgeist_synthesis`, dated signals the judge expects the answer to ground in; evaluator-only because they can reveal the intended thesis. |
+| `evaluation_focus.falsifiability_target` | `final_judge` target | For `zeitgeist_synthesis`, the expected dated prediction or miss condition shape. |
 | `evaluation_focus.frame_recovery_target` | `final_judge` target | Maps to the (proposed) `frame_recovery` axis; today the Problem Recovery gate. |
 | `evaluation_focus.generated_idea_target` | `final_judge` target | Expected solution class. |
 | `evaluation_focus.scoring_notes` | `final_judge` rubric notes | Per-case scoring guidance. |
@@ -49,7 +52,7 @@ Boundary realization: agent-visible fields come from `*-withheld-solution.md`; e
 | Generated artifact | Contract destination |
 | --- | --- |
 | `problem_recovery` packet | Shared upstream stage output (harness-side today; see `ALIGNMENT.md` flagged proposal for promoting into the runtime). Gates scoring per `evaluation-rubric.md`. |
-| `solution_generation` (`solution.*` shape) | `CandidateIdea` (`ARCHITECTURE.md` §3, Appendix A), with the subtype payload (`CrossDomainTransferPayload` for this corpus). |
+| `solution_generation` (`solution.*` shape) | `CandidateIdea` (`ARCHITECTURE.md` §3, Appendix A), with the subtype payload (`CrossDomainTransferPayload` or `ZeitgeistSynthesisPayload`, depending on the case subtype). |
 
 ## Field-convention bridge
 
@@ -58,5 +61,5 @@ The markdown schema uses snake_case section names (`why_it_matters`, `name_or_ro
 ## Open items for the importer
 
 - `CaseSeed` is a proposed shape; freezing it is a governed Appendix-A change, not an implementer edit.
-- Leakage check: `purpose.success_criteria` and `problem.*` must be scanned so the withheld solution direction does not leak into the visible seed (PRD 06).
+- Leakage check: `purpose.success_criteria`, `problem.*`, source notes, and agent-visible current-signal prose must be scanned so the withheld solution direction does not leak into the visible seed (PRD 06). For zeitgeist, signals may be visible, but evaluator-only required signals, why-now targets, withheld thesis, and falsifiability target must not leak.
 - `reproducible.*` and `open_questions` are authoring/QA metadata, not run-seed inputs.

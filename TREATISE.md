@@ -525,6 +525,14 @@ the wait costing money. Reality-verdicts (reactor = "the world / the price") flo
 Agora ledger and pay out energy — even virtual bets earn "energies." **Pre-register every call**,
 losers included, or you cherry-pick yourself into a lie ([BUGS](./BUGS_AND_MITIGATIONS.md)).
 
+The case-study corpus sharpened this into two executable insight shapes. **Cross-domain transfer**
+is mechanism-first: borrow a durable trick from one domain and map it somewhere else; timing is
+incidental. **Zeitgeist synthesis** is timing-first: the thesis must break under a ±5-year move, be
+grounded in dated current signals, explain why-now, and make a falsifiable call. The mined operators
+are now part of the organism's search priors: latent-asset unlocks / discovered attacks, "perfect
+Pepsis" unlock clusters, grouping by substrate removed, the dry-riverbed test where the event itself
+falls away, and adoption asymmetry as the thesis rather than a caveat.
+
 **r/K runs per stratum-transition, not per organism.** A single experiment changes metabolism as
 it descends. Landing pages: *generating and deploying* variants is **r-selected** at **L2–L3** —
 fast, cheap, spray confetti, tolerate mass death. *Earning reach* is **K-selected** at **L3–L4** —
@@ -548,3 +556,4 @@ whose cost is a *vector*: tokens, money, compute, and latency.
 | 2026-06-17 | § XIII **The Agora** — async human-reaction channel as first executable Bedrock; verdicts as bedrock signal that pays out as energy; proxy-Lα via active learning; `bedrock/signal/` schema; 3 Agora reward hacks logged |
 | 2026-06-17 | § VIII-c **Homology** (metaphor↔mechanism as a two-way generator); sprout/**afrit** (A+fruit) for the outcome idea; L2–L3 skill band added; `skills/` lineage registry |
 | 2026-06-17 | § XIV **Insight Machine** + tenses of bedrock (will-be / why / should-be); myth vs territory; paper-bet predictive bedrock + prediction markets; r/K per stratum-transition; allocation as a budgeted bandit; software factory scoped as a tool |
+| 2026-06-20 | Case-study mining folded into § XIV: transfer vs zeitgeist, ±5-year timing discriminator, latent-asset unlocks, perfect Pepsis, substrate grouping, dry-riverbed test, adoption asymmetry |

@@ -106,6 +106,46 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Bedrock assertion:** prediction count in the ledger ≈ calls actually made (no silent drops); score computed over the full book; if only winners survive, fails.
 - **Carry forward:** paper bets only count as bedrock if you pre-register the losers too. See [Paper-bet bedrock](./LESSONS_AND_BANGERS.md#paper-bet-bedrock--falsify-predictions-for-free--2026-06-17).
 
+### Zeitgeist vibe laundering — 2026-06-20
+
+- **Proxy optimized:** current-feeling narrative instead of a timing-bound thesis — the answer sounds like the moment but has no why-now, no required current signals, and no prediction that can miss
+- **Bedrock check:** the +/-5-year discriminator plus required current signals and a falsifiability target in the evaluator packet
+- **Symptom:** "AI changes everything," "GLP-1 is big," or "autonomy is coming" scores as zeitgeist even though the answer would read the same five years earlier or later
+- **Counter-mutation:** `zeitgeist_synthesis` fixtures must name dated signals, why-now, and falsifiable predictions; rubric scores timing load and falsifiability separately from topical relevance
+- **Repro trigger:** create a zeitgeist case whose `solution.details` has no dated signal and whose predictions cannot be checked by a date
+- **Bedrock assertion:** such a case fails `subtype_check_pass` or is re-tagged as transfer/truism; no "vibes only" thesis can pass as zeitgeist
+- **Carry forward:** zeitgeist is timing-first, not trend-first — see [`case-studies/zeitgeist-synthesis-notes.md`](./case-studies/zeitgeist-synthesis-notes.md)
+
+### Flat cascade masquerading as depth — 2026-06-20
+
+- **Proxy optimized:** a long list of knock-on effects instead of a branched causal map with hidden dependents and synthesis
+- **Bedrock check:** require breadth map → depth chains → convergence synthesis for unlock/cascade fixtures
+- **Symptom:** FSD answers list "Uber, trucking, insurance, courts, parking" without explaining which substrates disappear, which branches are first-order vs hidden, or what it all converges to
+- **Counter-mutation:** score cascade cases on branch structure, substrate grouping, depth chains, seams, and final synthesis; visible-entry branches are not skipped but taken deep
+- **Repro trigger:** a generated answer contains many affected industries but no "because X → then Y → then Z" chains and no convergence statement
+- **Bedrock assertion:** such answers cap at medium even if they name many correct industries; high scores require causal depth and synthesis
+- **Carry forward:** breadth is not depth; depth is not synthesis. All three are separate gates.
+
+### Zeitgeist signal leakage — 2026-06-20
+
+- **Proxy optimized:** giving the agent the evaluator-only thesis or required-signal targets under the excuse that zeitgeist cases need current signals as input
+- **Bedrock check:** importer distinguishes agent-visible current signals from evaluator-only required-current-signal targets, withheld thesis, and falsifiability target
+- **Symptom:** a withheld zeitgeist prompt already contains the exact hidden why-now, branch map, or prediction the evaluator expects, so the model appears to recover it
+- **Counter-mutation:** `schema-to-contract-mapping.md` keeps visible signal context separate from evaluator-only targets; leakage scan covers success criteria, problem text, current signals, and source notes
+- **Repro trigger:** copy a `solution.details` thesis/prediction or `evaluation_focus.required_current_signals` into a `*-withheld-solution.md` file
+- **Bedrock assertion:** leakage scan flags the case before it becomes a run seed; if not, the benchmark is invalid
+- **Carry forward:** signals can be input; the synthesis target cannot.
+
+### Cluster sprawl without pruning — 2026-06-20
+
+- **Proxy optimized:** endless branch discovery after a rich unlock, where "more implications" feels like progress and the fixture never stabilizes
+- **Bedrock check:** group by substrate removed, mark de-scoped branches explicitly, and require each drafted branch to carry its own falsifiable predictions
+- **Symptom:** FSD-style clusters keep absorbing adjacent AI/robotics/compute topics until the case becomes a catch-all future essay
+- **Counter-mutation:** umbrella + member-case structure; only split a new case when it removes a distinct substrate or governs several substrates; otherwise make it a chapter, seam, or de-scoped note
+- **Repro trigger:** a cluster map adds a new branch because it is interesting but cannot name a distinct substrate, governing lens, or falsifiable prediction
+- **Bedrock assertion:** the branch is either merged into an existing case, parked as a seam, or de-scoped; no unbounded cluster growth
+- **Carry forward:** "Go nuts" still needs metabolism.
+
 ## Crashes & plumbing
 
 This spike runs a test of the reproductive loop. The reproductive loop is the core of Doppl’s evolutionary loop, and it’s the part that’s most likely to crash.

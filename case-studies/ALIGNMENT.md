@@ -46,9 +46,9 @@ Per-case files:
 
 Source handling: public cases consolidate their raw source inline in `sources.md` (Lists A/B). The NDA-constrained superyacht transcript is the exception — it is retained as a separate restricted file and cataloged as Source C in `sources.md` rather than reproduced inline. Named client/vendor/owner identifiers in that transcript have been redacted to generic descriptors; the derived `jack-*` case files are separately anonymized.
 
-## Flagged proposals (NOT yet applied to the binding architecture)
+## Applied local upgrades and flagged contract proposals
 
-`ARCHITECTURE.md` is the governed source of truth and is intentionally left unchanged here. The items below are proposals for the orchestrator/governed cross-doc process, not implementer edits.
+`ARCHITECTURE.md` is the governed source of truth and is intentionally left unchanged here. The local `case-studies/` harness now supports both subtype check sets; contract-level promotion remains flagged for the orchestrator/governed cross-doc process.
 
 ### P1 — Promote Problem Recovery into the runtime (original proposal)
 
@@ -57,30 +57,30 @@ If the team later wants Problem Recovery to be first-class in the runtime (rathe
 - Add an optional, subtype-agnostic `problemRecovery` output to the candidate lifecycle — either as a pre-`CandidateIdea` reasoning artifact persisted on `agenome`/`candidate.created`, or as an optional field on `CandidateIdea` consumed by the `final_judge` before scoring the subtype payload.
 - Extend `FinalJudgeRubric` (Appendix A) with a `frame_recovery` axis (today the harness scores this; the §7 judge does not).
 
-### Zeitgeist-driven proposals (from authoring the first `zeitgeist_synthesis` fixtures)
+### Zeitgeist-driven local upgrades (from authoring the first `zeitgeist_synthesis` fixtures)
 
-The schema and Problem-Recovery model were shaped largely by the behavioral/transfer cases. Drafting `glp1-snack-demand-destruction` and `ai-overviews-zero-click-publishing` surfaced fields that fit zeitgeist poorly or are missing. P2–P4 are **local case-studies/ edits** (safe, no contract impact); P5–P7 are **contract-level**, flagged here, not applied to `ARCHITECTURE.md`.
+The schema and Problem-Recovery model were shaped largely by the behavioral/transfer cases. Drafting `glp1-snack-demand-destruction`, `ai-overviews-zero-click-publishing`, and the FSD unlock cluster surfaced fields that fit zeitgeist poorly or were missing. P2–P4 and the local parts of P6–P7 are now applied inside `case-studies/`; P5 and the governed `CaseSeed`/judge-contract changes remain contract-level proposals.
 
-#### P2 (local) — Add a "why-now / timing recovery" element to Problem Recovery
+#### P2 (local, applied) — Add a "why-now / timing recovery" element to Problem Recovery
 
-Problem Recovery has `hidden_variable` but no explicit timing slot. For zeitgeist the hidden variable almost always *is* a misread of why-now, and the discriminator is a timing test. Proposal: add an optional `why_now_recovery` field to the Generated Output Contract in `case-study-schema.md` ("what specifically changed recently that makes this the live problem now, and why the obvious timing story is wrong"). Subtype-agnostic — transfer cases may leave it empty — so it does not violate Decision 1.
+Problem Recovery has `hidden_variable` but no explicit timing slot. For zeitgeist the hidden variable almost always *is* a misread of why-now, and the discriminator is a timing test. `case-study-schema.md` and `evaluation-rubric.md` now include optional `why_now_recovery`: what specifically changed recently that makes this the live problem now, and why the obvious timing story is wrong or incomplete. Transfer cases may leave it empty, so this does not violate Decision 1.
 
-#### P3 (local) — Add current-signal grounding + falsifiability slots to Evaluation Focus
+#### P3 (local, applied) — Add current-signal grounding + falsifiability slots to Evaluation Focus
 
-`evaluation_focus` has no place to assert *which dated signals* a strong answer must ground in, or *which prediction* must be falsifiable. Proposal: add optional `required_current_signals[]` and `falsifiability_target` to the Evaluation Focus section so the held-out judge can score the zeitgeist subtype checks (grounding, falsifiability) precisely instead of via prose `scoring_notes`.
+`evaluation_focus` now has optional `required_current_signals[]` and `falsifiability_target` fields so the held-out judge can score the zeitgeist subtype checks (grounding, falsifiability) precisely instead of via prose `scoring_notes`.
 
-#### P4 (local) — Codify the zeitgeist `solution` convention
+#### P4 (local, applied) — Codify the zeitgeist `solution` convention
 
-`solution.{summary, details, ...}` is transfer-shaped ("an intervention"). For zeitgeist the generated unit is a `ZeitgeistSynthesisPayload` (thesis/audience/currentSignals/whyNow/falsifiablePredictions/comparablePriorArt). The two drafted cases populate `solution.details` with those explicit payload fields; `case-study-schema.md` should note this convention so all zeitgeist cases render the payload consistently. Likewise note that for zeitgeist, `failed_attempts` ≈ "the consensus plays implied by the hype narrative" (mirroring how the yacht "open" case demoted the standard answer into Failed Attempts).
+`solution.{summary, details, ...}` is transfer-shaped ("an intervention"). For zeitgeist the generated unit is a `ZeitgeistSynthesisPayload` (thesis/audience/currentSignals/whyNow/falsifiablePredictions/comparablePriorArt). `case-study-schema.md` now documents that convention and also notes that zeitgeist `failed_attempts` often mean the consensus plays implied by the hype narrative.
 
 #### P5 (contract) — `frame_recovery` axis, now with zeitgeist evidence
 
 P1's `frame_recovery` proposal is strengthened: the two zeitgeist cases show frame recovery ≈ why-now recovery, i.e. it is a genuinely cross-subtype axis worth promoting from the harness into the §7 `FinalJudgeRubric`.
 
-#### P6 (contract/rubric) — Define the zeitgeist `subtype_check_pass` set
+#### P6 (rubric applied; contract unchanged) — Define both `subtype_check_pass` sets
 
-`evaluation-rubric.md` currently binds `subtype_check_pass` to "`cross_domain_transfer` checks for this corpus." With zeitgeist cases present, the rubric should enumerate the zeitgeist checks (grounding-in-current-signals, novelty, audience/market-timing, internal-coherence, falsifiability — from `DOMAIN_MODEL.md` §6) so the judge has a concrete checklist for both subtypes. This is a rubric edit (safe) plus a one-line note in Decision 3 that the single scoring model now covers both subtype check sets.
+`evaluation-rubric.md` now enumerates both sets: `cross_domain_transfer` checks source-domain validity, target fit, mapping quality, prior art, and executable/toy checks; `zeitgeist_synthesis` checks current-signal grounding, novelty, audience/market timing, internal coherence, and falsifiability. The governed `FinalJudgeRubric` contract is unchanged.
 
-#### P7 (contract) — `CaseSeed` provenance must separate agent-visible signals from evaluator-only targets
+#### P7 (mapping applied; contract unchanged) — `CaseSeed` provenance must separate agent-visible signals from evaluator-only targets
 
-`schema-to-contract-mapping.md` maps `source.fidelity` to `seed.provenance`. Zeitgeist cases live or die on dated, cited current signals, and those signals are partly *agent-visible input* (needed to synthesize) while the required-signal targets and the withheld thesis are *evaluator-only*. The importer's leakage check must therefore distinguish "agent-visible current signals" from "evaluator-only required-signal targets + withheld thesis" — a sharper boundary than the transfer cases needed.
+`schema-to-contract-mapping.md` now distinguishes agent-visible `seed.currentSignals[]` from evaluator-only `evaluation_focus.required_current_signals`, why-now targets, withheld thesis, and falsifiability target. The actual `CaseSeed` shape remains proposed until Appendix A is governed.

@@ -13,7 +13,7 @@ This rubric and Doppl's held-out judge (`ARCHITECTURE.md` §7, `FinalJudgeRubric
 
 - **Problem Recovery is a gating pre-stage.** It is scored 0–4 (below) and gates Solution Generation; it does not contribute its own axis to the held-out judge total.
 - **Solution Generation is scored on the §7 held-out-judge axes** — `grounding`, `novelty`, `feasibility`, `falsification_survival`, `subtype_check_pass`, each 0–5 — applied by the frozen `final_judge` outside the breeding loop.
-- **`subtype_check_pass`** binds to the case's subtype (`subtype-index.md`): `cross_domain_transfer` checks for this corpus.
+- **`subtype_check_pass`** binds to the case's subtype (`subtype-index.md`): `cross_domain_transfer` checks source-domain validity, target fit, mapping quality, prior art, and executable/toy checks where feasible; `zeitgeist_synthesis` checks current-signal grounding, novelty, audience/market timing, internal coherence, and falsifiability.
 
 The one axis this rubric exercises that the §7 judge does not yet have is **frame recovery**. For now it lives here as the Problem Recovery gate; promoting it into `FinalJudgeRubric` as a `frame_recovery` axis is the flagged proposal in `ALIGNMENT.md`.
 
@@ -50,6 +50,7 @@ The generated answer should include a Problem Recovery packet before any solutio
 | `deleted_assumptions` | Requirements or process parts the system refuses to optimize too early. |
 | `actual_problem` | The causal problem that should be solved. |
 | `hidden_variable` | The non-obvious factor that changes the frame. |
+| `why_now_recovery` | For timing-bound cases, what changed recently and why the consensus timing story is wrong or incomplete. |
 | `solution_class` | The kind of intervention implied by the recovered problem. |
 | `confidence_and_open_questions` | What remains uncertain and what should be checked. |
 
@@ -61,7 +62,7 @@ The generated answer should include a Problem Recovery packet before any solutio
 | 1 | Notices the stated framing may be incomplete, but stays vague. |
 | 2 | Names a plausible hidden variable, but does not clearly reformulate the problem. |
 | 3 | Recovers the actual problem and explains why the obvious frame is low leverage. |
-| 4 | Recovers the actual problem, deletes false requirements, names the hidden variable, and defines a testable target for solution generation. |
+| 4 | Recovers the actual problem, deletes false requirements, names the hidden variable, includes why-now recovery when timing is load-bearing, and defines a testable target for solution generation. |
 
 ## Output 2: Solution Generation
 
@@ -76,6 +77,8 @@ After Problem Recovery, the system should generate the solution, sprout, or frui
 | `tradeoffs` | What it gives up, risks, or depends on. |
 | `validation_plan` | How a human or domain expert could test plausibility. |
 
+For `zeitgeist_synthesis`, the solution must satisfy the payload convention: thesis, audience, current signals, why-now, falsifiable predictions, and comparable prior art. For unlock/cascade cases, `details` should include a branch map, depth chains, seams, and a synthesis of what the branches converge to.
+
 ### Solution Score (held-out judge, §7 axes)
 
 Solution Generation is scored by the frozen held-out judge on five axes, each 0–5 (`FinalJudgeRubric`, Appendix A):
@@ -86,7 +89,7 @@ Solution Generation is scored by the frozen held-out judge on five axes, each 0�
 | `novelty` | Non-obvious in the useful way versus prior art and the stated fix. |
 | `feasibility` | Operationally plausible; respects the hard constraints from the case. |
 | `falsification_survival` | Survives the falsification critic; failure modes are addressed. |
-| `subtype_check_pass` | Passes the subtype-specific checks (`cross_domain_transfer` for this corpus; see `subtype-index.md`). |
+| `subtype_check_pass` | Passes the subtype-specific checks for the case's declared subtype; see `subtype-index.md`, `cross-domain-transfer-notes.md`, and `zeitgeist-synthesis-notes.md`. |
 
 Holistic reference mapping onto the axes above: 0 = generic, impossible, unsafe, or violates a hard constraint; 1 = mainly optimizes the stated symptom; 2 = addresses part of the hidden variable but is operationally weak; 3 = fits the recovered problem, respects constraints, and is plausible; 4–5 = fits the recovered problem, is non-obvious in the useful way, handles tradeoffs, and gives a credible validation path.
 

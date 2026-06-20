@@ -160,9 +160,9 @@ maps differently for zeitgeist than for transfer:
   (reprice a portfolio for correlated impulse-demand destruction; rebuild
   distribution around citation + owned audience).
 
-So for zeitgeist, "frame recovery" ≈ "why-now recovery." This is the gap the
-schema does not yet name explicitly — see the Phase 4 template feedback in
-`ALIGNMENT.md` ("Flagged proposals").
+So for zeitgeist, "frame recovery" ≈ "why-now recovery." The local schema now
+names this explicitly as optional `why_now_recovery`, with evaluator-only
+`required_current_signals[]` and `falsifiability_target` fields for scoring.
 
 ## Shortlist status (candidate theses)
 
@@ -266,9 +266,10 @@ the bishop nobody saw, not the pawn everyone watches. Distinct from commoditizat
 - **Sub-cluster A — the accident economy (substrate removed: the crash / risk &
   harm).** What unwinds because humans stop crashing.
   - Drafted: `fsd-accident-economy` — breadth (insurance pool, plaintiff bar, trauma
-    medicine, collision repair, local fine budgets) + depth (hidden dependents:
+    medicine, collision repair, crash-driven towing/roadside assistance) + depth (hidden dependents:
     insurer ad spend funds media; young trauma deaths are the high-yield organ
-    supply; small-town fiscal models; license-as-national-ID).
+    supply). Enforcement, fines, forfeiture, and license-as-national-ID live in
+    Sub-cluster C.
 - **Sub-cluster B — mobility & time (substrate removed: the driver + the cost/friction
   of distance).** What re-prices because moving people/goods becomes cheap and
   driver-time is freed. **This is one case told in chapters, not separate siblings**

@@ -23,6 +23,7 @@ doppl-test/
   AGENTS.md                    ← capture/routing rules for this spike
   Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
   bedrock/                     ← immovable anchor (checks + Agora verdict schema)
+  case-studies/                ← fixture corpus + subtype lab (transfer, zeitgeist, unlock clusters)
   skills/                      ← skill lineage registry
   harness/                     ← (embryology) run all spikes, compare traces
   render.yaml                  ← deploy (serves the Agarden hub)
@@ -36,12 +37,13 @@ doppl-test/
 1. [`PROPOSAL.md`](./PROPOSAL.md) — team plan: problem, approach, scope, demo (start here for capstone)
 2. [`PRD.md`](./PRD.md) — requirements: user stories, acceptance criteria, KPIs, phased rollout
 3. [`ARCHITECTURE.md`](./ARCHITECTURE.md) — technical form: closed loop, primitives, schemas, build plan
-4. [`Doppl_Capstone_Proposal_volume_2.txt`](./Doppl_Capstone_Proposal_volume_2.txt) — the original seed bet
-5. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
-6. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
-7. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
-8. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
-9. [`HEURISTICS.md`](./HEURISTICS.md) — the tribe's instincts: portable problem-solving moves + traps, condensed as priors
+4. [`case-studies/`](./case-studies/) — concrete fixtures for `cross_domain_transfer` vs `zeitgeist_synthesis`; where the why-now / unlock-cluster doctrine is executable
+5. [`Doppl_Capstone_Proposal_volume_2.txt`](./Doppl_Capstone_Proposal_volume_2.txt) — the original seed bet
+6. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
+7. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
+8. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
+9. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
+10. [`HEURISTICS.md`](./HEURISTICS.md) — the tribe's instincts: portable problem-solving moves + traps, condensed as priors
 
 ## Run a spike
 

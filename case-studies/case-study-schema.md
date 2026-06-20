@@ -43,6 +43,7 @@ Problem Recovery translates the symptom report into the actual problem before an
 | `deleted_assumptions` | list<string> | Recommended | Assumptions, requirements, or process parts the system chooses not to optimize prematurely. |
 | `actual_problem` | text | Yes | The causal problem that should be solved. |
 | `hidden_variable` | text | Recommended | The non-obvious factor that changes what the problem is. |
+| `why_now_recovery` | text | Optional | For timing-bound cases, what changed recently that makes this the live problem now, and why the obvious timing story is wrong or incomplete. Transfer cases may leave this empty. |
 | `solution_class` | text | Recommended | The type of intervention implied by the recovered problem. |
 | `confidence_and_open_questions` | list<string> | Recommended | Uncertainties or checks that would improve confidence in the recovered frame. |
 
@@ -115,6 +116,8 @@ The `constraints` section records limits that shaped the solution.
 
 The `failed_attempts` section records approaches that were tried before or considered and rejected.
 
+For `zeitgeist_synthesis` cases, failed attempts often mean the **consensus plays implied by the hype narrative** rather than literal historical attempts. Examples: "launch a GLP-1-friendly product," "fix the SEO," or "score autonomy by fleet count." These are the obvious moves the synthesis must beat.
+
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
 | `name` | string | Yes | Name or short label for the attempt. |
@@ -151,6 +154,8 @@ The `environment` section describes the surrounding context.
 
 The `solution` section describes what was produced or recommended.
 
+For `zeitgeist_synthesis` cases, `solution.details` should render the full `ZeitgeistSynthesisPayload` convention explicitly: `thesis`, `audience`, `currentSignals[]`, `whyNow`, `falsifiablePredictions[]`, and `comparablePriorArt[]`. For unlock/cascade fixtures, include the branch map, depth chains, seams, and final synthesis inside `details`; do not flatten them into a first-order list.
+
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
 | `summary` | text | Yes | Short explanation of the solution. |
@@ -170,6 +175,8 @@ The `evaluation_focus` section explains what the case should test beyond whether
 | `actual_problem` | text | Recommended | The evaluator's target for what the system should recover as the real problem. |
 | `deleted_assumptions` | list<string> | Optional | Requirements, status quo processes, or proposed fixes a strong answer should question or remove. |
 | `hidden_variable` | text | Recommended | The non-obvious causal factor, constraint, behavior, representation, or timing issue that changes what the real problem is. |
+| `required_current_signals` | list<string> | Optional | For `zeitgeist_synthesis`, dated signals a strong answer must ground in. These are evaluator-only targets; agent-visible signal context belongs in the withheld packet, but required targets stay here. |
+| `falsifiability_target` | text | Optional | For `zeitgeist_synthesis`, the kind of dated prediction or miss condition a strong answer must provide. |
 | `frame_recovery_target` | text | Recommended | What a strong system should realize before proposing a solution. |
 | `generated_idea_target` | text | Recommended | What kind of solution, protocol, intervention, or artifact the system should then generate. |
 | `scoring_notes` | list<string> | Optional | How to score frame recovery, constraint handling, novelty, operational fit, and validation plan quality. |

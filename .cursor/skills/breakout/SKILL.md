@@ -38,8 +38,9 @@ If your suggestion is something a careful advisor would already recommend, it's 
 
 1. **Find the cage.** What unstated assumption is holding the whole thing in place? What is everyone treating as fixed that isn't? The breakout lives on the other side of that wall.
 2. **Zag across domains.** What would a different field do here — biology, games, finance, theater, war, evolution? What's the move that comes from somewhere the user isn't looking?
-3. **Generate and rank 3–5 wild candidates silently.** Rank by **upside × weirdness**, NOT by feasibility. Keep the full ranked list — you'll need it for "next".
-4. **Filter for escape, not safety.** For each: Does it *leave the paradigm* or just extend it? Is it genuinely surprising? If it landed, would it be a 10x, not a 10%? Is it the wildest *viable* one — wild enough to matter, real enough to actually attempt?
+3. **Look for the substrate that disappears.** If a capability/cost/timing threshold just moved, ask whether the event itself falls away (dry-riverbed), whether one unlock detonates into multiple "perfect Pepsis," and whether the uneven adoption boundary is the real frontier.
+4. **Generate and rank 3–5 wild candidates silently.** Rank by **upside × weirdness**, NOT by feasibility. Keep the full ranked list — you'll need it for "next".
+5. **Filter for escape, not safety.** For each: Does it *leave the paradigm* or just extend it? Is it genuinely surprising? If it landed, would it be a 10x, not a 10%? Is it the wildest *viable* one — wild enough to matter, real enough to actually attempt?
 
 ## How to respond
 

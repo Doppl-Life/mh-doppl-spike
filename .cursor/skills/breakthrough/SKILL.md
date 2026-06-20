@@ -36,6 +36,8 @@ The word "accretive" is key: the addition should *compound* what's already there
 
 2. **Identify the real opportunity.** What's the highest-leverage point? Where is there a gap between what exists and what could exist? What does this work almost do, or nearly say, or come close to unlocking?
 
+   If the work is timing-bound, run the zeitgeist scan: what latent asset just became load-bearing, what event might fall away entirely, what substrate is being removed, and who gets the edge because adoption arrives unevenly?
+
 3. **Generate and rank 3–5 strong candidates silently.** Think across domains. What would a product designer notice? A growth strategist? A novelist? A veteran engineer? A first-time user? What would someone who loves this work want more of? What would someone skeptical of it say is missing? **Hold onto your full ranked list** — you'll need it if the user wants to see the next option.
 
 4. **Apply the filter.** For each candidate idea, ask:

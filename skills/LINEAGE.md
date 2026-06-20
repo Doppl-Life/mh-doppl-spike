@@ -29,6 +29,10 @@ two unrelated lineages grow them — [Convergent skills](../LESSONS_AND_BANGERS.
 - **falsifier-audit** — the wolf-hunter organ that writes its own check ([Personality ecology](../LESSONS_AND_BANGERS.md#personality-ecology--2026-06-17)).
 - **harness-runner** — the L3 instrument that runs a spike and emits a comparable trace.
 - **collapse/distill** — the Lα organ that folds a dead aphenome into a register entry or skill allele.
+- **why-now tester** — the timing-discriminator organ for `zeitgeist_synthesis`: ±5-year test,
+  dated current signals, why-now recovery, falsifiable prediction.
+- **unlock-cluster mapper** — the perfect-Pepsis organ: map a big unlock in breadth, group branches
+  by substrate removed, take fertile branches deep, then synthesize the convergence.
 
 None promoted yet — recorded so the convergence is *recognized* when it appears, not reinvented.
 

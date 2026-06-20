@@ -154,11 +154,10 @@ OTA, fleet-learning curve compresses where a LiDAR/retrofit cost structure canno
 Then recognize the *shape*: this is a "perfect Pepsis" — one unlock detonating into
 a cluster of convergent regime changes, each its own case. The accident-dependent
 economy (drafted deep as `fsd-accident-economy`) is the most *visible* entry and
-rewards going deep, not skipping; alongside it run travel/door-to-door economics,
-geography/real estate, labor + reclaimed human time, vision-as-substrate (the same
-engine that drives a car powers a humanoid, just slower), and the higher-variance
-fleet/distributed-compute moat. It all converges to a re-pricing of time, space,
-and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
+rewards going deep, not skipping; alongside it run mobility/time, enforcement,
+ownership, and adoption-asymmetry cases. It all converges to a re-pricing of time,
+distance, risk, ownership, and state authority — AI/NVIDIA-scale in how many domains
+it quietly reorganizes at once.
 
 ### Details
 
@@ -221,11 +220,10 @@ and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
   *— Sub-cluster A (risk/harm removal) —*
   - *A0 — the accident-dependent economy [DRAFTED: `fsd-accident-economy`]:* the most *visible* entry, and precisely for that reason
     worth going deep on — breadth (insurance underwriting + agent channel,
-    personal-injury law, trauma medicine, collision repair, locally fine-funded
-    budgets, driver's ed/DMV, towing) and depth (the hidden dependents: insurer ad
-    spend funds media; young trauma deaths are the high-yield organ supply;
-    small-town fine budgets; the license as national ID). Not "brief" — a full
-    member of the cluster. Do not dismiss it.
+    personal-injury law, trauma medicine, collision repair, crash-driven towing and
+    roadside assistance) and depth (the hidden dependents: insurer ad spend funds
+    media; young trauma deaths are the high-yield organ supply). Not "brief" — a
+    full member of the cluster. Do not dismiss it.
   *— Sub-cluster B (driver/friction removal: mobility & time) —*
   - *One case, told in chapters [DRAFTED: `fsd-mobility-and-time`]:* not separate
     sibling cases — one convergence (remove the driver + the friction of distance →
@@ -243,8 +241,8 @@ and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
   *— Sub-cluster C (driver-as-subject removal: the enforcement & compliance economy /
   "traffic-state") [DRAFTED: `fsd-enforcement-economy`; fine/DMV/forfeiture material
   migrated out of `fsd-accident-economy` so A stays harm-only] —*
-  - *One case (candidate): what collapses when the human stops being a policeable,
-    fineable, registrable driver.* Autonomous cars obey by construction, so the
+  - *Drafted case:* What collapses when the human stops being a policeable,
+    fineable, registrable driver. Autonomous cars obey by construction, so the
     *violation* (speeding, red lights, rolling stops, "ticky-tack" moving violations)
     doesn't occur → traffic-fine revenue collapses and the "speed-trap town" (the
     Ferguson fiscal model — municipalities funded on fines/fees) faces a budget
@@ -257,7 +255,7 @@ and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
     moves from ~240M individual drivers to a few fleet operators/OEMs, emptying the
     highest-volume court docket in the US (traffic court, ticket-defense bar, DUI bar,
     points/surcharge systems). The **compliance apparatus** loses its subject
-    (registration, safety inspection, emissions [already dying via     EVs], license-as-
+    (registration, safety inspection, emissions [already dying via EVs], license-as-
     leverage/ID, the DMV's enforcement role). ***"The state wants its money"
     (game out as its own branch):*** governments don't let a revenue line die quietly
     — as fines + registration + forfeiture + the fuel tax dry up at once, the state
@@ -270,7 +268,7 @@ and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
     revenue → C/D.
   *— Sub-cluster D (car-as-owned-asset removal: the ownership unwind / car-as-a-service)
   [DRAFTED: `fsd-ownership-unwind`] —*
-  - *One case (candidate): what reorganizes when owning a car stops making sense.* The
+  - *Drafted case:* What reorganizes when owning a car stops making sense. The
     private car is idle ~95% of the time, depreciates, and exists because *you* needed
     to drive it. Cheap autonomous mobility attacks the *ownership premise*, not just the
     product → the automotive retail/finance stack reorganizes: **dealerships** (~16,000
@@ -294,7 +292,7 @@ and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
     priority — overlaps AI/robotics ground.
   - *fleet / distributed compute [DE-SCOPED]:* fleet hive-mind learning + idle-fleet
     distributed compute. Overlaps the firm-power/compute ground.
-  *— Governing lens (spans both sub-clusters) —*
+  *— Governing lens (spans A, B, C, D) —*
   - *adoption asymmetry / the unevenly distributed future
     [DRAFTED: `fsd-adoption-asymmetry`]:* autonomy arrives as a geofenced patchwork,
     not a wave, opening a perception gulf (believers vs. disbelievers), an
@@ -332,8 +330,10 @@ and risk — AI/NVIDIA-scale in how many domains it quietly reorganizes at once.
      intervention) at or above the human baseline in a major metro, without LiDAR.
   3. By 2030, at least one LiDAR/retrofit robotaxi operator exits, restructures, or
      pivots off the per-vehicle cost problem.
-  4. [Lower-confidence] By 2030, the same perception stack ships in a non-vehicle
-     product (humanoid or third-party), evidencing the vision-as-substrate unlock.
+  4. By 2030, at least one high-autonomy metro shows two or more non-ride-hail
+     signals from the cluster map: crash/injury claims down, non-crash traffic
+     citations down, short-haul travel substitution, parking-demand decline, or
+     personal-auto/dealer restructuring.
 - **comparablePriorArt:** The automobile itself — it *created* the roadside economy
   (gas stations, motels, suburbs, drive-throughs) and destroyed the
   livery/blacksmith/farrier economy; autonomy unwinds part of what the car created
@@ -356,7 +356,8 @@ the gaming-out the case is built to elicit.
   nines and the state-by-state legal rollout, which the predictions encode.
 - Which institutions restructure vs. unwind is uncertain (insurance likely
   restructures around fleet/product liability rather than vanishing).
-- The fleet/distributed-compute branch is speculative; hold at lower confidence.
+- Some tempting spillovers (Optimus, distributed compute) are deliberately de-scoped
+  because they are less fertile than the four drafted substrates.
 - Human-cost framing must stay sober — the upside is fewer deaths, not a market.
 
 ### Expected Outcome
@@ -367,7 +368,7 @@ cascade outperform those scoring a maybe-someday fleet-count race.
 ### Next Steps
 
 - Track the four predictions against deployment, safety disclosures, competitor
-  cost structure, and non-vehicle perception products.
+  cost structure, and the non-ride-hail cluster indicators.
 - Watch travel/door-to-door substitution and parking/curb repricing as the
   earliest non-obvious tells.
 
@@ -425,7 +426,7 @@ Rubric review.
 
 - How fast do the last nines and the legal rollout arrive?
 - Which institutions restructure vs. unwind, and how fast?
-- How large/soon is the vision-as-substrate and humanoid spillover?
+- Which cluster indicators move first outside ride-hail?
 
 ## Notes
 

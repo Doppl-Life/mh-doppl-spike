@@ -166,3 +166,27 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Because:** the real costs are **bedrock latency** and **adversariality**. A will-be claim is falsified by *time for free*; a paper bet gives real, timestamped, falsifiable signal with **zero financial blast radius** — the ideal cheap-stakes primitive on which to prove `ticket → Agora gate → reality-verdict → metabolize` before stakes rise (the transfer thesis from the "meet the moment" discussion)
 - **Revisit if:** paper signal proves uninformative without skin in the game (graduate to small real bets); or a short-loop **non-market** predictive domain scores cheaper/cleaner bedrock; or the prediction-market angle (predict *what should be*, diff vs price → non-obvious arbitrage) underperforms a plain forecaster
 - **Spirit note:** start where reality answers cheaply and a mistake costs $0; Alzheimer's is the dream, not the on-ramp ("but MAYBE"). See [Paper-bet bedrock](./LESSONS_AND_BANGERS.md#paper-bet-bedrock--falsify-predictions-for-free--2026-06-17); pre-registration guard in [BUGS](./BUGS_AND_MITIGATIONS.md).
+
+### Zeitgeist as timing-first, not trend-first — 2026-06-20
+
+- **Chose:** define `zeitgeist_synthesis` by load-bearing timing: current signals, why-now, and falsifiable predictions, with the +/-5-year test as the discriminator
+- **Over:** treating zeitgeist as a basket of trendy topics, market commentary, or "current events" examples
+- **Because:** without timing pressure, the subtype collapses into vibes; GLP-1, AI Overviews, AI power, FSD, and Starship are useful fixtures only because their answers are wrong too early and obvious too late
+- **Revisit if:** runtime checkers cannot operationalize why-now/falsifiability cleanly; then split "timing recovery" into a separate scored pre-stage rather than weakening the subtype
+- **Spirit note:** the moment is the mechanism — see [Timing is load-bearing](./LESSONS_AND_BANGERS.md#timing-is-load-bearing--2026-06-20) and [`case-studies/zeitgeist-synthesis-notes.md`](./case-studies/zeitgeist-synthesis-notes.md)
+
+### Case-study schema evolves locally before architecture — 2026-06-20
+
+- **Chose:** absorb zeitgeist-specific fixture needs (`why_now_recovery`, required current signals, falsifiability targets, payload-in-solution convention) into `case-studies/` docs and keep `ARCHITECTURE.md` unchanged
+- **Over:** editing governed `CandidateIdea` / `FinalJudgeRubric` contracts immediately, or leaving the schema transfer-shaped and relying on prose exceptions
+- **Because:** the case-study corpus is the crucible for the subtype lab; local conventions can stabilize under use before prime/architecture contracts take the weight
+- **Revisit if:** importer/runtime work starts promoting markdown packets into `CaseSeed` records; at that point the agent-visible current-signal vs evaluator-only target boundary must be frozen
+- **Spirit note:** prove the harness shape in fixtures first; canon moves deliberately
+
+### FSD cluster split by substrate, not topic — 2026-06-20
+
+- **Chose:** model FSD as a "perfect Pepsis" cluster: umbrella + sub-cases grouped by substrate removed (crash, driver/distance, driver-as-subject, owned car) plus the adoption-asymmetry lens
+- **Over:** one giant FSD cascade; topic buckets like "insurance / courts / travel / culture"; or de-scoped spillovers like Optimus and fleet compute as primary branches
+- **Because:** substrate grouping prevented double-counting and found the fertile seams: A stays harm-only, C owns enforcement/licensing/forfeiture, D owns ownership/finance/dealers, and B keeps door-to-door/labor/geography as chapters of one time-distance case
+- **Revisit if:** a later branch proves it removes a distinct substrate not covered by A/B/C/D/lens, or if Starlink/Starship form their own cluster needing the same treatment
+- **Spirit note:** do not flatten a cluster into a list; breadth, then depth, then convergence — see [Perfect Pepsis](./LESSONS_AND_BANGERS.md#perfect-pepsis--2026-06-20)

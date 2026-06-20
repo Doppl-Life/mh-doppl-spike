@@ -316,5 +316,40 @@ These are not commandments — interesting ideas that surfaced while we poked at
 
 - **Banger:** A good Doppl case has two separable wins: **frame recovery** first, **generated ideas** second. The path is: "This is happening. This is what I think the problem is. **This is what the problem actually is.** Here's an interesting solution." Before judging sprouts or afrits, ask whether the system recovered the question that should have been asked.
 - **Lesson:** Treat the user's stated problem as a symptom report, not as the target. Judge two outputs separately: Problem Recovery first, then Solution Generation. If the recovered problem is wrong, cap the solution score no matter how clever the answer sounds.
-- **Evidence:** Public case-study triage for `scratchpad/case-studies/`: Houston baggage walk, airport liquid congestion, A&E aggression, Singapore pre-peak MRT, and London Tube map distortion all depend on a non-obvious hidden variable more than on a clever final artifact.
+- **Evidence:** Public case-study triage for `case-studies/`: Houston baggage walk, airport liquid congestion, A&E aggression, Singapore pre-peak MRT, and London Tube map distortion all depend on a non-obvious hidden variable more than on a clever final artifact.
 - **Carry forward:** Give every withheld benchmark a model-facing `Problem Recovery` output and every evaluator version an `evaluation_focus` target with actual problem, hidden variable, deleted assumptions, generated idea target, and scoring notes.
+
+### Timing is load-bearing — 2026-06-20
+
+- **Banger:** `zeitgeist_synthesis` is not "trend spotting." It is a will-be claim whose truth depends on **now**. Move it five years earlier and the enabling signal is not live; move it five years later and the edge is gone. Transfer is mechanism-first; zeitgeist is timing-first.
+- **Lesson:** Every zeitgeist candidate needs a cited current signal, a why-now, and at least one dated falsifiable prediction. If the claim survives the +/-5-year test unchanged, retag it as transfer, truism, or narrative.
+- **Evidence:** `case-studies/zeitgeist-synthesis-notes.md`; GLP-1, AI Overviews, firm-power, FSD, and Starship fixtures all broke cleanly on timing, while the Sutherland-style behavioral cases stayed timing-invariant.
+- **Carry forward:** Promote the +/-5-year discriminator into any runtime `zeitgeist_synthesis` checker; score timing load separately from topical freshness.
+
+### Latent-asset unlock — 2026-06-20
+
+- **Banger:** Some of the best zeitgeist theses are **discovered attacks**: an exogenous shift moves the pawn, and the real money is the bishop it quietly opened. NVIDIA's gaming GPUs were "sitting there waiting for AI"; firm dispatchable power may be the next version for AI datacenters.
+- **Lesson:** Search for assets that were already useful in one regime and suddenly become load-bearing in another. The owner did not change; the world changed around it.
+- **Evidence:** The AI/power case (`ai-firm-power-constraint`) and the Starship/launch-cost case turn this from an analogy into a reusable generation method in `zeitgeist-synthesis-notes.md`.
+- **Carry forward:** Add a "what latent asset just became indispensable?" prompt to zeitgeist generation and to `breakthrough` / `breakout` scouting.
+
+### Perfect Pepsis — 2026-06-20
+
+- **Banger:** Some unlocks are too big for one thesis. The mistake is hunting the perfect Pepsi; the right move is mapping the perfect **Pepsis**: a family of convergent regime changes sharing one root but removing different substrates.
+- **Lesson:** For a large unlock, first map breadth, then take rich branches deep, then synthesize what the branches converge to. Group branches by **substrate removed**, not by topical resemblance.
+- **Evidence:** The FSD corpus: umbrella (`full-self-driving-unlock`) plus accident economy, mobility/time, enforcement/compliance, ownership unwind, and adoption asymmetry. Door-to-door, labor, and geography stayed chapters inside one mobility/time case because they share the driver/distance substrate; enforcement and ownership split because their substrates differ.
+- **Carry forward:** Teach the organism to emit cluster maps when a single candidate starts sprawling; do not prematurely crush a cluster into one flat answer.
+
+### The event falls away — 2026-06-20
+
+- **Banger:** The highest-magnitude second-order effects are often not cost reductions but **event disappearance**. A perfectly driving car does not merely make tickets cheaper, crashes rarer, or traffic stops less profitable; the ticket, crash, and stop stop happening. The downstream institution is left in a dry riverbed.
+- **Lesson:** When gaming out an unlock, ask for each downstream institution: is this a cost that drops, or an event that disappears? Disappearing-event branches deserve deeper search.
+- **Evidence:** FSD Sub-cluster A (crash), C (ticket/stop), and D (privately owned car as the unit of mobility) in `case-studies/`; the "state wants its money" branch appears once the fine/fuel-tax riverbed dries.
+- **Carry forward:** Add the dry-riverbed test to Falsifier/Blindside prompts and to zeitgeist cascade scoring.
+
+### Adoption asymmetry is a thesis, not a caveat — 2026-06-20
+
+- **Banger:** "The future is already here, just not evenly distributed" is not background color. For live infrastructure shifts, uneven distribution is often the central object: believers vs. disbelievers, served vs. lagging metros, first-world vs. third-world, and leapfrog wildcards.
+- **Lesson:** Do not average a regime change into "it is coming." Map where it is already real, who cannot yet see it, and what arbitrage appears at the boundary.
+- **Evidence:** `fsd-adoption-asymmetry` turned the user's "fist coming for the back of their head" intuition into a full `zeitgeist_synthesis` fixture and the governing lens for every FSD sub-cluster.
+- **Carry forward:** Add an asymmetry lens to zeitgeist cases whenever deployment is geofenced, regulated region-by-region, or gated by infrastructure.

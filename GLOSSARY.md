@@ -243,13 +243,73 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 - **Def:** the precursor move before idea generation: recover what the problem actually is, not the problem as first stated. `status: coined`
 - **Why:** it does not matter how good the answers are if the question is wrong. In Doppl case studies, this is scored separately from sprout/afrit quality: first identify the hidden variable, then generate.
-- **See:** Problem recovery; Hidden variable before fruit; `[scratchpad/case-studies/case-study-schema.md](./scratchpad/case-studies/case-study-schema.md)` (`evaluation_focus`)
+- **See:** Problem recovery; Hidden variable before fruit; `[case-studies/case-study-schema.md](./case-studies/case-study-schema.md)` (`evaluation_focus`)
 
 ### Problem recovery
 
 - **Def:** the generated artifact that turns an observed situation and stated complaint into the actual problem, deleted assumptions, hidden variable, and solution class before idea generation begins. `status: coined`
 - **Why:** makes frame recovery judgeable by humans and domain experts instead of burying it inside the final answer.
-- **See:** Frame recovery; `[scratchpad/case-studies/evaluation-rubric.md](./scratchpad/case-studies/evaluation-rubric.md)`
+- **See:** Frame recovery; `[case-studies/evaluation-rubric.md](./case-studies/evaluation-rubric.md)`
+
+### Cross-domain transfer
+
+- **Def:** a `CandidateIdea` subtype whose leverage is mapping a valid source-domain technique/mechanism onto a target-domain problem. Timing is incidental; the analogy/mechanism is the point. `status: working`
+- **Why:** distinguishes durable mechanism transfer from time-bound market/world theses. It answers "what known thing from A solves B?"
+- **See:** Zeitgeist synthesis; `[case-studies/cross-domain-transfer-notes.md](./case-studies/cross-domain-transfer-notes.md)`
+
+### Zeitgeist synthesis
+
+- **Def:** a `CandidateIdea` subtype whose leverage is a thesis/framing fitted to live current signals and a defensible **why-now**, with falsifiable predictions. Timing is load-bearing. `status: working`
+- **Why:** keeps Doppl from mistaking trend narration for insight. A true zeitgeist thesis breaks under the +/-5-year test: too early = enabling signal not live; too late = consensus/priced in.
+- **See:** Cross-domain transfer; Why-now; Current signal; `[case-studies/zeitgeist-synthesis-notes.md](./case-studies/zeitgeist-synthesis-notes.md)`
+
+### Why-now
+
+- **Def:** the timing claim that explains what changed recently, why the window is open now, and why the obvious timing story is wrong or incomplete. `status: coined`
+- **Why:** for zeitgeist cases, frame recovery is often why-now recovery. Without why-now, the thesis is either perennial truth, trend-following, or transfer.
+- **See:** Zeitgeist synthesis; Current signal; Frame recovery
+
+### Current signal
+
+- **Def:** a dated, citable, live piece of evidence that a threshold has crossed or a regime is changing now. `status: coined`
+- **Why:** a zeitgeist synthesis is grounded by signals, not vibes. Signals may be agent-visible inputs; evaluator-only required-signal targets and the withheld thesis stay separate.
+- **See:** Why-now; `[case-studies/sources.md](./case-studies/sources.md)` Signal Set D
+
+### Latent-asset unlock
+
+- **Def:** a zeitgeist sub-pattern where an existing asset/capability suddenly becomes load-bearing because the world changed around it. `status: coined`
+- **Why:** the owner did not need to invent a new thing; the exogenous shift made what they already had scarce. NVIDIA's gaming GPUs becoming AI compute is the reference shape; firm dispatchable power for AI datacenters is the corpus case.
+- **See:** Discovered attack; Zeitgeist synthesis; `[case-studies/ai-firm-power-constraint](./case-studies/ai-firm-power-constraint)`
+
+### Discovered attack
+
+- **Def:** the chess-shaped version of latent-asset unlock: everyone watches the pawn move while the important effect is the bishop it opened downfield. `status: coined`
+- **Why:** names the direction-of-attention failure that makes second-order winners mispriced.
+- **See:** Latent-asset unlock; Blindside; Breakout
+
+### Perfect Pepsis / unlock cluster
+
+- **Def:** a large unlock that should not be forced into one thesis because it detonates into several convergent regime changes, each worthy of its own case. `status: coined`
+- **Why:** "find the perfect Pepsis" means map the family: breadth first, depth on fertile branches, then synthesis. FSD is the reference cluster.
+- **See:** Substrate removed; Dry-riverbed test; `[case-studies/full-self-driving-unlock](./case-studies/full-self-driving-unlock)`
+
+### Substrate removed
+
+- **Def:** the underlying event, unit, constraint, or economic subject that disappears or changes under an unlock. `status: coined`
+- **Why:** big clusters should be split by substrate removed, not by industry topic. FSD's substrates: crash, driver/distance, driver-as-policeable-subject, privately owned car, plus the adoption-asymmetry lens.
+- **See:** Perfect Pepsis; Dry-riverbed test
+
+### Dry-riverbed test
+
+- **Def:** ask whether a downstream institution faces a smaller river (cost drops) or a dry riverbed (the event that fed it stops happening). `status: coined`
+- **Why:** disappearing-event branches are often higher magnitude and less priced than ordinary cost-collapse branches.
+- **See:** Substrate removed; `[LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md#the-event-falls-away--2026-06-20)`; `[case-studies/fsd-enforcement-economy](./case-studies/fsd-enforcement-economy)`
+
+### Adoption asymmetry
+
+- **Def:** the regime-change lens where uneven distribution is the main effect: believers vs. disbelievers, served vs. lagging regions, rich-world concentration vs. leapfrog wildcard. `status: coined`
+- **Why:** "X is coming" averages away the arbitrage. The useful question is who already lives in the new world, who cannot see it yet, and what happens at the boundary.
+- **See:** Zeitgeist synthesis; `[case-studies/fsd-adoption-asymmetry](./case-studies/fsd-adoption-asymmetry)`
 
 ### Tool-to-make-a-tool (bootstrapping)
 
@@ -301,6 +361,11 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-20 | Zeitgeist synthesis / Cross-domain transfer | Stabilized the subtype distinction: transfer is mechanism-first and timing-incidental; zeitgeist is timing-first with current signals, why-now, and falsifiable predictions. |
+| 2026-06-20 | Why-now / Current signal | Coined — the timing and evidence primitives that make a zeitgeist thesis judgeable rather than trend narration. |
+| 2026-06-20 | Latent-asset unlock / Discovered attack | Coined — the NVIDIA-shaped pattern where an exogenous shift unlocks an existing asset, and attention misses the downfield effect. |
+| 2026-06-20 | Perfect Pepsis / Substrate removed / Dry-riverbed test | Coined — large unlocks become clusters split by substrate removed; the strongest branches are disappearing events, not merely falling costs. |
+| 2026-06-20 | Adoption asymmetry | Coined — uneven distribution as the thesis, not a caveat; maps believer/disbeliever, served/unserved, and first/third-world boundary effects. |
 | 2026-06-19 | Problem recovery | Coined — the explicit generated artifact for case studies: symptom report → actual problem → hidden variable → solution class before solution generation. |
 | 2026-06-19 | Frame recovery   | Coined — the precursor before idea generation: recover the actual question/problem before judging sprouts or afrits. Added to case-study `evaluation_focus` |
 | 2026-06-19 | Doppl Prime      | Coined — the canonical, production-bound repo (`doppl-prime`, `Doppl-Life/doppl-prime`): official docs + binding source of truth, the **anvil** to this crucible. Surviving ideas land there; crucible work is measured against it. Referenced in [AGENTS.md](./AGENTS.md) + [README](./README.md) |

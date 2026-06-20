@@ -35,9 +35,11 @@ The other two postures — *push back hard* (find the failure mode before it fin
 - **`polymath`** — transplant a proven solution from another domain (the Medici Effect: "how do other fields solve this?").
 - **`transcript-to-case-study`** — a capture/workflow tool (not an ideation mutagen): turn a raw transcript or expert conversation into structured case-study artifacts.
 
+Case-study mining added two reusable discriminators. For `cross_domain_transfer`, ask whether the mechanism would still work five years earlier/later; if yes, timing is incidental and the transfer map is the point. For `zeitgeist_synthesis`, timing is load-bearing: run the ±5-year test, demand dated current signals, recover why-now, and make the thesis falsifiable. For big unlocks, map breadth first, group branches by substrate removed, take fertile branches deep, then synthesize the convergence ("perfect Pepsis" / dry-riverbed / adoption-asymmetry moves).
+
 ## CodeGraph
 
-- Run `codegraph sync /Users/michaelhabermas/repos/GAI/doppl-test` after meaningful edits or branch changes.
+- Run `codegraph sync /Users/michaelhabermas/repos/GAI/DOPPL/doppl-test` after meaningful edits or branch changes.
 - Use CodeGraph before broad semantic navigation: `query`, `context`, `callers`, `callees`, `impact`, `affected`.
 - Always use CodeGraph to understand the context of the codebase before making changes.
 

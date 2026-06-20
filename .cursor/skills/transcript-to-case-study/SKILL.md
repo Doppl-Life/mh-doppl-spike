@@ -1,7 +1,7 @@
 ---
 name: transcript-to-case-study
 description: >
-  Use this skill when turning a raw transcript, interview, voice note, meeting note, or messy expert conversation into one or two structured case study markdown files. Trigger when the user asks to create a case study from a transcript, extract a case study, prepare a Doppl benchmark case, make a withheld-solution version, make evaluator and prompt versions, or transform expert conversation into reusable problem/constraint/solution artifacts. If the source contains a known solution, create two files: one full evaluator version with the solution and one withheld-solution prompt version with no answer leakage. If no known solution exists, create one case study file with a solution section scaffolded for future generation. Align output with the repo's case-study-schema.md when present.
+  Use this skill when turning a raw transcript, interview, voice note, meeting note, or messy expert conversation into one or two structured case study markdown files. Trigger when the user asks to create a case study from a transcript, extract a case study, prepare a Doppl benchmark case, make a withheld-solution version, make evaluator and prompt versions, or transform expert conversation into reusable problem/constraint/solution artifacts. If the source contains a known solution, create two files: one full evaluator version with the solution and one withheld-solution prompt version with no answer leakage. If no known solution exists, create one case study file with a solution section scaffolded for future generation. Align output with the repo's case-study-schema.md when present, including subtype tags, Problem Recovery, Evaluation Focus, and the agent-visible/evaluator-only boundary.
 
 # lineage:
 #   id: transcript-to-case-study
@@ -28,22 +28,26 @@ Create:
   - `*-with-solution.md`: full evaluator version with the known solution.
   - `*-withheld-solution.md`: model-facing version with the solution removed and no answer leakage.
 
+Every Doppl case should declare a subtype: `cross_domain_transfer` or `zeitgeist_synthesis`. The withheld prompt asks the agenome for `problem_recovery` first, then `solution_generation`; the full evaluator file stores the target in `evaluation_focus` and `solution`.
+
 Use the local `case-study-schema.md` if one exists near the target folder. If the repo has no schema, use this section order:
 
 1. Summary
-2. Source
-3. Visibility
-4. Problem
-5. Purpose
-6. User
-7. Environment
-8. Constraints
-9. Failed Attempts
-10. Solution
-11. Reproducible
-12. Validator
-13. Open Questions
-14. Notes
+2. Subtype
+3. Source
+4. Visibility
+5. Problem
+6. Purpose
+7. User
+8. Environment
+9. Constraints
+10. Failed Attempts
+11. Evaluation Focus
+12. Solution
+13. Reproducible
+14. Validator
+15. Open Questions
+16. Notes
 
 ## Workflow
 
@@ -63,7 +67,16 @@ Read the transcript thoroughly before drafting. Look for:
 
 If the transcript contains multiple candidate cases, pick the one with the strongest combination of clear problem, real constraints, failed approaches, and evaluable outcome. If the user asked for all cases, create one file set per case.
 
-### 2. Decide Whether There Is A Known Solution
+### 2. Classify The Case
+
+Decide whether the case's generated solution is:
+
+- `cross_domain_transfer`: a durable mechanism from source domain A mapped onto a target problem in domain B. Timing is incidental. Capture `sourceDomain`, `sourceTechnique`, `targetDomain`, `targetProblem`, `transferMapping`, `expectedMechanism`, and any cheap executable check.
+- `zeitgeist_synthesis`: a timing-bound thesis fitted to live signals. It must break under the +/-5-year test, ground itself in dated current signals, explain why-now, and make at least one falsifiable prediction. Common shapes: regime change, latent-asset unlock / discovered attack, consensus deflate, unlock cluster / "perfect Pepsis", dry-riverbed event disappearance, adoption asymmetry.
+
+If the source is mostly a transcript about what happened in an operating setting, it is usually transfer unless the answer depends on a current threshold. If the source is about what is becoming true now, it is usually zeitgeist unless the core move is simply borrowing a known mechanism.
+
+### 3. Decide Whether There Is A Known Solution
 
 Treat a solution as known if the source provides a concrete answer, operational protocol, design, intervention, or expert-endorsed resolution.
 
@@ -71,13 +84,14 @@ If the source only includes vague direction, partial ideas, or desired outcomes,
 
 If there is a known solution, preserve it only in the full evaluator version.
 
-### 3. Extract The Case
+### 4. Extract The Case
 
 Draft the case from the transcript, not from generic domain assumptions.
 
 For each section:
 
 - **Summary:** Three to six sentences explaining the case and why it matters.
+- **Subtype:** The declared subtype and one-sentence rationale.
 - **Source:** Source type, origin, source file, derived-by, fidelity, and transcript caveats.
 - **Visibility:** Sharing level, anonymization, public-summary permission, sensitive details, and sharing notes.
 - **Problem:** Statement, background, why it matters, current state, impact, and scope.
@@ -86,6 +100,7 @@ For each section:
 - **Environment:** Setting, tools/systems, inputs, external factors, and assumptions.
 - **Constraints:** Each constraint gets a plain description plus a rationale explaining why it is real.
 - **Failed Attempts:** Each rejected approach gets an approach, outcome, why it failed, and lesson.
+- **Evaluation Focus:** Evaluator-only targets: stated symptom, actual problem, deleted assumptions, hidden variable, frame recovery target, generated idea target, and scoring notes. For zeitgeist, include `required_current_signals[]` and `falsifiability_target`.
 - **Solution:** Full solution when allowed; answer-free scaffold when withheld.
 - **Reproducible:** How someone can rerun, test, or evaluate the case.
 - **Validator:** Optional domain expert or reviewer who can judge plausibility.
@@ -94,7 +109,7 @@ For each section:
 
 Keep the case specific enough to be useful but anonymized enough to be safely shared according to the visibility rules.
 
-### 4. Build The Full Version
+### 5. Build The Full Version
 
 In `*-with-solution.md`, include the known solution clearly:
 
@@ -105,16 +120,24 @@ In `*-with-solution.md`, include the known solution clearly:
 - Expected outcome
 - Next steps or validation plan
 
+For `zeitgeist_synthesis`, render the full payload in `solution.details`: `thesis`, `audience`, `currentSignals[]`, `whyNow`, `falsifiablePredictions[]`, and `comparablePriorArt[]`. For unlock/cascade cases, keep the branch map, depth chains, seams, and synthesis; do not flatten them into a first-order list.
+
 The full version is for evaluators, humans, and benchmark scoring. It may mention the known solution directly.
 
-### 5. Build The Withheld Version
+### 6. Build The Withheld Version
 
 In `*-withheld-solution.md`, remove the known answer while keeping enough context for a fair generation run.
 
-The `Solution` section should say:
+The generated-output section should ask for Problem Recovery first and Solution Generation second:
 
 ```markdown
-This section is intentionally blank for the Doppl run. The agenome should generate a proposed solution using only the problem, purpose, constraints, failed attempts, user, and environment sections above.
+This section is intentionally blank for the Doppl run. The agenome should generate two outputs, in order, using only the problem, purpose, constraints, failed attempts, user, environment, and agent-visible source context above.
+
+## Problem Recovery
+
+_To be generated._
+
+## Solution Generation
 
 ### Summary
 
@@ -134,9 +157,11 @@ Then ask for the output shape without revealing the answer:
 - how the approach avoids the failed attempts
 - how the approach handles each listed constraint
 
+For zeitgeist cases, agent-visible current signals may appear in the visible packet if they are needed to synthesize the thesis. Do not include evaluator-only required signals, the withheld thesis, why-now target wording, or falsifiability target.
+
 Do not include hints that point directly at the known solution.
 
-### 6. Leak Check The Withheld Version
+### 7. Leak Check The Withheld Version
 
 Before finalizing, search the withheld file for answer terms and near-synonyms from the known solution.
 
@@ -147,18 +172,23 @@ Check for:
 - Expected outcome language that only makes sense if the answer is known.
 - Next steps that instruct the model toward the answer.
 - Source, visibility, or notes text that accidentally names the answer.
+- Zeitgeist leakage: evaluator-only required current signals, why-now target phrasing, withheld thesis, and falsifiability target.
 
 If a detail is necessary for the problem to be solvable, keep it. If it narrows too strongly toward the known answer, generalize it.
 
 The withheld version should make the benchmark fair: hard enough to test reasoning, not spoiled by scaffolding.
 
-### 7. Quality Bar
+### 8. Quality Bar
 
 A finished case study should satisfy these checks:
 
 - A stranger can understand the problem without reading the transcript.
+- The subtype is explicit and justified.
+- Problem Recovery has a real hidden variable; for timing-bound cases it includes why-now recovery.
 - The constraints explain why obvious answers fail.
 - Failed attempts are concrete, not straw men.
+- Transfer cases have a source-domain mechanism and a target-domain mapping.
+- Zeitgeist cases pass the +/-5-year test and include dated signals, why-now, falsifiable predictions, and comparable prior art when useful.
 - The user and environment sections make the operating context real.
 - The full version contains the answer and its reasoning.
 - The withheld version contains no solution leakage.

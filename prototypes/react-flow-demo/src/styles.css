@@ -120,7 +120,7 @@ textarea {
   display: flex;
   justify-content: flex-start;
   align-items: start;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   min-width: 0;
 }
@@ -143,7 +143,7 @@ textarea {
 .process-tab-stage > div {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
 }
 
 .process-tab-stage.item-count-2 > div {
@@ -165,10 +165,11 @@ textarea {
 }
 
 .tabs button {
-  height: 48px;
+  height: 42px;
   width: auto;
   min-width: max-content;
-  padding: 10px 16px;
+  padding: 8px 12px;
+  font-size: 14px;
   line-height: 1.15;
   white-space: nowrap;
 }
@@ -1592,7 +1593,7 @@ article.module-node::after {
 }
 
 .contract-scenario-tabs {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .contract-check-list {
@@ -1610,6 +1611,171 @@ article.module-node::after {
 
 .contract-check-fail span {
   color: var(--pink);
+}
+
+/* ---------- Distillation gate (prototype 16) ---------- */
+
+.distillation-layout {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.76fr) minmax(0, 1.1fr) minmax(280px, 0.7fr);
+  grid-template-areas:
+    "source review boundary"
+    "candidates review boundary"
+    "next contracts boundary";
+  gap: 14px;
+  align-items: start;
+}
+
+.distillation-layout > * {
+  min-width: 0;
+}
+
+.distillation-source-panel,
+.distillation-candidate-panel,
+.distillation-review-panel,
+.distillation-next-panel,
+.distillation-contract-panel {
+  border: 1px solid rgba(110, 231, 255, 0.22);
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 50, 0.9), rgba(6, 13, 30, 0.8));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.distillation-source-panel { grid-area: source; }
+.distillation-candidate-panel { grid-area: candidates; }
+.distillation-review-panel { grid-area: review; }
+.distillation-next-panel { grid-area: next; }
+.distillation-contract-panel { grid-area: contracts; }
+.distillation-boundary-panel { grid-area: boundary; }
+
+.distillation-candidate-panel,
+.distillation-boundary-panel {
+  position: sticky;
+  top: 18px;
+}
+
+.distillation-winner-card,
+.distillation-learning-card,
+.distillation-verdict-card,
+.distillation-evidence-grid article,
+.distillation-check-grid article {
+  border: 1px solid rgba(110, 231, 255, 0.16);
+  padding: 14px;
+  background: rgba(4, 8, 23, 0.44);
+}
+
+.distillation-winner-card span,
+.distillation-learning-card span,
+.distillation-verdict-card span,
+.distillation-evidence-grid span,
+.distillation-check-grid span,
+.distillation-learning-list span {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.distillation-winner-card strong,
+.distillation-learning-card strong,
+.distillation-verdict-card strong,
+.distillation-evidence-grid strong,
+.distillation-check-grid strong {
+  display: block;
+  margin-top: 7px;
+  color: var(--ink);
+  line-height: 1.22;
+  overflow-wrap: anywhere;
+}
+
+.distillation-winner-card p,
+.distillation-learning-card p,
+.distillation-verdict-card p,
+.distillation-next-panel > p,
+.distillation-check-grid p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.distillation-evidence-grid,
+.distillation-check-grid,
+.distillation-learning-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.distillation-evidence-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.distillation-check-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.distillation-learning-list button {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  border: 1px solid rgba(110, 231, 255, 0.2);
+  padding: 12px 14px;
+  color: var(--ink);
+  background: rgba(4, 8, 23, 0.5);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.distillation-learning-list button:hover,
+.distillation-learning-list button:focus-visible,
+.distillation-learning-list button[aria-selected="true"] {
+  transform: translateY(-1px);
+  border-color: rgba(86, 255, 179, 0.58);
+  background: rgba(86, 255, 179, 0.1);
+  outline: none;
+}
+
+.distillation-learning-list strong {
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.distillation-learning-list small {
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.distillation-check-pass {
+  border-left: 3px solid var(--green) !important;
+}
+
+.distillation-check-warn {
+  border-left: 3px solid var(--gold) !important;
+}
+
+.distillation-check-fail {
+  border-left: 3px solid var(--pink) !important;
+}
+
+.distillation-check-warn span {
+  color: var(--gold);
+}
+
+.distillation-check-fail span {
+  color: var(--pink);
+}
+
+.distillation-next-panel .payload-preview {
+  max-height: 360px;
+  margin-top: 14px;
+}
+
+.distillation-contract-panel .contract-group {
+  margin-top: 0;
 }
 
 /* ---------- Case intake (prototype 06) ---------- */
@@ -4024,6 +4190,7 @@ article.module-node::after {
   .survivor-layout,
   .fallback-layout,
   .replay-layout,
+  .distillation-layout,
   .spend-grid,
   .strategy-table,
   .output-row {
@@ -4048,6 +4215,8 @@ article.module-node::after {
   .fallback-boundary-panel,
   .replay-control-panel,
   .replay-boundary-panel,
+  .distillation-candidate-panel,
+  .distillation-boundary-panel,
   .fusion-boundary-panel,
   .trace-boundary-panel,
   .spend-boundary-panel {
@@ -4101,6 +4270,12 @@ article.module-node::after {
   .fallback-event-panel,
   .fallback-boundary-panel,
   .fallback-contract-panel,
+  .distillation-source-panel,
+  .distillation-candidate-panel,
+  .distillation-review-panel,
+  .distillation-next-panel,
+  .distillation-contract-panel,
+  .distillation-boundary-panel,
   .pool-diagnostics-panel,
   .agenome-boundary-panel,
   .agenome-runconfig-panel,
@@ -4130,6 +4305,8 @@ article.module-node::after {
   .survivor-risk-grid,
   .fallback-action-list,
   .fallback-event-list,
+  .distillation-evidence-grid,
+  .distillation-check-grid,
   .packet-pane,
   .projection-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4148,6 +4325,7 @@ article.module-node::after {
   .novelty-contract-panel,
   .survivor-contract-panel,
   .fallback-contract-panel,
+  .distillation-contract-panel,
   .replay-contract-panel {
     grid-column: auto;
   }
@@ -4244,6 +4422,8 @@ article.module-node::after {
   .fallback-action-list,
   .fallback-cap-grid,
   .fallback-event-list,
+  .distillation-evidence-grid,
+  .distillation-check-grid,
   .packet-pane,
   .projection-grid,
   .run-seed {

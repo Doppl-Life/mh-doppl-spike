@@ -68,6 +68,11 @@ import {
   survivorContractShapes,
   survivorRuns,
 } from './survivorProofData.js';
+import {
+  distillationBoundary,
+  distillationContractShapes,
+  distillationLearningExamples,
+} from './distillationData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
 
@@ -89,6 +94,7 @@ const prototypeModuleTargets = {
   'Final Survivor Proof Panel': { tabId: 'survivor', label: 'Survivor proof' },
   'Fusion / Mutation': { tabId: 'fusion', label: 'Fusion lab' },
   'Fusion Lab': { tabId: 'fusion', label: 'Fusion lab' },
+  'Distillation Gate': { tabId: 'distillation', label: 'Distillation gate' },
   'Gateway Forge': { tabId: 'gateway', label: 'Gateway forge' },
   'Live Run Operator Console': { tabId: 'operator', label: 'Operator console' },
   'Model Gateway': { tabId: 'gateway', label: 'Gateway forge' },
@@ -727,6 +733,89 @@ const canonicalContracts = [
       'stale projections can be discarded safely',
     ],
   },
+  {
+    id: 'learningArtifact',
+    name: 'LearningArtifact',
+    file: 'packages/contracts/src/learning/learning-artifact.ts',
+    owner: 'contract track',
+    status: 'prototype candidate',
+    consumers: ['Distillation Gate', 'Case Study Intake', 'Agenome Pool', 'Operator Console'],
+    zodSnippet:
+`export const LearningArtifact = z.object({
+  id: z.string(),
+  runId: z.string(),
+  caseId: z.string(),
+  kind: z.enum(['constraint_rule', 'skill_candidate', 'evaluation_rule']),
+  title: z.string().min(1),
+  body: z.string().min(1),
+  scope: z.enum(['case_family', 'project', 'global']),
+  status: z.enum(['proposed', 'promoted', 'rejected']),
+  evidenceRefs: z.array(EvidenceRef),
+  promotionReviewId: z.string(),
+}).strict();`,
+    fields: [
+      'learning is an artifact, not a silent memory edit',
+      'status separates proposed, promoted, and rejected lessons',
+      'scope prevents one case from becoming an accidental global rule',
+      'evidenceRefs tie promotion back to persisted run evidence',
+    ],
+  },
+  {
+    id: 'constraintRule',
+    name: 'ConstraintRule',
+    file: 'packages/contracts/src/learning/constraint-rule.ts',
+    owner: 'contract track',
+    status: 'prototype candidate',
+    consumers: ['Distillation Gate', 'Case Study Intake', 'Verifier Council'],
+    zodSnippet:
+`export const ConstraintRule = z.object({
+  id: z.string(),
+  artifactId: z.string(),
+  rule: z.string().min(1),
+  appliesTo: z.enum([
+    'problem_recovery',
+    'solution_generation',
+    'verification',
+  ]),
+  scope: z.enum(['case_family', 'project', 'global']),
+  severity: z.enum(['hard', 'soft']),
+  sourceRunId: z.string(),
+}).strict();`,
+    fields: [
+      'constraint text is versionable and reviewable',
+      'appliesTo names where future runs may load it',
+      'hard and soft rules stay distinct',
+      'sourceRunId preserves provenance without rewriting replay',
+    ],
+  },
+  {
+    id: 'learningPromotionReview',
+    name: 'LearningPromotionReview',
+    file: 'packages/contracts/src/learning/learning-promotion-review.ts',
+    owner: 'verifier track',
+    status: 'prototype candidate',
+    consumers: ['Distillation Gate', 'Replay Spine', 'Operator Console'],
+    zodSnippet:
+`export const LearningPromotionReview = z.object({
+  id: z.string(),
+  artifactId: z.string(),
+  verdict: z.enum(['promote', 'reject', 'revise']),
+  checks: z.object({
+    leakage: z.enum(['pass', 'warn', 'fail']),
+    generality: z.enum(['pass', 'warn', 'fail']),
+    evidence: z.enum(['pass', 'warn', 'fail']),
+    contractFit: z.enum(['pass', 'warn', 'fail']),
+  }),
+  reviewerRole: z.literal('distillation_verifier'),
+  reason: z.string(),
+}).strict();`,
+    fields: [
+      'promotion has its own verdict separate from candidate fitness',
+      'leakage check blocks hidden-solution contamination',
+      'generality check catches overfit lessons',
+      'contractFit makes the learning event replayable',
+    ],
+  },
 ];
 
 const contractConsumers = [
@@ -734,6 +823,7 @@ const contractConsumers = [
   { module: 'Model Gateway', imports: ['ModelGatewayRequest', 'ModelGatewayResponse', 'CandidateIdea'], direction: 'producer', note: 'accepts, repairs, or rejects structured output before persistence' },
   { module: 'Verifier Council', imports: ['CandidateIdea', 'CriticReview', 'CheckResult', 'EvidenceRef'], direction: 'producer', note: 'evaluates candidates as data and emits evidence-bearing reviews' },
   { module: 'Selection / Scoring', imports: ['NoveltyScore', 'FitnessScore', 'ScoringPolicy'], direction: 'producer', note: 'turns persisted evidence into policy-versioned fitness' },
+  { module: 'Distillation Gate', imports: ['LearningArtifact', 'ConstraintRule', 'LearningPromotionReview'], direction: 'producer', note: 'promotes only verified run lessons into future-run memory' },
   { module: 'Replay Spine', imports: ['RunEventEnvelope', 'LineageGraphProjection'], direction: 'consumer', note: 'folds stored events in sequence order with no fresh calls' },
   { module: 'Trace Viewer', imports: ['LineageGraphProjection', 'EvidenceRef'], direction: 'consumer', note: 'renders projections and drills into persisted event evidence' },
 ];
@@ -840,6 +930,33 @@ const contractValidationScenarios = [
       { label: 'unknown field', status: 'fail', detail: 'prompt is rejected by strict schema' },
       { label: 'role', status: 'pass', detail: 'critic is an allowed gateway role' },
       { label: 'route shape', status: 'fail', detail: 'ProviderCapability metadata missing' },
+    ],
+  },
+  {
+    id: 'overfitLearning',
+    label: 'Overfit LearningArtifact',
+    contractId: 'learningPromotionReview',
+    producer: 'Distillation Gate',
+    consumer: 'Case Study Intake',
+    payload: {
+      id: 'review-learn-003',
+      artifactId: 'learn_rejected_drone_protocol',
+      verdict: 'reject',
+      checks: {
+        leakage: 'fail',
+        generality: 'fail',
+        evidence: 'warn',
+        contractFit: 'pass',
+      },
+      reviewerRole: 'distillation_verifier',
+      reason: 'Copies one withheld case move instead of preserving a reusable reasoning pattern.',
+    },
+    result: 'fail',
+    checks: [
+      { label: 'leakage', status: 'fail', detail: 'specific case action is too close to the withheld target' },
+      { label: 'generality', status: 'fail', detail: 'lesson does not transfer beyond camera-threat cases' },
+      { label: 'evidence', status: 'fail', detail: 'one survivor does not justify a global evaluation rule' },
+      { label: 'contract fit', status: 'pass', detail: 'the rejection review itself is schema-valid' },
     ],
   },
 ];
@@ -2323,6 +2440,173 @@ function ContractFreezeLab({ selectedCase }) {
   );
 }
 
+function DistillationGate({ selectedCase }) {
+  const caseDetails = selectedCase || getCaseDetails('jack-superyacht-drone');
+  const [activeId, setActiveId] = useState(distillationLearningExamples[0].id);
+  const activeLearning = distillationLearningExamples.find((item) => item.id === activeId) || distillationLearningExamples[0];
+  const artifact = getCaseArtifact(caseDetails);
+  const promotedCount = distillationLearningExamples.filter((item) => item.status === 'promoted').length;
+  const reviewVerdict = activeLearning.status === 'promoted' ? 'promote' : 'reject';
+  const checkCounts = activeLearning.checks.reduce((counts, [, status]) => ({
+    ...counts,
+    [status]: (counts[status] || 0) + 1,
+  }), {});
+
+  const promotionReview = {
+    id: `review_${activeLearning.id}`,
+    artifactId: activeLearning.artifact.id,
+    verdict: reviewVerdict,
+    checks: Object.fromEntries(activeLearning.checks.map(([label, status]) => [
+      label.replace(/\s+/g, ''),
+      status,
+    ])),
+    reviewerRole: 'distillation_verifier',
+    reason: activeLearning.reviewerReason,
+  };
+
+  return (
+    <section className="prototype distillation-prototype">
+      <div className="prototype-heading">
+        <div>
+          <p className="eyebrow">prototype 16 · distillation gate</p>
+          <h2>Verified Learning Promotion</h2>
+          <p>
+            Turn a completed run into reusable learning without letting one lucky or leaky lesson
+            contaminate the next run. The gate separates selected candidates from promoted memory.
+          </p>
+        </div>
+        <div className="case-card">
+          <span>{caseDetails.shortTitle} · post-run learning</span>
+          <strong>{caseDetails.title}</strong>
+          <p>{promotedCount}/{distillationLearningExamples.length} lessons promoted · replay truth unchanged</p>
+          <div className="readiness-meter">
+            <i><b style={{ width: `${Math.round((promotedCount / distillationLearningExamples.length) * 100)}%` }} /></i>
+          </div>
+        </div>
+      </div>
+
+      <div className="distillation-layout">
+        <section className="distillation-source-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">upstream run evidence</p>
+              <h3>What The Run Actually Proved</h3>
+            </div>
+            <strong>{caseDetails.runId}</strong>
+          </div>
+          <article className="distillation-winner-card">
+            <span>selected candidate</span>
+            <strong>{artifact.title}</strong>
+            <p>{artifact.summary}</p>
+          </article>
+          <div className="distillation-evidence-grid">
+            <article>
+              <span>fitness evidence</span>
+              <strong>{artifact.claim}</strong>
+            </article>
+            <article>
+              <span>hardest risk</span>
+              <strong>{artifact.risk}</strong>
+            </article>
+            <article>
+              <span>validation needed</span>
+              <strong>{artifact.validation}</strong>
+            </article>
+            <article>
+              <span>prior-art pressure</span>
+              <strong>{caseDetails.noveltyPrior}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section className="distillation-candidate-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">proposed learning</p>
+              <h3>Choose Artifact</h3>
+            </div>
+            <strong>{activeLearning.status}</strong>
+          </div>
+          <div className="distillation-learning-list">
+            {distillationLearningExamples.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-selected={item.id === activeLearning.id}
+                onClick={() => setActiveId(item.id)}
+              >
+                <span>{item.kind}</span>
+                <strong>{item.shortLabel}</strong>
+                <small>{item.status} · {item.scope}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="distillation-review-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">promotion review</p>
+              <h3>{activeLearning.title}</h3>
+            </div>
+            <strong className={activeLearning.status === 'promoted' ? 'status-good' : 'status-bad'}>
+              {reviewVerdict}
+            </strong>
+          </div>
+          <div className="distillation-learning-card">
+            <span>{activeLearning.kind} · {activeLearning.scope}</span>
+            <strong>{activeLearning.body}</strong>
+            <p>{activeLearning.sourcePattern}</p>
+          </div>
+          <div className="distillation-check-grid">
+            {activeLearning.checks.map(([label, status, detail]) => (
+              <article key={label} className={`distillation-check-${status}`}>
+                <span>{status}</span>
+                <strong>{label}</strong>
+                <p>{detail}</p>
+              </article>
+            ))}
+          </div>
+          <article className="distillation-verdict-card">
+            <span>verifier reason</span>
+            <strong>{activeLearning.reviewerReason}</strong>
+            <p>{checkCounts.fail ? `${checkCounts.fail} blocking issue${checkCounts.fail === 1 ? '' : 's'} found.` : 'No blocking issues found.'}</p>
+          </article>
+        </section>
+
+        <section className="distillation-next-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">future-run effect</p>
+              <h3>{activeLearning.status === 'promoted' ? 'Loaded Next Time' : 'Quarantined'}</h3>
+            </div>
+            <strong>{activeLearning.status === 'promoted' ? 'future only' : 'no effect'}</strong>
+          </div>
+          <p>{activeLearning.nextRunEffect}</p>
+          <pre className="payload-preview">{JSON.stringify({
+            learningArtifact: activeLearning.artifact,
+            proposedContract: activeLearning.proposedContract,
+            promotionReview,
+          }, null, 2)}</pre>
+        </section>
+
+        <section className="distillation-contract-panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">contract candidates</p>
+              <h3>Learning Egress</h3>
+            </div>
+            <strong>prototype package</strong>
+          </div>
+          <ContractShapeGroup label="Egress" shapes={distillationContractShapes.egress} />
+        </section>
+
+        <BoundaryRail title="Where Distillation Fits" boundary={distillationBoundary} className="distillation-boundary-panel" />
+      </div>
+    </section>
+  );
+}
+
 function CaseStudyIntake({ selectedCaseId: suiteCaseId, onSelectCase }) {
   const [selectedCaseId, setSelectedCaseId] = useState(suiteCaseId || intakeExamples[0].id);
   const [uploadedCase, setUploadedCase] = useState(null);
@@ -2643,7 +2927,11 @@ const boundaryModuleOverrides = {
   },
   'Where Proof Fits': {
     upstreamModules: ['Replay Spine', 'Novelty Radar', 'Spend Ledger'],
-    downstreamModules: ['Trace Viewer'],
+    downstreamModules: ['Distillation Gate'],
+  },
+  'Where Distillation Fits': {
+    upstreamModules: ['Final Survivor Proof Panel', 'Critic Council'],
+    downstreamModules: ['Case Study Intake', 'Agenome Pool'],
   },
   'Where Replay Fits': {
     upstreamModules: ['Model Gateway', 'Fusion Lab'],
@@ -2708,6 +2996,10 @@ const boundaryProofStatements = {
     'A winner is only shown when persisted evidence supports it.',
     'Open risks and validation work remain part of the artifact.',
   ],
+  'Where Distillation Fits': [
+    'Learning is proposed from persisted evidence after a run.',
+    'Promotion has its own verifier gate before future runs can consume it.',
+  ],
   'Where Replay Fits': [
     'Stored events rebuild visible state without fresh calls.',
     'Invalid or out-of-order events are quarantined, not guessed.',
@@ -2748,6 +3040,7 @@ const contractShapeSources = [
   subtypeCheckContractShapes,
   noveltyContractShapes,
   survivorContractShapes,
+  distillationContractShapes,
 ];
 
 const contractShapeIndex = buildContractShapeIndex();
@@ -2805,6 +3098,9 @@ function getBoundaryContract(name) {
     replayfixturemetadata: 'replayreadrequest',
     finalrunsummary: 'terminalrunsummary',
     shareableproofartifact: 'shareableproofartifact',
+    learningartifact: 'learningartifact',
+    constraintrule: 'constraintrule',
+    learningpromotionreview: 'learningpromotionreview',
     traceslectionstate: 'replayreadrequest',
     traceselectionstate: 'replayreadrequest',
     evidencedrilldownrequest: 'replayreadrequest',
@@ -4596,6 +4892,7 @@ const prototypeStages = [
     label: 'Explain',
     items: [
       { id: 'survivor', label: 'Survivor proof' },
+      { id: 'distillation', label: 'Distillation gate' },
       { id: 'fallback', label: 'Fallback ladder' },
       { id: 'replay', label: 'Replay spine' },
       { id: 'trace', label: 'Trace viewer' },
@@ -4715,6 +5012,7 @@ function App() {
           {tab === 'gateway' && <GatewayForge selectedCase={selectedCase} />}
           {tab === 'fusion' && <FusionLab selectedCase={selectedCase} />}
           {tab === 'survivor' && <FinalSurvivorProofPanel selectedCase={selectedCase} />}
+          {tab === 'distillation' && <DistillationGate selectedCase={selectedCase} />}
           {tab === 'fallback' && <DemoFallbackLadder selectedCase={selectedCase} />}
           {tab === 'replay' && <ReplaySpine selectedCase={selectedCase} />}
           {tab === 'trace' && (

@@ -291,6 +291,7 @@ def main() -> None:
     ap.add_argument("--limit-hn", type=int, default=6)
     ap.add_argument("--no-open", action="store_true")
     ap.add_argument("--no-enrich", action="store_true", help="skip the fetch-ladder enrichment pass")
+    ap.add_argument("--no-refresh", action="store_true", help="skip the refresh pass (re-score decaying high-value candidates)")
     ap.add_argument("--reset", action="store_true", help="clear ledgers before running")
     args = ap.parse_args()
 
@@ -329,7 +330,19 @@ def main() -> None:
     exe_path = write_exemplar_keep(analyzed)
     trap_path, n_traps = write_trap_register(analyzed)
 
-    # why-now decay sweep: auto-expire zeitgeist candidates that missed their window
+    # reality check, forward horizon: REFRESH high-value decaying candidates BEFORE
+    # expiry — decay proposes, refresh disposes (a thesis the world caught up to climbs
+    # back up). Gated + opt-out (costs model calls).
+    if not args.no_refresh:
+        from reality import refresh_candidates
+        refreshed = refresh_candidates(key)
+        if refreshed:
+            up = [r for r in refreshed if r["verdict"] in ("refreshed_up", "still_live")]
+            if up:
+                lines = [f"[green]{r['old_score']:+d}→{r['new_score']:+d}[/] {r['title'][:50]} [dim]({r['verdict']})[/]" for r in up]
+                console.print(Panel("\n".join(lines), title="🔄 Refreshed — decaying ideas the world caught up to", border_style="green"))
+
+    # then decay sweep: auto-expire zeitgeist candidates that STILL missed their window
     from ledgers import sweep_expired
     n_expired = sweep_expired()
     if n_expired:

@@ -259,6 +259,8 @@ Flags:
 | `recipes.py` | **Source recipes**: how to traverse each source, self-correcting on break. Emits the MCP/connector backlog + the `worth_unlocking` (evidence-gated access) signal. |
 | `calibrate.py` / `calibrate` | **Calibration loop**: joins predicted (lens) vs realized (promotion) and reports where the lens is mis-calibrated. The keystone. |
 | `decay.py` | **Why-now decay**: ages scores by subtype (zeitgeist fast, transfer not) → effective score + auto-expire of stale zeitgeist. The feed's metabolism. |
+| `reality.py` | **Reality check**: refresh (re-score decaying high-value ideas — the reverse gear on decay) + backtest (grade resolved theses against what happened). |
+| `backtest.py` / `backtest` | Runs the calibration backtest over `resolved.json`; surfaces benchmark fixtures. |
 | `mark.py` / `mark` | CLI to mark a candidate `promoted`/`rejected` (append-only) and view promotion rates per source. |
 | `discovery_demo.py` | Orchestrator: harvest → enrich → brain (concurrent) → ledgers → ranked feed + held-out check + trap panel + connector backlog + promotion rates + HTML trace. |
 | `ledgers/` | Output (gitignored): `candidate_feed.jsonl`, `source_registry.json`, `exemplar_keep.jsonl`, `trap_register.jsonl`, `source_recipes.json`, `promotions.jsonl`. |
@@ -437,6 +439,32 @@ and was never promoted gets an `expired` status (append-only — "why-now window
 deleted). Verified end-to-end: a 60-day +4 zeitgeist auto-expired while a same-age +4 transfer
 held at +4.0. This is the metabolic counterpart to the ±5-year discriminator — that test
 *classifies* timing-dependence; decay *acts* on it.
+
+### Reality check — refresh (forward) + backtest (backward)
+
+Decay is a cheap one-directional default, but your *best* decaying ideas deserve a second look,
+and nothing yet checks a candidate against what actually happened. `reality.py` adds both — the
+same move (check against reality) at two horizons:
+
+**Refresh (forward — "is it STILL true / did it get riper?").** Before a high-value decaying
+zeitgeist candidate is expired, the run re-fetches current signal and **re-scores** it. The
+score can go back **UP** and the clock resets — so a thesis the world caught up to climbs the
+ranking instead of dying. *Decay proposes expiry; refresh disposes.* Gated to high raw-score
+candidates (re-scoring costs a model call; `--no-refresh` to skip). Verified: a +5 zeitgeist
+that had decayed to +0.69 was re-scored to +3 `still_live` — rescued from the expiry floor.
+
+**Backtest (backward — "WAS it right?").** `./backtest` reads `resolved.json` (known-outcome
+corpus / settled markets) and reports **calibration**: do higher-scored theses come true more
+often? Verified on the resolved corpus: **+4/+5 came true 1.0, +1/+3 came true 0.0** — the
+score tracks reality (and the low-scored C2PA/Crocs theses correctly turned out false). This is
+the third bedrock check (reality / paper-bets, `PROPOSAL.md`) — the signal that makes all the
+others honest. Resolved-correct theses are surfaced as **benchmark fixtures** for doppl-prime's
+eval set. Live resolution accrues as the hourly runs age; the harness runs on what's resolvable now.
+
+```bash
+./backtest                  # was it right? calibration by score band + fixtures
+./demo                      # refresh runs automatically before the decay sweep
+```
 
 ### Access tiers, in full (cheapest that works)
 

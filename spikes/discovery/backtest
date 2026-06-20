@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Backtest the engine against reality (calibration). See backtest.py.
+set -euo pipefail
+cd "$(dirname "$0")"
+if [[ -f .venv/bin/activate ]]; then
+  source .venv/bin/activate
+elif [[ -f ../../.venv/bin/activate ]]; then
+  source ../../.venv/bin/activate
+fi
+PY="$(command -v python || command -v python3)"
+exec "$PY" backtest.py "$@"

@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Doppl Discovery — how it works</title>
+<link rel="stylesheet" href="https://esm.sh/reactflow@11.11.4/dist/style.css" />
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2230; --border:#2a3340;
+    --ink:#e6edf3; --dim:#8b949e; --faint:#6e7681;
+    --good:#3fb950; --good2:#1b5e20; --warn:#d29922; --bad:#f85149; --bad2:#7d1a1a;
+    --blue:#58a6ff; --violet:#bc8cff; --cyan:#56d4dd;
+  }
+  *{box-sizing:border-box}
+  html,body,#root{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;}
+  .app{display:flex;flex-direction:column;height:100%}
+  header{padding:16px 22px 0 22px;border-bottom:1px solid var(--border);background:var(--bg)}
+  header h1{margin:0;font-size:19px;letter-spacing:-.2px}
+  header h1 .accent{color:var(--blue)}
+  header p{margin:5px 0 12px;color:var(--dim);font-size:13px;max-width:820px}
+  .tabs{display:flex;gap:4px}
+  .tab{padding:9px 16px;border:1px solid var(--border);border-bottom:none;
+    background:var(--panel);color:var(--dim);border-radius:8px 8px 0 0;cursor:pointer;
+    font-size:13px;font-weight:600;transition:.12s}
+  .tab:hover{color:var(--ink)}
+  .tab.active{background:var(--panel2);color:var(--ink);border-color:var(--blue);
+    box-shadow:inset 0 2px 0 var(--blue)}
+  main{flex:1;min-height:0;position:relative}
+  .view{position:absolute;inset:0;overflow:auto}
+  .pad{padding:22px}
+
+  .rf-node{border-radius:10px;border:1px solid var(--border);background:var(--panel);
+    padding:10px 12px;width:194px;box-shadow:0 1px 3px rgba(0,0,0,.45)}
+  .rf-node .kicker{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+  .rf-node .title{font-size:13px;font-weight:700;line-height:1.25}
+  .rf-node .desc{font-size:11px;color:var(--dim);margin-top:5px;line-height:1.42}
+  .rf-node.io{background:linear-gradient(180deg,#16202c,#131a24);border-color:#2b3b4d}
+  .rf-node.brain{border-color:var(--violet);background:linear-gradient(180deg,#1e1830,#171522)}
+  .rf-node.ledger{border-color:#2f6b3a;background:linear-gradient(180deg,#15251a,#131d16)}
+  .rf-node.loop{border-color:var(--cyan);background:linear-gradient(180deg,#0f2429,#0e1d22)}
+  .rf-node.out{border-color:var(--blue);background:linear-gradient(180deg,#13233b,#101a2b)}
+  .rf-node .tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:10px;
+    background:#232b36;color:var(--dim);margin-top:7px;margin-right:4px}
+  .react-flow__handle{width:6px;height:6px;background:var(--faint);border:none}
+  .react-flow__edge-path{stroke:#3a4453;stroke-width:1.5}
+  .react-flow__edge.anim .react-flow__edge-path{stroke:var(--blue);stroke-dasharray:5;animation:dash 1s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-10}}
+  .react-flow__attribution{display:none}
+  .legend{position:absolute;right:14px;bottom:14px;background:var(--panel);border:1px solid var(--border);
+    border-radius:8px;padding:11px 13px;font-size:11px;z-index:5;max-width:240px}
+  .legend b{color:var(--ink);font-size:11.5px} .legend .row{display:flex;align-items:center;gap:7px;margin:4px 0;color:var(--dim)}
+  .swatch{width:11px;height:11px;border-radius:3px;flex:none}
+
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .chip{padding:5px 11px;border:1px solid var(--border);background:var(--panel);color:var(--dim);
+    border-radius:20px;cursor:pointer;font-size:12px;font-weight:600}
+  .chip.on{border-color:var(--blue);color:var(--ink);background:var(--panel2)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(335px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 16px;
+    display:flex;flex-direction:column;gap:9px;transition:.12s}
+  .card:hover{border-color:#3b4654}
+  .card.promoted{border-color:var(--good2)} .card.rejected{opacity:.5}
+  .card.expired{opacity:.4;border-style:dashed}
+  .chead{display:flex;align-items:flex-start;gap:11px}
+  .score{flex:none;width:44px;height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:18px;color:#fff}
+  .ctitle{font-size:14.5px;font-weight:700;line-height:1.25}
+  .pillrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px}
+  .pill{font-size:10.5px;padding:2px 8px;border-radius:11px;background:#232b36;color:var(--dim);border:1px solid var(--border)}
+  .pill.z{color:#ffd9a0;border-color:#5a4422} .pill.t{color:#a0d8ff;border-color:#22455a}
+  .pill.src{color:var(--cyan)} .pill.st{color:var(--good)}
+  .why{font-size:12.5px;color:var(--ink)}
+  .pr{background:var(--bg);border-radius:8px;padding:10px 11px;font-size:11.5px;border:1px solid var(--border)}
+  .pr div{margin:3px 0;color:#c9d1d9} .pr b{color:var(--faint);display:inline-block;min-width:98px;font-weight:600;vertical-align:top}
+  .acts{display:flex;gap:8px;margin-top:2px}
+  .btn{flex:1;padding:7px;border-radius:7px;border:1px solid var(--border);background:var(--panel2);
+    color:var(--dim);cursor:pointer;font-size:12px;font-weight:700;transition:.12s}
+  .btn:hover{color:var(--ink);border-color:#3b4654}
+  .btn.promote.active{background:var(--good2);border-color:var(--good);color:#d6ffd9}
+  .btn.reject.active{background:var(--bad2);border-color:var(--bad);color:#ffd9d6}
+
+  .two{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
+  @media(max-width:900px){.two{grid-template-columns:1fr}}
+  h3.sec{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin:0 0 11px}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+  th,td{text-align:left;padding:8px 11px;font-size:12.5px;border-bottom:1px solid var(--border)}
+  th{color:var(--faint);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  td.s-productive{color:var(--good)} td.s-unreachable{color:var(--faint)}
+  td.s-broken,td.s-polluting{color:var(--bad)} td.s-untested{color:var(--warn)} td.s-working{color:var(--good)}
+  .bar{height:6px;background:#232b36;border-radius:4px;overflow:hidden;margin-top:4px;min-width:60px}
+  .bar>span{display:block;height:100%;background:var(--blue)}
+  .ladder{display:flex;flex-direction:column;gap:8px}
+  .rung{display:flex;align-items:center;gap:11px;background:var(--panel);border:1px solid var(--border);
+    border-radius:9px;padding:10px 13px}
+  .rung .n{width:24px;height:24px;border-radius:6px;background:var(--panel2);display:flex;align-items:center;
+    justify-content:center;font-weight:800;font-size:12px;color:var(--dim);flex:none}
+  .rung .lab{font-weight:700;font-size:13px} .rung .sub{font-size:11.5px;color:var(--dim)}
+  .rung .cost{margin-left:auto;font-size:10.5px;padding:2px 8px;border-radius:10px;flex:none;font-weight:700}
+  .cost.free{background:#15251a;color:var(--good)} .cost.cheap{background:#23200f;color:var(--warn)}
+  .cost.dear{background:var(--bad2);color:#ffb3ad}
+  .note{font-size:12.5px;color:var(--dim);background:var(--panel);border:1px solid var(--border);
+    border-left:3px solid var(--blue);border-radius:7px;padding:12px 14px;margin-top:16px}
+  .note b{color:var(--ink)}
+  .statline{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px 16px;min-width:120px}
+  .stat .v{font-size:23px;font-weight:800} .stat .l{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="application/json" id="data">
+{"ideas": [{"id": "29a1fa9c733a", "source": "corpus:case-studies", "subtype": "zeitgeist_synthesis", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "Shift in AI Constraints from Chips to Firm Power", "why_it_might_matter": "Understanding the shift from chip availability to power constraints can help stakeholders better align their investments and strategies in AI infrastructure.", "actual_problem": "The need to secure reliable and sufficient power sources for AI operations, rather than just acquiring more chips.", "hidden_variable": "The actual constraint has shifted to the availability of firm, dispatchable power."}, {"id": "f014136e0f0d", "source": "corpus:case-studies", "subtype": "zeitgeist_synthesis", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "Adapting Publishing Strategies in the Age of AI Search", "why_it_might_matter": "Understanding this shift can help publishers adapt their strategies to thrive in a landscape where traditional SEO tactics are less effective.", "actual_problem": "The distribution model is shifting from clicks driven by rankings to citations within answer engines, necessitating a new strategy focused on brand and owned audience.", "hidden_variable": "The click itself is being removed by the answer layer, not the rankings."}, {"id": "677efd96f44c", "source": "corpus:case-studies", "subtype": "zeitgeist_synthesis", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "Impact of Fully Autonomous Vehicles on Accident Economy", "why_it_might_matter": "Understanding the accident-dependent economy's complexities could lead to innovative solutions and policies that address the societal impacts of autonomous vehicles.", "actual_problem": "The challenge of understanding and managing the economic and social ramifications of removing the accident substrate.", "hidden_variable": "The interconnected web of industries and services that rely on the accident economy."}, {"id": "62da081caf96", "source": "yc-rfs", "subtype": "cross_domain_transfer", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "AI-Native SaaS Challengers for Legacy Systems", "why_it_might_matter": "This opportunity leverages AI advancements to disrupt established markets, potentially leading to significant cost savings and efficiency gains.", "actual_problem": "There is a need for innovative, AI-native software solutions that can compete with entrenched legacy systems.", "hidden_variable": "The rapid advancement of AI technologies allows for the creation of more efficient and cost-effective alternatives."}, {"id": "6ed773e843c8", "source": "yc-rfs", "subtype": "cross_domain_transfer", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "AI-Driven Closed Discovery Loops for Science", "why_it_might_matter": "Harnessing AI for closed-loop discovery could significantly accelerate scientific breakthroughs and innovation across multiple fields.", "actual_problem": "How to effectively harness AI to automate and optimize the entire scientific discovery process.", "hidden_variable": "The ability of AI to integrate various stages of the scientific process into a single loop."}, {"id": "2d6e55133935", "source": "yc-rfs", "subtype": "cross_domain_transfer", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "Rebuilding Software for AI Agents", "why_it_might_matter": "As AI agents become more common, optimizing software for their use could unlock significant efficiencies and new business models.", "actual_problem": "Existing software systems are not optimized for AI agents, leading to inefficiencies and missed opportunities in automation.", "hidden_variable": "The rapid advancement and adoption of AI technologies that can operate autonomously."}, {"id": "3f0628aa1660", "source": "arxiv", "subtype": "cross_domain_transfer", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "Understanding Speech Control in Text-to-Speech Systems", "why_it_might_matter": "This research could significantly enhance the controllability and expressiveness of TTS systems, leading to more natural and user-friendly applications.", "actual_problem": "The lack of understanding of how specific language instructions affect the acoustic output of TTS systems, hindering their controllability and effectiveness.", "hidden_variable": "The complexity of how different tokens (style vs. content) interact within the model's architecture."}, {"id": "27ab09f5a17c", "source": "arxiv", "subtype": "cross_domain_transfer", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "Improving Task State Management for Tool-Calling Agents", "why_it_might_matter": "Improving task state management could significantly enhance the reliability of AI agents in customer service, leading to better user experiences.", "actual_problem": "Ineffective state management in tool-calling agents results in errors and policy violations.", "hidden_variable": "The lack of a structured method to maintain and reference task states during interactions."}, {"id": "7b47e8466999", "source": "producthunt", "subtype": "cross_domain_transfer", "lens_score": 4, "is_trap": false, "disposition": "open", "title": "AI-Driven Meeting Recordings to Dynamic Team Wiki", "why_it_might_matter": "This solution addresses a common pain point in team collaboration, enhancing efficiency and information retention.", "actual_problem": "Inefficient documentation processes lead to lost information and unclear action items.", "hidden_variable": "The variability in how teams document and follow up on meeting discussions."}, {"id": "b44791b33cd8", "source": "corpus:case-studies", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Reducing Aggression in A&E Waiting Rooms", "why_it_might_matter": "Improving communication in waiting rooms can significantly reduce aggression and enhance patient satisfaction, leading to a safer environment for staff and patients alike.", "actual_problem": "The lack of clear communication and transparency regarding wait times and care processes leads to anxiety and perceived unfairness.", "hidden_variable": "Patients' sense of process, progress, and control during their wait."}, {"id": "26cff34dadb4", "source": "corpus:case-studies", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Pre-Security Interventions to Reduce Liquid Violations", "why_it_might_matter": "Reducing the number of oversized liquid containers at security can streamline the screening process and enhance passenger experience.", "actual_problem": "Passengers forget or misunderstand liquid container size rules prior to arriving at security.", "hidden_variable": "Timing of compliance needs to occur before reaching the security screening."}, {"id": "9ba525644d76", "source": "yc-rfs", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Opportunities in AI-Native Service Companies", "why_it_might_matter": "The shift towards AI-native service companies could revolutionize traditional service industries, offering significant efficiency gains and cost reductions.", "actual_problem": "The need for innovative service delivery models that leverage AI to improve efficiency and reduce costs in traditional service sectors.", "hidden_variable": "The increasing demand for efficiency and specialization in service delivery across various industries."}, {"id": "bf9e59bac3cf", "source": "yc-rfs", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Automating Knowledge Management for AI Integration", "why_it_might_matter": "As AI continues to evolve, the ability to harness and structure domain knowledge will be crucial for effective automation and decision-making.", "actual_problem": "The lack of a centralized, structured knowledge management system that can be easily accessed and updated.", "hidden_variable": "The complexity and variability of domain knowledge across different teams and formats."}, {"id": "9f47a09a6d65", "source": "hackernews", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Comparative Hallucination Rates of AI Models", "why_it_might_matter": "This insight could lead to improved AI model development by highlighting the importance of hallucination rates.", "actual_problem": "Understanding and mitigating hallucinations in AI models to improve reliability.", "hidden_variable": "The definition and measurement of 'hallucination' in AI models may vary."}, {"id": "1eb686ee3f65", "source": "hackernews", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Discovering Colors Beyond Screen Limitations", "why_it_might_matter": "Understanding and accessing a broader color spectrum can enhance creative projects and improve design outcomes.", "actual_problem": "Users need access to a broader color palette for design and artistic purposes beyond digital displays.", "hidden_variable": "The existence of color spaces and physical mediums that can represent a wider range of colors."}, {"id": "a8d0e1e4d24c", "source": "hackernews", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Innovative CSS Framework for Responsive Design", "why_it_might_matter": "As web development evolves, a new CSS framework could significantly streamline the process of creating responsive designs, making it easier for developers.", "actual_problem": "The need for a more efficient and flexible CSS framework that simplifies responsive design.", "hidden_variable": "The increasing diversity of devices and screen resolutions that web applications must support."}, {"id": "13846e3e239a", "source": "hackernews", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Innovative Data Storage Using Favicons", "why_it_might_matter": "This approach could revolutionize how we think about data storage and retrieval in web development.", "actual_problem": "How to utilize unconventional storage methods for data in a compact form.", "hidden_variable": "The capacity of favicons to hold more data than traditionally perceived."}, {"id": "d7a63aa0e9a2", "source": "lobsters", "subtype": "cross_domain_transfer", "lens_score": 3, "is_trap": false, "disposition": "open", "title": "Enhancing Community Connection Through Town Square", "why_it_might_matter": "Fostering community connection can lead to improved mental health and social cohesion, addressing a growing need in modern society.", "actual_problem": "Communities lack physical spaces that foster genuine social interaction and connection.", "hidden_variable": "The rise of digital communication has led to a decline in face-to-face interactions."}], "statuses": {"29a1fa9c733a": "promoted", "f014136e0f0d": "promoted", "677efd96f44c": "promoted", "b44791b33cd8": "promoted", "26cff34dadb4": "rejected", "9ba525644d76": "rejected"}, "registry": [{"source": "corpus:case-studies", "lens": "capstone-demo-fit", "vol": 5, "avg": 3.6, "status": "productive"}, {"source": "yc-rfs", "lens": "capstone-demo-fit", "vol": 25, "avg": 3.4, "status": "productive"}, {"source": "hackernews", "lens": "capstone-demo-fit", "vol": 19, "avg": 2.47, "status": "productive"}, {"source": "lobsters", "lens": "capstone-demo-fit", "vol": 30, "avg": 2.37, "status": "productive"}, {"source": "github-trending", "lens": "capstone-demo-fit", "vol": 30, "avg": 2.8, "status": "productive"}, {"source": "arxiv", "lens": "capstone-demo-fit", "vol": 25, "avg": 3.12, "status": "productive"}, {"source": "sec-edgar", "lens": "capstone-demo-fit", "vol": 25, "avg": 2.48, "status": "productive"}, {"source": "producthunt", "lens": "capstone-demo-fit", "vol": 10, "avg": 3.1, "status": "productive"}, {"source": "google-trends", "lens": "*", "vol": 0, "avg": null, "status": "unreachable"}, {"source": "youtube", "lens": "*", "vol": 0, "avg": null, "status": "unreachable"}, {"source": "reddit:startups", "lens": "*", "vol": 0, "avg": null, "status": "unreachable"}], "recipes": [{"source": "hackernews", "tier": "free", "status": "working", "mcp": null}, {"source": "lobsters", "tier": "free", "status": "working", "mcp": null}, {"source": "arxiv", "tier": "free", "status": "working", "mcp": null}, {"source": "github-trending", "tier": "free", "status": "working", "mcp": "github (a GitHub MCP exists; would lift rate limits + give richer metadata)"}, {"source": "yc-rfs", "tier": "free", "status": "working", "mcp": null}, {"source": "producthunt", "tier": "free", "status": "working", "mcp": "producthunt (official API needs OAuth; an MCP would simplify auth)"}, {"source": "reddit", "tier": "curl_cffi", "status": "broken", "mcp": "curl_cffi (cheap stealth GET) \u2014 else a Reddit MCP/OAuth app"}, {"source": "x", "tier": "dispatch", "status": "untested", "mcp": "grok-cli (native X access) \u2014 else x/twitter MCP or browser-use"}, {"source": "youtube", "tier": "dispatch", "status": "broken", "mcp": "gemini-cli (native YT access; flat-rate) or YouTube Data API key"}, {"source": "google-trends", "tier": "free", "status": "broken", "mcp": null}, {"source": "sec-edgar", "tier": "free", "status": "working", "mcp": null}, {"source": "papers-with-code", "tier": "free", "status": "untested", "mcp": null}]}
+</script>
+
+<script type="module">
+import React, { useState, useMemo, useCallback } from "https://esm.sh/react@18.3.1";
+import { createRoot } from "https://esm.sh/react-dom@18.3.1/client";
+import ReactFlow, { Background, Controls, Handle, Position } from "https://esm.sh/reactflow@11.11.4?deps=react@18.3.1,react-dom@18.3.1";
+
+const h = React.createElement;
+const DATA = JSON.parse(document.getElementById("data").textContent);
+
+/* ---------- scoring helpers ---------- */
+const scoreColor = (s) => s >= 4 ? "#1b5e20" : s >= 1 ? "#8a6d00" : s === 0 ? "#30363d" : "#7d1a1a";
+const scoreText = (s) => (s > 0 ? "+" + s : "" + s);
+const subShort = { zeitgeist_synthesis: "zeitgeist", cross_domain_transfer: "transfer", neither: "—" };
+
+/* ===================================================================== */
+/* VIEW 1 — PIPELINE (React Flow)                                          */
+/* ===================================================================== */
+function PNode({ data }) {
+  return h("div", { className: "rf-node " + (data.cls || "") },
+    data.src && h(Handle, { type: "target", position: Position.Left }),
+    h("div", { className: "kicker" }, data.kicker),
+    h("div", { className: "title" }, data.title),
+    data.desc && h("div", { className: "desc" }, data.desc),
+    (data.tags || []).map((t, i) => h("span", { className: "tag", key: i }, t)),
+    data.tgt && h(Handle, { type: "source", position: Position.Right })
+  );
+}
+const nodeTypes = { p: PNode };
+
+const N = (id, x, y, cls, kicker, title, desc, tags, src = true, tgt = true) =>
+  ({ id, type: "p", position: { x, y }, data: { cls, kicker, title, desc, tags, src, tgt } });
+
+const COLX = { in: 0, harvest: 250, brain: 510, score: 775, out: 1040, ledger: 1040, loop: 510 };
+
+const pnodes = [
+  // inputs
+  N("src", -10, 150, "io", "1 · inputs", "Sources", "11 wells: YC RFS, HN, Lobsters, GitHub, arXiv, SEC EDGAR, Product Hunt, Google Trends, YouTube, Reddit, X", ["forward: live", "backward: corpus"], false, true),
+  // harvest + access
+  N("harvest", 250, 60, "io", "2 · harvest", "Normalize", "Every source → one record {source, url, text, time}", ["one shape"]),
+  N("ladder", 250, 235, "loop", "access ladder", "Fetch tiers", "free → curl_cffi → Firecrawl → browser · dispatch→ Gemini (YT), Grok (X)", ["cheapest that works"]),
+  // brain
+  N("recover", 510, 40, "brain", "3 · brain", "Problem Recovery", "Symptom → hidden variable → the actual problem", ["reframe"]),
+  N("classify", 510, 175, "brain", "3 · brain", "Subtype classify", "±5-year test → zeitgeist | transfer | neither", ["100% on corpus"]),
+  N("lens", 510, 310, "brain", "3 · brain", "Lens score", "Swappable lens (default: capstone-demo-fit)", ["pluggable"]),
+  // score
+  N("signed", 775, 110, "io", "4 · score", "Signed −5…+5", "Quality vs harm. +good · 0 meh · −trap", ["traps flagged"]),
+  N("decay", 775, 270, "loop", "metabolism", "Why-now decay", "Zeitgeist fades fast; transfer is timeless. Refresh can lift it back", ["self-freshening"]),
+  // outputs / ledgers
+  N("feed", 1040, 20, "out", "5 · output", "Ranked feed", "Open → Doppl · Resolved → benchmark", ["the deliverable"]),
+  N("registry", 1040, 150, "ledger", "ledger", "Source registry", "Scores the wells per lens; flags worth_unlocking", ["where to look"]),
+  N("traps", 1040, 270, "ledger", "ledger", "Trap register", "Actively-bad ideas + why (amemetics)", ["what to avoid"]),
+  N("recipes", 1040, 385, "ledger", "ledger", "Recipes", "How to reach each source; self-heals on break", ["how to access"]),
+  // human + reality loop
+  N("human", 1325, 75, "loop", "6 · interaction", "Promote / reject", "Your real decisions = realized value", ["append-only"]),
+  N("calib", 1325, 215, "loop", "loop", "Calibration", "Predicted (lens) vs realized (promotion) gap", ["self-tuning"]),
+  N("reality", 1325, 345, "loop", "7 · reality", "Backtest", "Was it right? +4/+5 came true 1.0 on resolved corpus", ["bedrock"]),
+];
+
+const E = (s, t, anim = false) => ({ id: s + t, source: s, target: t, animated: false, className: anim ? "anim" : "" });
+const pedges = [
+  E("src", "harvest", true), E("src", "ladder"),
+  E("harvest", "recover", true), E("ladder", "recover"),
+  E("recover", "classify"), E("classify", "lens"),
+  E("lens", "signed", true), E("lens", "decay"),
+  E("signed", "feed", true), E("signed", "traps"),
+  E("decay", "feed"),
+  E("feed", "registry"), E("feed", "recipes"),
+  E("feed", "human", true),
+  E("human", "calib"), E("calib", "lens"),
+  E("human", "reality"), E("reality", "feed"),
+  E("registry", "ladder"),
+];
+
+function Pipeline() {
+  return h("div", { className: "view" },
+    h(ReactFlow, {
+      nodes: pnodes, edges: pedges, nodeTypes,
+      fitView: true, fitViewOptions: { padding: 0.12 },
+      minZoom: 0.3, maxZoom: 1.5, proOptions: { hideAttribution: true },
+      nodesDraggable: true, nodesConnectable: false, elementsSelectable: true,
+    },
+      h(Background, { color: "#1c2530", gap: 22 }),
+      h(Controls, { showInteractive: false })
+    ),
+    h("div", { className: "legend" },
+      h("b", null, "Reading the map"),
+      h("div", { className: "row" }, h("span", { className: "swatch", style: { background: "#16202c", border: "1px solid #2b3b4d" } }), "input / output"),
+      h("div", { className: "row" }, h("span", { className: "swatch", style: { background: "#1e1830", border: "1px solid var(--violet)" } }), "the brain (LLM)"),
+      h("div", { className: "row" }, h("span", { className: "swatch", style: { background: "#15251a", border: "1px solid #2f6b3a" } }), "ledger (memory)"),
+      h("div", { className: "row" }, h("span", { className: "swatch", style: { background: "#0f2429", border: "1px solid var(--cyan)" } }), "feedback loop"),
+      h("div", { className: "row", style: { marginTop: 6, color: "var(--faint)" } }, "drag nodes · scroll to zoom")
+    )
+  );
+}
+
+/* ===================================================================== */
+/* VIEW 2 — IDEAS (output + scoring + interaction)                        */
+/* ===================================================================== */
+function Ideas() {
+  const [statuses, setStatuses] = useState(() => ({ ...DATA.statuses }));
+  const [filter, setFilter] = useState("all");
+  const [lensInfo, setLensInfo] = useState(false);
+
+  const set = (id, st) => setStatuses((s) => ({ ...s, [id]: s[id] === st ? undefined : st }));
+
+  const ideas = DATA.ideas;
+  const counts = useMemo(() => {
+    let p = 0, r = 0;
+    Object.values(statuses).forEach((v) => { if (v === "promoted") p++; if (v === "rejected") r++; });
+    return { p, r, total: ideas.length };
+  }, [statuses, ideas]);
+
+  const shown = ideas.filter((it) => {
+    if (filter === "all") return true;
+    if (filter === "zeitgeist") return it.subtype === "zeitgeist_synthesis";
+    if (filter === "transfer") return it.subtype === "cross_domain_transfer";
+    if (filter === "promoted") return statuses[it.id] === "promoted";
+    return true;
+  });
+
+  return h("div", { className: "view pad" },
+    h("div", { className: "statline" },
+      h("div", { className: "stat" }, h("div", { className: "v" }, counts.total), h("div", { className: "l" }, "candidates")),
+      h("div", { className: "stat" }, h("div", { className: "v", style: { color: "var(--good)" } }, counts.p), h("div", { className: "l" }, "promoted → Doppl")),
+      h("div", { className: "stat" }, h("div", { className: "v", style: { color: "var(--bad)" } }, counts.r), h("div", { className: "l" }, "rejected")),
+      h("div", { className: "stat" }, h("div", { className: "v", style: { color: "var(--blue)" } }, "demo-fit"), h("div", { className: "l", style: { cursor: "pointer" }, onClick: () => setLensInfo(v => !v) }, "active lens ⓘ"))
+    ),
+    lensInfo && h("div", { className: "note", style: { marginTop: -8, marginBottom: 16 } },
+      h("b", null, "The lens is swappable. "), "Every idea is scored through a perspective — here ",
+      h("b", null, "capstone-demo-fit"), " (“could a 3–4 person team show this live in two weeks and make a room go oh?”). Swap to ",
+      h("i", null, "arbitrage"), " or ", h("i", null, "build-moat"), " and the same ideas re-rank. Score is signed: ",
+      h("b", { style: { color: "var(--good)" } }, "+"), " worth surfacing, ", h("b", null, "0"), " meh, ",
+      h("b", { style: { color: "var(--bad)" } }, "−"), " an active trap."
+    ),
+    h("div", { className: "toolbar" },
+      ["all", "zeitgeist", "transfer", "promoted"].map((f) =>
+        h("div", { key: f, className: "chip " + (filter === f ? "on" : ""), onClick: () => setFilter(f) },
+          f === "all" ? "All ideas" : f[0].toUpperCase() + f.slice(1))
+      )
+    ),
+    h("div", { className: "grid" },
+      shown.map((it) => h(IdeaCard, { key: it.id, it, status: statuses[it.id], set }))
+    )
+  );
+}
+
+function IdeaCard({ it, status, set }) {
+  const s = it.lens_score;
+  return h("div", { className: "card " + (status || "") },
+    h("div", { className: "chead" },
+      h("div", { className: "score", style: { background: scoreColor(s) } }, scoreText(s)),
+      h("div", null,
+        h("div", { className: "ctitle" }, it.title),
+        h("div", { className: "pillrow" },
+          h("span", { className: "pill " + (it.subtype === "zeitgeist_synthesis" ? "z" : "t") }, subShort[it.subtype]),
+          h("span", { className: "pill src" }, it.source.replace("corpus:case-studies", "corpus")),
+          it.disposition === "open"
+            ? h("span", { className: "pill" }, "→ Doppl")
+            : h("span", { className: "pill" }, "→ keep"),
+          status && h("span", { className: "pill st", style: status === "rejected" ? { color: "var(--bad)" } : {} }, status)
+        )
+      )
+    ),
+    h("div", { className: "why" }, it.why_it_might_matter),
+    h("div", { className: "pr" },
+      h("div", null, h("b", null, "hidden variable"), it.hidden_variable),
+      h("div", null, h("b", null, "actual problem"), it.actual_problem)
+    ),
+    h("div", { className: "acts" },
+      h("button", { className: "btn promote " + (status === "promoted" ? "active" : ""), onClick: () => set(it.id, "promoted") }, "▲ Promote"),
+      h("button", { className: "btn reject " + (status === "rejected" ? "active" : ""), onClick: () => set(it.id, "rejected") }, "▼ Reject")
+    )
+  );
+}
+
+/* ===================================================================== */
+/* VIEW 3 — SOURCES (registry + access ladder)                            */
+/* ===================================================================== */
+const LADDER = [
+  { n: "1", lab: "Free (API / RSS / GET)", sub: "HN, Lobsters, arXiv, GitHub, YC, EDGAR — the cheap baseline", cost: "free", costlab: "free" },
+  { n: "2", lab: "curl_cffi — stealth GET", sub: "mimics Chrome TLS/JA3 to pass fingerprint walls, no browser", cost: "cheap", costlab: "cheap" },
+  { n: "3", lab: "Firecrawl", sub: "clean markdown per page (key) — the thin-headline fix", cost: "cheap", costlab: "~1cr/pg" },
+  { n: "4", lab: "Browser (browser-use / Browserbase)", sub: "JS / auth / anti-bot — costly last resort", cost: "dear", costlab: "$$$" },
+  { n: "→", lab: "Dispatch — hand to a native agent", sub: "Gemini for YouTube, Grok for X — flat-rate on a sub you already pay", cost: "free", costlab: "sub" },
+];
+
+function Sources() {
+  const reg = DATA.registry;
+  const recipes = DATA.recipes;
+  const maxAvg = Math.max(...reg.map((r) => r.avg || 0), 4);
+  return h("div", { className: "view pad" },
+    h("div", { className: "two" },
+      h("div", null,
+        h("h3", { className: "sec" }, "Source registry — score the wells, per lens"),
+        h("table", null,
+          h("thead", null, h("tr", null, ["Source", "Lens", "Vol", "Avg score", "Status"].map((c) => h("th", { key: c }, c)))),
+          h("tbody", null, reg.map((r, i) =>
+            h("tr", { key: i },
+              h("td", null, r.source),
+              h("td", { style: { color: "var(--faint)" } }, r.lens),
+              h("td", null, r.vol),
+              h("td", null, r.avg == null ? "—" :
+                h("div", null, r.avg, h("div", { className: "bar" }, h("span", { style: { width: (100 * r.avg / maxAvg) + "%" } })))),
+              h("td", { className: "s-" + r.status }, r.status)
+            )
+          ))
+        ),
+        h("div", { className: "note" },
+          h("b", null, "The registry learns where to look. "), "Each well is scored by the hit-rate of what it yields — ",
+          "and once you promote ideas, a ", h("b", null, "worth_unlocking"), " flag fires for a walled source that proves it pays ",
+          "(e.g. “X earned 1.0 promotion-rate → spend on Grok”). The budgeted-bandit, made real."
+        )
+      ),
+      h("div", null,
+        h("h3", { className: "sec" }, "Access ladder — cheapest tool that works"),
+        h("div", { className: "ladder" },
+          LADDER.map((r, i) =>
+            h("div", { className: "rung", key: i },
+              h("div", { className: "n" }, r.n),
+              h("div", null, h("div", { className: "lab" }, r.lab), h("div", { className: "sub" }, r.sub)),
+              h("div", { className: "cost " + r.cost }, r.costlab)
+            )
+          )
+        ),
+        h("h3", { className: "sec", style: { marginTop: 22 } }, "Per-source recipe + connector backlog"),
+        h("table", null,
+          h("thead", null, h("tr", null, ["Source", "Tier", "Status", "Connector?"].map((c) => h("th", { key: c }, c)))),
+          h("tbody", null, recipes.map((r, i) =>
+            h("tr", { key: i },
+              h("td", null, r.source),
+              h("td", { style: { color: "var(--cyan)" } }, r.tier),
+              h("td", { className: "s-" + r.status }, r.status),
+              h("td", { style: { color: "var(--dim)", fontSize: "11.5px" } }, r.mcp ? r.mcp.split(" —")[0].split(" (")[0] : "—")
+            )
+          ))
+        )
+      )
+    )
+  );
+}
+
+/* ===================================================================== */
+/* APP                                                                    */
+/* ===================================================================== */
+function App() {
+  const [tab, setTab] = useState("pipeline");
+  const tabs = [
+    ["pipeline", "How it works"],
+    ["ideas", "The ideas"],
+    ["sources", "Sources & access"],
+  ];
+  return h("div", { className: "app" },
+    h("header", null,
+      h("h1", null, h("span", { className: "accent" }, "Doppl Discovery"), " — the pointing finger"),
+      h("p", null, "A scheduled radar that harvests live signal, recovers the real problem behind each item, and ranks candidates through a swappable lens. It ", h("b", { style: { color: "var(--ink)" } }, "points"), " (“that might be an opportunity”); Doppl ", h("b", { style: { color: "var(--ink)" } }, "checks"), " (“is it or isn’t it”); the expressions ", h("b", { style: { color: "var(--ink)" } }, "validate"), "."),
+      h("div", { className: "tabs" },
+        tabs.map(([k, label]) =>
+          h("div", { key: k, className: "tab " + (tab === k ? "active" : ""), onClick: () => setTab(k) }, label)
+        )
+      )
+    ),
+    h("main", null,
+      tab === "pipeline" && h(Pipeline),
+      tab === "ideas" && h(Ideas),
+      tab === "sources" && h(Sources)
+    )
+  );
+}
+
+createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>

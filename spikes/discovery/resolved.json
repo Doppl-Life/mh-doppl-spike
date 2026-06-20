@@ -1,0 +1,44 @@
+[
+  {
+    "title": "AI's binding constraint is firm power, not chips",
+    "lens_score": 5,
+    "prediction": "Firm-generation holders (nuclear restart/SMR, gas peakers) re-rate as AI data-center load growth makes dispatchable power the binding input by 2026.",
+    "outcome": "true",
+    "note": "Power/grid constraint became consensus through 2025-26; firm-generation names re-rated. Was non-obvious when filed."
+  },
+  {
+    "title": "NVIDIA's gaming GPUs were a latent parallel-compute asset",
+    "lens_score": 5,
+    "prediction": "A parallel-compute asset built for graphics becomes the binding input for AI; the holder re-rates massively.",
+    "outcome": "true",
+    "note": "Canonical latent-asset unlock; resolved emphatically."
+  },
+  {
+    "title": "GLP-1 as a correlated demand-destruction shock across impulse categories",
+    "lens_score": 4,
+    "prediction": "By end of 2027 a top-5 snack maker reports volume decline it attributes to GLP-1; effect generalizes beyond food.",
+    "outcome": "unknown",
+    "note": "Still resolving; behavioral knock-on evidence early-stage. Honest 'unknown'."
+  },
+  {
+    "title": "AI Overviews invert publisher distribution (zero-click)",
+    "lens_score": 4,
+    "prediction": "Answer-engines cross a query-share threshold and referral traffic to publishers structurally declines, forcing a citation+owned-audience pivot.",
+    "outcome": "true",
+    "note": "Zero-click / answer-engine shift materialized through 2025-26."
+  },
+  {
+    "title": "C2PA provenance solves synthetic-media authenticity",
+    "lens_score": 2,
+    "prediction": "C2PA content credentials become the trusted authenticity layer adopted at scale.",
+    "outcome": "false",
+    "note": "Deliberately a LOW score on a thesis that was over-hyped; 2026 security analyses found it oversold. A correct LOW call."
+  },
+  {
+    "title": "Crocs/UGG resurgence as a durable forward consumer thesis",
+    "lens_score": 1,
+    "prediction": "Ugly-comfort footwear sustains as a forward, investable secular trend.",
+    "outcome": "false",
+    "note": "Logged borderline in the corpus; post-hoc narrative, no falsifiable forward signal. Correctly scored low."
+  }
+]

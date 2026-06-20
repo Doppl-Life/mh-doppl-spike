@@ -24,6 +24,8 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
+import subprocess
 
 import httpx
 
@@ -100,6 +102,44 @@ def fetch_browser(url: str) -> str | None:
     #   from browser_use import Agent
     #   return Agent(task=f"open {url}, return the main article text").run()
     return None
+
+
+# --------------------------------------------------------------------------- #
+# DISPATCH tier — hand the job to another agent/CLI that's natively good at it
+# (and that you already pay for flat-rate, so it's cheaper than metered tokens).
+# The canonical case: YouTube -> Gemini CLI (Google owns YT; native transcript +
+# search access). Gated behind the tool being on PATH, like the other tiers.
+# --------------------------------------------------------------------------- #
+
+def dispatch_available(tool: str) -> bool:
+    """Is a dispatch target installed? e.g. dispatch_available('gemini')."""
+    return shutil.which(tool) is not None
+
+
+def fetch_via_gemini(url_or_query: str, instruction: str = "", timeout: int = 90) -> str | None:
+    """Dispatch to the Gemini CLI. Reaches YouTube etc. natively and runs on your
+    flat-rate Google subscription instead of metered API tokens.
+
+    SEAM: requires `gemini` on PATH. Without it, returns None (tier stays dark).
+    The exact CLI invocation/flags are pinned when you wire your real Gemini CLI;
+    this is the integration point, intentionally conservative for the spike.
+    """
+    if not dispatch_available("gemini"):
+        return None
+    prompt = (
+        f"{instruction or 'Summarize the key substantive content (problems, claims, techniques) of this source.'}\n"
+        f"Source: {url_or_query}\nReturn plain text only."
+    )
+    try:
+        # Common Gemini CLI shape: `gemini -p "<prompt>"`. Adjust to your install.
+        proc = subprocess.run(
+            ["gemini", "-p", prompt],
+            capture_output=True, text=True, timeout=timeout,
+        )
+        out = (proc.stdout or "").strip()
+        return out[:6000] if out else None
+    except Exception:
+        return None
 
 
 # --------------------------------------------------------------------------- #

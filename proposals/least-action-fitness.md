@@ -276,3 +276,25 @@ Approve the proposal as a spike:
 3. Add anti-pattern inversion as a `zeitgeist_synthesis` generation/check lens.
 4. Test both on existing case-study candidates before changing architecture contracts.
 
+## Actual build changes
+
+This is now wired into the build plan as a non-contract first pass:
+
+- `IMPLEMENTATION_PLAN.md` P4.12 adds a least-action review lens that emits `least_action_review` evidence through existing verifier surfaces.
+- P5.6 folds `mechanismCost` and `leastActionFitness` into `FitnessScore.components`, keeping it deterministic and replayable.
+- P7.8 makes mechanism cost visible separately from energy cost so "cheap to run" and "cheap to own" are not confused.
+
+The next concrete implementation slice is P4.12. Build that before touching contracts.
+
+## Calibration spike
+
+Built at [`spikes/least-action/`](../spikes/least-action/).
+
+Run:
+
+```bash
+cd spikes/least-action
+./demo
+```
+
+Current result: **KEEP**. The offline gate passes all six checks: rejects dangerous underbuilding, penalizes overbuilding, preserves irreducible-heavy ideas, prefers Postgres projection over runtime Neo4j, understands lazy breadth, and does not reward smallness alone. See [`out/report.md`](../spikes/least-action/out/report.md).

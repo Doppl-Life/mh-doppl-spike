@@ -29,7 +29,7 @@
 
 Items the orchestrator MUST fold into the next 1–2 briefs. Triaged at every `/orchestrate-end` (not append-only). Bound: under ~7 items.
 
-_(Empty at project start; populated as Step-9 routing surfaces operational items.)_
+- Before P4/P5 implementation, wire the approved [`Least-Action Fitness`](./proposals/least-action-fitness.md) spike as a non-contract critic/scoring component first: P4.12 emits `least_action_review` evidence through existing feasibility/subtype-specific surfaces; P5.6 folds `mechanismCost` / `leastActionFitness` into `FitnessScore.components`; P7.8 makes mechanism cost visible beside energy cost. Promote to a first-class contract only if the paper eval proves signal beyond energy.
 
 ---
 
@@ -889,6 +889,17 @@ The project is "done" when:
 - [ ] Cross-doc invariant: none (consumes CheckResult — frozen in P0.7)
 - [ ] Depends on: P0.7, P4.5, P4.9
 
+### P4.12 — Least-action review lens (mechanism economy evidence; no new mandate yet)
+
+- [ ] Runs a least-action review under the existing feasibility/subtype-specific critic surfaces, not a new CriticMandate, unless the paper eval later justifies contract promotion
+- [ ] Produces structured `least_action_review` evidence that names required mechanisms, speculative mechanisms, platform/native alternatives, hidden human workflow burden, and deferred mechanisms with ceiling + upgrade trigger
+- [ ] Explicitly exempts safety/correctness/evidence work from deletion pressure: trust-boundary validation, secret redaction, prompt-injection isolation, allowlisted checks, accessibility, and falsification cannot be penalized merely for adding mechanism
+- [ ] Flags dangerous underbuilding separately from frugality when a candidate cuts necessary verification, grounding, security, or replayability
+- [ ] Candidate payload reaches the reviewer only as DATA via the P4.4 isolation seam; reviewer output is validated/repaired/rejected like other critic evidence and persisted as critic.reviewed/check.completed evidence with trace metadata
+- [ ] Files: apps/api/verifier/council/least-action-review.ts (NEW); apps/api/verifier/prompts/least-action.ts (NEW)
+- [ ] Cross-doc invariant: none (uses existing CriticReview/CheckResult/FitnessScore component surfaces; no Appendix-A model change)
+- [ ] Depends on: P4.4, P4.6, P4.10
+
 ### Acceptance criteria (P4)
 
 - [ ] Critic council emits structured CriticReview evidence ONLY — it provably cannot select winners, mutate candidates/lineage, or alter scoring policy (enforced by contract shape + orchestrator behavior)
@@ -898,6 +909,7 @@ The project is "done" when:
 - [ ] Check-runners run ONLY through the static allowlist registry of non-executing adapters; unregistered or execution-requiring checks emit check.completed status:skipped with a reason and never execute arbitrary code
 - [ ] Both subtypes are equal-must-ship: cross_domain_transfer (source-validity/target-fit/mapping/prior-art/allowlisted-executable) and zeitgeist_synthesis (current-signal grounding/novelty/timing/coherence/falsifiability) each produce schema-valid CheckResults grounded via retrieval with curated-corpus fallback, with retrieval outcomes persisted so replay never re-calls the web
 - [ ] Prompt-injection isolation: candidate text reaches critics/judges/adapters only as sentinel-delimited DATA in a dedicated field/message, never interpolated into instruction strings, with a single no-bypass chokepoint
+- [ ] Least-action review emits mechanism-economy evidence without changing the closed CriticMandate union; it distinguishes frugality from unsafe underbuilding and preserves safety/evidence/replay invariants
 - [ ] The winning idea's allowlisted check can be re-run live for prepared problems with a replay-backed fallback, reusing the registry path and emitting the standard CheckResult/check.completed shape
 - [ ] Appendix-A models defined here (CriticReview/CriticMandate/criticInput, CheckResult/CheckRunnerAdapter, FinalJudgeRubric) carry schema-snapshot seam tests and consumers in selection agree on payload shapes
 
@@ -970,7 +982,9 @@ The project is "done" when:
 
 ### P5.6 — Policy-versioned fitness scorer (decomposed, fully explainable)
 
-- [ ] Combines critic scores, subtype-check results, novelty (from novelty.scored), energy-efficiency, and held-out-judge acceptance into a single FitnessScore using the active ScoringPolicy weights
+- [ ] Combines critic scores, subtype-check results, novelty (from novelty.scored), energy-efficiency, mechanism-cost / least-action evidence, and held-out-judge acceptance into a single FitnessScore using the active ScoringPolicy weights
+- [ ] Mechanism cost is a distinct component from energy: it scores owned dependencies, bespoke glue, speculative abstractions, irreversible commitments, and human workflow burden, while exempting required safety/correctness/evidence work from penalty
+- [ ] leastActionFitness rewards equal-or-better useful outcomes with lower unjustified mechanism cost, but penalizes dangerous underbuilding when the least-action review flags cut verification, grounding, security, accessibility, or replayability
 - [ ] total is a pure deterministic function of components + policyVersion weights (+ optional normalization) — recomputable from persisted events with no model calls
 - [ ] explanation enumerates every component, its raw value, its weight, and its weighted contribution so the decision is explainable from persisted events alone
 - [ ] Each candidate gets exactly one selected fitness score per scoring-policy version (per §3 relationship); re-scoring under the same policyVersion is idempotent
@@ -1043,6 +1057,7 @@ The project is "done" when:
 - [ ] Every selection decision (novelty, fitness total + per-component contributions, culling, parent selection, fusion mode, mutation) is fully explainable and reconstructable from persisted events alone
 - [ ] Novelty embedding vectors are persisted authoritative-once-computed in novelty.scored; novelty.scored is the single authoritative novelty home and fitness.scored references the novelty it consumed
 - [ ] The novelty degrade path (retry → lexical fallback → novelty_scoring_degraded) never blocks the generation scoring state and yields a flagged-estimated novelty component
+- [ ] Fitness includes mechanism cost / leastActionFitness as named components when least-action evidence exists, and those components never reward deleting load-bearing safety, evidence, or replay mechanisms
 - [ ] Energy-efficiency uses success-only spend so failed/retried/repaired attempts never penalize an agenome
 - [ ] The held-out judge acceptance score and rotating critic evidence feed fitness as inputs only and are never mutated by selection
 - [ ] Reproduction implements two-level fusion (crossover + output synthesis) with distant-lineage preference, bounded mutation, the <2-parent mutation_only fallback, and zero-survivors no-offspring path
@@ -1283,6 +1298,7 @@ The project is "done" when:
 
 - [ ] Fitness-over-time chart plots FitnessScore.total (and components when shown) across generations, making generation-over-generation improvement visible (REQ-E-001)
 - [ ] Generation-comparison chart contrasts generations on the scored metrics derived from fitness.scored / novelty.scored events, sourced from the run store / projections only
+- [ ] Mechanism cost / leastActionFitness components render separately from energy cost so the dashboard distinguishes "cheap to run" from "cheap to own"
 - [ ] Charts encode series with patterns/markers/labels in addition to color so they remain readable on a projector and for colorblind viewers (§12)
 - [ ] Charts render meaningfully with zero/partial data (early in a run) and update as new fitness/novelty events fold in, never blocking on the full run completing
 - [ ] Files: apps/web/src/charts/FitnessOverTime.tsx (NEW); apps/web/src/charts/GenerationComparison.tsx (NEW); apps/web/src/charts/chartTheme.ts (NEW)

@@ -1,0 +1,295 @@
+[
+  {
+    "id": "lazy-breadth-agent-shell",
+    "label": "anti_pattern_inversion",
+    "title": "Breadth-first agent shell with on-demand depth",
+    "summary": "A shallow horizontal product shell covers the common workflow surface, then generates vertical depth only when a user task proves demand.",
+    "useful_outcome": 8,
+    "required_mechanisms": [
+      "one shared task schema",
+      "plugin registry for generated depth",
+      "cap-limited generation loop"
+    ],
+    "speculative_mechanisms": [
+      "marketplace for generated vertical plugins"
+    ],
+    "native_alternatives": [
+      "use existing auth and deployment platform",
+      "start with static templates before custom orchestration"
+    ],
+    "hidden_human_labor": [
+      "review generated depth before activation"
+    ],
+    "deferred_mechanisms": [
+      {
+        "name": "plugin marketplace",
+        "ceiling": "manual review and local templates",
+        "upgrade_when": "three unrelated users request the same generated vertical"
+      }
+    ],
+    "unsafe_deletions": [],
+    "anti_pattern": {
+      "old_taboo": "do not boil the ocean",
+      "old_constraint": "breadth was expensive to build, deploy, support, and integrate",
+      "substrate_removed": "agentic codegen and integrated runtimes make shallow breadth cheap",
+      "new_strategy": "broad shells with on-demand vertical depth",
+      "current_signals": [
+        "agentic coding loops can generate working app slices quickly",
+        "deployment and provisioning glue is becoming the bottleneck"
+      ],
+      "falsifier": "generated long-tail depth remains too unreliable or expensive to support by 2027"
+    }
+  },
+  {
+    "id": "ocean-monolith-platform",
+    "label": "overbuilt",
+    "title": "Full horizontal SaaS platform with every vertical prebuilt",
+    "summary": "Build every CRM, ATS, billing, analytics, support, and workflow feature up front so users never need customization.",
+    "useful_outcome": 7,
+    "required_mechanisms": [
+      "custom CRM",
+      "custom ATS",
+      "custom billing system",
+      "custom analytics warehouse",
+      "custom support inbox",
+      "custom workflow engine"
+    ],
+    "speculative_mechanisms": [
+      "bespoke OAuth broker",
+      "in-house file storage abstraction",
+      "custom permissions language",
+      "plugin marketplace before users exist"
+    ],
+    "native_alternatives": [
+      "platform auth",
+      "hosted billing",
+      "existing analytics"
+    ],
+    "hidden_human_labor": [
+      "support matrix across many shallow features",
+      "migration playbooks for each vertical"
+    ],
+    "deferred_mechanisms": [],
+    "unsafe_deletions": [],
+    "anti_pattern": {
+      "old_taboo": "do not boil the ocean",
+      "old_constraint": "breadth was expensive",
+      "substrate_removed": "",
+      "new_strategy": "build everything anyway",
+      "current_signals": [],
+      "falsifier": ""
+    }
+  },
+  {
+    "id": "no-redaction-fast-log",
+    "label": "dangerously_underbuilt",
+    "title": "Skip redaction to ship the event log faster",
+    "summary": "Persist raw prompts, model responses, and provider metadata directly to simplify the run-event pipeline.",
+    "useful_outcome": 6,
+    "required_mechanisms": [
+      "append-only event log"
+    ],
+    "speculative_mechanisms": [],
+    "native_alternatives": [
+      "single shared scrub function"
+    ],
+    "hidden_human_labor": [],
+    "deferred_mechanisms": [],
+    "unsafe_deletions": [
+      "secret redaction",
+      "safe observability boundary"
+    ],
+    "anti_pattern": null
+  },
+  {
+    "id": "no-replay-live-only",
+    "label": "dangerously_underbuilt",
+    "title": "Live-only demo without replay fixture",
+    "summary": "Remove replay capture and rely on the provider staying available during the showcase.",
+    "useful_outcome": 5,
+    "required_mechanisms": [
+      "live model calls"
+    ],
+    "speculative_mechanisms": [],
+    "native_alternatives": [
+      "committed replay fixture"
+    ],
+    "hidden_human_labor": [
+      "operator improvises if providers fail"
+    ],
+    "deferred_mechanisms": [],
+    "unsafe_deletions": [
+      "replay fallback",
+      "state-equivalence proof"
+    ],
+    "anti_pattern": null
+  },
+  {
+    "id": "neo4j-runtime-mvp",
+    "label": "overbuilt",
+    "title": "Make Neo4j a runtime dependency for MVP lineage",
+    "summary": "Use Neo4j as a required runtime database so lineage queries are graph-native from day one.",
+    "useful_outcome": 6,
+    "required_mechanisms": [
+      "Postgres event log",
+      "Neo4j database",
+      "dual-write pipeline",
+      "graph migration scripts"
+    ],
+    "speculative_mechanisms": [
+      "interactive graph queries during a live run",
+      "graph-specific dashboard query layer"
+    ],
+    "native_alternatives": [
+      "derived lineage projection from Postgres",
+      "export-only Neo4j spike"
+    ],
+    "hidden_human_labor": [
+      "debugging consistency between stores"
+    ],
+    "deferred_mechanisms": [
+      {
+        "name": "runtime graph database",
+        "ceiling": "",
+        "upgrade_when": ""
+      }
+    ],
+    "unsafe_deletions": [],
+    "anti_pattern": null
+  },
+  {
+    "id": "postgres-lineage-projection",
+    "label": "good_minimal",
+    "title": "Postgres-derived lineage projection first",
+    "summary": "Keep Postgres as the source of truth and derive the lineage graph projection for the dashboard and optional Neo4j export.",
+    "useful_outcome": 8,
+    "required_mechanisms": [
+      "append-only event log",
+      "projection builder",
+      "lineage graph JSON"
+    ],
+    "speculative_mechanisms": [],
+    "native_alternatives": [
+      "Postgres JSONB",
+      "React Flow projection client"
+    ],
+    "hidden_human_labor": [],
+    "deferred_mechanisms": [
+      {
+        "name": "Neo4j runtime dependency",
+        "ceiling": "derived export only",
+        "upgrade_when": "lineage analysis requires interactive graph traversal during a run"
+      }
+    ],
+    "unsafe_deletions": [],
+    "anti_pattern": null
+  },
+  {
+    "id": "firm-power-bedrock",
+    "label": "irreducible_heavy",
+    "title": "AI firm-power constraint thesis with cited current signals",
+    "summary": "A zeitgeist case that requires retrieval, dated energy signals, and falsifiable predictions because the claim is timing-bound and high-stakes.",
+    "useful_outcome": 9,
+    "required_mechanisms": [
+      "current-signal retrieval",
+      "dated falsifiable predictions",
+      "comparable prior art",
+      "held-out judge"
+    ],
+    "speculative_mechanisms": [],
+    "native_alternatives": [
+      "curated static corpus fallback"
+    ],
+    "hidden_human_labor": [
+      "verify cited energy/power signals"
+    ],
+    "deferred_mechanisms": [
+      {
+        "name": "live market integration",
+        "ceiling": "paper-bet ledger",
+        "upgrade_when": "calibration beats baseline on a pre-registered book"
+      }
+    ],
+    "unsafe_deletions": [],
+    "anti_pattern": null
+  },
+  {
+    "id": "ai-vibes-no-signal",
+    "label": "dangerously_underbuilt",
+    "title": "AI changes everything, so build a trend dashboard",
+    "summary": "A zeitgeist candidate with no dated current signal, no falsifier, and no why-now beyond vibe.",
+    "useful_outcome": 4,
+    "required_mechanisms": [
+      "trend dashboard"
+    ],
+    "speculative_mechanisms": [
+      "LLM-generated market map",
+      "automated thought-leadership feed"
+    ],
+    "native_alternatives": [],
+    "hidden_human_labor": [
+      "manual interpretation of vague outputs"
+    ],
+    "deferred_mechanisms": [],
+    "unsafe_deletions": [
+      "current-signal grounding",
+      "falsifiable prediction"
+    ],
+    "anti_pattern": null
+  },
+  {
+    "id": "native-auth-first",
+    "label": "good_minimal",
+    "title": "Use platform auth and a user-claimed flow",
+    "summary": "Avoid a bespoke OAuth broker; use the host platform's auth and hold final activation for a human verification click.",
+    "useful_outcome": 7,
+    "required_mechanisms": [
+      "platform auth configuration",
+      "human activation gate"
+    ],
+    "speculative_mechanisms": [],
+    "native_alternatives": [
+      "WorkOS/Auth0/host platform auth",
+      "one verification button"
+    ],
+    "hidden_human_labor": [
+      "user confirms final activation"
+    ],
+    "deferred_mechanisms": [
+      {
+        "name": "custom OAuth broker",
+        "ceiling": "single provider auth path",
+        "upgrade_when": "three provider families need unsupported account-linking behavior"
+      }
+    ],
+    "unsafe_deletions": [],
+    "anti_pattern": null
+  },
+  {
+    "id": "candidate-code-execution",
+    "label": "dangerously_underbuilt",
+    "title": "Let candidates run arbitrary verification scripts",
+    "summary": "Give each candidate a scratch script execution slot so it can prove itself without waiting for allowlisted adapters.",
+    "useful_outcome": 7,
+    "required_mechanisms": [
+      "script runner",
+      "filesystem sandbox",
+      "timeout manager"
+    ],
+    "speculative_mechanisms": [
+      "candidate-authored adapters"
+    ],
+    "native_alternatives": [
+      "static allowlisted check registry"
+    ],
+    "hidden_human_labor": [
+      "audit untrusted scripts"
+    ],
+    "deferred_mechanisms": [],
+    "unsafe_deletions": [
+      "no arbitrary code execution invariant",
+      "check-runner allowlist"
+    ],
+    "anti_pattern": null
+  }
+]

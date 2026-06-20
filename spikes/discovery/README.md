@@ -152,13 +152,20 @@ discovery.
 
 ## Sources (first targets)
 
-| Source | Yields | Subtype lean | Notes |
-|--------|--------|--------------|-------|
-| YC RFS | "what to build" problems | both | Already fetched; static-ish, easy. |
-| Hacker News | problems, launches, discourse | both | Fetchable; high volume, needs filtering. |
-| Product Hunt | emerging products | zeitgeist | Fetchable. |
-| Polymarket / Kalshi | priced beliefs | zeitgeist | A mispriced market *is* a zeitgeist thesis with a dated falsification trigger (the resolution date). **Read-only signal — analyze, never trade.** |
-| X.com / Twitter | live trend signals | zeitgeist | The load-bearing why-now source — and the flakiest (auth, anti-bot). Fixture-first. |
+| Source | Yields | Subtype lean | Tier | Notes |
+|--------|--------|--------------|------|-------|
+| YC RFS | "what to build" problems | both | free | Curated fixture; refresh per YC batch. |
+| Hacker News | problems, launches, discourse | both | free | Algolia `front_page`. |
+| Lobsters | tech discussion | both | free | Higher signal-to-noise than HN. |
+| GitHub trending | what builders just shipped | transfer | free | Recently-created repos by stars. |
+| arXiv | frontier research crossing to buildable | transfer | free | Recent `cs.AI` submissions. |
+| SEC EDGAR | latent-asset unlocks in filings | arbitrage | free | 8-K/10-K full-text — "bishop nobody saw" before the market reprices. **Live.** |
+| Product Hunt | emerging products | zeitgeist | free | RSS. |
+| Google Trends | datable why-now signal | zeitgeist | free | Breakout terms = threshold crossings. *(Unofficial endpoint; currently self-healing.)* |
+| YouTube | trend surge + expert content | zeitgeist/transfer | **dispatch** | Free Data API for the trend signal; **Gemini CLI** digests the few videos worth understanding. |
+| Reddit | raw unsolved-problem complaints | both | **browser** | 403s plain GET; needs `BROWSER_FETCH=1` or a connector. |
+| Polymarket / Kalshi | priced beliefs | zeitgeist | (planned) | A mispriced market *is* a zeitgeist thesis with a dated falsification trigger. **Read-only — analyze, never trade.** |
+| X.com / Twitter | live trend signals | zeitgeist | browser | The load-bearing why-now source — and the flakiest (auth, anti-bot). |
 
 **Why prediction markets fit cleanly:** a market you think the crowd has wrong is
 literally a `zeitgeist_synthesis` candidate — a thesis, a dated falsifiable
@@ -260,6 +267,9 @@ Flags:
 ```
 try FREE (API/RSS or plain GET)  →  if thin/blocked, FIRECRAWL (cheap, clean markdown)
   →  if JS/auth/anti-bot, BROWSER (browser-use / Browserbase — costly, last resort)
+
+separately: DISPATCH — hand the job to an agent that's natively good at it AND that you
+already pay for flat-rate (YouTube → Gemini CLI). Gated behind the tool being on PATH.
 ```
 
 Researched June 2026: **don't pick one tool — match the tool to the source.** Static/API
@@ -387,9 +397,18 @@ per-lens hit-rate (the budgeted bandit), weighting cost by fetch tier.
 
 ---
 
+## Running on a schedule (the "scheduled runners" vision)
+
+An **hourly** scheduled task (`discovery-hourly-harvest`) runs the live-only harvest
+(`--limit-corpus 0`, so it skips re-scoring the static corpus), appends to the ledgers so the
+source registry and promotion stats accumulate over time, and reports the top new candidates +
+any traps + any sources whose recipe broke. Manage it from the **Scheduled** section in the
+sidebar. This is the cheap, immediate version of the subscription-dispatch idea; the full
+cost-routing layer is specced in [`ROUTING.md`](./ROUTING.md) for the TS rebuild.
+
 ## Status
 
-v2 built and verified. **Classifier 100%** on corpus; broad roster harvesting;
+v3 built and verified. **Classifier 100%** on corpus; broad roster harvesting;
 **signed −5..+5 scoring** with a working **trap register**; **fetch ladder** (free
 → Firecrawl → browser seam); **per-(source × lens) registry** that ranks wells
 from data. See "What the prototype proved" above.

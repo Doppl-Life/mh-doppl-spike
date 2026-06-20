@@ -17,4 +17,5 @@ if [[ ! -f .env ]] && [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
   exit 1
 fi
 
-exec python discovery_demo.py "$@"
+PY="$(command -v python || command -v python3)"
+exec "$PY" discovery_demo.py "$@"

@@ -1,0 +1,246 @@
+{
+  "summary": {
+    "checks": {
+      "rejects_dangerous_underbuilding": true,
+      "penalizes_overbuilding": true,
+      "preserves_irreducible_heavy": true,
+      "prefers_projection_over_runtime_graph": true,
+      "understands_lazy_breadth": true,
+      "does_not_reward_smallness_alone": true
+    },
+    "passed": 6,
+    "total": 6,
+    "decision": "KEEP: build P4.12 as non-contract evidence; do not promote contracts yet",
+    "mean_mechanism_cost": 4.43,
+    "mean_least_action_score": -0.93
+  },
+  "reviews": [
+    {
+      "candidate_id": "lazy-breadth-agent-shell",
+      "label": "anti_pattern_inversion",
+      "mechanism_cost": 3.8,
+      "anti_pattern_score": 2.0,
+      "least_action_score": 6.2,
+      "verdict": "promote",
+      "expected_pass": true,
+      "counts": {
+        "required": 3,
+        "speculative": 1,
+        "native_alternatives": 2,
+        "hidden_labor": 1,
+        "unsafe_deletions": 0,
+        "deferred": 1,
+        "disciplined_deferred": 1
+      },
+      "reasons": [
+        "high useful outcome with justified mechanism load",
+        "1 speculative mechanism(s)",
+        "2 native/platform alternative(s)",
+        "passes anti-pattern inversion shape"
+      ]
+    },
+    {
+      "candidate_id": "ocean-monolith-platform",
+      "label": "overbuilt",
+      "mechanism_cost": 13.9,
+      "anti_pattern_score": -2.0,
+      "least_action_score": -8.9,
+      "verdict": "reject",
+      "expected_pass": true,
+      "counts": {
+        "required": 6,
+        "speculative": 4,
+        "native_alternatives": 3,
+        "hidden_labor": 2,
+        "unsafe_deletions": 0,
+        "deferred": 0,
+        "disciplined_deferred": 0
+      },
+      "reasons": [
+        "mechanism load outweighs useful outcome",
+        "4 speculative mechanism(s)",
+        "3 native/platform alternative(s)",
+        "claims inversion without signal/falsifier"
+      ]
+    },
+    {
+      "candidate_id": "no-redaction-fast-log",
+      "label": "dangerously_underbuilt",
+      "mechanism_cost": 0.0,
+      "anti_pattern_score": 0.0,
+      "least_action_score": -2.0,
+      "verdict": "reject",
+      "expected_pass": true,
+      "counts": {
+        "required": 1,
+        "speculative": 0,
+        "native_alternatives": 1,
+        "hidden_labor": 0,
+        "unsafe_deletions": 2,
+        "deferred": 0,
+        "disciplined_deferred": 0
+      },
+      "reasons": [
+        "cuts load-bearing safety/evidence: secret redaction",
+        "1 native/platform alternative(s)"
+      ]
+    },
+    {
+      "candidate_id": "no-replay-live-only",
+      "label": "dangerously_underbuilt",
+      "mechanism_cost": 1.4,
+      "anti_pattern_score": 0.0,
+      "least_action_score": -4.4,
+      "verdict": "reject",
+      "expected_pass": true,
+      "counts": {
+        "required": 1,
+        "speculative": 0,
+        "native_alternatives": 1,
+        "hidden_labor": 1,
+        "unsafe_deletions": 2,
+        "deferred": 0,
+        "disciplined_deferred": 0
+      },
+      "reasons": [
+        "cuts load-bearing safety/evidence: replay fallback, state-equivalence proof",
+        "1 native/platform alternative(s)"
+      ]
+    },
+    {
+      "candidate_id": "neo4j-runtime-mvp",
+      "label": "overbuilt",
+      "mechanism_cost": 9.1,
+      "anti_pattern_score": 0.0,
+      "least_action_score": -3.1,
+      "verdict": "reject",
+      "expected_pass": true,
+      "counts": {
+        "required": 4,
+        "speculative": 2,
+        "native_alternatives": 2,
+        "hidden_labor": 1,
+        "unsafe_deletions": 0,
+        "deferred": 1,
+        "disciplined_deferred": 0
+      },
+      "reasons": [
+        "mechanism load outweighs useful outcome",
+        "2 speculative mechanism(s)",
+        "2 native/platform alternative(s)",
+        "deferred mechanism missing ceiling or upgrade trigger"
+      ]
+    },
+    {
+      "candidate_id": "postgres-lineage-projection",
+      "label": "good_minimal",
+      "mechanism_cost": 0.1,
+      "anti_pattern_score": 0.0,
+      "least_action_score": 7.9,
+      "verdict": "promote",
+      "expected_pass": true,
+      "counts": {
+        "required": 3,
+        "speculative": 0,
+        "native_alternatives": 2,
+        "hidden_labor": 0,
+        "unsafe_deletions": 0,
+        "deferred": 1,
+        "disciplined_deferred": 1
+      },
+      "reasons": [
+        "high useful outcome with justified mechanism load",
+        "2 native/platform alternative(s)"
+      ]
+    },
+    {
+      "candidate_id": "firm-power-bedrock",
+      "label": "irreducible_heavy",
+      "mechanism_cost": 3.3,
+      "anti_pattern_score": 0.0,
+      "least_action_score": 5.7,
+      "verdict": "keep",
+      "expected_pass": true,
+      "counts": {
+        "required": 4,
+        "speculative": 0,
+        "native_alternatives": 1,
+        "hidden_labor": 1,
+        "unsafe_deletions": 0,
+        "deferred": 1,
+        "disciplined_deferred": 1
+      },
+      "reasons": [
+        "usable but mechanism load needs pressure",
+        "1 native/platform alternative(s)"
+      ]
+    },
+    {
+      "candidate_id": "ai-vibes-no-signal",
+      "label": "dangerously_underbuilt",
+      "mechanism_cost": 6.7,
+      "anti_pattern_score": 0.0,
+      "least_action_score": -10.7,
+      "verdict": "reject",
+      "expected_pass": true,
+      "counts": {
+        "required": 1,
+        "speculative": 2,
+        "native_alternatives": 0,
+        "hidden_labor": 1,
+        "unsafe_deletions": 2,
+        "deferred": 0,
+        "disciplined_deferred": 0
+      },
+      "reasons": [
+        "cuts load-bearing safety/evidence: current-signal grounding, falsifiable prediction",
+        "2 speculative mechanism(s)"
+      ]
+    },
+    {
+      "candidate_id": "native-auth-first",
+      "label": "good_minimal",
+      "mechanism_cost": 0.8,
+      "anti_pattern_score": 0.0,
+      "least_action_score": 6.2,
+      "verdict": "promote",
+      "expected_pass": true,
+      "counts": {
+        "required": 2,
+        "speculative": 0,
+        "native_alternatives": 2,
+        "hidden_labor": 1,
+        "unsafe_deletions": 0,
+        "deferred": 1,
+        "disciplined_deferred": 1
+      },
+      "reasons": [
+        "high useful outcome with justified mechanism load",
+        "2 native/platform alternative(s)"
+      ]
+    },
+    {
+      "candidate_id": "candidate-code-execution",
+      "label": "dangerously_underbuilt",
+      "mechanism_cost": 5.2,
+      "anti_pattern_score": 0.0,
+      "least_action_score": -6.2,
+      "verdict": "reject",
+      "expected_pass": true,
+      "counts": {
+        "required": 3,
+        "speculative": 1,
+        "native_alternatives": 1,
+        "hidden_labor": 1,
+        "unsafe_deletions": 2,
+        "deferred": 0,
+        "disciplined_deferred": 0
+      },
+      "reasons": [
+        "cuts load-bearing safety/evidence: no arbitrary code execution invariant, check-runner allowlist",
+        "1 speculative mechanism(s)",
+        "1 native/platform alternative(s)"
+      ]
+    }
+  ]
+}

@@ -92,6 +92,37 @@ SEED_RECIPES: dict[str, dict] = {
         "mcp_candidate": "x/twitter MCP or browser-use — almost certainly required",
         "notes": "Highest-value zeitgeist source, hardest to traverse. Build the connector here first.",
     },
+    "youtube": {
+        "tier": "dispatch",
+        "method": "Data API (free) for trend signal; dispatch:gemini-cli for transcript digest",
+        "tried_and_failed": [],
+        "mcp_candidate": "gemini-cli (native YT access; flat-rate) or YouTube Data API key",
+        "notes": "Two signals: trend-surge (free Data API, datable why-now) + content "
+        "(Gemini digests the few videos that matter). Google's own model traverses YT best.",
+    },
+    "google-trends": {
+        "tier": "free",
+        "method": "Unofficial trends endpoint / pytrends; daily/realtime trending + breakout terms",
+        "tried_and_failed": [],
+        "mcp_candidate": None,
+        "notes": "Purest why-now instrument: a breakout term IS a dated threshold-crossing. "
+        "High value for the zeitgeist lens. Unofficial API; rate-limit carefully.",
+    },
+    "sec-edgar": {
+        "tier": "free",
+        "method": "EDGAR full-text search API: efts.sec.gov/LATEST/search-index?q=...",
+        "tried_and_failed": [],
+        "mcp_candidate": None,
+        "notes": "Latent-asset unlocks show up in 8-K/10-K language before the market reprices. "
+        "On-thesis for the 'bishop nobody saw' arbitrage pattern. Free, official.",
+    },
+    "papers-with-code": {
+        "tier": "free",
+        "method": "GET https://paperswithcode.com/api/v1/ (trending papers + code)",
+        "tried_and_failed": [],
+        "mcp_candidate": None,
+        "notes": "Frontier tech crossing research->buildable. Transfer-lens signal.",
+    },
 }
 
 
@@ -183,15 +214,16 @@ def mcp_backlog(registry: dict | None = None) -> list[dict]:
                 v.get("source", "").split(":")[0] == key and v.get("status") == "productive"
                 for v in registry.values()
             )
-        hard = r.get("tier") == "browser" or r.get("status") == "broken"
+        hard = r.get("tier") in ("browser", "dispatch") or r.get("status") == "broken"
         if hard or valuable:
             out.append({
                 "source": key,
                 "tier": r.get("tier"),
                 "status": r.get("status"),
                 "mcp_candidate": r["mcp_candidate"],
-                "reason": "browser-tier/broken" if hard else "productive well",
+                "reason": f"{r.get('tier')}-tier/broken" if hard else "productive well",
             })
-    # browser-tier first (hardest to reach), then the rest
-    out.sort(key=lambda x: 0 if x["tier"] == "browser" else 1)
+    # hardest-to-reach first: browser, then dispatch, then the rest
+    tier_rank = {"browser": 0, "dispatch": 1}
+    out.sort(key=lambda x: tier_rank.get(x["tier"], 2))
     return out

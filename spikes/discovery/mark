@@ -7,4 +7,5 @@ if [[ -f .venv/bin/activate ]]; then
 elif [[ -f ../../.venv/bin/activate ]]; then
   source ../../.venv/bin/activate
 fi
-exec python mark.py "$@"
+PY="$(command -v python || command -v python3)"
+exec "$PY" mark.py "$@"

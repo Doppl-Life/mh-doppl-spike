@@ -30,6 +30,8 @@ doppl-test/
   spikes/
     agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
     crucible/                   ← belief-revision sibling spawner (built)
+    discovery/                  ← source radar: harvest opportunities into typed seeds
+    least-action/               ← mechanism-economy calibration for Least-Action Fitness
 ```
 
 ## Read order
@@ -52,6 +54,7 @@ Each spike is self-contained with its own README, deps, and runner:
 ```bash
 cd spikes/agenotype && ./demo     # fusion demo: breed child on blind spots
 cd spikes/crucible  && ./demo     # belief-revision crucible (try --html, --dissent 0.6)
+cd spikes/least-action && ./demo  # offline calibration: frugal vs overbuilt vs unsafe
 # follow each spike's README for first-time setup
 ```
 

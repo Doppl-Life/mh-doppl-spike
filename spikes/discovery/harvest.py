@@ -366,6 +366,132 @@ def harvest_reddit(limit: int = 5, subreddit: str = "startups") -> list[dict]:
         return [{"__error__": f"reddit:{subreddit}: {type(e).__name__}: {e} (needs BROWSER_FETCH=1)"}]
 
 
+def harvest_sec_edgar(limit: int = 6, query: str = "artificial intelligence") -> list[dict]:
+    """SEC EDGAR full-text search — recent filings mentioning a thesis term.
+
+    Latent-asset unlocks surface in 8-K/10-K language before the market reprices —
+    on-thesis for the 'bishop nobody saw' arbitrage pattern. Free, official API."""
+    try:
+        import datetime as _dt
+        end = _dt.date.today()
+        start = end - _dt.timedelta(days=30)
+        r = httpx.get(
+            "https://efts.sec.gov/LATEST/search-index",
+            params={"q": f'"{query}"', "forms": "8-K", "startdt": start.isoformat(), "enddt": end.isoformat()},
+            headers={"User-Agent": "doppl-discovery research michaelghabermas@gmail.com"},
+            timeout=20,
+        )
+        r.raise_for_status()
+        hits = r.json().get("hits", {}).get("hits", [])
+        out = []
+        for h in hits[:limit]:
+            s = h.get("_source", {})
+            names = "; ".join(s.get("display_names", [])) or "Unknown filer"
+            acc = h.get("_id", "")
+            out.append(
+                _item(
+                    source="sec-edgar",
+                    url=f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&output=atom",
+                    title=f"{names} — {s.get('file_type','filing')} mentioning '{query}'",
+                    raw_text=f"{names} filed a {s.get('file_type','')} on {s.get('file_date','')} "
+                    f"whose text references '{query}'. A filing-level signal that this company is "
+                    f"positioning around the theme — potential latent-asset / re-rating candidate.",
+                    timestamp=s.get("file_date", ""),
+                    surface_metrics={"form": s.get("file_type"), "accession": acc[:30]},
+                )
+            )
+        if not out:
+            raise ValueError("no hits")
+        return out
+    except Exception as e:
+        return [{"__error__": f"sec-edgar: {type(e).__name__}: {e}"}]
+
+
+def harvest_youtube(limit: int = 5, query: str = "AI startup ideas") -> list[dict]:
+    """YouTube — two signals. The FREE Data API gives the trend signal (what's
+    surging); Gemini CLI (dispatch tier) digests the few videos worth understanding.
+
+    Without a YOUTUBE_API_KEY this reports unreachable and the recipe flags the
+    dispatch/connector need — exactly the 'route to Gemini' design."""
+    import os
+    key = os.environ.get("YOUTUBE_API_KEY", "").strip()
+    if not key:
+        return [{"__error__": "youtube: no YOUTUBE_API_KEY (recipe: dispatch:gemini-cli or add key)"}]
+    try:
+        r = httpx.get(
+            "https://www.googleapis.com/youtube/v3/search",
+            params={"part": "snippet", "q": query, "maxResults": limit, "order": "viewCount",
+                    "type": "video", "key": key},
+            headers=UA, timeout=15,
+        )
+        r.raise_for_status()
+        out = []
+        for it in r.json().get("items", [])[:limit]:
+            sn = it.get("snippet", {})
+            vid = it.get("id", {}).get("videoId", "")
+            title = sn.get("title", "")
+            out.append(
+                _item(
+                    source="youtube",
+                    url=f"https://www.youtube.com/watch?v={vid}",
+                    title=title,
+                    raw_text=f"{title}\n\n{sn.get('description','')}\n\nChannel: {sn.get('channelTitle','')}. "
+                    f"(For deep content, the recipe routes transcript digestion to Gemini CLI.)",
+                    timestamp=sn.get("publishedAt", ""),
+                    surface_metrics={"channel": sn.get("channelTitle")},
+                )
+            )
+        return out
+    except Exception as e:
+        return [{"__error__": f"youtube: {type(e).__name__}: {e}"}]
+
+
+def harvest_google_trends(limit: int = 6, geo: str = "US") -> list[dict]:
+    """Google Trends daily trending — the purest datable why-now signal.
+
+    Uses the unofficial daily-trends endpoint (fragile by nature; the recipe
+    self-heal exists precisely for when Google changes it)."""
+    try:
+        r = httpx.get(
+            "https://trends.google.com/trends/api/dailytrends",
+            params={"hl": "en-US", "tz": "-120", "geo": geo},
+            headers=UA, timeout=15,
+        )
+        r.raise_for_status()
+        # Google prefixes JSON with ")]}'," — strip it
+        text = r.text
+        text = text[text.find("{"):]
+        data = json.loads(text)
+        days = data.get("default", {}).get("trendingSearchesDays", [])
+        out = []
+        for day in days[:1]:
+            for t in day.get("trendingSearches", [])[:limit]:
+                title = t.get("title", {}).get("query", "")
+                if not title:
+                    continue
+                traffic = t.get("formattedTraffic", "")
+                snippet = ""
+                arts = t.get("articles", [])
+                if arts:
+                    snippet = arts[0].get("title", "") + " — " + arts[0].get("snippet", "")
+                out.append(
+                    _item(
+                        source="google-trends",
+                        url=f"https://trends.google.com/trends/explore?q={title.replace(' ', '+')}",
+                        title=f"Breakout search: {title} ({traffic})",
+                        raw_text=f"'{title}' is a breakout search term right now ({traffic} searches). "
+                        f"A datable why-now signal: something just crossed a threshold of public attention. "
+                        f"Context: {snippet}",
+                        surface_metrics={"traffic": traffic},
+                    )
+                )
+        if not out:
+            raise ValueError("no trends parsed")
+        return out
+    except Exception as e:
+        return [{"__error__": f"google-trends: {type(e).__name__}: {e}"}]
+
+
 def harvest_producthunt(limit: int = 4) -> list[dict]:
     items: list[dict] = []
     try:

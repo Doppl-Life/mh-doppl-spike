@@ -61,9 +61,12 @@ def gather_items(args) -> tuple[list[dict], dict[str, str]]:
     items: list[dict] = []
     errors: dict[str, str] = {}
 
-    corpus = harvest.harvest_corpus(limit=args.limit_corpus)
-    items += corpus
-    console.print(f"  corpus:case-studies  [green]{len(corpus)}[/] items")
+    if args.limit_corpus == 0:
+        console.print("  corpus:case-studies  [dim]skipped (--limit-corpus 0)[/]")
+    else:
+        corpus = harvest.harvest_corpus(limit=args.limit_corpus)
+        items += corpus
+        console.print(f"  corpus:case-studies  [green]{len(corpus)}[/] items")
 
     if not args.corpus_only:
         roster = [
@@ -72,6 +75,9 @@ def gather_items(args) -> tuple[list[dict], dict[str, str]]:
             ("lobsters", lambda: harvest.harvest_lobsters(limit=6)),
             ("github-trending", lambda: harvest.harvest_github_trending(limit=6)),
             ("arxiv", lambda: harvest.harvest_arxiv(limit=5)),
+            ("sec-edgar", lambda: harvest.harvest_sec_edgar(limit=5)),
+            ("google-trends", lambda: harvest.harvest_google_trends(limit=5)),
+            ("youtube", lambda: harvest.harvest_youtube(limit=5)),
             ("producthunt", lambda: harvest.harvest_producthunt(limit=4)),
             ("reddit:startups", lambda: harvest.harvest_reddit(limit=5, subreddit="startups")),
         ]

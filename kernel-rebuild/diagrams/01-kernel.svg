@@ -1,0 +1,62 @@
+<svg viewBox="0 0 920 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,system-ui,sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">The kernel — one engine, two directions</title>
+  <desc id="d">Generate-under-selection run divergent (fertile/novelty) or convergent (resilient/grounding), with three applications as dial settings.</desc>
+  <style>
+    .bg{fill:#0d1117}
+    .ink{fill:#e6edf3} .dim{fill:#8b949e} .faint{fill:#6e7681}
+    .h{font-size:21px;font-weight:700} .sub{font-size:13px}
+    .lbl{font-size:13px;font-weight:700} .small{font-size:11.5px} .tiny{font-size:10.5px;letter-spacing:.06em}
+    .box{fill:#161b22;stroke:#2a3340;stroke-width:1.5;rx:11}
+    .div{fill:#16202c;stroke:#58a6ff;stroke-width:1.5}
+    .conv{fill:#1b1726;stroke:#bc8cff;stroke-width:1.5}
+    .kernel{fill:#11201a;stroke:#2f6b3a;stroke-width:1.5}
+    .edge{stroke:#3a4453;stroke-width:1.6;fill:none}
+    .edge-div{stroke:#58a6ff;stroke-width:1.8;fill:none}
+    .edge-conv{stroke:#bc8cff;stroke-width:1.8;fill:none}
+  </style>
+  <rect class="bg" x="0" y="0" width="920" height="520"/>
+  <text class="ink h" x="32" y="44">One kernel · two directions</text>
+  <text class="dim sub" x="32" y="66">Generate → evaluate → keep the strong → generate again. Turn the dial; the search flips.</text>
+
+  <!-- central kernel loop -->
+  <rect class="kernel" x="350" y="120" width="220" height="92" rx="12"/>
+  <text class="ink lbl" x="460" y="150" text-anchor="middle">THE KERNEL</text>
+  <text class="dim small" x="460" y="170" text-anchor="middle">generate · select · recurse</text>
+  <text class="faint tiny" x="460" y="190" text-anchor="middle">+ caps · lineage · decay</text>
+
+  <!-- the dial -->
+  <text class="faint tiny" x="460" y="246" text-anchor="middle">◀ ─────────  THE DIAL (explore ↔ exploit)  ───────── ▶</text>
+
+  <!-- divergent (left) -->
+  <rect class="div" x="40" y="285" width="370" height="150" rx="12"/>
+  <text class="ink lbl" x="60" y="312">◀ DIVERGENT</text>
+  <text class="dim small" x="60" y="333">one seed → many children · fan out</text>
+  <text class="dim small" x="60" y="352">fitness = NOVELTY (spread / new)</text>
+  <text class="faint tiny" x="60" y="372">biology: FERTILE (r-selected)</text>
+  <text class="faint tiny" x="60" y="390">enemy: redundancy · risk: slop</text>
+  <text class="ink small" x="60" y="416" font-weight="700">app → Discovery / Ripple</text>
+
+  <!-- convergent (right) -->
+  <rect class="conv" x="510" y="285" width="370" height="150" rx="12"/>
+  <text class="ink lbl" x="530" y="312">CONVERGENT ▶</text>
+  <text class="dim small" x="530" y="333">many signals → collapse to the one</text>
+  <text class="dim small" x="530" y="352">fitness = GROUNDING (true / real)</text>
+  <text class="faint tiny" x="530" y="372">biology: RESILIENT (K-selected)</text>
+  <text class="faint tiny" x="530" y="390">enemy: premature consensus</text>
+  <text class="ink small" x="530" y="416" font-weight="700">app → Problem Recovery</text>
+
+  <!-- oscillation app -->
+  <rect class="box" x="350" y="462" width="220" height="44" rx="11"/>
+  <text class="ink small" x="460" y="482" text-anchor="middle" font-weight="700">Solution-finding = oscillate</text>
+  <text class="faint tiny" x="460" y="498" text-anchor="middle">perfect Pepsi ↔ perfect Pepsis</text>
+
+  <!-- edges kernel->dirs -->
+  <path class="edge-div" d="M350 175 C250 175 210 230 200 283"/>
+  <path class="edge-conv" d="M570 175 C700 175 720 230 720 283"/>
+  <path class="edge" d="M225 435 C300 455 320 460 348 470"/>
+  <path class="edge" d="M695 435 C620 455 600 460 572 470"/>
+  <!-- recurse arrow -->
+  <path class="edge" d="M540 120 C600 96 600 96 540 116" marker-end="url(#a)"/>
+  <text class="faint tiny" x="612" y="108">recurse</text>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#6e7681"/></marker></defs>
+</svg>

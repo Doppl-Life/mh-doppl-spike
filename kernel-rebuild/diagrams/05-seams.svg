@@ -1,0 +1,71 @@
+<svg viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,system-ui,sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Open seams — knowledge store and the self-training flywheel</title>
+  <desc id="d">The run loop persists to an append-only event log (prime, solid). Two open seams, drawn dashed: a cross-run KnowledgeStore for total recall, and a training-export path that fine-tunes a model which re-enters the model gateway.</desc>
+  <style>
+    .ink{fill:#e6edf3} .dim{fill:#8b949e} .faint{fill:#6e7681}
+    .h{font-size:20px;font-weight:700} .sub{font-size:12.5px}
+    .lbl{font-size:12.5px;font-weight:700} .small{font-size:11px} .tiny{font-size:10px}
+    .solid{fill:#161b22;stroke:#2a3340;stroke-width:1.5}
+    .truth{fill:#11201a;stroke:#2f6b3a;stroke-width:1.6}
+    .open{fill:#1a1622;stroke:#7d5fb0;stroke-width:1.6;stroke-dasharray:6 4}
+    .e{stroke:#3a4453;stroke-width:1.6;fill:none}
+    .eo{stroke:#bc8cff;stroke-width:1.7;fill:none;stroke-dasharray:6 4}
+  </style>
+  <rect fill="#0d1117" x="0" y="0" width="960" height="560"/>
+  <text class="ink h" x="28" y="38">Open seams — where persistence &amp; the training flywheel plug in</text>
+  <text class="dim sub" x="28" y="58">Solid = exists in prime's plan. Dashed purple = OPEN, boundary-only, not demo-integral.</text>
+
+  <!-- legend -->
+  <rect x="690" y="26" width="13" height="13" rx="3" class="truth"/><text class="faint tiny" x="709" y="37">truth (prime)</text>
+  <rect x="690" y="46" width="13" height="13" rx="3" class="open"/><text class="faint tiny" x="709" y="57">open seam</text>
+
+  <!-- the run loop (engine) — solid -->
+  <rect class="solid" x="60" y="96" width="600" height="92" rx="12"/>
+  <text class="ink lbl" x="80" y="120">THE ENGINE (kernel · runs)</text>
+  <text class="dim small" x="80" y="142">generate → score → select → recurse · discovery / problem-recovery / solution</text>
+  <text class="faint tiny" x="80" y="164">every lifecycle decision emitted as an event ↓</text>
+
+  <!-- model gateway (solid) feeding the engine -->
+  <rect class="solid" x="700" y="96" width="200" height="92" rx="12"/>
+  <text class="ink lbl" x="720" y="120">MODEL GATEWAY</text>
+  <text class="dim small" x="720" y="142">role → route</text>
+  <text class="faint tiny" x="720" y="162">critic · generator · fusion</text>
+  <path class="e" d="M700 142 L662 142" marker-end="url(#a)"/>
+
+  <!-- event log (truth) -->
+  <rect class="truth" x="60" y="244" width="380" height="86" rx="12"/>
+  <text class="ink lbl" x="80" y="268">APPEND-ONLY EVENT LOG  ·  Postgres</text>
+  <text class="dim small" x="80" y="289">single source of truth — prime §4 / §9 (SOLID)</text>
+  <text class="faint tiny" x="80" y="309">one run's authoritative, replayable history</text>
+  <path class="e" d="M260 188 L260 242" marker-end="url(#a)"/>
+
+  <!-- OPEN: knowledge store -->
+  <rect class="open" x="480" y="244" width="420" height="86" rx="12"/>
+  <text class="ink lbl" x="500" y="268">①  KNOWLEDGE STORE  ·  OPEN</text>
+  <text class="dim small" x="500" y="289">cross-run total recall: every idea / lesson / domain research</text>
+  <text class="faint tiny" x="500" y="309">vector? graph? notes? — derived index beside the log, not instead of it</text>
+  <path class="eo" d="M440 287 L478 287" marker-end="url(#ao)"/>
+
+  <!-- OPEN: training flywheel -->
+  <rect class="open" x="300" y="392" width="360" height="80" rx="12"/>
+  <text class="ink lbl" x="320" y="416">②  TRAINING FLYWHEEL  ·  OPEN (deferred)</text>
+  <text class="dim small" x="320" y="437">mine the record → fine-tune our own model</text>
+  <text class="faint tiny" x="320" y="456">prime §18 deferral, pulled forward as a seam — not built</text>
+
+  <!-- flywheel edges: store -> training -> gateway (dashed loop) -->
+  <path class="eo" d="M600 330 C560 360 540 372 520 390" marker-end="url(#ao)"/>
+  <text class="faint tiny" x="548" y="364" fill="#bc8cff">export</text>
+  <path class="eo" d="M660 420 C800 420 880 300 870 190" marker-end="url(#ao)"/>
+  <text class="faint tiny" x="828" y="300" fill="#bc8cff">trained model</text>
+  <text class="faint tiny" x="820" y="316" fill="#bc8cff">re-enters as a route</text>
+
+  <!-- footer note -->
+  <rect x="28" y="500" width="904" height="44" rx="10" fill="#161b22" stroke="#2a3340" stroke-width="1.4"/>
+  <text class="dim small" x="48" y="520">① keep prime's event-log-as-truth; the open question is whether cross-run collective memory needs a store layered over it.</text>
+  <text class="dim small" x="48" y="537">② the organism trains a model on its own history, then breeds with it — the flywheel closing. Possible "where we're headed" demo flag only.</text>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#6e7681"/></marker>
+    <marker id="ao" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#bc8cff"/></marker>
+  </defs>
+</svg>

@@ -1,0 +1,100 @@
+<svg viewBox="0 0 980 440" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,system-ui,sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Discovery engine — inputs to outputs</title>
+  <desc id="d">Harvest from sources, recover the real problem and classify, score and decay, emit a ranked feed; human promote/reject and reality backtest feed back.</desc>
+  <style>
+    .bg{fill:#0d1117}
+    .ink{fill:#e6edf3} .dim{fill:#8b949e} .faint{fill:#6e7681}
+    .h{font-size:20px;font-weight:700} .sub{font-size:12.5px}
+    .lbl{font-size:12.5px;font-weight:700} .small{font-size:10.5px} .tiny{font-size:9.5px;letter-spacing:.05em}
+    .io{fill:#16202c;stroke:#2b3b4d;stroke-width:1.4}
+    .brain{fill:#1b1726;stroke:#bc8cff;stroke-width:1.4}
+    .ledger{fill:#11201a;stroke:#2f6b3a;stroke-width:1.4}
+    .loop{fill:#0f2429;stroke:#56d4dd;stroke-width:1.4}
+    .out{fill:#13233b;stroke:#58a6ff;stroke-width:1.6}
+    .e{stroke:#3a4453;stroke-width:1.5;fill:none}
+    .ef{stroke:#58a6ff;stroke-width:1.7;fill:none}
+    .el{stroke:#56d4dd;stroke-width:1.4;fill:none;stroke-dasharray:4 3}
+  </style>
+  <rect class="bg" x="0" y="0" width="980" height="440"/>
+  <text class="ink h" x="28" y="38">Discovery engine · point → check → validate</text>
+  <text class="dim sub" x="28" y="58">The kernel pinned to DIVERGE: harvest live signal → recover the real problem → score → rank.</text>
+
+  <!-- legend -->
+  <g>
+    <rect x="600" y="26" width="11" height="11" rx="3" class="io"/><text class="faint tiny" x="616" y="35">i/o</text>
+    <rect x="652" y="26" width="11" height="11" rx="3" class="brain"/><text class="faint tiny" x="668" y="35">brain (LLM)</text>
+    <rect x="744" y="26" width="11" height="11" rx="3" class="ledger"/><text class="faint tiny" x="760" y="35">ledger</text>
+    <rect x="800" y="26" width="11" height="11" rx="3" class="loop"/><text class="faint tiny" x="816" y="35">feedback</text>
+    <rect x="880" y="26" width="11" height="11" rx="3" class="out"/><text class="faint tiny" x="896" y="35">output</text>
+  </g>
+
+  <!-- 1 sources -->
+  <rect class="io" x="28" y="120" width="150" height="118" rx="11"/>
+  <text class="ink lbl" x="40" y="142">1 · SOURCES</text>
+  <text class="dim small" x="40" y="162">11 wells →</text>
+  <text class="faint tiny" x="40" y="180">YC RFS · HN · Lobsters</text>
+  <text class="faint tiny" x="40" y="195">arXiv · GitHub · EDGAR</text>
+  <text class="faint tiny" x="40" y="210">Trends · YT · Reddit · X</text>
+  <text class="faint tiny" x="40" y="228">via fetch ladder ↓</text>
+
+  <!-- 2 harvest -->
+  <rect class="io" x="206" y="138" width="128" height="82" rx="11"/>
+  <text class="ink lbl" x="218" y="160">2 · HARVEST</text>
+  <text class="dim small" x="218" y="180">normalize to</text>
+  <text class="dim small" x="218" y="195">one record</text>
+  <text class="faint tiny" x="218" y="212">free→cffi→FC→browser</text>
+
+  <!-- 3 brain -->
+  <rect class="brain" x="362" y="108" width="150" height="142" rx="11"/>
+  <text class="ink lbl" x="374" y="130">3 · BRAIN</text>
+  <text class="dim small" x="374" y="151">Problem Recovery</text>
+  <text class="faint tiny" x="374" y="167">symptom→hidden var</text>
+  <text class="dim small" x="374" y="187">Subtype classify</text>
+  <text class="faint tiny" x="374" y="203">±5-yr · 100% corpus</text>
+  <text class="dim small" x="374" y="223">Lens score</text>
+  <text class="faint tiny" x="374" y="239">swappable</text>
+
+  <!-- 4 score+decay -->
+  <rect class="io" x="540" y="108" width="140" height="142" rx="11"/>
+  <text class="ink lbl" x="552" y="130">4 · SCORE</text>
+  <text class="dim small" x="552" y="151">signed −5…+5</text>
+  <text class="faint tiny" x="552" y="167">+good·0meh·−trap</text>
+  <text class="dim small" x="552" y="189">why-now decay</text>
+  <text class="faint tiny" x="552" y="205">zeitgeist fades fast</text>
+  <text class="faint tiny" x="552" y="223">refresh can lift it</text>
+
+  <!-- 5 output feed -->
+  <rect class="out" x="708" y="120" width="150" height="118" rx="11"/>
+  <text class="ink lbl" x="720" y="142">5 · RANKED FEED</text>
+  <text class="dim small" x="720" y="163">open → Doppl</text>
+  <text class="dim small" x="720" y="181">resolved → benchmark</text>
+  <text class="faint tiny" x="720" y="200">+ source registry</text>
+  <text class="faint tiny" x="720" y="215">+ trap · recipes</text>
+  <text class="faint tiny" x="720" y="230">the deliverable</text>
+
+  <!-- main flow edges -->
+  <path class="ef" d="M178 179 L204 179"/>
+  <path class="ef" d="M334 179 L360 179"/>
+  <path class="ef" d="M512 179 L538 179"/>
+  <path class="ef" d="M680 179 L706 179"/>
+
+  <!-- feedback loop row -->
+  <rect class="loop" x="380" y="318" width="170" height="88" rx="11"/>
+  <text class="ink lbl" x="394" y="340">6 · INTERACTION</text>
+  <text class="dim small" x="394" y="360">promote / reject</text>
+  <text class="faint tiny" x="394" y="377">realized value</text>
+  <text class="faint tiny" x="394" y="394">→ calibration</text>
+
+  <rect class="loop" x="660" y="318" width="170" height="88" rx="11"/>
+  <text class="ink lbl" x="674" y="340">7 · REALITY</text>
+  <text class="dim small" x="674" y="360">backtest</text>
+  <text class="faint tiny" x="674" y="377">was it right?</text>
+  <text class="faint tiny" x="674" y="394">+4/+5 → 1.0 on corpus</text>
+
+  <!-- loop edges -->
+  <path class="el" d="M783 238 C783 280 760 300 745 316"/>
+  <path class="el" d="M660 362 L552 362"/>
+  <path class="el" d="M438 318 C438 270 460 250 487 250" marker-end="url(#aa)"/>
+  <text class="faint tiny" x="455" y="300">tunes lens</text>
+  <defs><marker id="aa" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#56d4dd"/></marker></defs>
+</svg>

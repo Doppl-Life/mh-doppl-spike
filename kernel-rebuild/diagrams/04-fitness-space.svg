@@ -1,0 +1,58 @@
+<svg viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,system-ui,sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">The two-axis fitness space</title>
+  <desc id="d">Novelty and grounding are orthogonal warring axes; you cannot maximize both. Decay is the time axis; feasibility is a lens on top.</desc>
+  <style>
+    .bg{fill:#0d1117}
+    .ink{fill:#e6edf3} .dim{fill:#8b949e} .faint{fill:#6e7681}
+    .h{font-size:20px;font-weight:700} .sub{font-size:12.5px}
+    .ax{stroke:#3a4453;stroke-width:2}
+    .lbl{font-size:13px;font-weight:700} .small{font-size:11px} .tiny{font-size:10px}
+    .good{fill:#15251a;stroke:#2f6b3a;stroke-width:1.4}
+    .bad{fill:#251618;stroke:#7d1a1a;stroke-width:1.2}
+    .mid{fill:#1c2230;stroke:#2a3340;stroke-width:1.2}
+    .dot{fill:#58a6ff}
+  </style>
+  <rect class="bg" x="0" y="0" width="700" height="560"/>
+  <text class="ink h" x="28" y="38">Fitness = two warring axes</text>
+  <text class="dim sub" x="28" y="58">You can't maximize both. The tension IS the design — it's what blocks slop and collapse.</text>
+
+  <!-- axes -->
+  <line class="ax" x1="120" y1="470" x2="610" y2="470"/>
+  <line class="ax" x1="120" y1="470" x2="120" y2="110"/>
+  <text class="dim lbl" x="365" y="505" text-anchor="middle">NOVELTY  (divergent · "did we reach somewhere new?")</text>
+  <text class="dim lbl" x="0 0" transform="translate(58,300) rotate(-90)" text-anchor="middle">GROUNDING  (convergent · "is it real?")</text>
+
+  <!-- quadrant labels -->
+  <!-- top-left: grounded but not novel -->
+  <rect class="mid" x="140" y="130" width="190" height="64" rx="9"/>
+  <text class="dim small" x="150" y="153">High grounding, low novelty</text>
+  <text class="faint tiny" x="150" y="171">true but obvious — consensus,</text>
+  <text class="faint tiny" x="150" y="185">already priced in</text>
+
+  <!-- top-right: the target -->
+  <rect class="good" x="400" y="130" width="200" height="64" rx="9"/>
+  <text class="ink small" x="410" y="153" font-weight="700">The target ✦</text>
+  <text class="dim tiny" x="410" y="171">novel AND grounded —</text>
+  <text class="dim tiny" x="410" y="185">the unpriced truth (hard, rare)</text>
+
+  <!-- bottom-left: noise -->
+  <rect class="mid" x="140" y="392" width="190" height="60" rx="9"/>
+  <text class="dim small" x="150" y="415">Low / low</text>
+  <text class="faint tiny" x="150" y="433">neither new nor true —</text>
+  <text class="faint tiny" x="150" y="447">noise · the meh pile</text>
+
+  <!-- bottom-right: slop -->
+  <rect class="bad" x="400" y="392" width="200" height="60" rx="9"/>
+  <text class="ink small" x="410" y="415" font-weight="700">Confident slop ⚠</text>
+  <text class="dim tiny" x="410" y="433">novel but ungrounded —</text>
+  <text class="faint tiny" x="410" y="447">what pure divergence produces</text>
+
+  <!-- the frontier curve (can't have both maxed) -->
+  <path d="M140 200 Q360 360 600 200" stroke="#bc8cff" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+  <text class="faint tiny" x="360" y="345" text-anchor="middle" fill="#bc8cff">the frontier — push one, lose the other</text>
+
+  <!-- footer: the two extra factors -->
+  <rect x="28" y="524" width="300" height="0" />
+  <text class="dim small" x="28" y="540">⏳ DECAY = the time axis (in the engine): fitness erodes as the world changes.</text>
+  <text class="dim small" x="360" y="540">🔍 FEASIBILITY = the lens (on top): "worth it to me?"</text>
+</svg>

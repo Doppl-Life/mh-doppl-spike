@@ -1,0 +1,208 @@
+{
+  "items": [
+    {
+      "reason": "shared tags: accident, autonomy, cluster, crash, economy, fsd, sibling, substrate; shared terms: accident, autonomy, collapses, crash, economy, fertile, mile, obvious; sibling-cluster reference; warning memory",
+      "record": {
+        "id": "ks_5b8103df7f2521c5",
+        "kind": "warning",
+        "source_case": "fsd-mobility-and-time",
+        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "tags": [
+          "accident",
+          "autonomy",
+          "cluster",
+          "crash",
+          "economy",
+          "fsd",
+          "sibling",
+          "substrate",
+          "travel"
+        ],
+        "text": "These read like separate topics but they are **chapters of one story** \u2014 different forces acting on the same puck \u2014 so this case holds them together and asks: *what does it all add up to?* (The sibling story, **Sub-cluster A \u2014 the accident economy**, removes a *different* substrate, the crash; it is `fsd-accident-economy`, not part of this case.) **Chapter 1 \u2014 door-to-door travel (the 200\u2013700-mile band).** The obvious travel story is \"robotaxis in cities.\" The fertile one is *intercity*: autonomy collapses **door-to-door** travel economics in the band where the existing system is already weakest.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 31.5
+    },
+    {
+      "reason": "shared tags: accident, autonomy, cluster, economy, fsd, sibling, substrate; shared terms: accident, autonomy, crossing, economy, load-bearing, sibling, sub-cluster, substrate; sibling-cluster reference",
+      "record": {
+        "id": "ks_c9b4e98f2fe4425f",
+        "kind": "case_frame",
+        "source_case": "fsd-accident-economy",
+        "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
+        "tags": [
+          "accident",
+          "autonomy",
+          "cluster",
+          "driver",
+          "economy",
+          "fsd",
+          "sibling",
+          "substrate"
+        ],
+        "text": "(Traffic fines, forfeiture, licensing, and the license-as-national-ID ride a *different* substrate \u2014 the driver as a policeable subject \u2014 and are handled in the sibling case `fsd-enforcement-economy`, Sub-cluster C; this case stays harm-only.) This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing from solved-demo to legal-deployment in 2025\u20132026 (the umbrella case argues the capability is *solved*; this case takes that as given and asks what the accident economy does about it).",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 29.5
+    },
+    {
+      "reason": "shared tags: accident, fsd, substrate; shared terms: accident, actual, ask, breadth, converges, depth, game, map; hidden_variable memory",
+      "record": {
+        "id": "ks_8a464491ea6290ab",
+        "kind": "hidden_variable",
+        "source_case": "fsd-accident-economy",
+        "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
+        "tags": [
+          "accident",
+          "fsd",
+          "substrate"
+        ],
+        "text": "Ask the system to recover the actual problem (the removal of a ~$1T+ accident *substrate*, not a car-service upgrade), then to map the web (breadth) and game out the non-obvious second/third-order effects (depth), ending with what it converges to.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 23.5
+    },
+    {
+      "reason": "shared tags: autonomy, fsd, mobility, time; shared terms: autonomy, doppl, mobility, problem, statement, subtype, subtype-index, synthesis",
+      "record": {
+        "id": "ks_24a61e27c77ae552",
+        "kind": "case_frame",
+        "source_case": "fsd-mobility-and-time",
+        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "tags": [
+          "autonomy",
+          "driver",
+          "fsd",
+          "mobility",
+          "time"
+        ],
+        "text": "# Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock) > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 19.5
+    },
+    {
+      "reason": "shared tags: cluster, fsd, mobility, time; shared terms: cluster, family, full-self-driving-unlock, mobility, pepsis, perfect, sub-cluster, time",
+      "record": {
+        "id": "ks_5d4e25516970c8bf",
+        "kind": "case_frame",
+        "source_case": "fsd-mobility-and-time",
+        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "tags": [
+          "cluster",
+          "fsd",
+          "mobility",
+          "time"
+        ],
+        "text": "> **Cluster:** this is **Sub-cluster B** of the `full-self-driving-unlock` family > \u2014 the \"mobility & time\" convergence (\"perfect Pepsis\" \u2014 see > `../zeitgeist-synthesis-notes.md`).",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 18.5
+    },
+    {
+      "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
+      "record": {
+        "id": "ks_7a95906b90ef92b9",
+        "kind": "signal",
+        "source_case": "fsd-accident-economy",
+        "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
+        "tags": [
+          "fsd"
+        ],
+        "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 17.5
+    },
+    {
+      "reason": "shared tags: autonomy, fsd; shared terms: autonomy, crossing, deployment, full-self-driving-unlock, load-bearing, synthesis, system, timing",
+      "record": {
+        "id": "ks_5e2dec158c8d0cc5",
+        "kind": "case_frame",
+        "source_case": "fsd-mobility-and-time",
+        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "tags": [
+          "autonomy",
+          "fsd"
+        ],
+        "text": "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing to deployment (see the umbrella `full-self-driving-unlock` case) colliding with a short-haul air system already in secular decline and a commute/work pattern reverting to pre-pandemic norms.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 17.5
+    },
+    {
+      "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
+      "record": {
+        "id": "ks_98a75e563469dec5",
+        "kind": "signal",
+        "source_case": "fsd-mobility-and-time",
+        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "tags": [
+          "fsd"
+        ],
+        "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 17.5
+    },
+    {
+      "reason": "shared tags: autonomy, fsd, time; shared terms: ago, autonomy, car, consensus, five, out, there, time",
+      "record": {
+        "id": "ks_de6275f81d0cd314",
+        "kind": "claim",
+        "source_case": "fsd-mobility-and-time",
+        "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+        "tags": [
+          "autonomy",
+          "driver",
+          "fsd",
+          "time"
+        ],
+        "text": "Five years ago the car trip was capped by driver fatigue and there was no autonomy; five years out the substitution and the labor/time/geography re-pricing are consensus.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 17.5
+    },
+    {
+      "reason": "shared tags: autonomy, economy, fsd; shared terms: autonomy, doppl, economy, problem, statement, subtype, subtype-index, synthesis",
+      "record": {
+        "id": "ks_ffe2bb2bd9b115d7",
+        "kind": "case_frame",
+        "source_case": "fsd-accident-economy",
+        "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
+        "tags": [
+          "autonomy",
+          "economy",
+          "fsd"
+        ],
+        "text": "# Problem Statement: The Accident-Dependent Economy After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "score": 16.5
+    }
+  ],
+  "query_tags": [
+    "accident",
+    "autonomy",
+    "cluster",
+    "crash",
+    "economy",
+    "enforcement",
+    "fsd",
+    "mobility",
+    "ownership",
+    "sibling",
+    "substrate",
+    "time"
+  ]
+}

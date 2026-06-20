@@ -24,6 +24,39 @@ Following `Spec Driven Development.pdf`, this folder keeps four living artifacts
 - [plan.md](./plan.md) - architecture, data flow, model choices, and integration plan.
 - [tasks.md](./tasks.md) - implementation slices and acceptance gates.
 
+## Working Prototype
+
+The first runnable slice is deliberately local and stdlib-only. It proves the
+core behavior before Neo4j or live research are added:
+
+1. ingest research from one FSD case,
+2. persist it as append-only JSONL memory,
+3. query that memory while working on a separate FSD case,
+4. emit an inspectable knowledge packet with source paths and retrieval reasons.
+
+Run it:
+
+```bash
+cd spikes/knowledge-space
+./demo
+```
+
+The demo ingests `fsd-accident-economy` and `fsd-mobility-and-time`, then asks the
+Knowledge Space for useful prior memory while working on `fsd-ownership-unwind`.
+
+Outputs:
+
+- `data/knowledge.jsonl` - durable local memory ledger.
+- `out/knowledge_packet.json` - retrieved packet for the later problem.
+- `out/report.md` - human-readable demo report.
+
+Run tests:
+
+```bash
+cd spikes/knowledge-space
+python3 -m unittest test_knowledge_space.py
+```
+
 ## One Sentence
 
 Doppl Knowledge Space ingests every useful research artifact and run lesson into
@@ -65,4 +98,3 @@ exports, but the contract must already fit production:
 - promotion and decay policies,
 - permission-level safety,
 - and migration-ready schemas.
-

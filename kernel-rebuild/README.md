@@ -20,7 +20,11 @@ build a runnable prototype to test against real ideas, break, and tighten.
 4. **[`DELTAS.md`](./DELTAS.md)** — the concrete change-list vs. prime: each item marked
    genuine-delta / aligns-with-prime / generalizes-a-prime-pattern, deep where settled and
    `[OPEN]` where not. The build agenda.
-5. **[`CONVERSATION.md`](./CONVERSATION.md)** — the raw reasoning path the synthesis was
+5. **[`PANEL_FINDINGS.md`](./PANEL_FINDINGS.md)** — adversarial critique of the synthesis by
+   the project's own mutagen skills (six-agent panel). **Unadjudicated — for team digestion.**
+   Four operators independently flagged the same fault line (the two-axis fitness); includes
+   ranked high-utility fixes and the free experiment that settles the central question.
+6. **[`CONVERSATION.md`](./CONVERSATION.md)** — the raw reasoning path the synthesis was
    distilled from (the chat transcript).
 
 Diagrams live in [`diagrams/`](./diagrams/).

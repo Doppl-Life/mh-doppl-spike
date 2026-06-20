@@ -1450,8 +1450,7 @@ article.module-node::after {
 .contract-payload-panel { grid-area: payload; }
 .contracts-boundary-panel { grid-area: boundary; }
 
-.contract-index-panel,
-.contracts-boundary-panel {
+.contract-index-panel {
   position: sticky;
   top: 18px;
 }
@@ -1649,11 +1648,6 @@ article.module-node::after {
 .distillation-next-panel { grid-area: next; }
 .distillation-contract-panel { grid-area: contracts; }
 .distillation-boundary-panel { grid-area: boundary; }
-
-.distillation-boundary-panel {
-  position: sticky;
-  top: 18px;
-}
 
 .distillation-winner-card,
 .distillation-learning-card,
@@ -2154,15 +2148,6 @@ article.module-node::after {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.4;
-}
-
-.boundary-panel {
-  position: sticky;
-  top: 18px;
-  max-height: calc(100vh - 36px);
-  overflow-y: auto;
-  scrollbar-color: rgba(110, 231, 255, 0.42) rgba(4, 8, 23, 0.42);
-  scrollbar-width: thin;
 }
 
 .boundary-panel::-webkit-scrollbar {
@@ -2833,8 +2818,7 @@ article.module-node::after {
   backdrop-filter: blur(10px);
 }
 
-.gateway-scenario-panel,
-.gateway-boundary-panel {
+.gateway-scenario-panel {
   position: sticky;
   top: 18px;
 }
@@ -3105,8 +3089,7 @@ article.module-node::after {
 .subtype-boundary-panel { grid-area: boundary; }
 .subtype-contract-panel { grid-area: contracts; }
 
-.subtype-selector-panel,
-.subtype-boundary-panel {
+.subtype-selector-panel {
   position: sticky;
   top: 18px;
 }
@@ -3338,8 +3321,7 @@ article.module-node::after {
 .novelty-boundary-panel { grid-area: boundary; }
 .novelty-contract-panel { grid-area: contracts; }
 
-.novelty-candidate-panel,
-.novelty-boundary-panel {
+.novelty-candidate-panel {
   position: sticky;
   top: 18px;
 }
@@ -3530,8 +3512,7 @@ article.module-node::after {
 .survivor-boundary-panel { grid-area: boundary; }
 .survivor-contract-panel { grid-area: contracts; }
 
-.survivor-run-panel,
-.survivor-boundary-panel {
+.survivor-run-panel {
   position: sticky;
   top: 18px;
 }
@@ -3698,8 +3679,7 @@ article.module-node::after {
   backdrop-filter: blur(10px);
 }
 
-.replay-control-panel,
-.replay-boundary-panel {
+.replay-control-panel {
   position: sticky;
   top: 18px;
 }
@@ -4003,8 +3983,7 @@ article.module-node::after {
 .fallback-boundary-panel { grid-area: boundary; }
 .fallback-contract-panel { grid-area: contracts; }
 
-.fallback-rung-panel,
-.fallback-boundary-panel {
+.fallback-rung-panel {
   position: sticky;
   top: 18px;
 }

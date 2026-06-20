@@ -75,6 +75,7 @@ import {
 } from './distillationData.js';
 import TraceViewer from './trace/TraceViewer.jsx';
 import { sampleTrace } from './trace/sampleTrace.js';
+import DiscoveryRadar from './discovery.jsx';
 
 const HANDLE_SLOTS = [25, 37, 49, 61, 73];
 const PrototypeNavigationContext = createContext(() => {});
@@ -4858,6 +4859,12 @@ function persistNodePositions(nextNodes, storageKey) {
 
 const prototypeStages = [
   {
+    label: 'Discover',
+    items: [
+      { id: 'discovery', label: 'Discovery radar' },
+    ],
+  },
+  {
     label: 'Seed',
     items: [
       { id: 'contracts', label: 'Contract freeze' },
@@ -5005,6 +5012,7 @@ function App() {
             <small>{selectedCase.fixtureNote}</small>
           </section>
 
+          {tab === 'discovery' && <DiscoveryRadar />}
           {tab === 'contracts' && <ContractFreezeLab selectedCase={selectedCase} />}
           {tab === 'intake' && <CaseStudyIntake selectedCaseId={selectedCaseId} onSelectCase={setSelectedCaseId} />}
           {tab === 'agenomes' && <AgenomePool selectedCase={selectedCase} />}

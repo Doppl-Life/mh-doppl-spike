@@ -4914,8 +4914,8 @@ const prototypeStages = [
 ];
 
 const prototypeStageRows = [
-  prototypeStages.slice(0, 4),
-  prototypeStages.slice(4),
+  prototypeStages.slice(0, 5),
+  prototypeStages.slice(5),
 ];
 
 const prototypeTabStorageKey = 'doppl-prototype-suite.active-tab';

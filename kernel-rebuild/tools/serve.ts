@@ -1,15 +1,16 @@
 // One live server for every kernel view.
 //
-// Builds the RunTrace once per fixture and renders microscope / architecture /
-// architecture-v2 / assay as projections of that single in-memory source, so the
-// views cannot drift from each other. Clean routes, one server-owned nav, and a
-// real root hub. /review + the judgments ledger are carried over so this is a
-// superset of the old assay-local server (which it replaces).
+// Builds the RunTrace once per fixture and renders the live views from that
+// source. Architecture v2 is the explicit static design artifact fork. Clean
+// routes, one server-owned nav, and a real root hub. /review + the judgments
+// ledger live here too, so this is the single local front door.
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import { assertSeedFixture } from '../src/contracts/index.ts';
 import type { RunTrace } from '../src/contracts/index.ts';
 import { buildRunTrace } from '../src/trace.ts';
@@ -23,8 +24,9 @@ import { appendJudgment, isStrong, isUseful, latestJudgments, readJudgments, rel
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 const fixturesDir = path.join(root, 'fixtures');
-const microscopeDir = path.join(root, 'out', 'microscope');
+const architectureV2Path = path.join(root, 'tools', 'microscope', 'architecture-v2.html');
 const reviewDir = path.join(root, 'out', 'assay-review');
+const execFileAsync = promisify(execFile);
 
 const DEFAULT_FIXTURE = 'fsd-seed.json';
 
@@ -93,6 +95,69 @@ function traceFor(seed: string | null): TraceEntry {
   return traces.find((entry) => entry.seedId === seed)
     || traces.find((entry) => entry.seedId === defaultSeedId)
     || traces[0];
+}
+
+async function pidsListeningOn(port: number): Promise<number[]> {
+  try {
+    const { stdout } = await execFileAsync('lsof', ['-nP', `-iTCP:${port}`, '-sTCP:LISTEN', '-t']);
+    return [...new Set(
+      stdout
+        .split(/\s+/)
+        .map((value) => Number(value))
+        .filter((pid) => Number.isInteger(pid) && pid > 0 && pid !== process.pid),
+    )];
+  } catch (error) {
+    const code = (error as { code?: unknown }).code;
+    if (code === 1) return [];
+    if (code === 'ENOENT') throw new Error('Cannot free port before serving: `lsof` is not available.');
+    throw error;
+  }
+}
+
+function isProcessAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === 'EPERM';
+  }
+}
+
+async function waitForExit(pids: number[], attempts: number): Promise<number[]> {
+  let alive = pids.filter(isProcessAlive);
+  for (let attempt = 0; attempt < attempts && alive.length; attempt += 1) {
+    await delay(50);
+    alive = alive.filter(isProcessAlive);
+  }
+  return alive;
+}
+
+async function freePort(port: number): Promise<void> {
+  const pids = await pidsListeningOn(port);
+  if (!pids.length) return;
+
+  console.log(`freeing port ${port}: stopping ${pids.join(', ')}`);
+  for (const pid of pids) {
+    try {
+      process.kill(pid, 'SIGTERM');
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw error;
+    }
+  }
+
+  const stillAlive = await waitForExit(pids, 20);
+  for (const pid of stillAlive) {
+    try {
+      process.kill(pid, 'SIGKILL');
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw error;
+    }
+  }
+
+  const survivors = await waitForExit(stillAlive, 20);
+  if (survivors.length) {
+    throw new Error(`Could not free port ${port}; still listening: ${survivors.join(', ')}`);
+  }
 }
 
 // ---------- one server-owned nav (clean routes) ----------
@@ -169,7 +234,7 @@ code{color:#d5f2dc;font:12px ui-monospace,Menlo,monospace}
 </style></head><body>
 <main>
 <h1>Doppl Kernel — Root Hub</h1>
-<p class="sub">One server, one in-memory <code>RunTrace</code> per fixture. Every view below is a live projection of that same source — switch tabs without leaving the building.</p>
+<p class="sub">One server, one in-memory <code>RunTrace</code> per fixture. Assay, Architecture, and Microscope are live projections; Architecture v2 is a labeled static design artifact.</p>
 <div class="facts">
 <span class="chip"><b>${trace.schemaVersion}</b></span>
 <span class="chip">fixtures <b>${traces.length}</b></span>
@@ -180,12 +245,12 @@ code{color:#d5f2dc;font:12px ui-monospace,Menlo,monospace}
 <span class="chip">failed checks <b>${failed}</b></span>
 </div>
 <div class="grid">
-${card('/architecture-v2', "Architecture v2 — engineer's map", 'Interactive system map: typed contracts, recursion, lifecycles, prime scope.')}
+${card('/architecture-v2', "Architecture v2 — static artifact", 'Hand-authored engineer map; use /api/trace for live trace truth.')}
 ${card('/architecture', 'Architecture — system map', 'The original contract + spine card view.')}
 ${card('/microscope', 'Microscope — single trace', 'One run: generation, scoring, two selectors, post-selection lens.')}
 ${card('/assay', 'Assay — cases + controls', 'Discovery-first outcome assay with feedback + judgments.')}
 ${card('/review', 'Review — judgments digest', 'Aggregated reviewer verdicts from the ledger.')}
-${card('/api/trace', 'API — /api/trace', 'The raw RunTrace JSON every view reads from.')}
+${card('/api/trace', 'API — /api/trace', 'The raw RunTrace JSON used by the live views.')}
 </div>
 <h2>Switch default seed</h2>
 <div class="seeds">${seedLinks}</div>
@@ -193,7 +258,7 @@ ${card('/api/trace', 'API — /api/trace', 'The raw RunTrace JSON every view rea
 </body></html>`;
 }
 
-// ---------- judgments API (carried over from assay-local) ----------
+// ---------- judgments API ----------
 function judgmentStatus(events: Awaited<ReturnType<typeof readJudgments>>, args: Args): Record<string, unknown> {
   const latest = latestJudgments(events);
   const reviewers = new Set(latest.map((event) => event.reviewer || 'local'));
@@ -267,7 +332,7 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse, args: Ar
       return;
     }
     if (url.pathname === '/architecture-v2') {
-      const html = await readFile(path.join(microscopeDir, 'architecture-v2.html'), 'utf8');
+      const html = await readFile(architectureV2Path, 'utf8');
       sendHtml(res, injectNav(html, 'architecture-v2'));
       return;
     }
@@ -290,6 +355,7 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse, args: Ar
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  await freePort(args.port);
   await buildTraces();
 
   const server = createServer((req, res) => {
@@ -298,7 +364,7 @@ async function main(): Promise<void> {
 
   server.on('error', (error: NodeJS.ErrnoException) => {
     if (error.code === 'EADDRINUSE') {
-      console.error(`Port ${args.port} is already in use (another server, or an old 'pnpm assay:local', may be running). Try a different port: pnpm serve -- --port=4318`);
+      console.error(`Port ${args.port} is already in use. Try a different port: pnpm serve -- --port=4318`);
       process.exitCode = 1;
       return;
     }

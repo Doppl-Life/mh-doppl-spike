@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { assertSeedFixture } from '../../src/contracts/index.ts';
 import type { BoundaryContract, GenerationSummary, GoalCheck, RunTrace, TraceEvent } from '../../src/contracts/index.ts';
 import { buildRunTrace } from '../../src/trace.ts';
+import { runMain } from '../cli.ts';
 import { capstoneDemoLens } from '../lens-config.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -139,6 +140,215 @@ function invariantCard(title: string, body: string, source: string): string {
       <p>${escapeHtml(body)}</p>
       <code>${escapeHtml(source)}</code>
     </article>`;
+}
+
+function term(label: string, tip: string): string {
+  const safeTip = escapeHtml(tip);
+  return `<span class="term" tabindex="0" title="${safeTip}" data-tip="${safeTip}">${escapeHtml(label)}</span>`;
+}
+
+function architectureCounts(trace: RunTrace): { sourcePackets: number; operators: number } {
+  const nodes = trace.lineage.generated.concat(trace.lineage.rejected);
+  return {
+    sourcePackets: new Set(nodes.flatMap((node) => node.sourcePacketIds)).size,
+    operators: new Set(nodes.map((node) => node.operatorId)).size,
+  };
+}
+
+function codeLine(name: string, type: string, note?: string): string {
+  return `
+    <div class="code-line">
+      <span class="code-field">${escapeHtml(name)}</span><span class="code-punct">:</span>
+      <span class="code-type">${escapeHtml(type)}</span><span class="code-punct">;</span>
+      ${note ? `<span class="code-note">// ${escapeHtml(note)}</span>` : ''}
+    </div>`;
+}
+
+function contractBlock(name: string, tip: string, lines: string[], meta: string): string {
+  return `
+    <article class="contract-card">
+      <div class="card-label">boundary contract</div>
+      <div class="interface-code" aria-label="${escapeHtml(name)} TypeScript contract">
+        <div><span class="code-keyword">interface</span> ${term(name, tip)} <span class="code-punct">{</span></div>
+        ${lines.join('')}
+        <div><span class="code-punct">}</span></div>
+      </div>
+      <p class="contract-meta">${escapeHtml(meta)}</p>
+    </article>`;
+}
+
+function moduleBlock(name: string, description: string, steps: string[]): string {
+  return `
+    <article class="module-card">
+      <div class="card-label">module</div>
+      <h3>${escapeHtml(name)}</h3>
+      <p>${description}</p>
+      <ol class="work-steps">
+        ${steps.map((step) => `<li>${step}</li>`).join('')}
+      </ol>
+    </article>`;
+}
+
+function flowArrow(label: string): string {
+  return `<div class="flow-arrow" aria-hidden="true"><span>${escapeHtml(label)}</span></div>`;
+}
+
+export function renderArchitectureSection(trace: RunTrace): string {
+  const generated = trace.lineage.generated.length;
+  const rejected = trace.lineage.rejected.length;
+  const stable = trace.comparison.contrasts.filter((contrast) => contrast.status === 'stable').length;
+  const replaced = trace.comparison.contrasts.filter((contrast) => contrast.status === 'replaced').length;
+  const focusDial = trace.comparison.focus.schedule.dial;
+  const alternateDial = trace.comparison.alternate.schedule.dial;
+  const counts = architectureCounts(trace);
+  const seedFixture = contractBlock(
+    'SeedFixture',
+    'The input contract loaded from the fixture file before the kernel starts.',
+    [
+      codeLine('seed', 'Seed', trace.seed.title),
+      codeLine('sourcePackets', 'SourcePacket[]', `${counts.sourcePackets} packets`),
+      codeLine('operators', 'ReproductionOperator[]', `${counts.operators} rules`),
+    ],
+    'This is the same input shown in the top-left card.',
+  );
+  const candidatePool = contractBlock(
+    'CandidatePool',
+    'Generate output: the seed, generated candidates, and the lineage ledger.',
+    [
+      codeLine('seed', 'Seed'),
+      codeLine('candidates', 'Candidate[]', `${generated} kept`),
+      codeLine('lineage', 'LineageLedger', `${rejected} rejected`),
+    ],
+    'No-delta rejects are kept in lineage, not scored as candidates.',
+  );
+  const scoredPool = contractBlock(
+    'ScoredCandidatePool',
+    'Fitness output: the same candidates with novelty and grounding attached.',
+    [
+      codeLine('seed', 'Seed'),
+      codeLine('candidates', 'ScoredCandidate[]', 'fitness added'),
+    ],
+    'Selection reads this pool; it does not generate new candidates.',
+  );
+  const comparison = contractBlock(
+    'SelectionComparison',
+    'Select output: both dial results plus the direct contrast between them.',
+    [
+      codeLine('focus', 'SelectionResult', focusDial),
+      codeLine('alternate', 'SelectionResult', alternateDial),
+      codeLine('contrasts', 'DialContrast[]', `${stable} stable, ${replaced} replaced`),
+    ],
+    'The swap summary above is a projection of this contract.',
+  );
+  const lensResult = contractBlock(
+    'LensResult',
+    'Lens output: observer-relative feasibility applied after selection.',
+    [
+      codeLine('lensId', 'string', trace.lensResults[0]?.lensId || 'none'),
+      codeLine('label', 'string', trace.lensResults[0]?.label || 'none'),
+      codeLine('scores', 'LensScore[]', `${trace.lensResults[0]?.scores.length || 0} scored`),
+    ],
+    'Lens scores do not enter FitnessScore.',
+  );
+  const runTrace = contractBlock(
+    'RunTrace',
+    'Final kernel artifact: serializable facts about the whole run.',
+    [
+      codeLine('caps', 'RunCaps'),
+      codeLine('generations', 'GenerationSummary[]', `${trace.generations.length} generation records`),
+      codeLine('runId', 'string'),
+      codeLine('lineage', 'LineageLedger'),
+      codeLine('events', 'TraceEvent[]'),
+      codeLine('comparison', 'SelectionComparison'),
+      codeLine('lensResults', 'LensResult[]', `${trace.lensResults.length} lens result set(s)`),
+    ],
+    'Human views read this after the kernel finishes.',
+  );
+  const generate = moduleBlock(
+    'Generate',
+    'Build candidate ideas from source packets that contain a real change.',
+    [
+      `read ${term('sourcePackets', 'Source-backed packets containing a substrate, mechanism, and either candidate data or a no-delta reason.')}`,
+      `use ${term('operators', 'Named transformation rules such as Substrate removal or Hidden dependent.')} to produce candidate deltas`,
+      `send ${generated} candidates forward; record ${rejected} ${term('no-delta rejects', 'Packets inspected but rejected because they did not create a useful change.')} in lineage`,
+    ],
+  );
+  const fitness = moduleBlock(
+    'Fitness',
+    'Attach two scores to every generated candidate.',
+    [
+      `${term('novelty', 'How far the idea moves from the obvious reading of the seed.')} uses source absence, substrate distance, and hidden dependents`,
+      `${term('grounding', 'How well the idea is supported and testable.')} uses signal strength, mechanism clarity, falsifiability, minus risk penalty`,
+      'emit the same pool with scores and short reasons attached',
+    ],
+  );
+  const select = moduleBlock(
+    'Select',
+    'Run two selectors over the same scored candidates.',
+    [
+      `${escapeHtml(focusDial)} prioritizes ${escapeHtml(trace.comparison.focus.schedule.priorityAxis)} with a ${escapeHtml(trace.comparison.focus.schedule.floorAxis)} floor`,
+      `${escapeHtml(alternateDial)} prioritizes ${escapeHtml(trace.comparison.alternate.schedule.priorityAxis)} with a ${escapeHtml(trace.comparison.alternate.schedule.floorAxis)} floor`,
+      `compare winners: ${stable} stable, ${replaced} replaced`,
+    ],
+  );
+  const lens = moduleBlock(
+    'Lens',
+    'Apply capstone-demo-fit after selection without rewriting fitness.',
+    [
+      'read selected candidates and observer constraints',
+      'score feasibility separately from novelty and grounding',
+      'emit lens results for trace and microscope tools',
+    ],
+  );
+  const traceModule = moduleBlock(
+    'Trace',
+    'Package the run so tools can inspect it without rerunning the kernel.',
+    [
+      'copy lineage, boundary contracts, generation summaries, events, and goal checks',
+      'attach the selection comparison and lens results',
+      'emit one JSON-safe run record',
+    ],
+  );
+
+  return `
+    <section class="architecture" aria-label="Architecture walkthrough">
+      <div class="section-title">
+        <h2>Architecture Walkthrough</h2>
+        <p>Contracts cross boundaries. Modules transform them.</p>
+      </div>
+      <div class="arch-key" aria-label="Architecture legend">
+        <span><span class="key-shape module-shape"></span>module</span>
+        <span><span class="key-shape contract-shape"></span>TypeScript contract</span>
+        <span><span class="key-shape arrow-shape"></span>data flow</span>
+      </div>
+      <div class="arch-frame">
+        <div class="boundary kernel-boundary">kernel boundary</div>
+        <div class="arch-flow">
+          ${seedFixture}
+          ${flowArrow('into Generate')}
+          ${generate}
+          ${flowArrow('emits')}
+          ${candidatePool}
+          ${flowArrow('into Fitness')}
+          ${fitness}
+          ${flowArrow('emits')}
+          ${scoredPool}
+          ${flowArrow('into Select')}
+          ${select}
+          ${flowArrow('emits')}
+          ${comparison}
+          ${flowArrow('into Lens')}
+          ${lens}
+          ${flowArrow('emits')}
+          ${lensResult}
+          ${flowArrow('into Trace')}
+          ${traceModule}
+          ${flowArrow('emits')}
+          ${runTrace}
+        </div>
+        <p class="arch-footnote">This HTML page is a separate view over the final artifact, not a kernel stage.</p>
+      </div>
+    </section>`;
 }
 
 export function renderArchitecture(trace: RunTrace, fixtureCount: number): string {
@@ -643,9 +853,4 @@ async function main(): Promise<void> {
   console.log(`architecture: ${path.relative(root, htmlPath)}`);
 }
 
-if (path.resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
-  main().catch((error: unknown) => {
-    console.error(error instanceof Error ? error.message : String(error));
-    process.exitCode = 1;
-  });
-}
+runMain(import.meta.url, main);

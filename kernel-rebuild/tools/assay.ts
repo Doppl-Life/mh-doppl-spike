@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { assertSeedFixture } from '../src/contracts/index.ts';
 import type { Dial, RunTrace, SelectedCandidate, SelectionResult } from '../src/contracts/index.ts';
 import { buildRunTrace } from '../src/trace.ts';
+import { runMain } from './cli.ts';
 import { capstoneDemoLens } from './lens-config.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1189,7 +1190,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
             <span><strong>0</strong> strong</span>
             <span><strong>0</strong> reviewers</span>
           </div>
-          <p id="review-copy">Start <code>pnpm assay:local</code> to save verdicts and open the live digest from this page.</p>
+          <p id="review-copy">Start <code>pnpm serve</code> to save verdicts and open the live digest from this page.</p>
         </article>
       </div>
     </section>
@@ -1199,7 +1200,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
 
     <section class="feedback-panel" id="feedback">
       <h2>Feedback</h2>
-      <p class="feedback-note">When opened through <code>pnpm assay:local</code>, verdict buttons save automatically to the local judgment ledger. When opened as a file, they only update the browser JSON. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
+      <p class="feedback-note">When opened through <code>pnpm serve</code>, verdict buttons save automatically to the local judgment ledger. When opened as a file, they only update the browser JSON. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
       <div class="feedback-actions">
         <button type="button" id="copy-feedback">Copy JSON</button>
         <button type="button" id="download-feedback">Download JSON</button>
@@ -1264,7 +1265,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
         link.classList.remove('is-disabled');
         link.setAttribute('aria-disabled', 'false');
       } else {
-        copy.textContent = 'Start pnpm assay:local to save verdicts and open the live digest from this page.';
+        copy.textContent = 'Start pnpm serve to save verdicts and open the live digest from this page.';
         link.href = '#feedback';
         link.textContent = 'Review Digest unavailable';
         link.classList.add('is-disabled');
@@ -1352,7 +1353,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
 
     async function saveJudgment(payload) {
       if (!saveState.connected) {
-        renderFeedback('Not saved; run pnpm assay:local for automatic local persistence.');
+        renderFeedback('Not saved; run pnpm serve for automatic local persistence.');
         return;
       }
 
@@ -1387,7 +1388,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       if (location.protocol === 'file:') {
         setSaveMode('offline', 'file mode');
         renderSaveStrip();
-        renderFeedback('Open with pnpm assay:local to save automatically.');
+        renderFeedback('Open with pnpm serve to save automatically.');
         return;
       }
 
@@ -1546,9 +1547,4 @@ async function main(): Promise<void> {
   }
 }
 
-if (path.resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
-  main().catch((error: unknown) => {
-    console.error(error instanceof Error ? error.message : String(error));
-    process.exitCode = 1;
-  });
-}
+runMain(import.meta.url, main);

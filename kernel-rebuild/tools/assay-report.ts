@@ -109,7 +109,7 @@ function renderConsole(allEvents: JudgmentEvent[], latest: JudgmentEvent[], case
     lines.push(`| ${item.caseSlug} | ${countText(item.control)} | ${countText(item.kernel)} | ${countText(item.candidate)} | ${item.reviewers.size} | ${actionFor(item)} |`);
   }
   if (!cases.length) {
-    lines.push('| none | none | none | none | 0 | run `pnpm assay:local` and mark verdicts |');
+    lines.push('| none | none | none | none | 0 | run `pnpm serve` and mark verdicts |');
   }
   return lines.join('\n');
 }
@@ -203,7 +203,7 @@ function renderHtml(allEvents: JudgmentEvent[], latest: JudgmentEvent[], cases: 
           candidate: [],
           reviewers: new Set<string>(),
         }]).map((item) => {
-          const action = cases.length ? actionFor(item) : 'run pnpm assay:local';
+          const action = cases.length ? actionFor(item) : 'run pnpm serve';
           const good = action === 'kernel ahead';
           return `<tr><td>${escapeHtml(item.caseSlug)}</td><td>${escapeHtml(countText(item.control))}</td><td>${escapeHtml(countText(item.kernel))}</td><td>${escapeHtml(countText(item.candidate))}</td><td>${item.reviewers.size}</td><td><span class="action ${good ? 'good' : ''}">${escapeHtml(action)}</span></td></tr>`;
         }).join('')}

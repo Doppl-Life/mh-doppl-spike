@@ -71,14 +71,14 @@ multi-seed board:
 
 Run `pnpm proof:export` only when you need replay artifacts under `out/proof-board/**`.
 
-Run `pnpm assay:local` when you want to judge an assay. It is the local front
-door: it regenerates Assay, Review Digest, Microscope, and Architecture, serves
-them from one localhost surface, and saves verdict clicks automatically to
-`records/assay-judgments/judgments.jsonl`.
+Run `pnpm serve` when you want the local front door. It builds the trace once
+per fixture, renders Assay, Microscope, Architecture, and the static
+Architecture v2 artifact from one localhost surface, and saves verdict clicks
+automatically to `records/assay-judgments/judgments.jsonl`.
 
 Run `pnpm assay:report` only when you need the digest file without the local
 browser loop. The same digest is linked from the first viewport of
-`pnpm assay:local`.
+`pnpm serve`.
 
 Run `pnpm assay` when you only want the static inspection files. It writes
 `out/assay/index.html` and `out/assay/feedback-template.json`; `file://` views
@@ -96,15 +96,15 @@ Run `pnpm walkthrough:detail` only when you want the longer microscope view.
 ## Publishing pages to the deployed hub
 
 `out/**` is ephemeral and gitignored, so those pages never reach the deploy. To surface
-the HTML views on the live site, run `pnpm publish:html`: it regenerates the microscope,
-architecture, and assay views and copies them into `published/` (flattened to
-`microscope.html`, `architecture.html`, `assay.html` so they dodge the repo-wide
+the HTML views on the live site, run `pnpm publish:html`: it renders the same
+Assay, Microscope, Architecture, and static Architecture v2 surfaces used by
+`pnpm serve` directly into `published/` (flattened filenames dodge the repo-wide
 gitignored `index.html` rule). `published/` is committed.
 
 The root `build_index.py` auto-discovers every committed `*.html` under `kernel-rebuild/`
 (skipping `node_modules`, `out`, `dist`, `build`) and makes those pages the deployed
 kernel proof hub. The generated HTML pages include navigation between Assay,
-Microscope, and Architecture. Local judgment consensus is intentionally local-only
+Microscope, Architecture, and Architecture v2. Local judgment consensus is intentionally local-only
 until the team decides to promote a ledger. After `pnpm publish:html`, run
 `python3 build_index.py` from the repo root to refresh the local hub, then commit
 `published/` and push; Render rebuilds the hub on deploy.

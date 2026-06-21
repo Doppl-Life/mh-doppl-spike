@@ -462,10 +462,9 @@
 @media (max-width:700px){.kernel-view-nav a small{display:none}.kernel-view-nav .kernel-view-hub{margin-left:0}}
 </style>
 <nav class="kernel-view-nav" aria-label="Kernel view navigation">
-  <strong>Kernel views</strong><a class="kernel-view-link is-active" href="assay.html">Assay<small>cases + controls</small></a><a class="kernel-view-link" href="microscope.html">Microscope<small>single trace</small></a><a class="kernel-view-link" href="architecture.html">Architecture<small>system map</small></a><a class="kernel-view-hub" href="/">Root hub</a>
+  <strong>Kernel views</strong><a class="kernel-view-link is-active" href="assay.html">Assay<small>cases + controls</small></a><a class="kernel-view-link" href="microscope.html">Microscope<small>single trace</small></a><a class="kernel-view-link" href="architecture.html">Architecture<small>system map</small></a><a class="kernel-view-link" href="architecture-v2.html">Architecture v2<small>engineer's map</small></a><a class="kernel-view-hub" href="/">Root hub</a>
 </nav>
 <!-- kernel-view-nav:end -->
-  
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
@@ -476,7 +475,7 @@
         <span>kernel cases 5</span>
         <span>control cases 1</span>
         <span>mode random fill</span>
-        <span>seed mqo2bxc9</span>
+        <span>seed mqo5mkwc</span>
         <span>failed checks 0</span>
       </div>
       <div class="save-strip" aria-label="local review status">
@@ -502,7 +501,7 @@
             <span><strong>0</strong> strong</span>
             <span><strong>0</strong> reviewers</span>
           </div>
-          <p id="review-copy">Start <code>pnpm assay:local</code> to save verdicts and open the live digest from this page.</p>
+          <p id="review-copy">Start <code>pnpm serve</code> to save verdicts and open the live digest from this page.</p>
         </article>
       </div>
     </section>
@@ -2261,7 +2260,7 @@
 
     <section class="feedback-panel" id="feedback">
       <h2>Feedback</h2>
-      <p class="feedback-note">When opened through <code>pnpm assay:local</code>, verdict buttons save automatically to the local judgment ledger. When opened as a file, they only update the browser JSON. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
+      <p class="feedback-note">When opened through <code>pnpm serve</code>, verdict buttons save automatically to the local judgment ledger. When opened as a file, they only update the browser JSON. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
       <div class="feedback-actions">
         <button type="button" id="copy-feedback">Copy JSON</button>
         <button type="button" id="download-feedback">Download JSON</button>
@@ -2270,7 +2269,7 @@
     </section>
   </main>
   <script>
-    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T17:30:54.740Z","runId":"assay-mqo2bxc9-20260621173054","assaySeed":"mqo2bxc9","verdictScale":[{"value":"dead","meaning":"No useful signal. Do not revisit unless new evidence changes the case."},{"value":"obvious","meaning":"True or plausible, but already visible from the scenario. Not discovery."},{"value":"interesting","meaning":"Worth thinking about. It changed your attention, but does not yet demand action."},{"value":"investigate","meaning":"Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work."},{"value":"keeper","meaning":"Strong signal. Preserve it as a candidate insight or future seed."}],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
+    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T19:03:10.680Z","runId":"assay-mqo5mkwc-20260621190310","assaySeed":"mqo5mkwc","verdictScale":[{"value":"dead","meaning":"No useful signal. Do not revisit unless new evidence changes the case."},{"value":"obvious","meaning":"True or plausible, but already visible from the scenario. Not discovery."},{"value":"interesting","meaning":"Worth thinking about. It changed your attention, but does not yet demand action."},{"value":"investigate","meaning":"Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work."},{"value":"keeper","meaning":"Strong signal. Preserve it as a candidate insight or future seed."}],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
     const saveState = {
       connected: false,
       reviewer: 'local',
@@ -2326,7 +2325,7 @@
         link.classList.remove('is-disabled');
         link.setAttribute('aria-disabled', 'false');
       } else {
-        copy.textContent = 'Start pnpm assay:local to save verdicts and open the live digest from this page.';
+        copy.textContent = 'Start pnpm serve to save verdicts and open the live digest from this page.';
         link.href = '#feedback';
         link.textContent = 'Review Digest unavailable';
         link.classList.add('is-disabled');
@@ -2414,7 +2413,7 @@
 
     async function saveJudgment(payload) {
       if (!saveState.connected) {
-        renderFeedback('Not saved; run pnpm assay:local for automatic local persistence.');
+        renderFeedback('Not saved; run pnpm serve for automatic local persistence.');
         return;
       }
 
@@ -2449,7 +2448,7 @@
       if (location.protocol === 'file:') {
         setSaveMode('offline', 'file mode');
         renderSaveStrip();
-        renderFeedback('Open with pnpm assay:local to save automatically.');
+        renderFeedback('Open with pnpm serve to save automatically.');
         return;
       }
 

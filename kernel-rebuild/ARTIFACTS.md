@@ -14,9 +14,9 @@ Files are for replay and investigation after the human already knows what happen
 ## Read Order
 
 1. `pnpm build` - default proof. Typecheck plus compact multi-seed board.
-2. `pnpm assay:local` - local judging front door. Regenerates Assay, Review
-   Digest, Microscope, and Architecture, serves them together, and saves verdict
-   clicks to the local judgment ledger.
+2. `pnpm serve` - local judging/viewing front door. Builds traces once, renders
+   Assay, Microscope, Architecture, and the static Architecture v2 artifact
+   together, and saves verdict clicks to the local judgment ledger.
 3. `pnpm assay:report` - helper for writing the Review Digest file without
    starting the local browser loop.
 4. `pnpm assay` - discovery-first outcome assay. Use it when you need to inspect
@@ -38,7 +38,7 @@ Files are for replay and investigation after the human already knows what happen
 | Fixture inputs | `fixtures/*.json` | yes | Reproducible seed material. |
 | Microscope tools | `tools/microscope/**` | no by default | Human translation layer; keep only while useful. |
 | Assay tools | `tools/assay.ts`, `fixtures/assay/**`, `fixtures/controls/**`, `ASSAY.md` | yes | Outcome surface for judging whether runs create useful discovery material. |
-| Judgment tools | `tools/judgments.ts`, `tools/assay-local.ts`, `tools/assay-report.ts` | yes | Local path from human verdicts to durable evidence and digest. |
+| Judgment tools | `tools/judgments.ts`, `tools/assay-report.ts`, `tools/serve.ts` | yes | Local path from human verdicts to durable evidence and digest. |
 | Local judgment ledger | `records/assay-judgments/*.jsonl` | no by default | Personal/team local verdict events; promote only by explicit decision. |
 | Generated run output | `out/**` | no | Ephemeral inspection output; regenerate with `pnpm proof:export`. |
 | Promoted proof | `records/<slug>/...` | only by decision | Keep when a run becomes evidence for a design decision or regression. |

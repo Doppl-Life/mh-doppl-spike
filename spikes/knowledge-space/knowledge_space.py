@@ -8,7 +8,7 @@ import json
 import os
 import re
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -125,6 +125,11 @@ class KnowledgeRecord:
     source_path: str
     visibility: str
     trust_tier: str
+    source_chunk_id: str
+    line_start: int
+    line_end: int
+    heading: str
+    citation: str
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -136,6 +141,11 @@ class KnowledgeRecord:
             "source_path": self.source_path,
             "visibility": self.visibility,
             "trust_tier": self.trust_tier,
+            "source_chunk_id": self.source_chunk_id,
+            "line_start": self.line_start,
+            "line_end": self.line_end,
+            "heading": self.heading,
+            "citation": self.citation,
         }
 
     @classmethod
@@ -149,6 +159,11 @@ class KnowledgeRecord:
             source_path=str(data["source_path"]),
             visibility=str(data.get("visibility", "public")),
             trust_tier=str(data.get("trust_tier", "candidate")),
+            source_chunk_id=str(data.get("source_chunk_id", f"chunk:{data['id']}")),
+            line_start=int(data.get("line_start", 1)),
+            line_end=int(data.get("line_end", data.get("line_start", 1))),
+            heading=str(data.get("heading", "")),
+            citation=str(data.get("citation", data["source_path"])),
         )
 
 
@@ -158,23 +173,70 @@ class PacketItem:
     score: float
     reason: str
 
+    @property
+    def cite_handle(self) -> str:
+        return "K" + self.record.id.removeprefix("ks_")[:6].upper()
+
+
+@dataclass(frozen=True)
+class KnowledgePacketRequest:
+    problem_summary: str
+    target_case: str
+    max_items: int
+    memory_mode: str = "auto"
+    excluded_cases: list[str] = field(default_factory=list)
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "problem_summary": self.problem_summary,
+            "target_case": self.target_case,
+            "max_items": self.max_items,
+            "memory_mode": self.memory_mode,
+            "excluded_cases": self.excluded_cases,
+        }
+
+
+@dataclass(frozen=True)
+class ExcludedKnowledgeItem:
+    case: str
+    reason: str
+
+    def to_json(self) -> dict[str, str]:
+        return {"case": self.case, "reason": self.reason}
+
 
 @dataclass(frozen=True)
 class KnowledgePacket:
     query_tags: list[str]
     items: list[PacketItem]
+    request: KnowledgePacketRequest | None = None
+    excluded: list[ExcludedKnowledgeItem] = field(default_factory=list)
 
     def to_json(self) -> dict[str, Any]:
         return {
+            "request": self.request.to_json() if self.request else None,
             "query_tags": self.query_tags,
             "items": [
                 {
+                    "cite_handle": item.cite_handle,
                     "score": item.score,
                     "reason": item.reason,
+                    "record_id": item.record.id,
+                    "source_chunk_id": item.record.source_chunk_id,
+                    "citation": item.record.citation,
                     "record": item.record.to_json(),
                 }
                 for item in self.items
             ],
+            "excluded": [item.to_json() for item in self.excluded],
+        }
+
+    def to_run_event(self, run_id: str, sequence: int) -> dict[str, Any]:
+        return {
+            "type": "knowledge.packet_selected",
+            "runId": run_id,
+            "sequence": sequence,
+            "payload": self.to_json(),
         }
 
 
@@ -239,6 +301,47 @@ def record_id(kind: str, source_case: str, source_path: str, text: str) -> str:
         f"{kind}\n{source_case}\n{source_path}\n{text}".encode("utf-8")
     ).hexdigest()[:16]
     return f"ks_{digest}"
+
+
+def source_chunk_id(source_path: str, line_start: int, line_end: int, text: str) -> str:
+    digest = hashlib.sha1(f"{source_path}\n{line_start}\n{line_end}\n{text}".encode("utf-8")).hexdigest()[:12]
+    return f"chunk:{digest}"
+
+
+def current_heading(lines: list[str], line_number: int) -> str:
+    for index in range(min(line_number - 1, len(lines) - 1), -1, -1):
+        stripped = lines[index].strip()
+        if stripped.startswith("#"):
+            return stripped.lstrip("#").strip()
+    return ""
+
+
+def sentence_line_span(text: str, sentence: str, search_start: int) -> tuple[int, int, int]:
+    compact_sentence = re.sub(r"\s+", " ", sentence).strip()
+    chars: list[str] = []
+    positions: list[int] = []
+    previous_was_space = True
+    for index, char in enumerate(text):
+        if char.isspace():
+            if not previous_was_space:
+                chars.append(" ")
+                positions.append(index)
+                previous_was_space = True
+            continue
+        chars.append(char)
+        positions.append(index)
+        previous_was_space = False
+    compact_text = "".join(chars).strip()
+    index = compact_text.find(compact_sentence, search_start)
+    if index < 0:
+        index = compact_text.find(compact_sentence)
+    if index < 0:
+        return 1, 1, search_start
+    original_start = positions[index]
+    original_end = positions[min(index + len(compact_sentence) - 1, len(positions) - 1)]
+    line_start = text[:original_start].count("\n") + 1
+    line_end = text[:original_end].count("\n") + 1
+    return line_start, line_end, index + len(compact_sentence)
 
 
 def cypher_value(value: str) -> str:
@@ -352,6 +455,50 @@ def openrouter_research_summary(
     return str(data["choices"][0]["message"]["content"]).strip()
 
 
+def validate_packet_event(event: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if event.get("type") != "knowledge.packet_selected":
+        errors.append("event type must be knowledge.packet_selected")
+    if not event.get("runId"):
+        errors.append("event missing runId")
+    if not isinstance(event.get("sequence"), int):
+        errors.append("event missing integer sequence")
+    payload = event.get("payload")
+    if not isinstance(payload, dict):
+        return errors + ["event missing payload"]
+    request = payload.get("request")
+    if not isinstance(request, dict):
+        errors.append("payload missing request")
+    else:
+        if not request.get("target_case"):
+            errors.append("request missing target_case")
+        if not request.get("max_items"):
+            errors.append("request missing max_items")
+    items = payload.get("items")
+    if not isinstance(items, list):
+        return errors + ["payload items must be a list"]
+    for index, item in enumerate(items, start=1):
+        if not isinstance(item, dict):
+            errors.append(f"item {index} must be an object")
+            continue
+        for key in ("cite_handle", "record_id", "source_chunk_id", "citation"):
+            if not item.get(key):
+                errors.append(f"item {index} missing {key}")
+        record = item.get("record")
+        if not isinstance(record, dict):
+            errors.append(f"item {index} missing record")
+            continue
+        if not record.get("source_chunk_id"):
+            errors.append(f"item {index} record missing source_chunk_id")
+        if not record.get("citation"):
+            errors.append(f"item {index} record missing citation")
+        if not record.get("trust_tier"):
+            errors.append(f"item {index} record missing trust_tier")
+        if record.get("visibility") == "withheld_evaluator":
+            errors.append(f"item {index} has evaluator-only visibility")
+    return errors
+
+
 class KnowledgeSpace:
     def __init__(self, ledger_path: Path = DEFAULT_LEDGER) -> None:
         self.ledger_path = ledger_path
@@ -380,10 +527,19 @@ class KnowledgeSpace:
             if visibility != "public" and not include_evaluator:
                 continue
             text = path.read_text(encoding="utf-8")
+            lines = text.splitlines()
+            search_start = 0
             for sentence in self._research_sentences(text):
                 kind = infer_kind(sentence)
                 source_case = case_dir.name
                 source_ref = str(path.relative_to(REPO_ROOT))
+                line_start, line_end, search_start = sentence_line_span(
+                    text,
+                    sentence,
+                    search_start,
+                )
+                heading = current_heading(lines, line_start)
+                citation = f"{source_ref}:{line_start}-{line_end}"
                 record = KnowledgeRecord(
                     id=record_id(kind, source_case, source_ref, sentence),
                     kind=kind,
@@ -393,6 +549,11 @@ class KnowledgeSpace:
                     source_path=source_ref,
                     visibility=visibility,
                     trust_tier="candidate" if visibility == "public" else "withheld",
+                    source_chunk_id=source_chunk_id(source_ref, line_start, line_end, sentence),
+                    line_start=line_start,
+                    line_end=line_end,
+                    heading=heading,
+                    citation=citation,
                 )
                 if record.id not in existing_ids:
                     self.records[record.id] = record
@@ -500,6 +661,41 @@ class KnowledgeSpace:
         scored.sort(key=lambda item: (-item.score, item.record.source_case, item.record.id))
         return KnowledgePacket(query_tags=query_tags, items=scored[:limit])
 
+    def select_packet(
+        self,
+        problem_statement: str,
+        target_case: str,
+        limit: int = 8,
+        exclude_cases: set[str] | None = None,
+    ) -> KnowledgePacket:
+        excluded_cases = sorted(exclude_cases or set())
+        base_packet = self.retrieve(problem_statement, limit=limit)
+        request = KnowledgePacketRequest(
+            problem_summary=summarize_problem(problem_statement),
+            target_case=target_case,
+            max_items=limit,
+            excluded_cases=excluded_cases,
+        )
+        excluded = [
+            ExcludedKnowledgeItem(
+                case=case,
+                reason="target case excluded from prior-memory retrieval"
+                if case == target_case
+                else "case excluded from prior-memory retrieval",
+            )
+            for case in excluded_cases
+        ]
+        return KnowledgePacket(
+            query_tags=base_packet.query_tags,
+            items=[
+                item
+                for item in base_packet.items
+                if item.record.source_case not in set(excluded_cases)
+            ][:limit],
+            request=request,
+            excluded=excluded,
+        )
+
     def graph_projection(self) -> dict[str, Any]:
         nodes: dict[str, dict[str, Any]] = {}
         edges: list[dict[str, str]] = []
@@ -525,6 +721,11 @@ class KnowledgeSpace:
                 "text": record.text,
                 "trustTier": record.trust_tier,
                 "visibility": record.visibility,
+                "sourceChunkId": record.source_chunk_id,
+                "citation": record.citation,
+                "lineStart": record.line_start,
+                "lineEnd": record.line_end,
+                "heading": record.heading,
             }
             edges.append({"source": record_id_value, "target": case_id, "type": "FROM_CASE"})
             edges.append({"source": record_id_value, "target": source_id, "type": "SUPPORTED_BY"})
@@ -563,6 +764,11 @@ class KnowledgeSpace:
                             f"r.text = {cypher_value(record.text)}",
                             f"r.trustTier = {cypher_value(record.trust_tier)}",
                             f"r.visibility = {cypher_value(record.visibility)}",
+                            f"r.sourceChunkId = {cypher_value(record.source_chunk_id)}",
+                            f"r.citation = {cypher_value(record.citation)}",
+                            f"r.lineStart = {record.line_start}",
+                            f"r.lineEnd = {record.line_end}",
+                            f"r.heading = {cypher_value(record.heading)}",
                         ]
                     )
                     + ";",
@@ -638,7 +844,12 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
         limit=3,
         exclude_cases={target_case.name},
     )
-    packet = space.retrieve(query, limit=10)
+    packet = space.select_packet(
+        query,
+        target_case=target_case.name,
+        limit=10,
+        exclude_cases={target_case.name},
+    )
     openrouter_summary = None
     if use_openrouter:
         api_key = load_openrouter_key()
@@ -655,6 +866,19 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
         json.dumps(packet.to_json(), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    packet_event = packet.to_run_event(run_id="demo-knowledge-space", sequence=1)
+    validation_errors = validate_packet_event(packet_event)
+    if validation_errors:
+        raise RuntimeError("invalid knowledge packet event: " + "; ".join(validation_errors))
+    (OUT_DIR / "knowledge_packet_event.json").write_text(
+        json.dumps(
+            packet_event,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     (OUT_DIR / "report.md").write_text(
         render_report(research_report, target_case.name, packet, openrouter_summary),
         encoding="utf-8",
@@ -666,6 +890,7 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     print(f"Research report: {(OUT_DIR / 'research_report.json').relative_to(ROOT)}")
     print(f"Report: {(OUT_DIR / 'report.md').relative_to(ROOT)}")
     print(f"Packet: {(OUT_DIR / 'knowledge_packet.json').relative_to(ROOT)}")
+    print(f"Packet event: {(OUT_DIR / 'knowledge_packet_event.json').relative_to(ROOT)}")
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
     print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")
     print(f"Retrieved {len(packet.items)} memory item(s) for {target_case.name}")
@@ -721,7 +946,7 @@ def render_report(
     for index, item in enumerate(packet.items, start=1):
         lines.extend(
             [
-                f"### {index}. {item.record.kind} from `{item.record.source_case}`",
+                f"### {index}. {item.cite_handle} - {item.record.kind} from `{item.record.source_case}`",
                 "",
                 f"Score: `{item.score}`",
                 "",
@@ -729,7 +954,9 @@ def render_report(
                 "",
                 item.record.text,
                 "",
-                f"Source: `{item.record.source_path}`",
+                f"Source: `{item.record.citation}`",
+                "",
+                f"Chunk: `{item.record.source_chunk_id}`",
                 "",
             ]
         )
@@ -753,22 +980,34 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     for node in sorted(nodes, key=lambda item: (item["type"], item["label"])):
         color = type_colors.get(node["type"], "#334155")
         text = html.escape(str(node.get("text", "")))
+        metadata = ""
+        if node["type"] == "KnowledgeRecord":
+            citation = html.escape(str(node.get("citation", "")))
+            chunk = html.escape(str(node.get("sourceChunkId", "")))
+            heading = html.escape(str(node.get("heading", "")))
+            metadata_parts = [f"<strong>Citation:</strong> {citation}", f"<strong>Chunk:</strong> {chunk}"]
+            if heading:
+                metadata_parts.append(f"<strong>Heading:</strong> {heading}")
+            metadata = "<div class=\"node-meta\">" + "<br>".join(metadata_parts) + "</div>"
         related = []
         for edge in adjacency.get(node["id"], []):
             target = node_lookup.get(edge["target"], {"label": edge["target"], "type": "Unknown"})
             related.append(f"{html.escape(edge['type'])} -> {html.escape(str(target['label']))}")
-        rows.append(
-            "\n".join(
-                [
-                    f'<article class="node-card" style="border-left-color:{color}">',
-                    f'  <div class="node-type">[{html.escape(node["type"])}]</div>',
-                    f"  <h2>{html.escape(str(node['label']))}</h2>",
-                    f"  <p>{text}</p>",
-                    f"  <ul>{''.join(f'<li>{item}</li>' for item in related[:8])}</ul>",
-                    "</article>",
-                ]
-            )
+        card_lines = [
+            f'<article class="node-card" style="border-left-color:{color}">',
+            f'  <div class="node-type">[{html.escape(node["type"])}]</div>',
+            f"  <h2>{html.escape(str(node['label']))}</h2>",
+            f"  <p>{text}</p>",
+        ]
+        if metadata:
+            card_lines.append(f"  {metadata}")
+        card_lines.extend(
+            [
+                f"  <ul>{''.join(f'<li>{item}</li>' for item in related[:8])}</ul>",
+                "</article>",
+            ]
         )
+        rows.append("\n".join(card_lines))
 
     edge_rows = "\n".join(
         f"<tr><td>{html.escape(edge['type'])}</td><td>{html.escape(edge['source'])}</td><td>{html.escape(edge['target'])}</td></tr>"
@@ -840,6 +1079,13 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       color: #64748b;
       font-size: 12px;
       font-weight: 700;
+    }}
+    .node-meta {{
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.45;
+      margin: 8px 0;
+      overflow-wrap: anywhere;
     }}
     li {{
       font-size: 12px;

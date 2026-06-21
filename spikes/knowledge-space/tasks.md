@@ -6,12 +6,12 @@ not because the goal is a disposable prototype.
 
 ## Phase 0 - Contracts And Boundaries
 
-- [ ] Define `KnowledgeNodeBase` schema.
+- [~] Define `KnowledgeNodeBase` schema.
 - [ ] Define node kind schemas: `Receipt`, `Claim`, `ResearchFinding`,
       `Hypothesis`, `HiddenVariable`, `Heuristic`, `SkillCandidate`,
       `NegativeFinding`, `CaseInsight`, `KnowledgePacket`, `CollapsePacket`.
 - [ ] Define edge enum and required edge properties.
-- [ ] Define `KnowledgePacketRequest`, `KnowledgePacket`, `PacketItem`, and
+- [~] Define `KnowledgePacketRequest`, `KnowledgePacket`, `PacketItem`, and
       `ExcludedKnowledgeItem`.
 - [ ] Define `CollapseRequest`, `CollapsePacket`, `ExtractedKnowledgeItem`, and
       `PromotionProposal`.
@@ -25,8 +25,19 @@ not because the goal is a disposable prototype.
       Neo4j driver.
 - [ ] Write leakage policy for `public`, `internal`, `withheld_evaluator`, and
       `secret_forbidden` visibility.
-- [ ] Acceptance gate: schema tests reject missing provenance, missing trust tier,
+- [x] Acceptance gate: schema tests reject missing provenance, missing trust tier,
       and evaluator-only retrieval into candidate-producing roles.
+
+### Phase 0 Walking Notes
+
+- [x] Add stable source chunk IDs, line spans, headings, and citation strings to
+      persisted `KnowledgeRecord` rows.
+- [x] Add packet item citation handles suitable for future prompt citation.
+- [x] Add `KnowledgePacketRequest`, `ExcludedKnowledgeItem`, and
+      `knowledge.packet_selected` JSON event export in the local prototype.
+- [x] Propagate citation metadata into JSONL, packet JSON, report Markdown,
+      local graph HTML, and Neo4j Cypher projection.
+- [x] Add strict schema validators for packet events and leakage rules.
 
 ## Phase 1 - Local Graph Repository
 
@@ -83,7 +94,7 @@ not because the goal is a disposable prototype.
 
 ## Phase 5 - Influence Tracking
 
-- [ ] Add citation handles to packet items.
+- [x] Add citation handles to packet items.
 - [ ] Require candidate/council outputs to cite packet handles when relying on
       memory.
 - [ ] Record `knowledge.influence_recorded` for cited items.
@@ -179,4 +190,3 @@ Build this minimal vertical slice first:
 
 The walking skeleton is complete only when the packet can be inspected, cited,
 and replayed without querying live graph state.
-

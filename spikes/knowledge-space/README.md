@@ -87,6 +87,15 @@ The OpenRouter key is read from `OPENROUTER_API_KEY` or the workspace-level
 `tokens and keys.md` file outside this Git repo. Do not copy keys into this
 folder or commit them.
 
+The demo writes both human and runtime-facing artifacts:
+
+- `data/knowledge.jsonl` - durable ledger with source chunk IDs, line spans, and citations.
+- `out/research_report.json` - selected local sources for the problem statement.
+- `out/knowledge_packet.json` - retrieval packet with `K...` citation handles.
+- `out/knowledge_packet_event.json` - future-shaped `knowledge.packet_selected` run event.
+- `out/report.md` - human-readable transfer proof with citations.
+- `out/graph.html` and `out/neo4j.cypher` - graph projections, not the source of truth.
+
 ## One Sentence
 
 Doppl Knowledge Space ingests every useful research artifact and run lesson into

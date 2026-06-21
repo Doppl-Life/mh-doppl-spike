@@ -169,3 +169,11 @@ Log each one so the next spike inherits the counter-mutation. Same falsifiabilit
 - **Repro trigger:** `grep -rn "spikes/agenotype" .` resolving to a missing dir; any Render build whose `rootDir` doesn't exist on disk.
 - **Bedrock assertion:** *(prose for now)* every path in `render.yaml`, each `spikes/*/demo` env loop, and every `cd spikes/...` in a README resolves on disk. This is exactly the first executable check [`bedrock/`](./bedrock/README.md) should own.
 - **Carry forward:** the narrative drifted from the filesystem and the immune system was empty when it happened — bedrock check #1 should be repo integrity, not idea quality.
+
+#### Doppl Prime absolute-path drift — 2026-06-21
+
+- **Crash:** crucible docs pointed agents at `/Users/michaelhabermas/repos/GAI/doppl-prime`, but the checkout lives at `/Users/michaelhabermas/repos/GAI/DOPPL/doppl-prime`; path-following agents dead-end before reading Prime.
+- **Counter-mutation:** updated the stale absolute paths in `AGENTS.md`, `README.md`, and `GLOSSARY.md` to the umbrella `DOPPL/doppl-prime` checkout.
+- **Repro trigger:** `rtk grep "/Users/michaelhabermas/repos/GAI/doppl-prime" /Users/michaelhabermas/repos/GAI/DOPPL/doppl-test/AGENTS.md /Users/michaelhabermas/repos/GAI/DOPPL/doppl-test/README.md /Users/michaelhabermas/repos/GAI/DOPPL/doppl-test/GLOSSARY.md /Users/michaelhabermas/repos/GAI/DOPPL/AGENTS.md`
+- **Bedrock assertion:** the grep returns no stale `/GAI/doppl-prime` paths in routing docs, and `rtk ls /Users/michaelhabermas/repos/GAI/DOPPL/doppl-prime` resolves.
+- **Carry forward:** repo-integrity bedrock must include absolute canonical-repo anchors, not just spike demo paths.

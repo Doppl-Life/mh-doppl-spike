@@ -24,7 +24,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ### Doppl Prime (Doppl-Prime)
 
-- **Def:** the **canonical, production-bound repo** for Doppl — the official documentation and binding source of truth where ideas that survive the crucible go to get **built and tested for real**. Lives at `/Users/michaelhabermas/repos/GAI/doppl-prime` (`github.com/Doppl-Life/doppl-prime`). `status: coined`
+- **Def:** the **canonical, production-bound repo** for Doppl — the official documentation and binding source of truth where ideas that survive the crucible go to get **built and tested for real**. Lives at `/Users/michaelhabermas/repos/GAI/DOPPL/doppl-prime` (`github.com/Doppl-Life/doppl-prime`). `status: coined`
 - **Use the full name.** Refer to it as **"Doppl Prime"** / **"Doppl-Prime"** — be specific. Bare **"Doppl"** (idearganism vs. org vs. any repo) and bare **"prime"** are ambiguous; don't auto-resolve them to this repo without context.
 - **Why:** names the **anvil** opposite this **crucible** (`doppl-test`). Prime is the **measuring stick** — crucible spikes (often unfinished or deliberately wrong) are measured against it to find divergence and where the skill family (`breakthrough` & kin) can **add to** what prime already has. Same Git caution as canon: read for grounding, change deliberately.
 - **See:** `[AGENTS.md § Doppl Prime](./AGENTS.md)`; prime's `ARCHITECTURE.md`, `IMPLEMENTATION_PLAN.md`, `docs/planning/`, `docs/gap-audits/`

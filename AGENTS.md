@@ -8,12 +8,12 @@ If you are the next agent arriving here: **do not judge this as if it were its f
 
 ## Doppl Prime — the canonical landing place
 
-**`doppl-prime` is the official, canonical repo for Doppl** — the production-bound counterpart to this crucible. It lives at `/Users/michaelhabermas/repos/GAI/doppl-prime` (remote: `github.com/Doppl-Life/doppl-prime`).
+**`doppl-prime` is the official, canonical repo for Doppl** — the production-bound counterpart to this crucible. It lives at `/Users/michaelhabermas/repos/GAI/DOPPL/doppl-prime` (remote: `github.com/Doppl-Life/doppl-prime`).
 
 - **Trigger term:** **"Doppl Prime"** / **"Doppl-Prime"** (specific, unambiguous) means *this repo* — go look there.
 - **Ambiguous, do not auto-resolve:** bare **"Doppl"** (the idearganism vs. the org vs. any repo) and bare **"prime"** have several readings. If the user uses a bare word and the target isn't clear from context, **ask** before assuming they mean `doppl-prime`.
 
-- **What it is:** where ideas that survive the crucible **go to get built and tested for real**, and where the **official documentation** lives — the binding source of truth. Key anchors: [`ARCHITECTURE.md`](/Users/michaelhabermas/repos/GAI/doppl-prime/ARCHITECTURE.md) (build contract, `§<N>` anchors), [`IMPLEMENTATION_PLAN.md`](/Users/michaelhabermas/repos/GAI/doppl-prime/IMPLEMENTATION_PLAN.md), `docs/planning/*` (REQUIREMENTS, DECISIONS/ADRs, DATA_MODEL, THREAT_MODEL, RISKS, …), `docs/gap-audits/*`, and `Doppl_Capstone_Proposal.pdf`.
+- **What it is:** where ideas that survive the crucible **go to get built and tested for real**, and where the **official documentation** lives — the binding source of truth. Key anchors: [`ARCHITECTURE.md`](/Users/michaelhabermas/repos/GAI/DOPPL/doppl-prime/ARCHITECTURE.md) (build contract, `§<N>` anchors), [`IMPLEMENTATION_PLAN.md`](/Users/michaelhabermas/repos/GAI/DOPPL/doppl-prime/IMPLEMENTATION_PLAN.md), `docs/planning/*` (REQUIREMENTS, DECISIONS/ADRs, DATA_MODEL, THREAT_MODEL, RISKS, …), `docs/gap-audits/*`, and `Doppl_Capstone_Proposal.pdf`.
 - **This repo (`doppl-test`) vs. prime:** `doppl-test` is the **crucible** — madness, open forks, mortal spikes. `doppl-prime` is the **anvil** — finalized, scoped (MVP/prototype, capstone showcase **June 29, 2026**), where the real stuff lands.
 - **How to use it:** treat prime as the **measuring stick**. Much of what we try here is unfinished or deliberately wrong; **measure it against prime** to see where we diverge, where we're going wrong, and where our crucible work (the skills — `breakthrough`, `breakout`, `blindside`, `first-principles`, `constraint-injection`, `addition-by-subtraction`, `polymath`, …) can **add to** what prime already has. Pull context from prime; don't blindly "fix" prime to match the spike.
 - **Care:** prime is canonical — apply the same [Git rule](#git) (never commit/stage there unless explicitly told). Read it for grounding; propose changes deliberately.

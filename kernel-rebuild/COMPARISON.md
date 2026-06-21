@@ -6,9 +6,6 @@
 > judge for yourselves whether the divergences are *fundamentally* sounder or just a
 > variant. Written to be fair to prime, not to win.
 
-> **Diagram:** [`diagrams/02-aligned-vs-diverge.svg`](./diagrams/02-aligned-vs-diverge.svg)
-> — the shared foundation (everything both keep) vs. the four real divergences, at a glance.
->
 > **Baseline note:** "prime" here = the **frozen binding docs** (ARCHITECTURE/IMPLEMENTATION_PLAN,
 > Jun 18), *not* the current repo. The mutagen skills and case-study corpus were added Jun
 > 19–20, after the freeze, and aren't in the binding docs — so they count as deltas, not

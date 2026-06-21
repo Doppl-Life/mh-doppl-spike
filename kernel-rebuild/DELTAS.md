@@ -68,8 +68,7 @@ locally becomes the dial that governs the engine globally.
 first-class run/lifecycle control.
 
 **Why it's strong footing:** new to the architecture, yet consonant with the team's most
-recent (un-codified) instincts. See [`SPINE.md`](./SPINE.md) and
-[`diagrams/01-kernel.svg`](./diagrams/01-kernel.svg).
+recent (un-codified) instincts. See [`SPINE.md`](./SPINE.md).
 
 ---
 
@@ -118,8 +117,7 @@ surface, Appendix-A `CandidateIdea` (now machine-generated). Reuse list in
 [`SPEC.md`](./SPEC.md).
 
 **Settled:** harvest → recover → classify → score → rank, with signed scoring, decay,
-calibration, backtest — all built and running. See
-[`diagrams/03-discovery-flow.svg`](./diagrams/03-discovery-flow.svg).
+calibration, backtest — all built and running.
 
 ---
 
@@ -322,7 +320,7 @@ demo flag, or a started-to-show-direction stub. Marked at the boundary only. (Se
   total-recall persistence — narrows prime's event-log to "is one store enough for cross-run
   collective memory?") and the **self-training flywheel** (§11, mine the record to fine-tune
   a model that then joins the deliberation — a prime §18 deferral pulled forward as a named
-  seam). Both marked at the boundary, in [`diagrams/05-seams.svg`](./diagrams/05-seams.svg).
+  seam). Both are marked at the boundary, not as demo dependencies.
 - **The one to resolve first:** §7 convergent-mode mechanics — locked in direction, open in
   detail, where the kernel's convergent half earns its keep.
 

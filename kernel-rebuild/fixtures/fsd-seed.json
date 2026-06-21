@@ -1,0 +1,215 @@
+{
+  "seed": {
+    "id": "seed-fsd-unlock",
+    "title": "FSD unlock consequence map",
+    "prompt": "Given the thesis that full self-driving crosses from maybe-someday to solved-enough deployment, surface consequences and select survivors under diverge and converge.",
+    "thesis": "Vision-based autonomy becoming legally and operationally real removes several substrates: crash risk, human driver time, traffic enforcement subjecthood, and private car ownership.",
+    "goals": [
+      "prove one shared candidate pool can support both dials",
+      "keep novelty and grounding visible until selection",
+      "show regret siblings for what the other dial would have kept"
+    ]
+  },
+  "candidates": [
+    {
+      "id": "c1",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Accident economy dries up",
+      "thesis": "The visible crash reduction branch is not just safer roads; it removes revenue and labor from insurance, plaintiff law, collision repair, trauma workflows, and organ supply.",
+      "substrate": "crash/risk event",
+      "claims": [
+        "Insurance and repair pools shrink when the crash event falls away.",
+        "Hidden dependents such as ad spend and trauma-side supply chains are downstream of accident volume."
+      ],
+      "evidence": [
+        "existing FSD accident-economy fixture",
+        "large auto insurance and collision repair markets"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.62,
+        "substrateDistance": 0.58,
+        "hiddenDependents": 0.82,
+        "signalStrength": 0.78,
+        "mechanismClarity": 0.84,
+        "falsifiability": 0.73,
+        "riskPenalty": 0.16
+      }
+    },
+    {
+      "id": "c2",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Traffic-state loses its subject",
+      "thesis": "When the human stops being the driver, the traffic stop, ticket, pretext-search, points, DUI docket, and forfeiture pipeline lose their ordinary on-ramp.",
+      "substrate": "human driver as policeable subject",
+      "claims": [
+        "A passenger cannot be cited as the driver by construction.",
+        "Fine revenue and pretext-stop authority face a dry-riverbed problem."
+      ],
+      "evidence": [
+        "existing FSD enforcement-economy fixture",
+        "traffic stop as common police-citizen contact"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.78,
+        "substrateDistance": 0.86,
+        "hiddenDependents": 0.88,
+        "signalStrength": 0.72,
+        "mechanismClarity": 0.82,
+        "falsifiability": 0.68,
+        "riskPenalty": 0.2
+      }
+    },
+    {
+      "id": "c3",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Ownership becomes fleet yield",
+      "thesis": "Autonomy attacks the privately owned idle car: finance, dealers, residual values, aftermarket repair, and parking all reprice around service fleets or owner-operated robotaxi yield.",
+      "substrate": "private car ownership",
+      "claims": [
+        "Idle time becomes monetizable only if the car can work without the owner.",
+        "The fork is pure service versus owned-autonomous fleet hybrid."
+      ],
+      "evidence": [
+        "existing FSD ownership-unwind fixture",
+        "auto debt and franchise dealer structures"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.58,
+        "substrateDistance": 0.72,
+        "hiddenDependents": 0.76,
+        "signalStrength": 0.74,
+        "mechanismClarity": 0.76,
+        "falsifiability": 0.7,
+        "riskPenalty": 0.18
+      }
+    },
+    {
+      "id": "c4",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Sleeper commute rewires geography",
+      "thesis": "Door-to-door autonomy changes the 200-700 mile band: sleeping or working through travel collapses the felt cost of distance and welds labor markets into megaregions.",
+      "substrate": "driver time and distance friction",
+      "claims": [
+        "The strongest travel substitution is not urban robotaxi; it is intercity time conversion.",
+        "Real estate and labor pools reprice when commute radius stops meaning active driving."
+      ],
+      "evidence": [
+        "existing FSD mobility-and-time fixture",
+        "door-to-door travel versus aviation weak bands"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.7,
+        "substrateDistance": 0.8,
+        "hiddenDependents": 0.72,
+        "signalStrength": 0.6,
+        "mechanismClarity": 0.7,
+        "falsifiability": 0.63,
+        "riskPenalty": 0.24
+      }
+    },
+    {
+      "id": "c5",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Adoption asymmetry creates border arbitrage",
+      "thesis": "FSD arrives unevenly, so the edge lives at the boundary: believers versus disbelievers, served metros versus laggards, and leapfrog regions that skip old car ownership patterns.",
+      "substrate": "uneven deployment boundary",
+      "claims": [
+        "Average-arrival stories miss where the future is already real.",
+        "The boundary between served and unserved regions creates arbitrage."
+      ],
+      "evidence": [
+        "existing FSD adoption-asymmetry fixture",
+        "geofenced deployment reality"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.66,
+        "substrateDistance": 0.74,
+        "hiddenDependents": 0.68,
+        "signalStrength": 0.66,
+        "mechanismClarity": 0.66,
+        "falsifiability": 0.6,
+        "riskPenalty": 0.16
+      }
+    },
+    {
+      "id": "c6",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Fleet compute becomes mobile edge",
+      "thesis": "A large autonomous fleet could become a distributed sensing and compute substrate, turning parked or low-utilization vehicles into mobile edge infrastructure.",
+      "substrate": "fleet as compute substrate",
+      "claims": [
+        "Vehicles already carry sensors, power, and networked compute.",
+        "Idle fleet time might be a latent asset beyond transport."
+      ],
+      "evidence": [
+        "speculative seam noted in FSD cluster",
+        "vehicle compute trends"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.9,
+        "substrateDistance": 0.92,
+        "hiddenDependents": 0.64,
+        "signalStrength": 0.44,
+        "mechanismClarity": 0.48,
+        "falsifiability": 0.42,
+        "riskPenalty": 0.34
+      }
+    },
+    {
+      "id": "c7",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "LiDAR retrofit inventory is not a lead",
+      "thesis": "Competitors with deployed LiDAR-heavy fleets may own expensive inventory rather than durable advantage if camera-only OTA economics dominate the cost curve.",
+      "substrate": "autonomy stack cost structure",
+      "claims": [
+        "Deployment count can mislead if the cost structure is wrong.",
+        "The curve matters more than static fleet snapshots."
+      ],
+      "evidence": [
+        "FSD solved-but-market-not-repriced method",
+        "camera-only versus sensor-heavy autonomy debate"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.5,
+        "substrateDistance": 0.56,
+        "hiddenDependents": 0.42,
+        "signalStrength": 0.82,
+        "mechanismClarity": 0.78,
+        "falsifiability": 0.66,
+        "riskPenalty": 0.18
+      }
+    },
+    {
+      "id": "c8",
+      "parentId": "seed-fsd-unlock",
+      "subtype": "zeitgeist_synthesis",
+      "title": "Movement metering replaces fine revenue",
+      "thesis": "The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.",
+      "substrate": "state revenue replacement",
+      "claims": [
+        "Governments do not let transport revenue lines die quietly.",
+        "Autonomous fleets make road-use pricing technically easier."
+      ],
+      "evidence": [
+        "existing FSD enforcement-economy fixture",
+        "road-use charging policy precedents"
+      ],
+      "metrics": {
+        "sourceAbsence": 0.6,
+        "substrateDistance": 0.68,
+        "hiddenDependents": 0.78,
+        "signalStrength": 0.76,
+        "mechanismClarity": 0.8,
+        "falsifiability": 0.72,
+        "riskPenalty": 0.2
+      }
+    }
+  ]
+}

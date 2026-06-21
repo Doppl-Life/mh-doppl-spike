@@ -85,6 +85,12 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 - **Why:** skills are convergent organs (mutate, diverge, converge); the file is mortal, the lineage survives. Agora verdicts select on the lineage (promote/mutate/deprecate), closing the loop between ideas and the strategies that produce them.
 - **See:** Convergent skills, Verdict; `[skills/README.md](./skills/README.md)`; `[TREATISE.md](./TREATISE.md)` § VIII-b
 
+### Lineage Ledger
+
+- **Def:** the global append-only memory of candidate ideas, parentage, mutations, claimed deltas, nearest priors, delta classes, convergence clusters, and operational watch triggers across Doppl runs. `status: coined`
+- **Why:** lets future runs ask "are we taking the next step or just saying the same thing again?" without starting from a blank page. It blocks dead rehash, preserves enriching convergence, and feeds skills like `breakout` with the actual tried paths.
+- **See:** `[kernel-rebuild/docs/lineage-ledger.schema.md](./kernel-rebuild/docs/lineage-ledger.schema.md)`, `[kernel-rebuild/OPERATIONAL_WATCHLIST.md](./kernel-rebuild/OPERATIONAL_WATCHLIST.md)`, Knowledge Space
+
 ---
 
 ## Reproduction & population
@@ -233,6 +239,12 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 ## Process motifs
 
+### Operational Watchlist
+
+- **Def:** the human-readable register of process patterns to watch during Doppl runs: failures, near-failures, and ambiguous signals that need ledger evidence before becoming bugs or doctrine. `status: coined`
+- **Why:** separates "watch this during the organism's operation" from confirmed reward hacks (`BUGS_AND_MITIGATIONS.md`) and durable lessons (`LESSONS_AND_BANGERS.md`).
+- **See:** `[kernel-rebuild/OPERATIONAL_WATCHLIST.md](./kernel-rebuild/OPERATIONAL_WATCHLIST.md)`, Lineage Ledger
+
 ### Rite of the Spawncidence
 
 - **Def:** the act of you-and-I (human + agent, both Lα) deliberately spawning experiments to witness the process. Working short form: **Rite of Spawning.** `status: coined`
@@ -361,6 +373,7 @@ This spike coins terms fast. This file is where we **define and redefine** them 
 
 | Date       | Term             | Change                                                                                |
 | ---------- | ---------------- | ------------------------------------------------------------------------------------- |
+| 2026-06-21 | Operational Watchlist / Lineage Ledger | Coined — process watch surface plus global run-appended lineage/delta memory contract; distinguishes rehash from enrichment and convergence signal. |
 | 2026-06-20 | Zeitgeist synthesis / Cross-domain transfer | Stabilized the subtype distinction: transfer is mechanism-first and timing-incidental; zeitgeist is timing-first with current signals, why-now, and falsifiable predictions. |
 | 2026-06-20 | Why-now / Current signal | Coined — the timing and evidence primitives that make a zeitgeist thesis judgeable rather than trend narration. |
 | 2026-06-20 | Latent-asset unlock / Discovered attack | Coined — the NVIDIA-shaped pattern where an exogenous shift unlocks an existing asset, and attention misses the downfield effect. |

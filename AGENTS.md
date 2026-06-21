@@ -37,6 +37,16 @@ The other two postures — *push back hard* (find the failure mode before it fin
 
 Case-study mining added two reusable discriminators. For `cross_domain_transfer`, ask whether the mechanism would still work five years earlier/later; if yes, timing is incidental and the transfer map is the point. For `zeitgeist_synthesis`, timing is load-bearing: run the ±5-year test, demand dated current signals, recover why-now, and make the thesis falsifiable. For big unlocks, map breadth first, group branches by substrate removed, take fertile branches deep, then synthesize the convergence ("perfect Pepsis" / dry-riverbed / adoption-asymmetry moves).
 
+## Frequently used skill call-outs
+
+These are operational tools to reach for at specific moments. Read the linked `SKILL.md` before running one.
+
+- [`$deslop`](/Users/michaelhabermas/.agents/skills/deslop/SKILL.md) — after a branch has working changes, inspect the diff against main and remove AI slop: extra comments, abnormal defensive code, `any` casts, nesting, and style drift. Keep behavior unchanged.
+- [`$improve-codebase-architecture`](/Users/michaelhabermas/.agents/skills/improve-codebase-architecture/SKILL.md) — when the goal is architectural improvement: find shallow modules, tight coupling, and testability pain; surface candidates first, then explore one into interface/RFC options.
+- [`$thermo-nuclear-code-quality-review`](/Users/michaelhabermas/.agents/skills/thermo-nuclear-code-quality-review/SKILL.md) — for an unusually strict maintainability review of branch changes. Treat structural regressions, file-size blowups, spaghetti branching, weak boundaries, and missed code-judo simplifications as blockers.
+- [`/type-design-analyzer`](/Users/michaelhabermas/.claude/skills/type-design-analyzer/SKILL.md) — when introducing or refactoring types, or preparing a PR with new types. Rate encapsulation, invariant expression, invariant usefulness, and enforcement; push illegal states toward unrepresentable.
+- [`$doc-sync`](/Users/michaelhabermas/.agents/skills/doc-sync/SKILL.md) — when documentation may have drifted from code. Default report-only; use `fix` only when explicitly asked, and sync docs to actual code reality rather than intent.
+
 ## CodeGraph
 
 - Run `codegraph sync /Users/michaelhabermas/repos/GAI/DOPPL/doppl-test` after meaningful edits or branch changes.
@@ -56,6 +66,8 @@ This repo is a Doppl spike. As you explore, log durable findings in the right re
 | A design fork — chose A over B, reason matters later | [MEMORY.md](./MEMORY.md) (Fork Register) | Chose / Over / Because / Revisit if |
 | A timeless meta-concept — reframes the problem, not one prompt's answer | [LESSONS_AND_BANGERS.md](./LESSONS_AND_BANGERS.md) | Banger / Lesson / Evidence / Carry forward |
 | A transferable problem-solving instinct — a move that works or a trap to avoid, general across domains (object-level, not about how Doppl works) | [HEURISTICS.md](./HEURISTICS.md) (the tribe's instincts) | Move / Trap (one line, optional one-clause example) |
+| An operational watch item — a process pattern to monitor during runs, including possible convergence signals | [kernel-rebuild/OPERATIONAL_WATCHLIST.md](./kernel-rebuild/OPERATIONAL_WATCHLIST.md) | Watch for / Why it matters / Ledger evidence / Response / Carry forward |
+| A machine-readable lineage/delta memory contract | [kernel-rebuild/docs/lineage-ledger.schema.md](./kernel-rebuild/docs/lineage-ledger.schema.md) | Scope / Phase / Delta class / Retrieval use / Invariants |
 | A proxy win — optimized for something easier than a genuinely good idea | [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md) → Reward-Hack Register | Proxy optimized / Bedrock check / Repro trigger / Bedrock assertion |
 | A crash or plumbing failure in the reproductive loop | [BUGS_AND_MITIGATIONS.md](./BUGS_AND_MITIGATIONS.md) → Crashes & plumbing | Crash / Repro trigger / Bedrock assertion |
 | How to run or demo a spike | the spike's own `spikes/<name>/README.md` | — (operational only; not for ideas) |
@@ -68,6 +80,7 @@ This repo is a Doppl spike. As you explore, log durable findings in the right re
 - **One idea, one home.** Pick the primary register; link to siblings when the same moment spans categories (e.g. a fork that also teaches a banger).
 - **Write during exploration**, not only at the end — the next spike inherits these logs.
 - **Falsify reward hacks and crashes** — every entry needs a repro trigger and a bedrock assertion that passes or fails.
+- **Promote watch items only when proven** — operational watch items stay in the watchlist until a concrete reward hack, crash, or fork decision needs a stricter register.
 - **Carry forward** on every entry: one line for the next spike or kernel owner.
 
 **Do not** duplicate README content in the registers, or dump transient debug notes into MEMORY / LESSONS / BUGS.

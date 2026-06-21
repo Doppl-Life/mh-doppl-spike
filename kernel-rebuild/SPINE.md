@@ -4,13 +4,6 @@
 > the build plan is in `SPEC.md`. This doc is the *why* — the thing every build
 > decision should trace back to. Keep it short on purpose.
 
----
-
-> **Diagrams:** [`diagrams/01-kernel.svg`](./diagrams/01-kernel.svg) (one engine, two
-> directions) · [`diagrams/04-fitness-space.svg`](./diagrams/04-fitness-space.svg) (the two
-> warring axes) · [`diagrams/03-discovery-flow.svg`](./diagrams/03-discovery-flow.svg)
-> (discovery, inputs→outputs).
-
 ## The one-sentence version
 
 **There is one kernel — *generation under selection* — and everything Doppl does is

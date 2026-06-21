@@ -1,0 +1,20 @@
+{
+  "name": "doppl-kernel-rebuild",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.3",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm typecheck && pnpm kernel:compare",
+    "kernel": "node --experimental-strip-types src/cli.ts",
+    "kernel:compare": "node --experimental-strip-types src/cli.ts --dial=diverge --out-dir=out/compare",
+    "kernel:diverge": "node --experimental-strip-types src/cli.ts --dial=diverge --out-dir=out/diverge",
+    "kernel:converge": "node --experimental-strip-types src/cli.ts --dial=converge --out-dir=out/converge",
+    "kernel:both": "pnpm kernel:diverge && pnpm kernel:converge"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "typescript": "^6.0.3"
+  }
+}

@@ -146,6 +146,16 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Bedrock assertion:** the branch is either merged into an existing case, parked as a seam, or de-scoped; no unbounded cluster growth
 - **Carry forward:** "Go nuts" still needs metabolism.
 
+### Report theater — 2026-06-21
+
+- **Proxy optimized:** volume of visibility artifacts instead of human decision speed — producing reports, traces, and tables that are theoretically inspectable but practically unread
+- **Bedrock check:** least-process proof surface: `kernel-rebuild` stdout and `run-digest.md` should show verdict, changed survivor, stable survivors, failed checks, and drill-down paths without requiring the long report
+- **Symptom:** `run-report.md` became the default human surface; it was complete but too long, so the user reasonably refused to read it
+- **Counter-mutation:** digest-first visibility, short console digest, ignored ephemeral `out/**`, and [kernel artifact kill rules](./kernel-rebuild/ARTIFACTS.md)
+- **Repro trigger:** `cd kernel-rebuild && rtk pnpm build` produces only paths or a long report as the first human-readable proof surface
+- **Bedrock assertion:** the proof path is as small as the domain allows; for this slice, the command prints a compact PASS/FAIL summary with survivor delta and failed checks, while `run-report.md` is drill-down only, not required reading
+- **Carry forward:** visibility is a budget; data may be rich, but mandatory human reading must be aggressively cut.
+
 ## Crashes & plumbing
 
 This spike runs a test of the reproductive loop. The reproductive loop is the core of Doppl’s evolutionary loop, and it’s the part that’s most likely to crash.

@@ -24,6 +24,7 @@ doppl-test/
   Doppl_Capstone_Proposal_volume_2.txt   ← seed proposal
   bedrock/                     ← immovable anchor (checks + Agora verdict schema)
   case-studies/                ← fixture corpus + subtype lab (transfer, zeitgeist, unlock clusters)
+  kernel-rebuild/              ← active self-contained kernel rebuild workspace
   skills/                      ← skill lineage registry
   harness/                     ← (embryology) run all spikes, compare traces
   render.yaml                  ← deploy (serves the Agarden hub)
@@ -45,8 +46,9 @@ doppl-test/
 6. [`TREATISE.md`](./TREATISE.md) — where the thinking is now (strata, uncle/nephew, amemetics, Lα)
 7. [`DIAGRAMS.md`](./DIAGRAMS.md) — the same thing, drawn (start here if you're visual)
 8. [`LESSONS_AND_BANGERS.md`](./LESSONS_AND_BANGERS.md) — the gems, atomized
-9. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
-10. [`HEURISTICS.md`](./HEURISTICS.md) — the tribe's instincts: portable problem-solving moves + traps, condensed as priors
+9. [`kernel-rebuild/`](./kernel-rebuild/) — active rebuild workspace: kernel spine, runnable artifact, operational watchlist, lineage ledger contract
+10. [`MEMORY.md`](./MEMORY.md) / [`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md) — forks and falsifiable hazards
+11. [`HEURISTICS.md`](./HEURISTICS.md) — the tribe's instincts: portable problem-solving moves + traps, condensed as priors
 
 ## Run a spike
 

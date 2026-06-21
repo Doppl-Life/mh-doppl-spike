@@ -1013,6 +1013,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         f"<tr><td>{html.escape(edge['type'])}</td><td>{html.escape(edge['source'])}</td><td>{html.escape(edge['target'])}</td></tr>"
         for edge in edges
     )
+    graph_json = html.escape(json.dumps(graph, sort_keys=True)).replace("</", "<\\/")
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1040,6 +1041,124 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       grid-template-columns: minmax(0, 1fr);
       gap: 20px;
       padding: 24px;
+    }}
+    .workbench {{
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr) 320px;
+      gap: 16px;
+      align-items: stretch;
+    }}
+    .panel {{
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 14px;
+      min-width: 0;
+    }}
+    .panel h2 {{
+      font-size: 15px;
+      margin: 0 0 10px;
+    }}
+    .controls {{
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }}
+    label {{
+      color: #475569;
+      display: grid;
+      font-size: 12px;
+      font-weight: 700;
+      gap: 6px;
+    }}
+    input {{
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      font: inherit;
+      padding: 9px 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }}
+    input:focus, button:focus {{
+      outline: 2px solid #0f766e;
+      outline-offset: 2px;
+    }}
+    .filter-grid {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }}
+    button {{
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      cursor: pointer;
+      font: inherit;
+      padding: 8px 9px;
+      text-align: left;
+    }}
+    button.active {{
+      background: #0f766e;
+      border-color: #0f766e;
+      color: white;
+    }}
+    .graph-panel {{
+      min-height: 520px;
+      overflow: hidden;
+      position: relative;
+    }}
+    #graph-canvas {{
+      background:
+        linear-gradient(#e2e8f0 1px, transparent 1px),
+        linear-gradient(90deg, #e2e8f0 1px, transparent 1px),
+        #f8fafc;
+      background-size: 32px 32px;
+      border: 1px solid #cbd5e1;
+      height: 520px;
+      width: 100%;
+    }}
+    .graph-edge {{
+      stroke: #94a3b8;
+      stroke-width: 1.4;
+      opacity: 0.65;
+    }}
+    .graph-node circle {{
+      cursor: pointer;
+      filter: drop-shadow(0 2px 3px rgb(15 23 42 / 0.16));
+      stroke: white;
+      stroke-width: 2;
+    }}
+    .graph-node text {{
+      fill: #0f172a;
+      font-size: 11px;
+      pointer-events: none;
+    }}
+    .graph-node.dim, .graph-edge.dim {{
+      opacity: 0.08;
+    }}
+    .graph-node.active circle {{
+      stroke: #0f172a;
+      stroke-width: 3;
+    }}
+    .detail-empty {{
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.45;
+    }}
+    .detail-kv {{
+      color: #334155;
+      font-size: 12px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }}
+    .detail-text {{
+      border-top: 1px solid #e2e8f0;
+      color: #0f172a;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 10px;
+      max-height: 230px;
+      overflow: auto;
+      padding-top: 10px;
     }}
     .summary {{
       display: flex;
@@ -1107,6 +1226,14 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     th {{
       background: #e2e8f0;
     }}
+    @media (max-width: 920px) {{
+      .workbench {{
+        grid-template-columns: 1fr;
+      }}
+      #graph-canvas {{
+        height: 440px;
+      }}
+    }}
   </style>
 </head>
 <body>
@@ -1120,6 +1247,30 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       <div class="metric"><strong>{len(edges)}</strong><br>edges</div>
       <div class="metric"><strong>{sum(1 for node in nodes if node['type'] == 'KnowledgeRecord')}</strong><br>KnowledgeRecord nodes</div>
     </section>
+    <section class="workbench" aria-label="Interactive knowledge graph workbench">
+      <aside class="panel controls">
+        <h2>Filter</h2>
+        <label for="graph-search">
+          Search nodes
+          <input id="graph-search" type="search" placeholder="case, tag, citation, text">
+        </label>
+        <div class="filter-grid" role="group" aria-label="Node type filter">
+          <button type="button" class="active" data-filter="all">All</button>
+          <button type="button" data-filter="KnowledgeRecord">Records</button>
+          <button type="button" data-filter="Case">Cases</button>
+          <button type="button" data-filter="Source">Sources</button>
+          <button type="button" data-filter="Tag">Tags</button>
+        </div>
+      </aside>
+      <section class="panel graph-panel">
+        <h2>Graph</h2>
+        <svg id="graph-canvas" role="img" aria-label="Knowledge graph projection"></svg>
+      </section>
+      <aside class="panel" id="node-detail">
+        <h2>Selection</h2>
+        <div class="detail-empty">Select a node to inspect its text, source citation, and outgoing relationships.</div>
+      </aside>
+    </section>
     <section class="cards">
       {''.join(rows)}
     </section>
@@ -1131,6 +1282,150 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       </table>
     </section>
   </main>
+  <script type="application/json" id="graph-data">{graph_json}</script>
+  <script>
+    const graphData = JSON.parse(document.getElementById("graph-data").textContent);
+    const colors = {{
+      Case: "#0f766e",
+      KnowledgeRecord: "#7c3aed",
+      Source: "#475569",
+      Tag: "#c2410c"
+    }};
+    const svg = document.getElementById("graph-canvas");
+    const detail = document.getElementById("node-detail");
+    const search = document.getElementById("graph-search");
+    let activeFilter = "all";
+    let selectedNodeId = null;
+
+    function nodeMatches(node) {{
+      const term = search.value.trim().toLowerCase();
+      const typeMatches = activeFilter === "all" || node.type === activeFilter;
+      if (!typeMatches) return false;
+      if (!term) return true;
+      return [
+        node.id,
+        node.label,
+        node.type,
+        node.kind,
+        node.text,
+        node.citation,
+        node.sourceChunkId,
+        node.heading
+      ].filter(Boolean).join(" ").toLowerCase().includes(term);
+    }}
+
+    function layoutNodes(width, height) {{
+      const buckets = ["Case", "Source", "KnowledgeRecord", "Tag"];
+      const byType = Object.fromEntries(buckets.map((type) => [type, []]));
+      graphData.nodes.forEach((node) => {{
+        (byType[node.type] || byType.KnowledgeRecord).push(node);
+      }});
+      const positions = new Map();
+      buckets.forEach((type, column) => {{
+        const items = byType[type] || [];
+        const x = 70 + column * ((width - 140) / Math.max(1, buckets.length - 1));
+        items.forEach((node, index) => {{
+          const y = 58 + index * ((height - 116) / Math.max(1, items.length - 1));
+          positions.set(node.id, {{ x, y }});
+        }});
+      }});
+      return positions;
+    }}
+
+    function showDetail(node) {{
+      selectedNodeId = node.id;
+      const outgoing = graphData.edges
+        .filter((edge) => edge.source === node.id)
+        .slice(0, 12)
+        .map((edge) => {{
+          const target = graphData.nodes.find((candidate) => candidate.id === edge.target);
+          return `<li>${{edge.type}} -> ${{target ? escapeHtml(target.label) : escapeHtml(edge.target)}}</li>`;
+        }})
+        .join("");
+      const citation = node.citation ? `<div class="detail-kv"><strong>Citation:</strong> ${{escapeHtml(node.citation)}}</div>` : "";
+      const chunk = node.sourceChunkId ? `<div class="detail-kv"><strong>Chunk:</strong> ${{escapeHtml(node.sourceChunkId)}}</div>` : "";
+      const heading = node.heading ? `<div class="detail-kv"><strong>Heading:</strong> ${{escapeHtml(node.heading)}}</div>` : "";
+      const text = node.text ? `<div class="detail-text">${{escapeHtml(node.text)}}</div>` : "";
+      detail.innerHTML = `
+        <h2>${{escapeHtml(node.label)}}</h2>
+        <div class="detail-kv"><strong>Type:</strong> ${{escapeHtml(node.type)}}</div>
+        ${{citation}}${{chunk}}${{heading}}${{text}}
+        <div class="detail-kv"><strong>Outgoing:</strong></div>
+        <ul>${{outgoing || "<li>None</li>"}}</ul>
+      `;
+      renderGraph();
+    }}
+
+    function escapeHtml(value) {{
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }}
+
+    function renderGraph() {{
+      const width = svg.clientWidth || 900;
+      const height = svg.clientHeight || 520;
+      svg.setAttribute("viewBox", `0 0 ${{width}} ${{height}}`);
+      svg.innerHTML = "";
+      const positions = layoutNodes(width, height);
+      const visible = new Set(graphData.nodes.filter(nodeMatches).map((node) => node.id));
+      graphData.edges.forEach((edge) => {{
+        const from = positions.get(edge.source);
+        const to = positions.get(edge.target);
+        if (!from || !to) return;
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", from.x);
+        line.setAttribute("y1", from.y);
+        line.setAttribute("x2", to.x);
+        line.setAttribute("y2", to.y);
+        line.setAttribute("class", "graph-edge" + (visible.has(edge.source) && visible.has(edge.target) ? "" : " dim"));
+        svg.appendChild(line);
+      }});
+      graphData.nodes.forEach((node) => {{
+        const position = positions.get(node.id);
+        if (!position) return;
+        const matched = visible.has(node.id);
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttribute("class", "graph-node" + (matched ? "" : " dim") + (selectedNodeId === node.id ? " active" : ""));
+        group.setAttribute("tabindex", "0");
+        group.setAttribute("role", "button");
+        group.setAttribute("aria-label", `${{node.type}} ${{node.label}}`);
+        group.addEventListener("click", () => showDetail(node));
+        group.addEventListener("keydown", (event) => {{
+          if (event.key === "Enter" || event.key === " ") {{
+            event.preventDefault();
+            showDetail(node);
+          }}
+        }});
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", position.x);
+        circle.setAttribute("cy", position.y);
+        circle.setAttribute("r", node.type === "KnowledgeRecord" ? 12 : 10);
+        circle.setAttribute("fill", colors[node.type] || "#334155");
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", position.x + 15);
+        label.setAttribute("y", position.y + 4);
+        label.textContent = String(node.label).slice(0, 34);
+        group.appendChild(circle);
+        group.appendChild(label);
+        svg.appendChild(group);
+      }});
+    }}
+
+    search.addEventListener("input", renderGraph);
+    document.querySelectorAll("[data-filter]").forEach((button) => {{
+      button.addEventListener("click", () => {{
+        activeFilter = button.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach((candidate) => candidate.classList.remove("active"));
+        button.classList.add("active");
+        renderGraph();
+      }});
+    }});
+    window.addEventListener("resize", renderGraph);
+    renderGraph();
+  </script>
 </body>
 </html>
 """

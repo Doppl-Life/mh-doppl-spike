@@ -53,6 +53,16 @@ not because the goal is a disposable prototype.
 - [ ] Acceptance gate: clean rebuild from exported receipts creates the same node
       IDs and source links.
 
+### Phase 1 Walking Notes
+
+- [x] Add a local visual graph workbench projection in `out/graph.html`.
+- [x] Support search, node-type filters, SVG graph inspection, and a details
+      panel with citation/chunk metadata.
+- [ ] Add promotion/review actions to the visual workbench once promotion
+      workflow exists.
+- [ ] Add run/candidate/provenance nodes to the graph after collapse/write-back
+      exists.
+
 ## Phase 2 - Run Event Ingestion
 
 - [ ] Add ordered run-event export reader.

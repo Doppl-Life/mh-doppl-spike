@@ -94,7 +94,8 @@ The demo writes both human and runtime-facing artifacts:
 - `out/knowledge_packet.json` - retrieval packet with `K...` citation handles.
 - `out/knowledge_packet_event.json` - future-shaped `knowledge.packet_selected` run event.
 - `out/report.md` - human-readable transfer proof with citations.
-- `out/graph.html` and `out/neo4j.cypher` - graph projections, not the source of truth.
+- `out/graph.html` - interactive local graph workbench with search, filters, SVG graph inspection, and citation details.
+- `out/neo4j.cypher` - Neo4j import projection, not the source of truth.
 
 ## One Sentence
 

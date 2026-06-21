@@ -191,6 +191,22 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertIn("FROM_CASE", html)
             self.assertIn("Citation:", html)
 
+    def test_html_graph_is_an_interactive_workbench(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            html_path = Path(tmp) / "graph.html"
+
+            space.write_graph_html(html_path)
+            html = html_path.read_text(encoding="utf-8")
+
+            self.assertIn('id="graph-search"', html)
+            self.assertIn('data-filter="KnowledgeRecord"', html)
+            self.assertIn('id="graph-canvas"', html)
+            self.assertIn('id="node-detail"', html)
+            self.assertIn('application/json" id="graph-data"', html)
+            self.assertIn("renderGraph()", html)
+
     def test_research_problem_finds_and_ingests_relevant_cases(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")

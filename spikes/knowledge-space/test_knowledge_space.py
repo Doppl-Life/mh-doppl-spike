@@ -206,6 +206,9 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertIn('id="node-detail"', html)
             self.assertIn('application/json" id="graph-data"', html)
             self.assertIn("renderGraph()", html)
+            graph_json = html.split('id="graph-data">', 1)[1].split("</script>", 1)[0]
+            self.assertNotIn("&quot;", graph_json)
+            self.assertIn('"nodes"', graph_json)
 
     def test_research_problem_finds_and_ingests_relevant_cases(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -1013,7 +1013,11 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         f"<tr><td>{html.escape(edge['type'])}</td><td>{html.escape(edge['source'])}</td><td>{html.escape(edge['target'])}</td></tr>"
         for edge in edges
     )
-    graph_json = html.escape(json.dumps(graph, sort_keys=True)).replace("</", "<\\/")
+    graph_json = (
+        json.dumps(graph, sort_keys=True)
+        .replace("<", "\\u003c")
+        .replace("</", "<\\/")
+    )
     return f"""<!doctype html>
 <html lang="en">
 <head>

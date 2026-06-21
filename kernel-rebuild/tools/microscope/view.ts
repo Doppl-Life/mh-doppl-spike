@@ -1,9 +1,11 @@
+// Renders a disposable HTML microscope over one RunTrace.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assertSeedFixture } from '../../src/contracts/index.ts';
 import type { Dial, RunTrace, SelectedCandidate } from '../../src/contracts/index.ts';
 import { buildRunTrace } from '../../src/trace.ts';
+import { capstoneDemoLens } from '../lens-config.ts';
 import { ideaSentence } from './glossary.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -54,6 +56,21 @@ function replacement(trace: RunTrace): { from?: SelectedCandidate; to?: Selected
   };
 }
 
+function swapText(trace: RunTrace): string {
+  const swap = replacement(trace);
+  if (swap.from && swap.to) return `${ideaSentence(swap.from)} -> ${ideaSentence(swap.to)}`;
+
+  const focusIds = trace.comparison.focus.selected.map((candidate) => candidate.id);
+  const alternateIds = trace.comparison.alternate.selected.map((candidate) => candidate.id);
+  const rankShift = focusIds.find((id, index) => alternateIds[index] && alternateIds[index] !== id);
+  if (!rankShift) return 'No swap';
+
+  const focus = trace.comparison.focus.selected.find((candidate) => candidate.id === rankShift);
+  const alternate = trace.comparison.alternate.selected.find((candidate) => candidate.id === alternateIds[focusIds.indexOf(rankShift)]);
+  if (!focus || !alternate) return 'Rank changed';
+  return `Rank changed: ${ideaSentence(focus)} <> ${ideaSentence(alternate)}`;
+}
+
 function stableIds(trace: RunTrace): Set<string> {
   return new Set(
     trace.comparison.contrasts
@@ -62,7 +79,12 @@ function stableIds(trace: RunTrace): Set<string> {
   );
 }
 
-function card(candidate: SelectedCandidate, tone: 'stable' | 'swap' | 'normal'): string {
+function lensScore(trace: RunTrace, candidateId: string): string {
+  const score = trace.lensResults.flatMap((result) => result.scores).find((item) => item.candidateId === candidateId);
+  return score ? score.score.toFixed(2) : 'n/a';
+}
+
+function card(trace: RunTrace, candidate: SelectedCandidate, tone: 'stable' | 'swap' | 'normal'): string {
   const title = `${candidate.title}: novelty ${candidate.fitness.novelty.toFixed(2)}, grounding ${candidate.fitness.grounding.toFixed(2)}`;
   return `
     <article class="card ${tone}" title="${escapeHtml(title)}">
@@ -70,6 +92,8 @@ function card(candidate: SelectedCandidate, tone: 'stable' | 'swap' | 'normal'):
       <div class="scores">
         <span>surprise ${candidate.fitness.novelty.toFixed(2)}</span>
         <span>evidence ${candidate.fitness.grounding.toFixed(2)}</span>
+        <span>decay ${candidate.fitness.decay.factor.toFixed(2)}</span>
+        <span>lens ${lensScore(trace, candidate.id)}</span>
       </div>
     </article>`;
 }
@@ -80,7 +104,7 @@ function renderCards(trace: RunTrace, side: 'focus' | 'alternate'): string {
   return trace.comparison[side].selected
     .map((candidate) => {
       const tone = stable.has(candidate.id) ? 'stable' : candidate.id === swap.from?.id || candidate.id === swap.to?.id ? 'swap' : 'normal';
-      return card(candidate, tone);
+      return card(trace, candidate, tone);
     })
     .join('\n');
 }
@@ -136,6 +160,70 @@ function flowArrow(label: string): string {
   return `<div class="flow-arrow" aria-hidden="true"><span>${escapeHtml(label)}</span></div>`;
 }
 
+function generationText(trace: RunTrace): string {
+  const generation = trace.generations.find((item) => item.index === 2);
+  if (!generation) return 'Generation 2 not run';
+  return `Generation 2 ${generation.quality}: ${generation.detail}`;
+}
+
+function decayLensText(trace: RunTrace): string {
+  const selected = trace.comparison.focus.selected[0];
+  const decay = selected ? `${selected.id} decay ${selected.fitness.decay.factor.toFixed(2)}` : 'no selected candidate';
+  const lens = trace.lensResults[0];
+  const best = lens?.scores.slice().sort((a, b) => b.score - a.score)[0];
+  const lensText = lens && best ? `${lens.label} best ${best.candidateId} ${best.score.toFixed(2)}` : 'no lens result';
+  return `${decay}; ${lensText}`;
+}
+
+function failedCheckText(trace: RunTrace): string {
+  const failed = trace.goalChecks.filter((check) => !check.passed);
+  return failed.length ? failed.map((check) => check.id).join(', ') : 'none';
+}
+
+function goalPassed(trace: RunTrace, id: string): boolean {
+  return trace.goalChecks.some((check) => check.id === id && check.passed);
+}
+
+function proofTile(label: string, value: string, detail: string, tone: 'good' | 'warn' | 'plain' = 'plain'): string {
+  return `
+    <article class="proof-tile ${tone}">
+      <div class="proof-label">${escapeHtml(label)}</div>
+      <div class="proof-value">${escapeHtml(value)}</div>
+      <p>${escapeHtml(detail)}</p>
+    </article>`;
+}
+
+function renderRunState(trace: RunTrace): string {
+  const generation2 = trace.generations.find((item) => item.index === 2);
+  const lens = trace.lensResults[0];
+  const lensBest = lens?.scores.slice().sort((a, b) => b.score - a.score)[0];
+  const failed = trace.goalChecks.filter((check) => !check.passed);
+  const gen2Value = generation2 ? generation2.quality : 'not run';
+  const gen2Detail = generation2
+    ? `${generation2.parentCandidateIds.length} parent(s); ${generation2.generatedCandidateIds.length} child candidate(s)`
+    : 'No generation-2 summary in trace.';
+  const lensValue = lens && lensBest ? `${lensBest.candidateId} ${lensBest.score.toFixed(2)}` : 'none';
+
+  return `
+    <section class="run-state" aria-label="Current kernel run state">
+      <div class="run-state-head">
+        <div>
+          <h2>Current Kernel Slice</h2>
+          <p>${escapeHtml(trace.schemaVersion)} over ${trace.seed.title}</p>
+        </div>
+        <div class="verdict ${failed.length ? 'warn' : 'good'}">${failed.length ? `${failed.length} failed` : 'checks pass'}</div>
+      </div>
+      <div class="proof-grid">
+        ${proofTile('Generate', `${trace.lineage.generated.length} / ${trace.lineage.rejected.length}`, 'generated candidates / no-delta rejects', 'plain')}
+        ${proofTile('Fitness', goalPassed(trace, 'fitness-computed-from-source') ? 'computed' : 'check failed', 'novelty and grounding come from source/candidate text', goalPassed(trace, 'fitness-computed-from-source') ? 'good' : 'warn')}
+        ${proofTile('Generation 2', gen2Value, gen2Detail, generation2?.quality === 'improved' ? 'good' : generation2?.quality === 'duplicated' ? 'warn' : 'plain')}
+        ${proofTile('Decay', goalPassed(trace, 'decay-visible-not-merged') ? 'separate' : 'check failed', decayLensText(trace).split('; ')[0], goalPassed(trace, 'decay-visible-not-merged') ? 'good' : 'warn')}
+        ${proofTile('Lens', lensValue, lens ? `${lens.label}; outside FitnessScore` : 'No lens result emitted.', lens ? 'good' : 'warn')}
+        ${proofTile('Failed Checks', failedCheckText(trace), 'kernel goal checks from RunTrace', failed.length ? 'warn' : 'good')}
+      </div>
+    </section>`;
+}
+
 function renderArchitecture(trace: RunTrace): string {
   const generated = trace.lineage.generated.length;
   const rejected = trace.lineage.rejected.length;
@@ -183,14 +271,27 @@ function renderArchitecture(trace: RunTrace): string {
     ],
     'The swap summary above is a projection of this contract.',
   );
+  const lensResult = contractBlock(
+    'LensResult',
+    'Lens output: observer-relative feasibility applied after selection.',
+    [
+      codeLine('lensId', 'string', trace.lensResults[0]?.lensId || 'none'),
+      codeLine('label', 'string', trace.lensResults[0]?.label || 'none'),
+      codeLine('scores', 'LensScore[]', `${trace.lensResults[0]?.scores.length || 0} scored`),
+    ],
+    'Lens scores do not enter FitnessScore.',
+  );
   const runTrace = contractBlock(
     'RunTrace',
     'Final kernel artifact: serializable facts about the whole run.',
     [
+      codeLine('caps', 'RunCaps'),
+      codeLine('generations', 'GenerationSummary[]', `${trace.generations.length} generation records`),
       codeLine('runId', 'string'),
       codeLine('lineage', 'LineageLedger'),
       codeLine('events', 'TraceEvent[]'),
       codeLine('comparison', 'SelectionComparison'),
+      codeLine('lensResults', 'LensResult[]', `${trace.lensResults.length} lens result set(s)`),
     ],
     'Human views read this after the kernel finishes.',
   );
@@ -221,12 +322,21 @@ function renderArchitecture(trace: RunTrace): string {
       `compare winners: ${stable} stable, ${replaced} replaced`,
     ],
   );
+  const lens = moduleBlock(
+    'Lens',
+    'Apply capstone-demo-fit after selection without rewriting fitness.',
+    [
+      'read selected candidates and observer constraints',
+      'score feasibility separately from novelty and grounding',
+      'emit lens results for trace and microscope tools',
+    ],
+  );
   const traceModule = moduleBlock(
     'Trace',
     'Package the run so tools can inspect it without rerunning the kernel.',
     [
-      'copy lineage, boundary contracts, events, and goal checks',
-      'attach the selection comparison',
+      'copy lineage, boundary contracts, generation summaries, events, and goal checks',
+      'attach the selection comparison and lens results',
       'emit one JSON-safe run record',
     ],
   );
@@ -258,6 +368,10 @@ function renderArchitecture(trace: RunTrace): string {
           ${select}
           ${flowArrow('emits')}
           ${comparison}
+          ${flowArrow('into Lens')}
+          ${lens}
+          ${flowArrow('emits')}
+          ${lensResult}
           ${flowArrow('into Trace')}
           ${traceModule}
           ${flowArrow('emits')}
@@ -269,10 +383,6 @@ function renderArchitecture(trace: RunTrace): string {
 }
 
 function renderHtml(trace: RunTrace): string {
-  const swap = replacement(trace);
-  const swapText = swap.from && swap.to
-    ? `${ideaSentence(swap.from)} -> ${ideaSentence(swap.to)}`
-    : 'No swap';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -312,6 +422,77 @@ function renderHtml(trace: RunTrace): string {
     .sub {
       margin: 0 0 20px;
       color: var(--muted);
+    }
+    .run-state {
+      margin: 18px 0;
+      border: 2px solid #26332b;
+      border-radius: 8px;
+      background: #fffdf5;
+      box-shadow: 3px 3px 0 rgba(23,32,27,.16);
+      padding: 16px;
+    }
+    .run-state-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .run-state-head h2 {
+      margin: 0 0 3px;
+      font-size: 18px;
+    }
+    .run-state-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .verdict {
+      min-width: 112px;
+      border-radius: 6px;
+      padding: 7px 10px;
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+    .verdict.good, .proof-tile.good {
+      background: #e4f7e8;
+      border-color: #4a9a5c;
+    }
+    .verdict.warn, .proof-tile.warn {
+      background: #fff0cf;
+      border-color: #bf6b14;
+    }
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .proof-tile {
+      min-height: 106px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      padding: 10px;
+    }
+    .proof-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .proof-value {
+      margin: 5px 0 4px;
+      font-size: 22px;
+      font-weight: 750;
+      line-height: 1.05;
+    }
+    .proof-tile p {
+      margin: 0;
+      color: #415047;
+      font-size: 12px;
     }
     .pipeline {
       display: grid;
@@ -635,7 +816,9 @@ function renderHtml(trace: RunTrace): string {
     .swatch.swap { background: var(--swap); border-color: var(--swap-line); }
     .swatch.reject { background: var(--reject); }
     @media (max-width: 900px) {
-      .pipeline, .summary { grid-template-columns: 1fr; }
+      .pipeline, .summary, .proof-grid { grid-template-columns: 1fr; }
+      .run-state-head { display: block; }
+      .verdict { display: inline-block; margin-top: 10px; }
       .section-title { display: block; }
       .section-title h2 { margin-bottom: 4px; }
       .interface-code { font-size: 11px; }
@@ -646,7 +829,9 @@ function renderHtml(trace: RunTrace): string {
 <body>
   <main>
     <h1>Kernel Microscope</h1>
-    <p class="sub">One seed, one generated pool, two selectors.</p>
+    <p class="sub">One trace, bounded generation, two selectors, one post-selection lens.</p>
+
+    ${renderRunState(trace)}
 
     <section class="pipeline" aria-label="Kernel flow">
       <div class="box">
@@ -661,13 +846,14 @@ function renderHtml(trace: RunTrace): string {
         <p class="caption">ideas kept</p>
         <div class="big">${trace.lineage.rejected.length}</div>
         <p class="caption">repeats rejected</p>
+        <p class="contract-link">${escapeHtml(generationText(trace))}</p>
       </div>
       <div class="lane">
-        <h2>Explore Keeps</h2>
+        <h2>${escapeHtml(trace.comparison.focus.schedule.dial === 'diverge' ? 'Explore Keeps' : 'Proof Keeps')}</h2>
         <div class="cards">${renderCards(trace, 'focus')}</div>
       </div>
       <div class="lane">
-        <h2>Proof Keeps</h2>
+        <h2>${escapeHtml(trace.comparison.alternate.schedule.dial === 'diverge' ? 'Explore Keeps' : 'Proof Keeps')}</h2>
         <div class="cards">${renderCards(trace, 'alternate')}</div>
       </div>
     </section>
@@ -675,11 +861,11 @@ function renderHtml(trace: RunTrace): string {
     <section class="summary">
       <div class="box">
         <h2>The Swap</h2>
-        <p>${escapeHtml(swapText)}</p>
+        <p>${escapeHtml(swapText(trace))}</p>
       </div>
       <div class="box">
-        <h2>Meaning</h2>
-        <p>Same generated pool. Explore keeps the weirder idea. Proof swaps in the better-supported idea.</p>
+        <h2>Decay / Lens</h2>
+        <p>${escapeHtml(decayLensText(trace))}</p>
       </div>
     </section>
 
@@ -700,7 +886,7 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const raw = JSON.parse(await readFile(args.fixture, 'utf8'));
   const fixture = assertSeedFixture(raw);
-  const trace = buildRunTrace(fixture, args.dial);
+  const trace = buildRunTrace(fixture, args.dial, { lenses: [capstoneDemoLens] });
   await mkdir(args.outDir, { recursive: true });
   const htmlPath = path.join(args.outDir, 'index.html');
   await writeFile(htmlPath, renderHtml(trace), 'utf8');

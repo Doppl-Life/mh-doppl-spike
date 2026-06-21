@@ -142,10 +142,11 @@ the kernel can run without it, leave it out.
 - **Def:** an anchor the generator cannot move: executable check, held-out case,
   dated prediction, human judgment, or replayable run evidence.
 
-### Digest-First Proof
+### Proof Board
 
-- **Def:** default proof surface where stdout and `run-digest.md` show verdict,
-  survivor changes, stable survivors, failed checks, and drill-down paths.
+- **Def:** default proof surface where stdout shows seed, generated count,
+  rejected count, Explore keeps, Proof keeps, swap or rank movement, failed
+  checks, and drill-down instructions.
 
 ### Regret Sibling
 

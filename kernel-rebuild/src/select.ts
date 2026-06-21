@@ -1,3 +1,4 @@
+// Selects scored candidates under diverge and converge schedules.
 import type {
   DialContrast,
   Dial,
@@ -20,6 +21,7 @@ export function scheduleForDial(dial: Dial): SelectionSchedule {
       priorityAxis: 'novelty',
       floorAxis: 'grounding',
       floor: 0.35,
+      decayPolicy: 'apply_to_directional_score',
       description: 'Keep frontier candidates that open the most new substrate while staying minimally grounded.',
     };
   }
@@ -30,6 +32,7 @@ export function scheduleForDial(dial: Dial): SelectionSchedule {
     priorityAxis: 'grounding',
     floorAxis: 'novelty',
     floor: 0.25,
+    decayPolicy: 'apply_to_directional_score',
     description: 'Keep frontier candidates with the strongest evidence and clearest mechanism while preserving some novelty.',
   };
 }
@@ -78,33 +81,41 @@ function directionalScore(candidate: ScoredCandidate, schedule: SelectionSchedul
   return clampScore((primary * 0.7) + (secondary * 0.2) + (balanceBonus * 0.1));
 }
 
-function reasonFor(candidate: ScoredCandidate, schedule: SelectionSchedule, front: number, score: number): string {
+function decayAdjustedScore(candidate: ScoredCandidate, schedule: SelectionSchedule, score: number): number {
+  if (schedule.decayPolicy === 'ignore') return score;
+  return clampScore(score * candidate.fitness.decay.factor);
+}
+
+function reasonFor(candidate: ScoredCandidate, schedule: SelectionSchedule, front: number, score: number, adjusted: number): string {
   const primary = axis(candidate, schedule.priorityAxis);
   const floor = axis(candidate, schedule.floorAxis);
-  return `front ${front}; ${schedule.priorityAxis} ${primary.toFixed(2)} drove selection; ${schedule.floorAxis} ${floor.toFixed(2)} cleared floor ${schedule.floor.toFixed(2)}; directional score ${score.toFixed(2)}`;
+  return `front ${front}; ${schedule.priorityAxis} ${primary.toFixed(2)} drove selection; ${schedule.floorAxis} ${floor.toFixed(2)} cleared floor ${schedule.floor.toFixed(2)}; directional score ${score.toFixed(2)}; decay-adjusted ${adjusted.toFixed(2)}`;
 }
 
 export function selectCandidates(pool: ScoredCandidatePool, schedule: SelectionSchedule): SelectionResult {
   const fronts = paretoFronts(pool.candidates);
-  const ranked = pool.candidates
-    .map((candidate) => {
+  const evaluated = pool.candidates
+    .map((candidate): SelectedCandidate => {
       const front = fronts.get(candidate.id) || 99;
       const score = directionalScore(candidate, schedule);
+      const adjusted = decayAdjustedScore(candidate, schedule, score);
       return {
         ...candidate,
         selection: {
           front,
           rank: 0,
           directionalScore: score,
-          reason: reasonFor(candidate, schedule, front, score),
+          decayAdjustedScore: adjusted,
+          reason: reasonFor(candidate, schedule, front, score, adjusted),
         },
       };
-    })
+    });
+  const eligible = evaluated
     .filter((candidate) => axis(candidate, schedule.floorAxis) >= schedule.floor)
     .sort((a, b) => {
       if (a.selection.front !== b.selection.front) return a.selection.front - b.selection.front;
-      if (b.selection.directionalScore !== a.selection.directionalScore) {
-        return b.selection.directionalScore - a.selection.directionalScore;
+      if (b.selection.decayAdjustedScore !== a.selection.decayAdjustedScore) {
+        return b.selection.decayAdjustedScore - a.selection.decayAdjustedScore;
       }
       return b.fitness[schedule.priorityAxis] - a.fitness[schedule.priorityAxis];
     })
@@ -113,9 +124,22 @@ export function selectCandidates(pool: ScoredCandidatePool, schedule: SelectionS
       selection: { ...candidate.selection, rank: index + 1 },
     }));
 
-  const selected = ranked.slice(0, schedule.keep);
+  const selected = eligible.slice(0, schedule.keep);
   const selectedIds = new Set(selected.map((candidate) => candidate.id));
-  const rejected = ranked.filter((candidate) => !selectedIds.has(candidate.id));
+  const rejected = evaluated
+    .filter((candidate) => !selectedIds.has(candidate.id))
+    .map((candidate) => {
+      if (axis(candidate, schedule.floorAxis) >= schedule.floor) {
+        return eligible.find((item) => item.id === candidate.id) || candidate;
+      }
+      return {
+        ...candidate,
+        selection: {
+          ...candidate.selection,
+          reason: `${schedule.floorAxis} ${axis(candidate, schedule.floorAxis).toFixed(2)} failed floor ${schedule.floor.toFixed(2)}; directional score ${candidate.selection.directionalScore.toFixed(2)}; decay-adjusted ${candidate.selection.decayAdjustedScore.toFixed(2)}`,
+        },
+      };
+    });
 
   return { schedule, selected, rejected };
 }
@@ -136,6 +160,13 @@ function contrastFor(focus: SelectionResult, alternate: SelectionResult): DialCo
       alternate.selected.find((candidate) => !focus.selected.some((item) => item.id === candidate.id)) ||
       alternate.selected[index] ||
       alternate.selected[0];
+    if (!replacement) {
+      return {
+        selectedId: selected.id,
+        status: 'dropped',
+        reason: `${alternate.schedule.dial} selected no replacement for ${selected.id}.`,
+      };
+    }
     return {
       selectedId: selected.id,
       status: 'replaced',
@@ -152,20 +183,23 @@ function selectionGoalChecks(pool: ScoredCandidatePool, focus: SelectionResult, 
     {
       id: 'same-pool',
       label: 'Both dials selected from the exact same scored candidate pool.',
-      passed: focus.selected.every((candidate) => pool.candidates.some((item) => item.id === candidate.id)) &&
+      passed: focus.selected.concat(focus.rejected).length === pool.candidates.length &&
+        alternate.selected.concat(alternate.rejected).length === pool.candidates.length &&
+        focus.selected.every((candidate) => pool.candidates.some((item) => item.id === candidate.id)) &&
         alternate.selected.every((candidate) => pool.candidates.some((item) => item.id === candidate.id)),
-      detail: `pool=${pool.candidates.length}; focus=${focusIds}; alternate=${alternateIds}`,
+      detail: `pool=${pool.candidates.length}; focus=${focusIds}; alternate=${alternateIds}; focusRejected=${focus.rejected.length}; alternateRejected=${alternate.rejected.length}`,
     },
     {
-      id: 'dial-changes-survivors',
-      label: 'Changing only the selection schedule changes the survivor set.',
-      passed: focusIds !== alternateIds,
+      id: 'dial-selection-compared',
+      label: 'Changing only the selection schedule produces an explicit survivor comparison.',
+      passed: focus.selected.length > 0 && alternate.selected.length > 0,
       detail: `${focus.schedule.dial} kept [${focusIds}], ${alternate.schedule.dial} kept [${alternateIds}]`,
     },
     {
       id: 'contrast-visible',
       label: 'Every selected candidate has an explicit cross-dial contrast.',
-      passed: contrasts.length === focus.selected.length && contrasts.every((item) => item.alternateId),
+      passed: contrasts.length === focus.selected.length &&
+        contrasts.every((item) => item.status === 'dropped' || item.alternateId),
       detail: contrasts.map((item) => `${item.selectedId}:${item.status}->${item.alternateId}`).join(', '),
     },
     {

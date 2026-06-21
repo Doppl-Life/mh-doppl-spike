@@ -6,14 +6,16 @@
   "packageManager": "pnpm@11.5.3",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "pnpm typecheck && pnpm kernel:compare",
+    "build": "pnpm typecheck && pnpm proof",
     "microscope": "node --experimental-strip-types tools/microscope/view.ts",
     "walkthrough": "node --experimental-strip-types tools/microscope/walkthrough.ts",
     "walkthrough:detail": "node --experimental-strip-types tools/microscope/walkthrough.ts --detail",
+    "proof": "node --experimental-strip-types tools/run.ts",
+    "proof:export": "node --experimental-strip-types tools/run.ts --export-proof-board",
     "kernel": "node --experimental-strip-types tools/run.ts",
-    "kernel:compare": "node --experimental-strip-types tools/run.ts --dial=diverge --out-dir=out/compare",
-    "kernel:diverge": "node --experimental-strip-types tools/run.ts --dial=diverge --out-dir=out/diverge",
-    "kernel:converge": "node --experimental-strip-types tools/run.ts --dial=converge --out-dir=out/converge",
+    "kernel:compare": "node --experimental-strip-types tools/run.ts --fixture=fixtures/fsd-seed.json",
+    "kernel:diverge": "node --experimental-strip-types tools/run.ts --dial=diverge --fixture=fixtures/fsd-seed.json",
+    "kernel:converge": "node --experimental-strip-types tools/run.ts --dial=converge --fixture=fixtures/fsd-seed.json",
     "kernel:both": "pnpm kernel:diverge && pnpm kernel:converge"
   },
   "devDependencies": {

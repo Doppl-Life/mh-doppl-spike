@@ -1,9 +1,11 @@
+// Renders a disposable terminal walkthrough over a single RunTrace.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Dial, RunTrace, SeedFixture } from '../../src/contracts/index.ts';
 import { assertSeedFixture } from '../../src/contracts/index.ts';
 import { buildRunTrace } from '../../src/trace.ts';
+import { capstoneDemoLens } from '../lens-config.ts';
 import { ideaSentence, ideaText, modeName, scoreLine, selectedLines } from './glossary.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -98,6 +100,26 @@ function failedChecks(trace: RunTrace): string {
   return failed.map((check) => check.id).join(', ');
 }
 
+function generationLine(trace: RunTrace): string {
+  const generation = trace.generations.find((item) => item.index === 2);
+  if (!generation) return 'Generation 2: not run.';
+  return `Generation 2: ${generation.quality} - ${generation.detail}`;
+}
+
+function lensLine(trace: RunTrace): string {
+  const result = trace.lensResults[0];
+  if (!result) return 'Lens: none.';
+  const best = result.scores.slice().sort((a, b) => b.score - a.score)[0];
+  if (!best) return `${result.label}: no selected candidates scored.`;
+  return `${result.label}: ${best.candidateId} scored ${best.score.toFixed(2)} after selection; feasibility stayed outside fitness.`;
+}
+
+function decayLine(trace: RunTrace): string {
+  const selected = trace.comparison.focus.selected[0];
+  if (!selected) return 'Decay: no selected candidate.';
+  return `Decay: ${selected.id} factor ${selected.fitness.decay.factor.toFixed(2)} (${selected.fitness.decay.reason}).`;
+}
+
 function operatorList(fixture: SeedFixture): string {
   return fixture.operators.map((operator) => operator.label).join(', ');
 }
@@ -116,7 +138,7 @@ function renderWalkthrough(trace: RunTrace, fixture: SeedFixture): string {
     'What you do:',
     '1. Run `pnpm walkthrough` when you want to understand the mechanism.',
     '2. Run `pnpm build` when you only want the pass/fail proof.',
-    '3. Open `out/compare/run-report.md` only if a line surprises you or a check fails.',
+    '3. Run `pnpm proof:export` only if a line surprises you or a check fails.',
     '',
     'What happened:',
     `- Input: ${trace.seed.title}`,
@@ -129,11 +151,16 @@ function renderWalkthrough(trace: RunTrace, fixture: SeedFixture): string {
     `1. Generate: the system tried ${fixture.sourcePackets.length} possible consequences and kept ${generated} that changed the seed in a real way.`,
     `2. Reject: it threw out ${rejected} ideas that only repeated the seed.`,
     '3. Score: every remaining idea got two visible scores: surprise and evidence.',
-    `4. ${modeName(focus.dial)}: reward surprise, but require evidence of at least ${focus.floor.toFixed(2)}.`,
-    `5. ${modeName(alternate.dial)}: use the same idea pool, but reward evidence more heavily.`,
+    '4. Decay: each idea gets an engine time factor by subtype without replacing surprise or evidence.',
+    `5. ${modeName(focus.dial)}: reward surprise, but require evidence of at least ${focus.floor.toFixed(2)}.`,
+    `6. ${modeName(alternate.dial)}: use the same idea pool, but reward evidence more heavily.`,
+    '7. Lens: feasibility is applied after selection as observer-relative fit.',
     '',
     'Concrete example:',
     `- ${firstLineage(trace)}`,
+    `- ${generationLine(trace)}`,
+    `- ${decayLine(trace)}`,
+    `- ${lensLine(trace)}`,
     '',
     'Selection result:',
     `- ${modeName(focus.dial)} kept:`,
@@ -144,9 +171,9 @@ function renderWalkthrough(trace: RunTrace, fixture: SeedFixture): string {
     `- Survived both modes: ${stableLine(trace)}`,
     '',
     'What this means:',
-    '- The kernel is no longer just sorting a hand-authored list.',
-    '- It now proves: source material -> generated children -> explicit deltas -> two-axis fitness -> dial-specific survivors.',
-    '- The interesting tension: Explore mode keeps the speculative infrastructure idea; Proof mode swaps it for the more grounded accident-economy idea.',
+    '- The kernel is no longer proving one curated fixture.',
+    '- It now proves: source material -> generated children -> explicit deltas -> computed two-axis fitness -> bounded generation 2 -> decay -> dial-specific survivors -> lens.',
+    '- A no-swap row is not failure; it means both dials agreed on the same survivor set for that seed.',
     '',
     `Failed checks: ${failedChecks(trace)}`,
     '',
@@ -159,7 +186,9 @@ function renderShort(trace: RunTrace): string {
     `PASS: ${trace.lineage.generated.length} ideas; ${trace.lineage.rejected.length} repeats rejected; failed: ${failed}.`,
     `SWAP: ${replacementPlain(trace)}`,
     `STABLE: ${stablePlain(trace)}.`,
-    'WHY: same pool, different selector.',
+    `GEN2: ${generationLine(trace)}`,
+    `DECAY/LENS: ${decayLine(trace)} ${lensLine(trace)}`,
+    'WHY: same pool, computed fitness, bounded recursion, separate lens.',
     'MORE: `pnpm walkthrough:detail`.',
   ].join('\n');
 }
@@ -168,7 +197,7 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const raw = JSON.parse(await readFile(args.fixture, 'utf8'));
   const fixture = assertSeedFixture(raw);
-  const trace = buildRunTrace(fixture, args.dial);
+  const trace = buildRunTrace(fixture, args.dial, { lenses: [capstoneDemoLens] });
   console.log(args.detail ? renderWalkthrough(trace, fixture) : renderShort(trace));
 }
 

@@ -1,10 +1,12 @@
-# Kernel synthesis vs. doppl-prime — aligned, and where it diverges
+# Kernel synthesis and doppl-prime — comparison, not compliance
+
+Doppl Prime is source material, not the target architecture.
 
 > For the team. This is **not a verdict** — it's an honest map of where the
 > "one kernel, two directions" synthesis (see [`SPINE.md`](./SPINE.md)) lines up with
-> doppl-prime's committed architecture, and where it genuinely departs. Read it, then
-> judge for yourselves whether the divergences are *fundamentally* sounder or just a
-> variant. Written to be fair to prime, not to win.
+> doppl-prime's committed architecture, and where it genuinely departs. The purpose is
+> source context, not conformance. Read it, then judge for yourselves whether the
+> divergences are *fundamentally* sounder or just a variant.
 
 > **Baseline note:** "prime" here = the **frozen binding docs** (ARCHITECTURE/IMPLEMENTATION_PLAN,
 > Jun 18), *not* the current repo. The mutagen skills and case-study corpus were added Jun
@@ -26,7 +28,7 @@ cosmetic is the real question for the team.
 
 ---
 
-## Where they are ALIGNED (this is most of it)
+## Shared commitments
 
 These are not compromises — the synthesis actively endorses them. If the kernel idea
 graduates, it should *keep* all of this.
@@ -52,7 +54,7 @@ graduates, it should *keep* all of this.
    / outcome-reward) idea; the fuller sprout/afrit, two-ledger framing lives in the
    *test-repo PROPOSAL*, not the binding docs. Either way the synthesis is consonant: keep
    divergent fitness (novelty) and convergent fitness (grounding) as *separate signals*.
-   Aligned in spirit; the synthesis names it as the two-axis rule.
+   Shared in spirit; the synthesis names it as the two-axis rule.
 
 6. **Finite by construction.** Caps on population/generations/energy/depth + kill switch.
    The synthesis keeps this verbatim ("caps" in the kernel abstractions). Fully in the

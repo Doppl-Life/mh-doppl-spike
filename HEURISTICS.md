@@ -38,6 +38,7 @@ something we actually saw or a known bias/fallacy — not invented wisdom.
 - **Don't mistake a situational barrier for a permanent one** — the wall you're counting on may not be there at game time. *(yacht: the tender removed the "too high to climb" hull)*
 - **Decouple the deliverable from the mechanism** — when you can't eliminate a failure, hide its *perception* at a different layer. Hard to know when to reach for it; often it's the payoff of spotting a plan flaw. *(yacht: deliver perceived continuity by buffering/prediction, not by stacking more pipes)*
 - **Render the native shape** — when explaining a system, show the real contract or mechanism first, then translate around it. *(kernel: TypeScript interface beats a "boundary contract" chip)*
+- **Name artifacts at object level** — keep conversational process language out of filenames, commands, headings, contracts, and durable docs.
 
 ## Traps — where we go wrong
 
@@ -62,3 +63,4 @@ something we actually saw or a known bias/fallacy — not invented wisdom.
 - **Relocated single point of failure (quis custodiet)** — redundancy doesn't remove the SPOF, it moves it into the thing that chooses between the redundant parts. *(yacht: the failover controller is now the thing that can't go down)*
 - **Diminishing returns on redundancy** — each added layer multiplies reliability toward but never reaches 1.0, while cost, complexity, and new failure surface keep growing. Probability bought, not the guarantee promised.
 - **Visibility theater** — a diagram that looks architectural but repeats labels, hides payload shape, or uses vague verbs instead of showing the real transformation.
+- **Process-language fossilization** — turning a planning phrase or excitement marker into a durable artifact name, command, heading, or concept.

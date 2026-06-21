@@ -1,3 +1,4 @@
+// Renders compact text digests from RunTrace for optional microscope output.
 import type { RunTrace } from '../../src/contracts/index.ts';
 import { ideaSentence, ideaText, modeName } from './glossary.ts';
 
@@ -19,7 +20,7 @@ function titleFor(trace: RunTrace, id: string): string {
 function changedByDial(trace: RunTrace): string {
   const replaced = trace.comparison.contrasts.filter((contrast) => contrast.status === 'replaced');
   if (!replaced.length) return 'none';
-  return replaced.map((contrast) => `${titleFor(trace, contrast.selectedId)} -> ${titleFor(trace, contrast.alternateId)}`).join('; ');
+  return replaced.map((contrast) => `${titleFor(trace, contrast.selectedId)} -> ${contrast.alternateId ? titleFor(trace, contrast.alternateId) : 'none'}`).join('; ');
 }
 
 function stableAcrossDials(trace: RunTrace): string {
@@ -38,6 +39,26 @@ function lineageSample(trace: RunTrace): string {
   const firstSelected = trace.comparison.focus.selected[0];
   if (!firstSelected) return 'none';
   return `${firstSelected.parentId} -> ${ideaText(firstSelected)} via ${firstSelected.operatorLabel}`;
+}
+
+function generationLine(trace: RunTrace): string {
+  const generation = trace.generations.find((item) => item.index === 2);
+  if (!generation) return 'not run';
+  return `${generation.quality}: ${generation.detail}`;
+}
+
+function lensLine(trace: RunTrace): string {
+  const result = trace.lensResults[0];
+  if (!result) return 'none';
+  const best = result.scores.slice().sort((a, b) => b.score - a.score)[0];
+  if (!best) return `${result.label}: no selected candidates`;
+  return `${result.label}: ${best.candidateId} ${best.score.toFixed(2)}`;
+}
+
+function decayLine(trace: RunTrace): string {
+  const selected = trace.comparison.focus.selected[0];
+  if (!selected) return 'none';
+  return `${selected.id} factor ${selected.fitness.decay.factor.toFixed(2)}; adjusted=${selected.selection.decayAdjustedScore.toFixed(2)}`;
 }
 
 function verdict(trace: RunTrace): string {
@@ -59,9 +80,12 @@ export function renderDigest(trace: RunTrace): string {
     `Changed when mode changed: ${changedByDial(trace)}`,
     `Survived both modes: ${stableAcrossDials(trace)}`,
     `Lineage sample: ${lineageSample(trace)}`,
+    `Generation 2: ${generationLine(trace)}`,
+    `Decay: ${decayLine(trace)}`,
+    `Lens: ${lensLine(trace)}`,
     `Failed checks: ${failedChecks(trace)}`,
-    'Boundary path: fixture/source packets -> generate/lineage -> fitness -> select -> digest/report/trace -> human',
-    'Stop here unless a line surprises you; drill down with run-report.md or run-trace.json.',
+    'Boundary path: fixture/source packets -> generate/lineage -> fitness/decay -> select -> lens -> trace -> human',
+    'Stop here unless a line surprises you; rerun with `pnpm proof:export` for run-trace.json.',
     '',
   ].join('\n');
 }
@@ -81,6 +105,8 @@ export function renderConsoleDigest(trace: RunTrace): string {
     `PASS: ${trace.lineage.generated.length} ideas; ${trace.lineage.rejected.length} repeats rejected; checks ${verdict(trace)}.`,
     `SWAP: ${swap}`,
     `STABLE: ${stableAcrossDials(trace)}`,
+    `GEN2: ${generationLine(trace)}`,
+    `DECAY/LENS: ${decayLine(trace)}; ${lensLine(trace)}`,
     'MORE: `pnpm walkthrough`.',
   ].join('\n');
 }

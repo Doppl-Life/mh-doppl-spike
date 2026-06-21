@@ -52,17 +52,25 @@ wearing different masks**, and the masks are *dial settings*, not separate machi
 
 Runnable TypeScript prototype started. Current slice proves:
 
+- multiple seed fixtures run through the same proof board
 - source packets generate children through named reproduction operators
 - no-delta packets are rejected before fitness
-- generated children carry lineage and delta
+- generated children carry lineage, delta, parent, and generation
+- novelty and grounding are computed from seed/candidate/source text, not required fixture scores
+- bounded generation 2 expands fixture-authored child packets from selected candidates under caps
+- decay is an engine time factor; feasibility is a post-selection lens
 - the same generated pool supports diverge vs. converge selection
 
 ## What To Do
 
-Run `pnpm microscope` from this folder for the single-screen visual view.
+Run `pnpm build` when you want the default proof. It typechecks and prints the compact
+multi-seed board:
+`seed -> generated -> rejected -> Explore keeps -> Proof keeps -> swap -> failed checks`.
+
+Run `pnpm proof:export` only when you need replay artifacts under `out/proof-board/**`.
+
+Run `pnpm microscope` from this folder for the single-seed visual view.
 
 Run `pnpm walkthrough` for the short terminal readout.
 
 Run `pnpm walkthrough:detail` only when you want the longer microscope view.
-
-Run `pnpm build` when you only want the pass/fail proof.

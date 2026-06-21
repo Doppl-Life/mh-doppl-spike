@@ -26,15 +26,18 @@ dial — running end-to-end on real ideas, wearing discovery/ripple as its visib
 
 **A small runnable program that demonstrates the kernel on real ideas.**
 
-Given a **seed** (an AI-unlock thesis, or a problem statement), it:
+Given several **seed fixtures** (AI-unlock theses or problem statements), it:
 1. **Diverges** — generates children (ripples / candidate theses / candidate solutions).
-2. **Converges** — scores them on the two-axis fitness (novelty × grounding), culls weak.
-3. **Recurses** — optionally breeds the survivors into a next generation (ideas off ideas).
-4. **Shows** — the lineage tree + the surviving ideas + their scores, so a human can judge.
+2. **Converges** — computes the two-axis fitness (novelty × grounding), culls weak.
+3. **Recurses** — expands fixture-authored generation-2 child packets from selected
+   survivors under hard caps.
+4. **Decays / lenses** — applies engine decay during selection and feasibility after selection.
+5. **Shows** — a compact board first; optional microscope views read the machine trace.
 
-The proof it works: **the same seed, dial set to diverge vs. converge, yields different
-and both-useful output** (e.g. FSD seed → divergent = the ripple cluster; convergent =
-the one mispriced thesis). If that demonstrably holds, the kernel is real.
+The proof it works: **the same harness runs multiple seeds and makes selection behavior
+visible in one glance**: generated count, rejected count, Explore keeps, Proof keeps,
+rank movement or swap, and failed checks. A no-swap row is allowed data, not automatic
+failure; the tripwire is whether the kernel still exposes the selection consequence.
 
 It does *not* need to be pretty, persistent, or complete. It needs to **run, produce
 judgeable output, and reveal where the kernel strains.**
@@ -103,11 +106,13 @@ behavior, but expressed as `generate / select / decay / lens` with the dial expl
 - **Schedule representation.** Is the diverge→converge schedule a simple per-generation
   weight curve, a bandit, or operator-set? *Start: simple curve; learn from runs.*
 - **How recursive for the demo?** Depth-1 (seed → ripples) vs depth-N (ripples of
-  ripples)? *Start: depth-1, prove it, then turn the crank.*
+  ripples)? *Current: bounded generation 2 proof mode using fixture-authored
+  child packets with maxGenerations=2, maxChildrenPerParent=2, maxPopulation=12.*
 - **Novelty metric.** Embedding-cosine (spike already does this) vs cluster-coverage vs
-  LLM-judged distinctness? *Start: reuse the spike's embedding novelty.*
+  LLM-judged distinctness? *Current: deterministic text/source signals; replace only
+  when a richer scorer has a named consumer and clearer failure detection.*
 - **What's the seed source for the demo?** Live harvest vs a curated set of AI-unlock
-  seeds? *Lean: curated AI-unlock seeds → ripple; live harvest optional.*
+  seeds? *Current: curated fixtures; live harvest remains optional.*
 - **Where does Doppl-the-agent-breeder fit?** Same kernel, `ReproductionUnit=agenome` —
   but do we build that now or just leave the seam? *Lean: leave the seam, build
   thesis/consequence reproduction first.*
@@ -138,8 +143,9 @@ contract. Run it, break it, report bottlenecks, iterate. The first milestone is 
 
 - The kernel runs end-to-end on at least one real seed.
 - It produces a lineage tree + scored survivors a human can judge.
-- The **same-seed diverge-vs-converge** contrast is demonstrable and both outputs are
-  useful.
+- The multi-seed proof board is one-glance useful and backed by `RunTrace`.
+- The **same-seed diverge-vs-converge** contrast is demonstrable as replacement,
+  rank movement, or explicit agreement.
 - We've learned where it strains (bottlenecks, weak fitness, bad outputs) — documented,
   so the next phase or Prime integration is aimed.
 

@@ -1,6 +1,9 @@
+// Defines the machine contracts shared by kernel modules.
 export type Dial = 'diverge' | 'converge';
 
 export type CandidateSubtype = 'cross_domain_transfer' | 'zeitgeist_synthesis';
+
+export const RUN_TRACE_SCHEMA_VERSION = 'kernel.run-trace.v2';
 
 export type SpaceKind = 'datastore' | 'module' | 'human' | 'artifact';
 
@@ -47,6 +50,23 @@ export type CandidateDelta = {
   changes: string[];
 };
 
+export type ParentRef = {
+  kind: 'seed' | 'candidate';
+  id: string;
+};
+
+export type RunCaps = {
+  maxGenerations: number;
+  maxChildrenPerParent: number;
+  maxPopulation: number;
+};
+
+export const defaultRunCaps: RunCaps = {
+  maxGenerations: 2,
+  maxChildrenPerParent: 2,
+  maxPopulation: 12,
+};
+
 export type ReproductionOperator = {
   id: string;
   label: string;
@@ -58,6 +78,8 @@ export type SourcePacket = {
   id: string;
   operatorId: string;
   candidateId?: string;
+  parentCandidateId?: string;
+  generation?: number;
   title: string;
   substrate: string;
   mechanism: string;
@@ -70,12 +92,14 @@ export type SourcePacket = {
   claims?: string[];
   evidence?: string[];
   metrics?: CandidateMetricInputs;
+  observedAt?: string;
   noDeltaReason?: string;
 };
 
 export type Candidate = {
   id: string;
   parentId: string;
+  parent: ParentRef;
   generation: number;
   operatorId: string;
   operatorLabel: string;
@@ -84,14 +108,17 @@ export type Candidate = {
   title: string;
   thesis: string;
   substrate: string;
+  mechanism: string;
   delta: CandidateDelta;
   claims: string[];
   evidence: string[];
-  metrics: CandidateMetricInputs;
+  metricHints?: CandidateMetricInputs;
+  observedAt?: string;
 };
 
 export type SeedFixture = {
   seed: Seed;
+  asOf?: string;
   sourcePackets: SourcePacket[];
   operators: ReproductionOperator[];
 };
@@ -105,6 +132,7 @@ export type CandidatePool = {
 export type LineageNode = {
   id: string;
   parentId: string;
+  parent: ParentRef;
   generation: number;
   operatorId: string;
   operatorLabel: string;
@@ -121,9 +149,69 @@ export type LineageLedger = {
   rejected: LineageNode[];
 };
 
+export type GenerationQuality = 'improved' | 'drifted' | 'duplicated' | 'not_run';
+
+export type GenerationSummary = {
+  index: number;
+  parentCandidateIds: string[];
+  generatedCandidateIds: string[];
+  selectedCandidateIds: string[];
+  rejectedNodeIds: string[];
+  stoppedBy?: string;
+  quality: GenerationQuality;
+  detail: string;
+};
+
+export type ScoreInputRef = {
+  kind: 'seed' | 'candidate' | 'source_packet' | 'claim' | 'evidence' | 'metric_hint';
+  id: string;
+  field?: string;
+};
+
+export type ScoreComponentDetail = {
+  raw: number;
+  weight: number;
+  contribution: number;
+  inputRefs: ScoreInputRef[];
+};
+
+export type ScoringPolicy = {
+  id: string;
+  version: string;
+  componentWeights: {
+    novelty: {
+      sourceAbsence: number;
+      substrateDistance: number;
+      hiddenDependents: number;
+    };
+    grounding: {
+      signalStrength: number;
+      mechanismClarity: number;
+      falsifiability: number;
+      riskPenalty: number;
+    };
+  };
+};
+
+export type ScoreComputation = {
+  policyId: string;
+  inputRefs: ScoreInputRef[];
+  warnings: string[];
+};
+
+export type DecayScore = {
+  factor: number;
+  halfLifeDays: number;
+  ageDays: number;
+  subtypeBasis: CandidateSubtype;
+  reason: string;
+};
+
 export type FitnessScore = {
+  policyId: string;
   novelty: number;
   grounding: number;
+  decay: DecayScore;
   components: {
     sourceAbsence: number;
     substrateDistance: number;
@@ -133,10 +221,21 @@ export type FitnessScore = {
     falsifiability: number;
     riskPenalty: number;
   };
+  componentDetails: {
+    sourceAbsence: ScoreComponentDetail;
+    substrateDistance: ScoreComponentDetail;
+    hiddenDependents: ScoreComponentDetail;
+    signalStrength: ScoreComponentDetail;
+    mechanismClarity: ScoreComponentDetail;
+    falsifiability: ScoreComponentDetail;
+    riskPenalty: ScoreComponentDetail;
+  };
   reasons: {
     novelty: string;
     grounding: string;
+    decay: string;
   };
+  computation: ScoreComputation;
 };
 
 export type ScoredCandidate = Candidate & {
@@ -154,6 +253,7 @@ export type SelectionSchedule = {
   priorityAxis: 'novelty' | 'grounding';
   floorAxis: 'novelty' | 'grounding';
   floor: number;
+  decayPolicy: 'ignore' | 'apply_to_directional_score';
   description: string;
 };
 
@@ -162,14 +262,15 @@ export type SelectedCandidate = ScoredCandidate & {
     front: number;
     rank: number;
     directionalScore: number;
+    decayAdjustedScore: number;
     reason: string;
   };
 };
 
 export type DialContrast = {
   selectedId: string;
-  status: 'stable' | 'replaced';
-  alternateId: string;
+  status: 'stable' | 'replaced' | 'dropped';
+  alternateId?: string;
   reason: string;
 };
 
@@ -192,6 +293,33 @@ export type GoalCheck = {
   detail: string;
 };
 
+export type LensConfig = {
+  id: string;
+  label: string;
+  observerRef: string;
+};
+
+export type LensScore = {
+  lensId: string;
+  candidateId: string;
+  score: number;
+  passed: boolean;
+  components: {
+    demoFit: number;
+    evidenceFit: number;
+    scopeFit: number;
+    riskFit: number;
+  };
+  reasons: string[];
+  inputRefs: ScoreInputRef[];
+};
+
+export type LensResult = {
+  lensId: string;
+  label: string;
+  scores: LensScore[];
+};
+
 export type TraceEvent = {
   stage: string;
   input: string;
@@ -203,15 +331,20 @@ export type TraceEvent = {
 };
 
 export type RunTrace = {
+  schemaVersion: string;
   runId: string;
   dial: Dial;
   seed: Seed;
+  caps: RunCaps;
   candidateCount: number;
   lineage: LineageLedger;
+  generations: GenerationSummary[];
   boundaryContracts: BoundaryContract[];
   events: TraceEvent[];
   goalChecks: GoalCheck[];
   comparison: SelectionComparison;
+  lensResults: LensResult[];
+  terminalReason: string;
 };
 
 export const boundaryContracts: BoundaryContract[] = [
@@ -225,22 +358,29 @@ export const boundaryContracts: BoundaryContract[] = [
   {
     module: 'fitness',
     entersFrom: { id: 'generate', label: 'generate', kind: 'module' },
-    input: { name: 'CandidatePool', schemaId: 'kernel.candidate-pool.v1', direction: 'in' },
-    output: { name: 'ScoredCandidatePool', schemaId: 'kernel.scored-candidate-pool.v1', direction: 'out' },
+    input: { name: 'CandidatePool', schemaId: 'kernel.candidate-pool.v2', direction: 'in' },
+    output: { name: 'ScoredCandidatePool', schemaId: 'kernel.scored-candidate-pool.v2', direction: 'out' },
     exitsTo: { id: 'select', label: 'select', kind: 'module' },
   },
   {
     module: 'select',
     entersFrom: { id: 'fitness', label: 'fitness', kind: 'module' },
-    input: { name: 'ScoredCandidatePool + SelectionSchedule', schemaId: 'kernel.selection-input.v1', direction: 'in' },
-    output: { name: 'SelectionComparison', schemaId: 'kernel.selection-comparison.v1', direction: 'out' },
+    input: { name: 'ScoredCandidatePool + SelectionSchedule', schemaId: 'kernel.selection-input.v2', direction: 'in' },
+    output: { name: 'SelectionComparison', schemaId: 'kernel.selection-comparison.v2', direction: 'out' },
+    exitsTo: { id: 'lens', label: 'lens', kind: 'module' },
+  },
+  {
+    module: 'lens',
+    entersFrom: { id: 'select', label: 'select', kind: 'module' },
+    input: { name: 'ScoredCandidatePool + SelectionComparison', schemaId: 'kernel.lens-input.v1', direction: 'in' },
+    output: { name: 'LensResult[]', schemaId: 'kernel.lens-result.v1', direction: 'out' },
     exitsTo: { id: 'trace', label: 'trace', kind: 'module' },
   },
   {
     module: 'trace',
-    entersFrom: { id: 'select', label: 'select', kind: 'module' },
-    input: { name: 'KernelRun', schemaId: 'kernel.run.v1', direction: 'in' },
-    output: { name: 'RunTrace', schemaId: 'kernel.run-trace.v1', direction: 'out' },
+    entersFrom: { id: 'lens', label: 'lens', kind: 'module' },
+    input: { name: 'KernelRun + LensResult[]', schemaId: 'kernel.run.v2', direction: 'in' },
+    output: { name: 'RunTrace', schemaId: RUN_TRACE_SCHEMA_VERSION, direction: 'out' },
     exitsTo: { id: 'microscope-tools', label: 'MicroscopeTools', kind: 'artifact' },
   },
 ];
@@ -265,13 +405,16 @@ export function assertSeedFixture(value: unknown): SeedFixture {
   if (!fixture.seed || !Array.isArray(fixture.sourcePackets) || !Array.isArray(fixture.operators)) {
     throw new Error('Seed fixture must contain seed, sourcePackets, and operators.');
   }
-  if (!fixture.seed.id || !fixture.seed.title || !fixture.seed.prompt) {
-    throw new Error('Seed is missing id, title, or prompt.');
+  if (!fixture.seed.id || !fixture.seed.title || !fixture.seed.prompt || !fixture.seed.thesis || !Array.isArray(fixture.seed.goals)) {
+    throw new Error('Seed is missing id, title, prompt, thesis, or goals.');
   }
   const operatorIds = new Set(fixture.operators.map((operator) => operator.id));
   for (const operator of fixture.operators) {
     if (!operator.id || !operator.label || !operator.defaultSubtype) {
       throw new Error(`Operator is missing required fields: ${operator.id || '<unknown>'}`);
+    }
+    if (operator.defaultSubtype !== 'cross_domain_transfer' && operator.defaultSubtype !== 'zeitgeist_synthesis') {
+      throw new Error(`Operator has invalid subtype: ${operator.id}`);
     }
   }
   for (const packet of fixture.sourcePackets) {
@@ -282,8 +425,13 @@ export function assertSeedFixture(value: unknown): SeedFixture {
       throw new Error(`Source packet references unknown operator: ${packet.id} -> ${packet.operatorId}`);
     }
     if (packet.noDeltaReason) continue;
-    if (!packet.candidateId || !packet.candidate?.title || !packet.candidate.thesis || !packet.delta || !packet.metrics) {
+    if (!packet.candidateId || !packet.candidate?.title || !packet.candidate.thesis || !packet.delta) {
       throw new Error(`Generated source packet is missing candidate fields: ${packet.id}`);
+    }
+    if (packet.candidate.subtype &&
+      packet.candidate.subtype !== 'cross_domain_transfer' &&
+      packet.candidate.subtype !== 'zeitgeist_synthesis') {
+      throw new Error(`Source packet has invalid candidate subtype: ${packet.id}`);
     }
     if (!packet.delta.changes.length) {
       throw new Error(`Generated source packet must state at least one delta change: ${packet.id}`);

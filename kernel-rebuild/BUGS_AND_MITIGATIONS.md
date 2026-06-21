@@ -25,12 +25,12 @@ still only being watched.
 - **Mistake:** treating artifact volume as visibility.
 - **Symptom:** the run produces a long report or trace, but the human cannot see
   pass/fail, survivor changes, stable survivors, or failed checks quickly.
-- **Mitigation:** digest-first output. `pnpm build` and `run-digest.md` show the
-  verdict and decision-relevant deltas; long reports are drill-down only.
+- **Mitigation:** proof-board output. `pnpm build` shows the verdict and
+  decision-relevant deltas; optional traces under `out/**` are drill-down only.
 - **Tripwire:** a build whose first useful output is a file path, a full report,
   or a trace blob.
-- **Pass condition:** stdout and `run-digest.md` are enough to know whether the
-  run passed and what changed.
+- **Pass condition:** stdout is enough to know whether the run passed and what
+  changed.
 - **Carry forward:** visibility is a budget; rich data is fine, mandatory
   reading is not.
 
@@ -126,3 +126,18 @@ still only being watched.
 - **Pass condition:** local read order, commands, and boundary contracts resolve
   on disk.
 - **Carry forward:** self-contained means the map matches the territory.
+
+### Microscope indistinguishability - 2026-06-21
+
+- **Mistake:** changing kernel behavior while the default microscope first screen
+  still looks like the previous slice.
+- **Symptom:** a human opens `out/microscope/index.html` after a major change and
+  has to infer whether anything changed from small labels or hidden fields.
+- **Mitigation:** the first viewport must expose current RunTrace facts that name
+  the active slice: schema version, generation count, computed fitness, bounded
+  child expansion, decay, lens, and failed checks.
+- **Tripwire:** after a major kernel change, the first screen could be mistaken
+  for the previous microscope without scrolling.
+- **Pass condition:** the first screen makes the changed contract/behavior
+  visible before the selector lanes.
+- **Carry forward:** visibility has to change shape when the kernel changes shape.

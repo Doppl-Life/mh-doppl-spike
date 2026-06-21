@@ -206,3 +206,11 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Because:** the user must be able to map the top-level human summary to the first kernel input (`SeedFixture.seed`) and then follow what each module transforms. If the view repeats labels or substitutes vague prose, it creates visibility theater instead of visibility.
 - **Revisit if:** the kernel's native boundary contract stops being TypeScript-shaped, or a non-engineer tour needs a separate first-pass view before the contract view
 - **Spirit note:** the microscope reveals the kernel's real boundaries; it does not become a parallel explanatory process. See [Visibility preserves native shape](./LESSONS_AND_BANGERS.md#visibility-preserves-native-shape--2026-06-21).
+
+### No-swap as signal, not failure — 2026-06-21
+
+- **Chose:** treat no-swap and rank-shift rows in the multi-seed proof board as observable selection behavior, while failed checks stay reserved for broken contracts or invisible decisions
+- **Over:** requiring every seed to produce a replacement between Explore and Proof modes as the acceptance condition
+- **Because:** forcing replacements would tune fixtures toward theatrical contrast instead of honest kernel behavior; agreement can mean both schedules selected the same strong frontier, and rank movement still exposes dial pressure
+- **Revisit if:** repeated no-swap rows hide a collapsed schedule, e.g. both dials always pick the same candidates in the same order across varied seeds
+- **Spirit note:** proof should catch contract failure, not demand drama.

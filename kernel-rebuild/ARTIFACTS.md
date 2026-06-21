@@ -6,20 +6,20 @@ translates those facts into temporary human views.
 
 The default proof path should minimize process, not create an archive chore.
 Prefer one command and one glance when the domain allows it; when it does not,
-use the smallest credible proof surface. `pnpm build` prints the verdict,
-survivor change, stable survivors, and failed checks directly to stdout. Files
-are for replay and investigation after the human already knows what happened.
+use the smallest credible proof surface. `pnpm build` typechecks and prints the
+multi-seed proof board directly to stdout:
+`seed -> generated -> rejected -> Explore keeps -> Proof keeps -> swap -> failed checks`.
+Files are for replay and investigation after the human already knows what happened.
 
 ## Read Order
 
-1. `pnpm walkthrough` - the default microscope view. Use it when you need to
-   understand what happened.
-2. `run-digest.md` - the default generated human artifact. One screen, pass/fail, survivor
-   change, stable survivors, failed checks, and drill-down pointers.
-3. `run-report.md` - debug narrative. Use it when the digest surprises you or a
-   goal check fails.
-4. `run-trace.json` - machine trace. Use it for tooling, replay, comparison, or
-   contract debugging.
+1. `pnpm build` - default proof. Typecheck plus compact multi-seed board.
+2. `pnpm walkthrough` - single-seed terminal microscope. Use it when you need to
+   understand the mechanism.
+3. `pnpm microscope` - single-seed HTML microscope over `RunTrace`.
+4. `pnpm proof:export` - optional replay output under `out/proof-board/**`.
+5. `run-trace.json` - machine trace. Use it for tooling, replay, comparison, or
+   contract debugging when `pnpm proof:export` has created it.
 
 ## Artifact Classes
 
@@ -28,11 +28,11 @@ are for replay and investigation after the human already knows what happened.
 | Source contracts | `src/contracts/index.ts`, `contracts/README.md` | yes | Load-bearing boundary definitions. |
 | Fixture inputs | `fixtures/*.json` | yes | Reproducible seed material. |
 | Microscope tools | `tools/microscope/**` | no by default | Human translation layer; keep only while useful. |
-| Generated run output | `out/**` | no | Ephemeral inspection output; regenerate with `pnpm build`. |
+| Generated run output | `out/**` | no | Ephemeral inspection output; regenerate with `pnpm proof:export`. |
 | Promoted proof | `records/<slug>/...` | only by decision | Keep when a run becomes evidence for a design decision or regression. |
 
 Default rule: do not preserve generated output just because it exists. Promote a
-run only when the digest names a behavior we intend to compare against later.
+run only when the board or trace names a behavior we intend to compare against later.
 
 ## Kill Rules
 
@@ -40,12 +40,16 @@ run only when the digest names a behavior we intend to compare against later.
   delete it or demote it to machine trace.
 - If an artifact is generated every run but is not read for three meaningful
   runs, stop generating it by default.
-- If a report repeats information already visible in stdout or `run-digest.md`,
+- If a report repeats information already visible in stdout or the proof board,
   cut the repeated section unless it supports drill-down.
 - If an artifact has no named consumer, action, or regression it can catch, it
   is report theater.
 - If human-language fields leak into `src/contracts`, move them to
   `tools/microscope` or delete them.
+- If a filename, command, heading, or doc frame uses conversational process
+  language where object-level language would do, rename it before it hardens.
+- If the kernel behavior changes materially, the first viewport of any default
+  microscope view must expose the new RunTrace facts before selector details.
 
 Rich data is fine. Mandatory human reading is the scarce resource.
 

@@ -10,6 +10,7 @@
       "show which generated children survive, stabilize, or get replaced by the other dial"
     ]
   },
+  "asOf": "2026-06-21",
   "operators": [
     {
       "id": "substrate-removal",
@@ -354,6 +355,109 @@
       "substrate": "consumer adoption",
       "mechanism": "Restates adoption as adoption, without a hidden dependent or changed causal surface.",
       "noDeltaReason": "No delta: the packet names uptake but not a new dependent, substrate, or mechanism."
+    },
+    {
+      "id": "sp11",
+      "operatorId": "hidden-dependent",
+      "parentCandidateId": "c2",
+      "generation": 2,
+      "candidateId": "c2a",
+      "title": "Pretext-stop search replacement",
+      "substrate": "roadside discretionary search",
+      "mechanism": "If the driver disappears as the stop target, enforcement pressure moves toward automated vehicle access logs, fleet compliance audits, and road-use account identity.",
+      "candidate": {
+        "title": "Traffic stop becomes compliance audit",
+        "thesis": "The lost traffic stop does not only remove ticket revenue; it pushes state search and compliance power into fleet APIs, movement ledgers, and account-level enforcement.",
+        "subtype": "zeitgeist_synthesis"
+      },
+      "delta": {
+        "summary": "Moved from missing traffic stops to the replacement substrate for enforcement power.",
+        "changes": [
+          "traffic stop loss -> fleet compliance audit",
+          "driver identity -> account movement ledger"
+        ]
+      },
+      "claims": [
+        "The state still wants traffic compliance and investigatory leverage after the human driver disappears.",
+        "Fleet APIs and road-use ledgers become the replacement surface."
+      ],
+      "evidence": [
+        "traffic enforcement revenue replacement logic",
+        "fleet telemetry and compliance reporting precedent"
+      ],
+      "observedAt": "2026-06-01"
+    },
+    {
+      "id": "sp12",
+      "operatorId": "hidden-dependent",
+      "parentCandidateId": "c8",
+      "generation": 2,
+      "candidateId": "c8a",
+      "title": "Movement account taxation",
+      "substrate": "account-level mobility ledger",
+      "mechanism": "When fine and fuel-tax bases weaken, metered movement accounts let governments tax trips, time, congestion, and fleet access directly.",
+      "candidate": {
+        "title": "Road revenue moves to mobility accounts",
+        "thesis": "Autonomous mobility lets road revenue move from driver punishment and fuel consumption to account-level trip metering, congestion pricing, and fleet access fees.",
+        "subtype": "zeitgeist_synthesis"
+      },
+      "delta": {
+        "summary": "Took the revenue-replacement branch from VMT into account-level mobility taxation.",
+        "changes": [
+          "movement metering -> account taxation",
+          "fleet compliance -> revenue rail"
+        ]
+      },
+      "claims": [
+        "Road-use pricing becomes technically easier when fleets already meter movement.",
+        "The taxable object becomes a trip account, not a driver violation."
+      ],
+      "evidence": [
+        "VMT and congestion-pricing policy precedents",
+        "autonomous fleet telemetry assumptions"
+      ],
+      "observedAt": "2026-06-01"
+    },
+    {
+      "id": "sp13",
+      "operatorId": "infrastructure-inversion",
+      "parentCandidateId": "c6",
+      "generation": 2,
+      "candidateId": "c6a",
+      "title": "Fleet compute demand market",
+      "substrate": "mobile edge compute demand",
+      "mechanism": "If fleets carry spare compute, the missing mechanism is not hardware but the demand router that buys latency, geography, and sensor context from vehicles.",
+      "candidate": {
+        "title": "Fleet edge needs a demand router",
+        "thesis": "The fleet-compute thesis only becomes actionable if a market routes work by location, latency, and sensor context, turning vehicles into priced edge capacity instead of idle hardware.",
+        "subtype": "cross_domain_transfer"
+      },
+      "delta": {
+        "summary": "Moved from speculative compute substrate to the market mechanism that would make it real.",
+        "changes": [
+          "latent fleet compute -> demand router",
+          "idle hardware -> priced local capacity"
+        ]
+      },
+      "claims": [
+        "Spare compute is not useful until buyers can address it by geography and latency.",
+        "The transfer maps cloud spot markets onto mobile edge fleets."
+      ],
+      "evidence": [
+        "cloud spot market analogy",
+        "vehicle sensor and compute trends"
+      ],
+      "observedAt": "2026-05-15"
+    },
+    {
+      "id": "sp14",
+      "operatorId": "substrate-removal",
+      "parentCandidateId": "c6",
+      "generation": 2,
+      "title": "Fleet does computing too",
+      "substrate": "same fleet compute claim",
+      "mechanism": "Repeats the parent fleet-compute thesis without a new market, buyer, or mechanism.",
+      "noDeltaReason": "No new delta beyond the parent fleet-compute candidate."
     }
   ]
 }

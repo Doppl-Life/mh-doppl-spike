@@ -42,13 +42,49 @@ export type CandidateMetricInputs = {
   riskPenalty: number;
 };
 
+export type CandidateDelta = {
+  summary: string;
+  changes: string[];
+};
+
+export type ReproductionOperator = {
+  id: string;
+  label: string;
+  description: string;
+  defaultSubtype: CandidateSubtype;
+};
+
+export type SourcePacket = {
+  id: string;
+  operatorId: string;
+  candidateId?: string;
+  title: string;
+  substrate: string;
+  mechanism: string;
+  candidate?: {
+    title: string;
+    thesis: string;
+    subtype?: CandidateSubtype;
+  };
+  delta?: CandidateDelta;
+  claims?: string[];
+  evidence?: string[];
+  metrics?: CandidateMetricInputs;
+  noDeltaReason?: string;
+};
+
 export type Candidate = {
   id: string;
   parentId: string;
+  generation: number;
+  operatorId: string;
+  operatorLabel: string;
+  sourcePacketIds: string[];
   subtype: CandidateSubtype;
   title: string;
   thesis: string;
   substrate: string;
+  delta: CandidateDelta;
   claims: string[];
   evidence: string[];
   metrics: CandidateMetricInputs;
@@ -56,12 +92,33 @@ export type Candidate = {
 
 export type SeedFixture = {
   seed: Seed;
-  candidates: Candidate[];
+  sourcePackets: SourcePacket[];
+  operators: ReproductionOperator[];
 };
 
 export type CandidatePool = {
   seed: Seed;
   candidates: Candidate[];
+  lineage: LineageLedger;
+};
+
+export type LineageNode = {
+  id: string;
+  parentId: string;
+  generation: number;
+  operatorId: string;
+  operatorLabel: string;
+  sourcePacketIds: string[];
+  title: string;
+  delta?: CandidateDelta;
+  status: 'generated' | 'rejected';
+  rejectionReason?: string;
+};
+
+export type LineageLedger = {
+  seedId: string;
+  generated: LineageNode[];
+  rejected: LineageNode[];
 };
 
 export type FitnessScore = {
@@ -150,6 +207,7 @@ export type RunTrace = {
   dial: Dial;
   seed: Seed;
   candidateCount: number;
+  lineage: LineageLedger;
   boundaryContracts: BoundaryContract[];
   events: TraceEvent[];
   goalChecks: GoalCheck[];
@@ -160,8 +218,8 @@ export const boundaryContracts: BoundaryContract[] = [
   {
     module: 'generate',
     entersFrom: { id: 'fixture-seed-store', label: 'FixtureSeedStore', kind: 'datastore' },
-    input: { name: 'SeedFixture', schemaId: 'kernel.seed-fixture.v1', direction: 'in' },
-    output: { name: 'CandidatePool', schemaId: 'kernel.candidate-pool.v1', direction: 'out' },
+    input: { name: 'SeedFixture', schemaId: 'kernel.seed-fixture.v2', direction: 'in' },
+    output: { name: 'CandidatePool', schemaId: 'kernel.candidate-pool.v2', direction: 'out' },
     exitsTo: { id: 'fitness', label: 'fitness', kind: 'module' },
   },
   {
@@ -176,14 +234,14 @@ export const boundaryContracts: BoundaryContract[] = [
     entersFrom: { id: 'fitness', label: 'fitness', kind: 'module' },
     input: { name: 'ScoredCandidatePool + SelectionSchedule', schemaId: 'kernel.selection-input.v1', direction: 'in' },
     output: { name: 'SelectionComparison', schemaId: 'kernel.selection-comparison.v1', direction: 'out' },
-    exitsTo: { id: 'trace-report', label: 'trace/report', kind: 'module' },
+    exitsTo: { id: 'trace', label: 'trace', kind: 'module' },
   },
   {
-    module: 'trace/report',
+    module: 'trace',
     entersFrom: { id: 'select', label: 'select', kind: 'module' },
     input: { name: 'KernelRun', schemaId: 'kernel.run.v1', direction: 'in' },
-    output: { name: 'RunDigest + RunReport + RunTrace', schemaId: 'kernel.visibility-artifacts.v1', direction: 'out' },
-    exitsTo: { id: 'human-reviewer', label: 'HumanReviewer', kind: 'human' },
+    output: { name: 'RunTrace', schemaId: 'kernel.run-trace.v1', direction: 'out' },
+    exitsTo: { id: 'microscope-tools', label: 'MicroscopeTools', kind: 'artifact' },
   },
 ];
 
@@ -204,15 +262,31 @@ export function assertSeedFixture(value: unknown): SeedFixture {
     throw new Error('Seed fixture must be an object.');
   }
   const fixture = value as SeedFixture;
-  if (!fixture.seed || !Array.isArray(fixture.candidates)) {
-    throw new Error('Seed fixture must contain seed and candidates.');
+  if (!fixture.seed || !Array.isArray(fixture.sourcePackets) || !Array.isArray(fixture.operators)) {
+    throw new Error('Seed fixture must contain seed, sourcePackets, and operators.');
   }
   if (!fixture.seed.id || !fixture.seed.title || !fixture.seed.prompt) {
     throw new Error('Seed is missing id, title, or prompt.');
   }
-  for (const candidate of fixture.candidates) {
-    if (!candidate.id || !candidate.title || !candidate.thesis || !candidate.metrics) {
-      throw new Error(`Candidate is missing required fields: ${candidate.id || '<unknown>'}`);
+  const operatorIds = new Set(fixture.operators.map((operator) => operator.id));
+  for (const operator of fixture.operators) {
+    if (!operator.id || !operator.label || !operator.defaultSubtype) {
+      throw new Error(`Operator is missing required fields: ${operator.id || '<unknown>'}`);
+    }
+  }
+  for (const packet of fixture.sourcePackets) {
+    if (!packet.id || !packet.operatorId || !packet.title || !packet.substrate || !packet.mechanism) {
+      throw new Error(`Source packet is missing required fields: ${packet.id || '<unknown>'}`);
+    }
+    if (!operatorIds.has(packet.operatorId)) {
+      throw new Error(`Source packet references unknown operator: ${packet.id} -> ${packet.operatorId}`);
+    }
+    if (packet.noDeltaReason) continue;
+    if (!packet.candidateId || !packet.candidate?.title || !packet.candidate.thesis || !packet.delta || !packet.metrics) {
+      throw new Error(`Generated source packet is missing candidate fields: ${packet.id}`);
+    }
+    if (!packet.delta.changes.length) {
+      throw new Error(`Generated source packet must state at least one delta change: ${packet.id}`);
     }
   }
   return fixture;

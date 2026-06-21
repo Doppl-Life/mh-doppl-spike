@@ -11,8 +11,11 @@ exists so a reader can see the factory boundaries without reading code.
 | --- | --- | --- | --- | --- |
 | `generate` | `FixtureSeedStore` | `SeedFixture` | `CandidatePool` | `fitness` |
 | `fitness` | `generate` | `CandidatePool` | `ScoredCandidatePool` | `select` |
-| `select` | `fitness` | `ScoredCandidatePool + SelectionSchedule` | `SelectionComparison` | `trace/report` |
-| `trace/report` | `select` | `KernelRun` | `RunDigest + RunReport + RunTrace` | `HumanReviewer` |
+| `select` | `fitness` | `ScoredCandidatePool + SelectionSchedule` | `SelectionComparison` | `trace` |
+| `trace` | `select` | `KernelRun` | `RunTrace` | `MicroscopeTools` |
+
+`SeedFixture` contains the seed, source packets, and operators. `CandidatePool`
+contains generated candidates plus the lineage ledger.
 
 ## Rule
 

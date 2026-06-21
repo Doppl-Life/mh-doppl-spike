@@ -19,23 +19,23 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial): RunTrace {
   const selected = compareSelections(scored.scoredPool, dial);
   events.push(selected.event);
 
-  const reportEvent: TraceEvent = {
-    stage: 'trace/report',
+  const traceEvent: TraceEvent = {
+    stage: 'trace',
     input: 'SelectionComparison + boundary contracts + goal checks',
-    decision: 'Emit a short digest first, with report and JSON trace as drill-down artifacts.',
-    reason: 'A kernel decision is not accepted until a human can see what happened without reading the full trace.',
-    output: 'RunDigest + RunReport + RunTrace',
+    decision: 'Emit the machine trace for tools and replay.',
+    reason: 'The kernel emits process facts; microscope tools translate those facts for humans.',
+    output: 'RunTrace',
     goalChecks: [
       {
-        id: 'visibility-artifacts',
-        label: 'The run emits digest-first human visibility plus drill-down artifacts.',
+        id: 'machine-trace-emitted',
+        label: 'The kernel emits a machine trace without requiring a human projection in the engine contract.',
         passed: true,
-        detail: 'CLI writes run-digest.md, run-report.md, and run-trace.json.',
+        detail: 'RunTrace contains lineage, goal checks, and selection comparison.',
       },
     ],
-    boundary: getBoundary('trace/report'),
+    boundary: getBoundary('trace'),
   };
-  events.push(reportEvent);
+  events.push(traceEvent);
 
   const goalChecks = events.flatMap((event) => event.goalChecks);
 
@@ -43,7 +43,8 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial): RunTrace {
     runId: runId(dial),
     dial,
     seed: fixture.seed,
-    candidateCount: fixture.candidates.length,
+    candidateCount: generated.pool.candidates.length,
+    lineage: generated.pool.lineage,
     boundaryContracts,
     events,
     goalChecks,

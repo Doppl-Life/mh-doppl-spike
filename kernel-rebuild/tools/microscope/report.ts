@@ -1,4 +1,4 @@
-import type { RunTrace, ScoredCandidate, SelectedCandidate } from './contracts/index.ts';
+import type { RunTrace, ScoredCandidate, SelectedCandidate } from '../../src/contracts/index.ts';
 
 function pass(value: boolean): string {
   return value ? 'PASS' : 'FAIL';
@@ -14,6 +14,11 @@ function candidateRow(candidate: ScoredCandidate): string {
 
 function selectedRow(candidate: SelectedCandidate): string {
   return `| ${candidate.selection.rank} | ${candidate.id} | ${candidate.title} | ${score(candidate.fitness.novelty)} | ${score(candidate.fitness.grounding)} | ${candidate.selection.reason} |`;
+}
+
+function lineageRow(node: RunTrace['lineage']['generated'][number]): string {
+  const delta = node.delta ? node.delta.summary : node.rejectionReason || '';
+  return `| ${node.id} | ${node.status} | ${node.parentId} | ${node.operatorLabel} | ${node.sourcePacketIds.join(', ')} | ${delta} |`;
 }
 
 export function renderReport(trace: RunTrace): string {
@@ -39,6 +44,17 @@ export function renderReport(trace: RunTrace): string {
   lines.push('| --- | --- | --- | --- | --- |');
   for (const boundary of trace.boundaryContracts) {
     lines.push(`| ${boundary.module} | ${boundary.entersFrom.label} | ${boundary.input.name} | ${boundary.output.name} | ${boundary.exitsTo.label} |`);
+  }
+  lines.push('');
+  lines.push('## Lineage');
+  lines.push('');
+  lines.push(`Generated children: ${trace.lineage.generated.length}`);
+  lines.push(`No-delta rejects: ${trace.lineage.rejected.length}`);
+  lines.push('');
+  lines.push('| Node | Status | Parent | Operator | Source packet | Delta / rejection |');
+  lines.push('| --- | --- | --- | --- | --- | --- |');
+  for (const node of trace.lineage.generated.concat(trace.lineage.rejected)) {
+    lines.push(lineageRow(node));
   }
   lines.push('');
   lines.push('## Candidate Pool');
@@ -93,13 +109,6 @@ export function renderReport(trace: RunTrace): string {
   for (const event of trace.events) {
     lines.push(`| ${event.stage} | ${event.input} | ${event.decision} | ${event.reason} | ${event.output} |`);
   }
-  lines.push('');
-  lines.push('## What To Inspect');
-  lines.push('');
-  lines.push('- If `dial-changes-survivors` fails, the kernel did not prove direction matters.');
-  lines.push('- If the same candidate wins both dials too often, the axes may not be independent.');
-  lines.push('- If novelty reasons do not cite absence-from-record, novelty is drifting back into model self-grading.');
-  lines.push('- If cross-dial contrasts are unconvincing, the demo does not yet make the dial visible.');
   lines.push('');
   return lines.join('\n');
 }

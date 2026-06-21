@@ -54,8 +54,8 @@ these, it is changing the project.
 
 ## Proof and artifacts
 
-16. **Digest first.** The default human artifact is a short verdict with changed
-    survivors, stable survivors, failed checks, and drill-down paths.
+16. **Trace first, microscope separate.** The kernel emits machine-clean process
+    facts. Human-readable views translate those facts outside the engine.
 17. **Generated output is disposable.** `out/**` is inspection output. Promote a
     run only when it becomes evidence for a decision or regression.
 18. **A report must change a decision.** If an artifact cannot help a human make

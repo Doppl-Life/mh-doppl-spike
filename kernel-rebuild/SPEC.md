@@ -94,8 +94,8 @@ behavior, but expressed as `generate / select / decay / lens` with the dial expl
 - Decay = engine time axis; feasibility = pluggable lens. (SPINE)
 - Discovery is the same engine pinned to diverge; not a separate service. (SPINE)
 - Ripple = divergent pass over AI-unlock seeds into named non-AI substrates. (SPINE)
-- Language for the *artifact*: stay in Python for the spike-grade kernel (fast to break);
-  the doppl-prime TS rebuild is a *later* target, fed by what this teaches.
+- Language for the *artifact*: TypeScript, self-contained inside `kernel-rebuild/`.
+  Keep it small and fast to break; Prime integration is still later.
 - Scope: the kernel, not doppl-prime wholesale. (this doc)
 
 ## Open questions (decide by building, not arguing)
@@ -141,7 +141,7 @@ contract. Run it, break it, report bottlenecks, iterate. The first milestone is 
 - The **same-seed diverge-vs-converge** contrast is demonstrable and both outputs are
   useful.
 - We've learned where it strains (bottlenecks, weak fitness, bad outputs) — documented,
-  so the *next* phase (or the TS rebuild) is aimed.
+  so the next phase or Prime integration is aimed.
 
 Done is **"we ran it, it worked enough to judge, and we know what to fix"** — not
 "production-ready."

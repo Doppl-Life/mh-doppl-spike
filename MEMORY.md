@@ -198,3 +198,11 @@ This spike explores ideas from the [Doppl Capstone Proposal](./Doppl_Capstone_Pr
 - **Because:** Doppl needs measurable heritable variation, not an invisible global persona; if every lineage inherits the same deletion bias from the harness, we cannot tell whether frugality is a trait, a judge artifact, or contamination. The useful mechanism is the ladder, not the plugin.
 - **Revisit if:** a bounded Ponytail-controlled arm is needed as an experimental baseline against a Doppl-native least-action critic, or if the native critic fails to preserve Ponytail's safety distinction between lazy and careless
 - **Spirit note:** make laziness selectable; do not make the harness secretly lazy for everyone. See [Least-action fitness](./LESSONS_AND_BANGERS.md#least-action-fitness--2026-06-20), [`proposals/least-action-fitness.md`](./proposals/least-action-fitness.md), and [`spikes/least-action/`](./spikes/least-action/).
+
+### Contract-shaped microscope views — 2026-06-21
+
+- **Chose:** microscope architecture views render boundary payloads as compact TypeScript-style contracts, with modules shown as transformations between contracts
+- **Over:** generic architecture cards that label things as "artifact," "boundary contract," and "module" while repeating the same contract names and hiding the payload shape
+- **Because:** the user must be able to map the top-level human summary to the first kernel input (`SeedFixture.seed`) and then follow what each module transforms. If the view repeats labels or substitutes vague prose, it creates visibility theater instead of visibility.
+- **Revisit if:** the kernel's native boundary contract stops being TypeScript-shaped, or a non-engineer tour needs a separate first-pass view before the contract view
+- **Spirit note:** the microscope reveals the kernel's real boundaries; it does not become a parallel explanatory process. See [Visibility preserves native shape](./LESSONS_AND_BANGERS.md#visibility-preserves-native-shape--2026-06-21).

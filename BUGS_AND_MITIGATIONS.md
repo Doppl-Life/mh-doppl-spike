@@ -156,6 +156,26 @@ Log each one so the next spike inherits the counter-mutation. Every entry must b
 - **Bedrock assertion:** the proof path is as small as the domain allows; for this slice, the command prints a compact PASS/FAIL summary with survivor delta and failed checks, while `run-report.md` is drill-down only, not required reading
 - **Carry forward:** visibility is a budget; data may be rich, but mandatory human reading must be aggressively cut.
 
+### Trace handles mistaken for meaning — 2026-06-21
+
+- **Proxy optimized:** stable internal identifiers and compact candidate titles instead of human comprehension
+- **Bedrock check:** `kernel-rebuild` walkthrough must explain the changed survivor in plain English before showing trace handles
+- **Symptom:** output like `diverge keeps c6 Fleet compute becomes mobile edge` was technically traceable but unreadable to a human who had not memorized the fixture
+- **Counter-mutation:** removed `humanSummary` from the kernel contract and moved plain-English translation into disposable microscope tools; walkthrough and digest lead with plain-English sentences, demote IDs to parentheses, and label modes as Explore/Proof before internal `diverge`/`converge`
+- **Repro trigger:** `cd kernel-rebuild && rtk pnpm walkthrough` leads with IDs, operator IDs, or terse titles as the primary meaning
+- **Bedrock assertion:** the same command says the idea in normal language first, e.g. `A self-driving fleet might double as a network of mobile servers and sensors... (c6)`
+- **Carry forward:** IDs are handles, not explanations. Human surfaces must say the thing before naming the thing.
+
+### Visibility theater — 2026-06-21
+
+- **Proxy optimized:** appearing to have an architecture diagram instead of making the mechanism inspectable
+- **Bedrock check:** human review tried to map the top input card to the first architecture node and follow what crossed each boundary
+- **Symptom:** the microscope diagram repeated `CandidatePool` as both artifact and contract, disconnected `FSD unlock consequence map` from `SeedFixture`, and used vague work text like "apply operators to source packets."
+- **Counter-mutation:** replaced the artifact/contract/module ladder with `contract -> module transform -> contract`; rendered contracts as compact TypeScript-style interfaces; added an explicit top-card mapping to `SeedFixture.seed`; removed the bad phrases.
+- **Repro trigger:** `cd kernel-rebuild && rtk pnpm microscope`, then inspect whether the architecture section repeats contract names as separate fake objects or hides payload shape behind generic cards.
+- **Bedrock assertion:** a reader can state the flow without memorizing internals: `SeedFixture` enters `Generate`; `Generate` emits `CandidatePool`; no-delta rejects live in `lineage`; `Fitness` emits `ScoredCandidatePool`; `Select` emits `SelectionComparison`; `Trace` emits `RunTrace`.
+- **Carry forward:** visibility surfaces must preserve native contracts and real transforms. Pretty labels are not architecture.
+
 ## Crashes & plumbing
 
 This spike runs a test of the reproductive loop. The reproductive loop is the core of Doppl’s evolutionary loop, and it’s the part that’s most likely to crash.

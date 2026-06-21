@@ -1,7 +1,8 @@
-import type { RunTrace } from './contracts/index.ts';
+import type { RunTrace } from '../../src/contracts/index.ts';
+import { ideaSentence, ideaText, modeName } from './glossary.ts';
 
-function selectedIds(trace: RunTrace, side: 'focus' | 'alternate'): string {
-  return trace.comparison[side].selected.map((candidate) => `${candidate.id} ${candidate.title}`).join('; ');
+function selectedSummaries(trace: RunTrace, side: 'focus' | 'alternate'): string {
+  return trace.comparison[side].selected.map(ideaText).join('; ');
 }
 
 function titleFor(trace: RunTrace, id: string): string {
@@ -12,7 +13,7 @@ function titleFor(trace: RunTrace, id: string): string {
     ...trace.comparison.alternate.rejected,
   ];
   const candidate = candidates.find((item) => item.id === id);
-  return candidate ? `${candidate.id} ${candidate.title}` : id;
+  return candidate ? ideaText(candidate) : id;
 }
 
 function changedByDial(trace: RunTrace): string {
@@ -33,6 +34,12 @@ function failedChecks(trace: RunTrace): string {
   return failed.map((check) => check.id).join(', ');
 }
 
+function lineageSample(trace: RunTrace): string {
+  const firstSelected = trace.comparison.focus.selected[0];
+  if (!firstSelected) return 'none';
+  return `${firstSelected.parentId} -> ${ideaText(firstSelected)} via ${firstSelected.operatorLabel}`;
+}
+
 function verdict(trace: RunTrace): string {
   const passed = trace.goalChecks.filter((check) => check.passed).length;
   return failedChecks(trace) === 'none' ? `PASS (${passed}/${trace.goalChecks.length})` : `FAIL (${passed}/${trace.goalChecks.length})`;
@@ -46,26 +53,34 @@ export function renderDigest(trace: RunTrace): string {
     `Run: ${trace.runId}`,
     `Verdict: ${verdict(trace)}`,
     `Input: ${trace.seed.title}; shared pool=${trace.candidateCount}`,
-    `${focus}: kept [${selectedIds(trace, 'focus')}]`,
-    `${alternate}: kept [${selectedIds(trace, 'alternate')}]`,
-    `Changed by dial: ${changedByDial(trace)}`,
-    `Stable across dials: ${stableAcrossDials(trace)}`,
+    `Generated: ${trace.lineage.generated.length} children; no-delta rejects=${trace.lineage.rejected.length}`,
+    `${modeName(focus)} kept: ${selectedSummaries(trace, 'focus')}`,
+    `${modeName(alternate)} kept: ${selectedSummaries(trace, 'alternate')}`,
+    `Changed when mode changed: ${changedByDial(trace)}`,
+    `Survived both modes: ${stableAcrossDials(trace)}`,
+    `Lineage sample: ${lineageSample(trace)}`,
     `Failed checks: ${failedChecks(trace)}`,
-    'Boundary path: fixture -> generate -> fitness -> select -> digest/report/trace -> human',
+    'Boundary path: fixture/source packets -> generate/lineage -> fitness -> select -> digest/report/trace -> human',
     'Stop here unless a line surprises you; drill down with run-report.md or run-trace.json.',
     '',
   ].join('\n');
 }
 
 export function renderConsoleDigest(trace: RunTrace): string {
-  const focus = trace.comparison.focus.schedule.dial;
-  const alternate = trace.comparison.alternate.schedule.dial;
+  const replaced = trace.comparison.contrasts.find((contrast) => contrast.status === 'replaced');
+  const focus = replaced
+    ? trace.comparison.focus.selected.find((candidate) => candidate.id === replaced.selectedId)
+    : undefined;
+  const alternate = replaced
+    ? trace.comparison.alternate.selected.find((candidate) => candidate.id === replaced.alternateId)
+    : undefined;
+  const swap = focus && alternate
+    ? `"${ideaSentence(focus)}" -> "${ideaSentence(alternate)}"`
+    : 'none';
   return [
-    `kernel ${focus}: ${verdict(trace)}; pool=${trace.candidateCount}`,
-    `${focus}: [${selectedIds(trace, 'focus')}]`,
-    `${alternate}: [${selectedIds(trace, 'alternate')}]`,
-    `changed: ${changedByDial(trace)}`,
-    `stable: ${stableAcrossDials(trace)}`,
-    `failed: ${failedChecks(trace)}`,
+    `PASS: ${trace.lineage.generated.length} ideas; ${trace.lineage.rejected.length} repeats rejected; checks ${verdict(trace)}.`,
+    `SWAP: ${swap}`,
+    `STABLE: ${stableAcrossDials(trace)}`,
+    'MORE: `pnpm walkthrough`.',
   ].join('\n');
 }

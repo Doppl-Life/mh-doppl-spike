@@ -367,3 +367,10 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** For every live zeitgeist thesis, ask: old taboo, load-bearing constraint, substrate removed, new rational strategy, tomorrow implication, dated falsifier. If no constraint actually disappeared, it is just fashion.
 - **Evidence:** Theo-video notes on agentic loops and breadth-first "boil the ocean" plays; maps onto [Timing is load-bearing](#timing-is-load-bearing--2026-06-20), [Latent-asset unlock](#latent-asset-unlock--2026-06-20), the proposal in [`proposals/least-action-fitness.md`](./proposals/least-action-fitness.md), and the `lazy-breadth-agent-shell` fixture in [`spikes/least-action/fixtures.json`](./spikes/least-action/fixtures.json).
 - **Carry forward:** Add anti-pattern inversion as a `zeitgeist_synthesis` generator/checker lens: "What used to be a trap, and what changed enough that it is not?"
+
+### Visibility preserves native shape — 2026-06-21
+
+- **Banger:** A useful microscope does not invent a second language for the mechanism. It reveals the machine's native shape, then adds just enough translation to let a human inspect it.
+- **Lesson:** For boundary visibility, render the real contract first (`interface SeedFixture { ... }`), then explain it with small affordances. Do not replace contracts with vague prose, repeated labels, or self-referential tool boxes.
+- **Evidence:** `kernel-rebuild` microscope first showed artifact/contract/module rows, repeated `CandidatePool` as multiple objects, and used mush like "apply operators to source packets." The corrected view uses `contract -> module transform -> contract` with TypeScript-style interfaces and maps the top input to `SeedFixture.seed`.
+- **Carry forward:** Future visibility tools start from source contracts and module transforms. Human readability is a projection over the native mechanism, not a new process baked into it.

@@ -39,8 +39,9 @@ build a runnable prototype to test against real ideas, break, and tighten.
 13. **[`CONVERSATION.md`](./CONVERSATION.md)** — the raw reasoning path the synthesis was
    distilled from (the chat transcript).
 
-The current proof surface is the runnable artifact plus digest/report/trace
-outputs. Historical diagram sketches are not part of the active source surface.
+The kernel lives in `src/`. Human-facing views live in `tools/microscope/` and
+are disposable unless they prove reusable. Historical diagram sketches are not
+part of the active source surface.
 
 ## The one line
 
@@ -49,5 +50,19 @@ wearing different masks**, and the masks are *dial settings*, not separate machi
 
 ## Status
 
-Spec captured. Next: point agent teams at `SPEC.md` to build the kernel artifact —
-boil *this* ocean (the kernel), not doppl-prime wholesale.
+Runnable TypeScript prototype started. Current slice proves:
+
+- source packets generate children through named reproduction operators
+- no-delta packets are rejected before fitness
+- generated children carry lineage and delta
+- the same generated pool supports diverge vs. converge selection
+
+## What To Do
+
+Run `pnpm microscope` from this folder for the single-screen visual view.
+
+Run `pnpm walkthrough` for the short terminal readout.
+
+Run `pnpm walkthrough:detail` only when you want the longer microscope view.
+
+Run `pnpm build` when you only want the pass/fail proof.

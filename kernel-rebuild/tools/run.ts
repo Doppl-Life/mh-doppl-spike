@@ -1,11 +1,11 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Dial } from './contracts/index.ts';
-import { assertSeedFixture } from './contracts/index.ts';
-import { renderConsoleDigest, renderDigest } from './digest.ts';
-import { renderReport } from './report.ts';
-import { buildRunTrace } from './trace.ts';
+import type { Dial } from '../src/contracts/index.ts';
+import { assertSeedFixture } from '../src/contracts/index.ts';
+import { buildRunTrace } from '../src/trace.ts';
+import { renderConsoleDigest, renderDigest } from './microscope/digest.ts';
+import { renderReport } from './microscope/report.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');

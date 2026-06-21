@@ -19,6 +19,7 @@ WORKSPACE_ROOT = REPO_ROOT.parent
 CASE_ROOT = REPO_ROOT / "case-studies"
 DEFAULT_LEDGER = ROOT / "data" / "knowledge.jsonl"
 OUT_DIR = ROOT / "out"
+FIXTURE_DIR = ROOT / "fixtures"
 DEFAULT_KEY_FILE = WORKSPACE_ROOT / "tokens and keys.md"
 DEFAULT_OPENROUTER_MODEL = "openai/gpt-4.1-nano"
 
@@ -130,6 +131,11 @@ class KnowledgeRecord:
     line_end: int
     heading: str
     citation: str
+    run_id: str = ""
+    candidate_id: str = ""
+    critic_id: str = ""
+    origin_event_sequence: int = 0
+    agenome_id: str = ""
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -146,6 +152,11 @@ class KnowledgeRecord:
             "line_end": self.line_end,
             "heading": self.heading,
             "citation": self.citation,
+            "run_id": self.run_id,
+            "candidate_id": self.candidate_id,
+            "critic_id": self.critic_id,
+            "origin_event_sequence": self.origin_event_sequence,
+            "agenome_id": self.agenome_id,
         }
 
     @classmethod
@@ -164,6 +175,11 @@ class KnowledgeRecord:
             line_end=int(data.get("line_end", data.get("line_start", 1))),
             heading=str(data.get("heading", "")),
             citation=str(data.get("citation", data["source_path"])),
+            run_id=str(data.get("run_id", "")),
+            candidate_id=str(data.get("candidate_id", "")),
+            critic_id=str(data.get("critic_id", "")),
+            origin_event_sequence=int(data.get("origin_event_sequence", 0)),
+            agenome_id=str(data.get("agenome_id", "")),
         )
 
 
@@ -669,7 +685,7 @@ class KnowledgeSpace:
         exclude_cases: set[str] | None = None,
     ) -> KnowledgePacket:
         excluded_cases = sorted(exclude_cases or set())
-        base_packet = self.retrieve(problem_statement, limit=limit)
+        base_packet = self.retrieve(problem_statement, limit=max(limit * 4, limit))
         request = KnowledgePacketRequest(
             problem_summary=summarize_problem(problem_statement),
             target_case=target_case,
@@ -695,6 +711,97 @@ class KnowledgeSpace:
             request=request,
             excluded=excluded,
         )
+
+    def request_collapse(self, events: list[dict[str, Any]]) -> dict[str, Any]:
+        run_event = next((event for event in events if event.get("type") == "run.configured"), {})
+        run_id = str(run_event.get("runId", "unknown-run"))
+        run_payload = run_event.get("payload") or {}
+        target_case = str(run_payload.get("target_case", "unknown-case"))
+        candidates: dict[str, dict[str, Any]] = {}
+        extracted_items: list[dict[str, Any]] = []
+
+        for event in events:
+            payload = event.get("payload") or {}
+            if event.get("type") == "candidate.produced":
+                candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
+                candidates[candidate_id] = {
+                    "candidate_id": candidate_id,
+                    "agenome_id": str(payload.get("agenome_id", "")),
+                    "survived": bool(payload.get("survived", False)),
+                    "artifact": str(payload.get("artifact", "")),
+                    "sequence": int(event.get("sequence", 0)),
+                }
+            if event.get("type") == "critic.review":
+                candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
+                candidate = candidates.get(candidate_id, {})
+                critic_id = str(payload.get("critic_id", "unknown-critic"))
+                for item in payload.get("extracted_knowledge") or []:
+                    extracted_items.append(
+                        {
+                            "kind": str(item.get("kind", "ResearchFinding")),
+                            "text": str(item.get("text", "")),
+                            "tags": list(item.get("tags") or []),
+                            "trust_tier": str(item.get("trust_tier", "candidate")),
+                            "run_id": run_id,
+                            "target_case": target_case,
+                            "candidate_id": candidate_id,
+                            "critic_id": critic_id,
+                            "agenome_id": str(candidate.get("agenome_id", "")),
+                            "candidate_survived": bool(candidate.get("survived", False)),
+                            "origin_event_sequence": int(event.get("sequence", 0)),
+                            "source_path": f"run-events/{run_id}.json",
+                            "citation": f"run-events/{run_id}.json#sequence-{event.get('sequence', 0)}",
+                        }
+                    )
+
+        return {
+            "type": "knowledge.collapse_packet",
+            "run_id": run_id,
+            "target_case": target_case,
+            "items": extracted_items,
+            "source_event_count": len(events),
+        }
+
+    def ingest_collapse_packet(self, collapse_packet: dict[str, Any]) -> list[KnowledgeRecord]:
+        created: list[KnowledgeRecord] = []
+        existing_ids = set(self.records)
+        run_id = str(collapse_packet.get("run_id", "unknown-run"))
+        target_case = str(collapse_packet.get("target_case", "unknown-case"))
+        for item in collapse_packet.get("items") or []:
+            text = str(item.get("text", "")).strip()
+            if not text:
+                continue
+            kind = str(item.get("kind", "ResearchFinding"))
+            source_path = str(item.get("source_path", f"run-events/{run_id}.json"))
+            origin_sequence = int(item.get("origin_event_sequence", 0))
+            citation = str(item.get("citation", f"{source_path}#sequence-{origin_sequence}"))
+            chunk = source_chunk_id(source_path, origin_sequence, origin_sequence, text)
+            record = KnowledgeRecord(
+                id=record_id(kind, target_case, source_path, text),
+                kind=kind,
+                text=text,
+                tags=sorted(set(item.get("tags") or infer_tags(text, target_case))),
+                source_case=target_case,
+                source_path=source_path,
+                visibility="public",
+                trust_tier=str(item.get("trust_tier", "candidate")),
+                source_chunk_id=chunk,
+                line_start=origin_sequence,
+                line_end=origin_sequence,
+                heading=f"Collapse from {run_id}",
+                citation=citation,
+                run_id=run_id,
+                candidate_id=str(item.get("candidate_id", "")),
+                critic_id=str(item.get("critic_id", "")),
+                origin_event_sequence=origin_sequence,
+                agenome_id=str(item.get("agenome_id", "")),
+            )
+            if record.id not in existing_ids:
+                self.records[record.id] = record
+                created.append(record)
+                existing_ids.add(record.id)
+        self._append(created)
+        return created
 
     def graph_projection(self) -> dict[str, Any]:
         nodes: dict[str, dict[str, Any]] = {}
@@ -726,9 +833,44 @@ class KnowledgeSpace:
                 "lineStart": record.line_start,
                 "lineEnd": record.line_end,
                 "heading": record.heading,
+                "runId": record.run_id,
+                "candidateId": record.candidate_id,
+                "criticId": record.critic_id,
+                "agenomeId": record.agenome_id,
             }
             edges.append({"source": record_id_value, "target": case_id, "type": "FROM_CASE"})
             edges.append({"source": record_id_value, "target": source_id, "type": "SUPPORTED_BY"})
+
+            if record.run_id:
+                run_id = f"run:{record.run_id}"
+                nodes.setdefault(
+                    run_id,
+                    {"id": run_id, "label": record.run_id, "type": "Run"},
+                )
+                edges.append({"source": record_id_value, "target": run_id, "type": "DERIVED_FROM_RUN"})
+            if record.candidate_id:
+                candidate_id = f"candidate:{record.candidate_id}"
+                nodes.setdefault(
+                    candidate_id,
+                    {
+                        "id": candidate_id,
+                        "label": record.candidate_id,
+                        "type": "Candidate",
+                        "agenomeId": record.agenome_id,
+                    },
+                )
+                edges.append({"source": record_id_value, "target": candidate_id, "type": "SUPPORTED_BY_CANDIDATE"})
+                if record.run_id:
+                    edges.append({"source": candidate_id, "target": f"run:{record.run_id}", "type": "PART_OF_RUN"})
+            if record.critic_id:
+                critic_id = f"critic:{record.critic_id}"
+                nodes.setdefault(
+                    critic_id,
+                    {"id": critic_id, "label": record.critic_id, "type": "CriticReview"},
+                )
+                edges.append({"source": record_id_value, "target": critic_id, "type": "FLAGGED_BY_CRITIC"})
+                if record.candidate_id:
+                    edges.append({"source": critic_id, "target": f"candidate:{record.candidate_id}", "type": "REVIEWED_CANDIDATE"})
 
             for tag in record.tags:
                 tag_id = f"tag:{tag}"
@@ -745,6 +887,9 @@ class KnowledgeSpace:
             "CREATE CONSTRAINT case_id IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE;",
             "CREATE CONSTRAINT tag_id IF NOT EXISTS FOR (t:Tag) REQUIRE t.id IS UNIQUE;",
             "CREATE CONSTRAINT source_id IF NOT EXISTS FOR (s:Source) REQUIRE s.id IS UNIQUE;",
+            "CREATE CONSTRAINT run_id IF NOT EXISTS FOR (run:Run) REQUIRE run.id IS UNIQUE;",
+            "CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.id IS UNIQUE;",
+            "CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;",
             "",
         ]
         for record in sorted(self.records.values(), key=lambda item: item.id):
@@ -769,6 +914,10 @@ class KnowledgeSpace:
                             f"r.lineStart = {record.line_start}",
                             f"r.lineEnd = {record.line_end}",
                             f"r.heading = {cypher_value(record.heading)}",
+                            f"r.runId = {cypher_value(record.run_id)}",
+                            f"r.candidateId = {cypher_value(record.candidate_id)}",
+                            f"r.criticId = {cypher_value(record.critic_id)}",
+                            f"r.agenomeId = {cypher_value(record.agenome_id)}",
                         ]
                     )
                     + ";",
@@ -778,6 +927,44 @@ class KnowledgeSpace:
                     "MERGE (r)-[:SUPPORTED_BY]->(s);",
                 ]
             )
+            if record.run_id:
+                lines.extend(
+                    [
+                        f"MERGE (run:Run {{id: {cypher_value(record.run_id)}}}) SET run.title = {cypher_value(record.run_id)};",
+                        f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (run:Run {{id: {cypher_value(record.run_id)}}})",
+                        "MERGE (r)-[:DERIVED_FROM_RUN]->(run);",
+                    ]
+                )
+            if record.candidate_id:
+                lines.extend(
+                    [
+                        f"MERGE (cand:Candidate {{id: {cypher_value(record.candidate_id)}}}) SET cand.agenomeId = {cypher_value(record.agenome_id)};",
+                        f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (cand:Candidate {{id: {cypher_value(record.candidate_id)}}})",
+                        "MERGE (r)-[:SUPPORTED_BY_CANDIDATE]->(cand);",
+                    ]
+                )
+                if record.run_id:
+                    lines.extend(
+                        [
+                            f"MATCH (cand:Candidate {{id: {cypher_value(record.candidate_id)}}}), (run:Run {{id: {cypher_value(record.run_id)}}})",
+                            "MERGE (cand)-[:PART_OF_RUN]->(run);",
+                        ]
+                    )
+            if record.critic_id:
+                lines.extend(
+                    [
+                        f"MERGE (critic:CriticReview {{id: {cypher_value(record.critic_id)}}}) SET critic.title = {cypher_value(record.critic_id)};",
+                        f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (critic:CriticReview {{id: {cypher_value(record.critic_id)}}})",
+                        "MERGE (r)-[:FLAGGED_BY_CRITIC]->(critic);",
+                    ]
+                )
+                if record.candidate_id:
+                    lines.extend(
+                        [
+                            f"MATCH (critic:CriticReview {{id: {cypher_value(record.critic_id)}}}), (cand:Candidate {{id: {cypher_value(record.candidate_id)}}})",
+                            "MERGE (critic)-[:REVIEWED_CANDIDATE]->(cand);",
+                        ]
+                    )
             for tag in record.tags:
                 lines.extend(
                     [
@@ -844,6 +1031,9 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
         limit=3,
         exclude_cases={target_case.name},
     )
+    mock_events = json.loads((FIXTURE_DIR / "mock_run_events.json").read_text(encoding="utf-8"))
+    collapse_packet = space.request_collapse(mock_events)
+    collapse_records = space.ingest_collapse_packet(collapse_packet)
     packet = space.select_packet(
         query,
         target_case=target_case.name,
@@ -860,6 +1050,10 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUT_DIR / "research_report.json").write_text(
         json.dumps(research_report, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "collapse_packet.json").write_text(
+        json.dumps(collapse_packet, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     (OUT_DIR / "knowledge_packet.json").write_text(
@@ -888,11 +1082,13 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
 
     print(f"Knowledge ledger: {ledger.relative_to(ROOT)}")
     print(f"Research report: {(OUT_DIR / 'research_report.json').relative_to(ROOT)}")
+    print(f"Collapse packet: {(OUT_DIR / 'collapse_packet.json').relative_to(ROOT)}")
     print(f"Report: {(OUT_DIR / 'report.md').relative_to(ROOT)}")
     print(f"Packet: {(OUT_DIR / 'knowledge_packet.json').relative_to(ROOT)}")
     print(f"Packet event: {(OUT_DIR / 'knowledge_packet_event.json').relative_to(ROOT)}")
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
     print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")
+    print(f"Collapsed {len(collapse_records)} run-derived memory item(s)")
     print(f"Retrieved {len(packet.items)} memory item(s) for {target_case.name}")
 
 
@@ -968,7 +1164,10 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     edges = graph["edges"]
     type_colors = {
         "Case": "#0f766e",
+        "Candidate": "#2563eb",
+        "CriticReview": "#be123c",
         "KnowledgeRecord": "#7c3aed",
+        "Run": "#0f172a",
         "Source": "#475569",
         "Tag": "#c2410c",
     }
@@ -988,6 +1187,12 @@ def render_graph_html(graph: dict[str, Any]) -> str:
             metadata_parts = [f"<strong>Citation:</strong> {citation}", f"<strong>Chunk:</strong> {chunk}"]
             if heading:
                 metadata_parts.append(f"<strong>Heading:</strong> {heading}")
+            if node.get("runId"):
+                metadata_parts.append(f"<strong>Run:</strong> {html.escape(str(node['runId']))}")
+            if node.get("candidateId"):
+                metadata_parts.append(f"<strong>Candidate:</strong> {html.escape(str(node['candidateId']))}")
+            if node.get("criticId"):
+                metadata_parts.append(f"<strong>Critic:</strong> {html.escape(str(node['criticId']))}")
             metadata = "<div class=\"node-meta\">" + "<br>".join(metadata_parts) + "</div>"
         related = []
         for edge in adjacency.get(node["id"], []):
@@ -1261,6 +1466,9 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         <div class="filter-grid" role="group" aria-label="Node type filter">
           <button type="button" class="active" data-filter="all">All</button>
           <button type="button" data-filter="KnowledgeRecord">Records</button>
+          <button type="button" data-filter="Run">Runs</button>
+          <button type="button" data-filter="Candidate">Candidates</button>
+          <button type="button" data-filter="CriticReview">Critics</button>
           <button type="button" data-filter="Case">Cases</button>
           <button type="button" data-filter="Source">Sources</button>
           <button type="button" data-filter="Tag">Tags</button>
@@ -1291,7 +1499,10 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     const graphData = JSON.parse(document.getElementById("graph-data").textContent);
     const colors = {{
       Case: "#0f766e",
+      Candidate: "#2563eb",
+      CriticReview: "#be123c",
       KnowledgeRecord: "#7c3aed",
+      Run: "#0f172a",
       Source: "#475569",
       Tag: "#c2410c"
     }};
@@ -1314,12 +1525,16 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         node.text,
         node.citation,
         node.sourceChunkId,
-        node.heading
+        node.heading,
+        node.runId,
+        node.candidateId,
+        node.criticId,
+        node.agenomeId
       ].filter(Boolean).join(" ").toLowerCase().includes(term);
     }}
 
     function layoutNodes(width, height) {{
-      const buckets = ["Case", "Source", "KnowledgeRecord", "Tag"];
+      const buckets = ["Run", "Candidate", "CriticReview", "Case", "Source", "KnowledgeRecord", "Tag"];
       const byType = Object.fromEntries(buckets.map((type) => [type, []]));
       graphData.nodes.forEach((node) => {{
         (byType[node.type] || byType.KnowledgeRecord).push(node);
@@ -1349,11 +1564,15 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       const citation = node.citation ? `<div class="detail-kv"><strong>Citation:</strong> ${{escapeHtml(node.citation)}}</div>` : "";
       const chunk = node.sourceChunkId ? `<div class="detail-kv"><strong>Chunk:</strong> ${{escapeHtml(node.sourceChunkId)}}</div>` : "";
       const heading = node.heading ? `<div class="detail-kv"><strong>Heading:</strong> ${{escapeHtml(node.heading)}}</div>` : "";
+      const run = node.runId ? `<div class="detail-kv"><strong>Run:</strong> ${{escapeHtml(node.runId)}}</div>` : "";
+      const candidate = node.candidateId ? `<div class="detail-kv"><strong>Candidate:</strong> ${{escapeHtml(node.candidateId)}}</div>` : "";
+      const critic = node.criticId ? `<div class="detail-kv"><strong>Critic:</strong> ${{escapeHtml(node.criticId)}}</div>` : "";
+      const agenome = node.agenomeId ? `<div class="detail-kv"><strong>Agenome:</strong> ${{escapeHtml(node.agenomeId)}}</div>` : "";
       const text = node.text ? `<div class="detail-text">${{escapeHtml(node.text)}}</div>` : "";
       detail.innerHTML = `
         <h2>${{escapeHtml(node.label)}}</h2>
         <div class="detail-kv"><strong>Type:</strong> ${{escapeHtml(node.type)}}</div>
-        ${{citation}}${{chunk}}${{heading}}${{text}}
+        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{text}}
         <div class="detail-kv"><strong>Outgoing:</strong></div>
         <ul>${{outgoing || "<li>None</li>"}}</ul>
       `;

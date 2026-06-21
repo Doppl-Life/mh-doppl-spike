@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 from knowledge_space import KnowledgeSpace, load_openrouter_key, validate_packet_event
@@ -10,6 +11,7 @@ from knowledge_space import KnowledgeSpace, load_openrouter_key, validate_packet
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = ROOT / "case-studies"
+FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
 
 class KnowledgeSpaceTest(unittest.TestCase):
@@ -257,6 +259,60 @@ class KnowledgeSpaceTest(unittest.TestCase):
             key_file.write_text("openrouter api key: placeholder-value\n", encoding="utf-8")
 
             self.assertEqual(load_openrouter_key(key_file), "placeholder-value")
+
+    def test_collapse_culled_run_writes_back_searchable_findings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            events = json_fixture("mock_run_events.json")
+
+            collapse = space.request_collapse(events)
+            records = space.ingest_collapse_packet(collapse)
+
+            self.assertEqual(collapse["type"], "knowledge.collapse_packet")
+            self.assertEqual(collapse["run_id"], "ks-demo-run-culled-1")
+            self.assertEqual(len(records), 2)
+            self.assertEqual({record.kind for record in records}, {"ResearchFinding", "NegativeFinding"})
+            self.assertTrue(all(record.run_id == "ks-demo-run-culled-1" for record in records))
+            self.assertTrue(all(record.candidate_id == "candidate-cold-ownership-1" for record in records))
+
+            packet = space.retrieve(
+                "What ownership-unwind priors mention dealer finance inventory risk?",
+                limit=4,
+            )
+            packet_text = "\n".join(item.record.text.lower() for item in packet.items)
+            self.assertIn("dealer finance inventory", packet_text)
+            self.assertIn("candidate-cold-ownership-1", packet.to_json()["items"][0]["record"]["candidate_id"])
+
+    def test_graph_projection_includes_run_candidate_and_critic_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            records = space.ingest_collapse_packet(
+                space.request_collapse(json_fixture("mock_run_events.json"))
+            )
+
+            graph = space.graph_projection()
+            node_ids = {node["id"] for node in graph["nodes"]}
+            edge_types = {edge["type"] for edge in graph["edges"]}
+            cypher = space.to_cypher()
+            html_path = Path(tmp) / "graph.html"
+            space.write_graph_html(html_path)
+            html = html_path.read_text(encoding="utf-8")
+
+            self.assertGreaterEqual(len(records), 1)
+            self.assertIn("run:ks-demo-run-culled-1", node_ids)
+            self.assertIn("candidate:candidate-cold-ownership-1", node_ids)
+            self.assertIn("critic:critic-market-structure", node_ids)
+            self.assertIn("DERIVED_FROM_RUN", edge_types)
+            self.assertIn("SUPPORTED_BY_CANDIDATE", edge_types)
+            self.assertIn("FLAGGED_BY_CRITIC", edge_types)
+            self.assertIn("MERGE (run:Run", cypher)
+            self.assertIn("MERGE (cand:Candidate", cypher)
+            self.assertIn('data-filter="Run"', html)
+            self.assertIn("ks-demo-run-culled-1", html)
+
+
+def json_fixture(name: str) -> list[dict]:
+    return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

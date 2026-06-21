@@ -91,6 +91,7 @@ The demo writes both human and runtime-facing artifacts:
 
 - `data/knowledge.jsonl` - durable ledger with source chunk IDs, line spans, and citations.
 - `out/research_report.json` - selected local sources for the problem statement.
+- `out/collapse_packet.json` - deterministic write-back from a mock culled run.
 - `out/knowledge_packet.json` - retrieval packet with `K...` citation handles.
 - `out/knowledge_packet_event.json` - future-shaped `knowledge.packet_selected` run event.
 - `out/report.md` - human-readable transfer proof with citations.

@@ -77,6 +77,15 @@ not because the goal is a disposable prototype.
 - [ ] Acceptance gate: ingesting the same run twice creates no duplicate nodes or
       edges.
 
+### Phase 2 Walking Notes
+
+- [x] Add deterministic mock run-event export in `fixtures/mock_run_events.json`.
+- [x] Mirror run-derived provenance into graph projection nodes for `Run`,
+      `Candidate`, and `CriticReview`.
+- [x] Link extracted records to run/candidate/critic provenance in graph HTML and
+      Neo4j Cypher.
+- [ ] Add full ordered run-event export reader with watermarks.
+
 ## Phase 3 - Embedding And Retrieval
 
 - [ ] Install/configure local embedding adapter using `Qwen/Qwen3-Embedding-0.6B`
@@ -117,8 +126,8 @@ not because the goal is a disposable prototype.
 
 ## Phase 6 - Collapse And Distillation
 
-- [ ] Implement `KnowledgeGateway.requestCollapse`.
-- [ ] Build collapse prompt/schema over run event sequences.
+- [~] Implement `KnowledgeGateway.requestCollapse`.
+- [~] Build collapse prompt/schema over run event sequences.
 - [ ] Extract:
       claims,
       hidden variables,
@@ -129,11 +138,21 @@ not because the goal is a disposable prototype.
       skill candidates,
       heuristic candidates,
       and promotion proposals.
-- [ ] Store collapse packet as a receipt and graph node.
-- [ ] Insert extracted items as `draft` or `candidate` trust tier.
-- [ ] Link extracted items to run/candidate/critic/check provenance.
-- [ ] Acceptance gate: a culled agenome with one useful source creates a
+- [~] Store collapse packet as a receipt and graph node.
+- [x] Insert extracted items as `draft` or `candidate` trust tier.
+- [x] Link extracted items to run/candidate/critic/check provenance.
+- [x] Acceptance gate: a culled agenome with one useful source creates a
       searchable `ResearchFinding` even though its candidate is not selected.
+
+### Phase 6 Walking Notes
+
+- [x] Collapse a mock culled candidate into `ResearchFinding` and
+      `NegativeFinding` records.
+- [x] Persist collapse-derived records to the JSONL ledger with run, candidate,
+      critic, agenome, and event-sequence provenance.
+- [x] Write `out/collapse_packet.json` from the demo.
+- [ ] Replace deterministic fixture extraction with schema-bound model extraction
+      when OpenRouter/local model use is warranted.
 
 ## Phase 7 - Promotion Workflow
 
@@ -202,3 +221,13 @@ Build this minimal vertical slice first:
 
 The walking skeleton is complete only when the packet can be inspected, cited,
 and replayed without querying live graph state.
+
+Current skeleton status:
+
+- [x] Ingest multiple FSD case-study Markdown folders.
+- [x] Select and persist a packet for a new case-study run.
+- [x] Persist packet fixture shaped like future run events.
+- [x] Collapse a mock culled agenome into searchable findings.
+- [x] Export graph projections to HTML and Neo4j Cypher.
+- [ ] Ingest one real saved run-event export from Doppl runtime.
+- [ ] Rebuild graph from exported receipts and prove stable IDs/source links.

@@ -1,0 +1,47 @@
+[
+  {
+    "type": "run.configured",
+    "runId": "ks-demo-run-culled-1",
+    "sequence": 1,
+    "payload": {
+      "target_case": "fsd-ownership-unwind",
+      "problem_summary": "Find hidden ownership-unwind pressures after autonomy."
+    }
+  },
+  {
+    "type": "candidate.produced",
+    "runId": "ks-demo-run-culled-1",
+    "sequence": 2,
+    "payload": {
+      "candidate_id": "candidate-cold-ownership-1",
+      "agenome_id": "cold-scout",
+      "survived": false,
+      "artifact": "The answer is not only consumer car ownership falling. A culled scout noticed dealer finance inventory risk: floorplan lenders, used-car inventory marks, and warranty reserve assumptions get hit before households fully abandon cars."
+    }
+  },
+  {
+    "type": "critic.review",
+    "runId": "ks-demo-run-culled-1",
+    "sequence": 3,
+    "payload": {
+      "critic_id": "critic-market-structure",
+      "candidate_id": "candidate-cold-ownership-1",
+      "score": 0.42,
+      "verdict": "Rejected as incomplete, but preserves a useful hidden-variable lead.",
+      "extracted_knowledge": [
+        {
+          "kind": "ResearchFinding",
+          "text": "Dealer finance inventory risk is an early ownership-unwind signal: floorplan lenders, used-car inventory marks, and warranty reserve assumptions may move before households fully abandon cars.",
+          "tags": ["fsd", "ownership", "finance", "inventory", "dealer"],
+          "trust_tier": "candidate"
+        },
+        {
+          "kind": "NegativeFinding",
+          "text": "Do not model ownership unwind as only an insurance or household-demand collapse; the dealer financing stack can fail first.",
+          "tags": ["fsd", "ownership", "warning", "finance"],
+          "trust_tier": "candidate"
+        }
+      ]
+    }
+  }
+]

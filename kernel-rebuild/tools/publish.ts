@@ -36,6 +36,12 @@ function injectNav(html: string, active: KernelView): string {
   return nav + cleanHtml;
 }
 
+function assertNav(html: string, dest: string): void {
+  if (!html.includes('class="kernel-view-nav"')) {
+    throw new Error(`Published page is missing kernel view header: ${dest}`);
+  }
+}
+
 async function main(): Promise<void> {
   await mkdir(publishedDir, { recursive: true });
   const published: string[] = [];
@@ -45,7 +51,9 @@ async function main(): Promise<void> {
     const dest = path.join(publishedDir, page.to);
     try {
       const html = await readFile(src, 'utf8');
-      await writeFile(dest, injectNav(html, page.view), 'utf8');
+      const output = injectNav(html, page.view);
+      assertNav(output, path.relative(root, dest));
+      await writeFile(dest, output, 'utf8');
       published.push(page.to);
     } catch {
       missing.push(page.from);

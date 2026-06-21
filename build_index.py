@@ -26,6 +26,11 @@ INDEX_PATH = ROOT / "index.html"
 # `kernel-rebuild/published/`); the committed `published/` surface is what reaches deploy.
 _SKIP_DIRS = {"node_modules", "out", ".git", "dist", "build"}
 _TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+_KERNEL_PAGE_ORDER = {
+    "kernel-rebuild/published/assay.html": 0,
+    "kernel-rebuild/published/microscope.html": 1,
+    "kernel-rebuild/published/architecture.html": 2,
+}
 
 _CSS = """
 :root{--bg:#0b0e13;--surface:#141a22;--surface2:#1b232e;--border:#2a3544;
@@ -96,7 +101,12 @@ def collect_kernel() -> list[tuple[Path, str]]:
         if any(part in _SKIP_DIRS for part in rel_parts):
             continue
         pages.append((html_path, _extract_title(html_path)))
-    pages.sort(key=lambda pair: pair[0].relative_to(ROOT).as_posix())
+    pages.sort(
+        key=lambda pair: (
+            _KERNEL_PAGE_ORDER.get(pair[0].relative_to(ROOT).as_posix(), 99),
+            pair[0].relative_to(ROOT).as_posix(),
+        )
+    )
     return pages
 
 
@@ -145,7 +155,7 @@ Generated {_now()}.</p>
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build the Agarden run index")
+    parser = argparse.ArgumentParser(description="Build the kernel proof hub")
     parser.add_argument("--open", action="store_true", help="Open index.html after writing")
     args = parser.parse_args()
 

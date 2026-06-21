@@ -100,6 +100,10 @@
     .case-section[open] {
       border-color: #25362c;
     }
+    .control-case {
+      border-color: #25362c;
+      background: #f8fbff;
+    }
     .case-head {
       position: relative;
       display: grid;
@@ -178,6 +182,9 @@
       grid-template-columns: 1.25fr 1.05fr .85fr .65fr;
       gap: 10px;
       margin-bottom: 14px;
+    }
+    .control-explain {
+      grid-template-columns: 1fr 1fr;
     }
     .case-summary h3 {
       margin-bottom: 6px;
@@ -403,13 +410,14 @@
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
-      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Case rows are collapsed by default; expand only the ones worth inspecting.</p>
+      <p>This view shows one isolated control case first, then five kernel case runs. It asks whether the kernel makes the cases more fertile; it is not asking whether the machine solved them.</p>
       <div class="facts">
         <span>schema kernel.discovery-assay.v1</span>
-        <span>cases 5</span>
-        <span>controls 1/5</span>
+        <span>rows 6</span>
+        <span>kernel cases 5</span>
+        <span>control cases 1</span>
         <span>mode random fill</span>
-        <span>seed mqnzg1lq</span>
+        <span>seed mqo0229n</span>
         <span>failed checks 0</span>
       </div>
       <div class="hero-grid">
@@ -419,58 +427,49 @@
         </article>
         <article class="hero-card">
           <h3>Controls</h3>
-          <p>1/5 cases have a clean-agent control. In the collapsed rows, look for the <strong>control</strong> cell; open that row to compare the kernel output against the baseline and rate both.</p>
+          <p>The first row is the control case: one clean-context sub-agent answer for the drone paparazzi scenario. It is a baseline, not a judge. The next row is the paired kernel run.</p>
         </article>
       </div>
     </section>
 
     
-    <details class="case-section" id="jack-drone-privacy">
+    <details class="case-section control-case" id="control-jack-drone-privacy">
       <summary class="case-head">
         <div class="case-title">
-          <div class="kicker">case-studies/jack-drone-privacy/</div>
-          <h2>Jack drone privacy</h2>
+          <div class="kicker">control case / case-studies/jack-drone-privacy/</div>
+          <h2>Control case: drone security paparazzi</h2>
         </div>
         <div class="headline-grid">
-          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Drone response becomes choreography</strong></div>
-          <div class="has-control"><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>The actual problem is not how to stop a drone. It is how to prevent a valuable ...</strong><em>clean-agent attached</em></div>
-          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Constraint transfer x2; Perimeter redefinition x2</strong></div>
-          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>improved: 1/1 generation-2 child candidate(s) improved on parent combined novel...</strong></div>
+          <div class="has-control"><span><span class="help" tabindex="0" title="This row is not a kernel run. It is a clean-context baseline for comparison." data-tip="This row is not a kernel run. It is a clean-context baseline for comparison.">row type</span></span><strong>clean-context sub-agent</strong><em>baseline</em></div>
+          <div><span><span class="help" tabindex="0" title="The clean agent’s problem framing before seeing kernel output." data-tip="The clean agent’s problem framing before seeing kernel output.">actual problem</span></span><strong>The actual problem is not how to stop a drone. It is how to prevent a valuable ...</strong></div>
+          <div><span><span class="help" tabindex="0" title="The kernel case directly below this control row." data-tip="The kernel case directly below this control row.">paired kernel run</span></span><strong>Jack drone privacy</strong></div>
+          <div><span><span class="help" tabindex="0" title="Use this to ask whether the kernel created anything better, faster, or easier to judge than a clean sub-agent." data-tip="Use this to ask whether the kernel created anything better, faster, or easier to judge than a clean sub-agent.">why compare</span></span><strong>baseline before machinery</strong></div>
         </div>
       </summary>
       <div class="case-body">
-      <div class="case-summary">
-        <article>
-          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
-          <h3>Drone response becomes choreography</h3>
-          <p>The highest-leverage response may be a discreet cue and sightline protocol that moves the protected person and preserves normal deck activity instead of escalating around the drone.</p>
-        </article>
-        <article>
-          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
-          <h3>attached</h3>
-          <p>The actual problem is not how to stop a drone. It is how to prevent a valuable image from existing before anyone has to touch the drone.</p>
-        </article>
-        <article>
-          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
-          <h3>improved</h3>
-          <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
-        </article>
-        <article>
-          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
-          <h3>none</h3>
-          <p>Goal checks passed.</p>
-        </article>
-      </div>
-      
+        <div class="case-summary control-explain">
+          <article>
+            <div class="kicker"><span class="help" tabindex="0" title="A baseline answer from one sub-agent with no kernel, assay, scoring, recursion, or trace context." data-tip="A baseline answer from one sub-agent with no kernel, assay, scoring, recursion, or trace context.">control case</span></div>
+            <h3>not a kernel run</h3>
+            <p>This is the isolated clean-agent answer for the drone paparazzi case. It is shown first so the next row can be judged against it.</p>
+          </article>
+          <article>
+            <div class="kicker">paired kernel case</div>
+            <h3>Jack drone privacy</h3>
+            <p>Open the next row to compare generation, scoring, convergence, and selected candidates against this baseline.</p>
+          </article>
+        </div>
+        
     <section class="control-panel">
       <div class="control-head">
         <div>
           <div class="kicker">single clean-context sub-agent, no kernel or assay context</div>
-          <h3>Clean-Agent Control</h3>
+          <h3>Clean-Agent Control Output</h3>
         </div>
-        <div class="verdict-row control-verdict" aria-label="Control verdict for Jack drone privacy">
-          <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-control-case="jack-drone-privacy" data-control-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-control-case="jack-drone-privacy" data-control-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-control-case="jack-drone-privacy" data-control-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-control-case="jack-drone-privacy" data-control-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-control-case="jack-drone-privacy" data-control-verdict="keeper">keeper</button>
-        </div>
+        
+    <div class="verdict-row control-verdict" aria-label="Control verdict for Control case: drone security paparazzi">
+      <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-control-case="jack-drone-privacy" data-control-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-control-case="jack-drone-privacy" data-control-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-control-case="jack-drone-privacy" data-control-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-control-case="jack-drone-privacy" data-control-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-control-case="jack-drone-privacy" data-control-verdict="keeper">keeper</button>
+    </div>
       </div>
       <article class="control-problem">
         <div class="kicker">actual problem</div>
@@ -533,6 +532,45 @@
         </div>
       </div>
     </section>
+      </div>
+    </details>
+    
+    <details class="case-section" id="jack-drone-privacy">
+      <summary class="case-head">
+        <div class="case-title">
+          <div class="kicker">case-studies/jack-drone-privacy/</div>
+          <h2>Jack drone privacy</h2>
+        </div>
+        <div class="headline-grid">
+          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Drone response becomes choreography</strong></div>
+          <div class="has-control"><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>control case shown above</strong><em>clean-agent attached</em></div>
+          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Constraint transfer x2; Perimeter redefinition x2</strong></div>
+          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>improved: 1/1 generation-2 child candidate(s) improved on parent combined novel...</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
+      <div class="case-summary">
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
+          <h3>Drone response becomes choreography</h3>
+          <p>The highest-leverage response may be a discreet cue and sightline protocol that moves the protected person and preserves normal deck activity instead of escalating around the drone.</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
+          <h3>shown above</h3>
+          <p>control case shown above</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
+          <h3>improved</h3>
+          <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
+          <h3>none</h3>
+          <p>Goal checks passed.</p>
+        </article>
+      </div>
       <div class="scan-grid">
         <div>
           <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
@@ -861,7 +899,6 @@
           <p>Goal checks passed.</p>
         </article>
       </div>
-      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
           <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
@@ -1219,7 +1256,6 @@
           <p>Goal checks passed.</p>
         </article>
       </div>
-      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
           <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
@@ -1573,7 +1609,6 @@
           <p>Goal checks passed.</p>
         </article>
       </div>
-      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
           <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
@@ -1869,7 +1904,6 @@
           <p>Goal checks passed.</p>
         </article>
       </div>
-      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
           <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
@@ -2141,7 +2175,7 @@
     </section>
   </main>
   <script>
-    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T16:10:08.042Z","verdictScale":[{"value":"dead","meaning":"No useful signal. Do not revisit unless new evidence changes the case."},{"value":"obvious","meaning":"True or plausible, but already visible from the scenario. Not discovery."},{"value":"interesting","meaning":"Worth thinking about. It changed your attention, but does not yet demand action."},{"value":"investigate","meaning":"Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work."},{"value":"keeper","meaning":"Strong signal. Preserve it as a candidate insight or future seed."}],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
+    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T16:27:15.334Z","verdictScale":[{"value":"dead","meaning":"No useful signal. Do not revisit unless new evidence changes the case."},{"value":"obvious","meaning":"True or plausible, but already visible from the scenario. Not discovery."},{"value":"interesting","meaning":"Worth thinking about. It changed your attention, but does not yet demand action."},{"value":"investigate","meaning":"Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work."},{"value":"keeper","meaning":"Strong signal. Preserve it as a candidate insight or future seed."}],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
 
     function findCandidate(caseSlug, candidateId) {
       const foundCase = feedback.cases.find((item) => item.slug === caseSlug);

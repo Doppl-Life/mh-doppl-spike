@@ -66,6 +66,15 @@ type AssayResult = {
   failedChecks: string[];
 };
 
+type ControlCaseResult = {
+  slug: string;
+  label: string;
+  caseStudyPath: string;
+  control: CleanControl;
+  pairedCaseLabel: string;
+  pairedCaseSlug: string;
+};
+
 type ConvergenceGroup = {
   label: string;
   count: number;
@@ -159,6 +168,7 @@ const registry: AssayCaseDefinition[] = [
     label: 'GLP-1 appetite shock',
     caseStudyPath: 'case-studies/glp1-snack-demand-destruction/',
     fixturePath: 'fixtures/glp1-seed.json',
+    fixedDefault: true,
   },
 ];
 
@@ -385,6 +395,21 @@ function assayResult(definition: AssayCaseDefinition, trace: RunTrace, control?:
   };
 }
 
+function controlCaseResults(results: AssayResult[]): ControlCaseResult[] {
+  return results
+    .filter((result): result is AssayResult & { control: CleanControl } => Boolean(result.control))
+    .map((result) => ({
+      slug: `control-${result.definition.slug}`,
+      label: result.control.caseSlug === 'jack-drone-privacy'
+        ? 'Control case: drone security paparazzi'
+        : `Control case: ${result.control.label}`,
+      caseStudyPath: result.definition.caseStudyPath,
+      control: result.control,
+      pairedCaseLabel: result.definition.label,
+      pairedCaseSlug: result.definition.slug,
+    }));
+}
+
 function compact(value: string, max = 72): string {
   const normalized = value.replace(/\s+/g, ' ').trim();
   return normalized.length <= max ? normalized : `${normalized.slice(0, max - 3)}...`;
@@ -395,18 +420,21 @@ function tableCell(value: string): string {
 }
 
 function renderConsole(results: AssayResult[], args: Args): string {
-  const controlCount = results.filter((result) => result.control).length;
+  const controlCases = controlCaseResults(results);
   const lines = [
-    'case -> conclusion -> control -> convergence -> outlier -> gen2 -> failed checks',
-    `selection: count=${results.length}; controls=${controlCount}; mode=${args.random ? 'random-fill' : 'deterministic-fill'}; seed=${args.seed}; cases=${results.map((item) => item.definition.slug).join(', ')}`,
-    '| case | conclusion | control | convergence | outlier | gen2 | failed checks |',
+    'row -> kind -> conclusion/control -> convergence -> outlier -> gen2 -> failed checks',
+    `selection: rows=${results.length + controlCases.length}; kernelCases=${results.length}; controlCases=${controlCases.length}; mode=${args.random ? 'random-fill' : 'deterministic-fill'}; seed=${args.seed}; cases=${results.map((item) => item.definition.slug).join(', ')}`,
+    '| row | kind | conclusion/control | convergence | outlier | gen2 | failed checks |',
     '| --- | --- | --- | --- | --- | --- | --- |',
   ];
+  for (const control of controlCases) {
+    lines.push(`| ${tableCell(control.label)} | control | ${tableCell(control.control.actualProblem)} | paired: ${tableCell(control.pairedCaseLabel)} | none | n/a | none |`);
+  }
   for (const result of results) {
     const convergence = result.convergence.length
       ? result.convergence.map((group) => `${group.label} x${group.count}`).join('; ')
       : 'none';
-    lines.push(`| ${tableCell(result.definition.label)} | ${tableCell(result.bestConclusion?.title || 'none')} | ${tableCell(result.control?.actualProblem || 'none')} | ${tableCell(convergence)} | ${tableCell(result.bestOutlier?.title || 'none')} | ${tableCell(result.gen2)} | ${tableCell(result.failedChecks.join(', ') || 'none')} |`);
+    lines.push(`| ${tableCell(result.definition.label)} | kernel | ${tableCell(result.bestConclusion?.title || 'none')} | ${tableCell(convergence)} | ${tableCell(result.bestOutlier?.title || 'none')} | ${tableCell(result.gen2)} | ${tableCell(result.failedChecks.join(', ') || 'none')} |`);
   }
   return lines.join('\n');
 }
@@ -493,22 +521,22 @@ function candidateCard(result: AssayResult, candidate: AssayCandidate): string {
     </article>`;
 }
 
-function controlBlock(result: AssayResult): string {
-  const control = result.control;
-  if (!control) {
-    return '<p class="empty">No clean-agent control is attached to this case yet.</p>';
-  }
+function controlVerdictButtons(caseSlug: string, label: string): string {
+  return `
+    <div class="verdict-row control-verdict" aria-label="Control verdict for ${escapeHtml(label)}">
+      ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-control-case="${escapeHtml(caseSlug)}" data-control-verdict="${verdict}">${verdict}</button>`).join('')}
+    </div>`;
+}
 
+function controlBlock(control: CleanControl, pairedCaseSlug: string, label: string): string {
   return `
     <section class="control-panel">
       <div class="control-head">
         <div>
           <div class="kicker">${escapeHtml(control.source)}</div>
-          <h3>Clean-Agent Control</h3>
+          <h3>Clean-Agent Control Output</h3>
         </div>
-        <div class="verdict-row control-verdict" aria-label="Control verdict for ${escapeHtml(result.definition.label)}">
-          ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-control-case="${escapeHtml(result.definition.slug)}" data-control-verdict="${verdict}">${verdict}</button>`).join('')}
-        </div>
+        ${controlVerdictButtons(pairedCaseSlug, label)}
       </div>
       <article class="control-problem">
         <div class="kicker">actual problem</div>
@@ -541,6 +569,39 @@ function controlBlock(result: AssayResult): string {
     </section>`;
 }
 
+function controlCaseSection(result: ControlCaseResult): string {
+  return `
+    <details class="case-section control-case" id="${escapeHtml(result.slug)}">
+      <summary class="case-head">
+        <div class="case-title">
+          <div class="kicker">control case / ${escapeHtml(result.caseStudyPath)}</div>
+          <h2>${escapeHtml(result.label)}</h2>
+        </div>
+        <div class="headline-grid">
+          <div class="has-control"><span>${help('row type', 'This row is not a kernel run. It is a clean-context baseline for comparison.')}</span><strong>clean-context sub-agent</strong><em>baseline</em></div>
+          <div><span>${help('actual problem', 'The clean agent’s problem framing before seeing kernel output.')}</span><strong>${escapeHtml(compact(result.control.actualProblem, 82))}</strong></div>
+          <div><span>${help('paired kernel run', 'The kernel case directly below this control row.')}</span><strong>${escapeHtml(result.pairedCaseLabel)}</strong></div>
+          <div><span>${help('why compare', 'Use this to ask whether the kernel created anything better, faster, or easier to judge than a clean sub-agent.')}</span><strong>baseline before machinery</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
+        <div class="case-summary control-explain">
+          <article>
+            <div class="kicker">${help('control case', 'A baseline answer from one sub-agent with no kernel, assay, scoring, recursion, or trace context.')}</div>
+            <h3>not a kernel run</h3>
+            <p>This is the isolated clean-agent answer for the drone paparazzi case. It is shown first so the next row can be judged against it.</p>
+          </article>
+          <article>
+            <div class="kicker">paired kernel case</div>
+            <h3>${escapeHtml(result.pairedCaseLabel)}</h3>
+            <p>Open the next row to compare generation, scoring, convergence, and selected candidates against this baseline.</p>
+          </article>
+        </div>
+        ${controlBlock(result.control, result.pairedCaseSlug, result.label)}
+      </div>
+    </details>`;
+}
+
 function convergenceBlock(result: AssayResult): string {
   if (!result.convergence.length) return '<p class="empty">No repeated operator theme reached two candidates.</p>';
   return result.convergence.map((group) => `
@@ -567,7 +628,7 @@ function caseSection(result: AssayResult): string {
     ? result.convergence.map((group) => `${group.label} x${group.count}`).join('; ')
     : 'none';
   const hasControl = Boolean(result.control);
-  const controlProblem = result.control?.actualProblem || 'no clean-agent control yet';
+  const controlProblem = result.control ? 'control case shown above' : 'no clean-agent control yet';
   return `
     <details class="case-section" id="${escapeHtml(result.definition.slug)}">
       <summary class="case-head">
@@ -591,7 +652,7 @@ function caseSection(result: AssayResult): string {
         </article>
         <article>
           <div class="kicker">${help('clean-agent control', 'A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.')}</div>
-          <h3>${hasControl ? 'attached' : 'none attached'}</h3>
+          <h3>${hasControl ? 'shown above' : 'none attached'}</h3>
           <p>${escapeHtml(controlProblem)}</p>
         </article>
         <article>
@@ -605,7 +666,6 @@ function caseSection(result: AssayResult): string {
           <p>${escapeHtml(result.failedChecks.join(', ') || 'Goal checks passed.')}</p>
         </article>
       </div>
-      ${controlBlock(result)}
       <div class="scan-grid">
         <div>
           <h3>${help('What It Found', 'Repeated discovery terrain. Start here when scanning for soil enrichment.')}</h3>
@@ -628,7 +688,8 @@ function caseSection(result: AssayResult): string {
 
 function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Args): string {
   const failed = results.reduce((sum, result) => sum + result.failedChecks.length, 0);
-  const controlCount = results.filter((result) => result.control).length;
+  const controlCases = controlCaseResults(results);
+  const rowCount = results.length + controlCases.length;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -731,6 +792,10 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
     .case-section[open] {
       border-color: #25362c;
     }
+    .control-case {
+      border-color: #25362c;
+      background: #f8fbff;
+    }
     .case-head {
       position: relative;
       display: grid;
@@ -809,6 +874,9 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       grid-template-columns: 1.25fr 1.05fr .85fr .65fr;
       gap: 10px;
       margin-bottom: 14px;
+    }
+    .control-explain {
+      grid-template-columns: 1fr 1fr;
     }
     .case-summary h3 {
       margin-bottom: 6px;
@@ -1022,11 +1090,12 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
-      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Case rows are collapsed by default; expand only the ones worth inspecting.</p>
+      <p>This view shows one isolated control case first, then five kernel case runs. It asks whether the kernel makes the cases more fertile; it is not asking whether the machine solved them.</p>
       <div class="facts">
         <span>schema ${escapeHtml(ASSAY_SCHEMA_VERSION)}</span>
-        <span>cases ${results.length}</span>
-        <span>controls ${controlCount}/${results.length}</span>
+        <span>rows ${rowCount}</span>
+        <span>kernel cases ${results.length}</span>
+        <span>control cases ${controlCases.length}</span>
         <span>mode ${escapeHtml(args.random ? 'random fill' : 'deterministic fill')}</span>
         <span>seed ${escapeHtml(args.seed)}</span>
         <span>failed checks ${failed}</span>
@@ -1038,11 +1107,12 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
         </article>
         <article class="hero-card">
           <h3>Controls</h3>
-          <p>${controlCount}/${results.length} cases have a clean-agent control. In the collapsed rows, look for the <strong>control</strong> cell; open that row to compare the kernel output against the baseline and rate both.</p>
+          <p>The first row is the control case: one clean-context sub-agent answer for the drone paparazzi scenario. It is a baseline, not a judge. The next row is the paired kernel run.</p>
         </article>
       </div>
     </section>
 
+    ${controlCases.map(controlCaseSection).join('')}
     ${results.map(caseSection).join('')}
 
     <section class="feedback-panel" id="feedback">
@@ -1138,12 +1208,23 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
 
 async function writeOutputs(args: Args, results: AssayResult[]): Promise<void> {
   const template = feedbackTemplate(results);
+  const controlCases = controlCaseResults(results);
   await mkdir(args.outDir, { recursive: true });
   await writeFile(path.join(args.outDir, 'index.html'), renderHtml(results, template, args), 'utf8');
   await writeFile(path.join(args.outDir, 'feedback-template.json'), JSON.stringify(template, null, 2), 'utf8');
   await writeFile(path.join(args.outDir, 'assay-summary.json'), JSON.stringify({
     schemaVersion: ASSAY_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
+    rowCount: results.length + controlCases.length,
+    controlCases: controlCases.map((result) => ({
+      slug: result.slug,
+      label: result.label,
+      caseStudyPath: result.caseStudyPath,
+      pairedCaseSlug: result.pairedCaseSlug,
+      pairedCaseLabel: result.pairedCaseLabel,
+      actualProblem: result.control.actualProblem,
+      source: result.control.source,
+    })),
     cases: results.map((result) => ({
       slug: result.definition.slug,
       label: result.definition.label,

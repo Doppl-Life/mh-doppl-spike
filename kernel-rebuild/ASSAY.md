@@ -33,24 +33,29 @@ problem surfacing, not before them.
 
 ## Current Assay
 
-`pnpm assay` is discovery-first. It defaults to five generational runs:
+`pnpm assay` is discovery-first. The HTML view defaults to six rows:
+
+- one first-row control case for the drone paparazzi scenario
+- five kernel case runs
 
 - `jack-drone-privacy`
 - `jack-yacht-perimeter-intrusion`
 - `fsd-accident-economy`
 - `starship-launch-cost-collapse`
-- one random fill case from the assay registry
+- `glp1-snack-demand-destruction`
 
-The random fill case is printed with the run seed. Use `--deterministic` for a
-sorted fill, `--seed=<value>` to replay a random selection, `--count=<n>` to run
-fewer or more cases, `--cases=a,b,c` to choose exact cases, and `--all` to run
-the full registry.
+The control row is not a kernel run. It is the isolated clean-context sub-agent
+answer, shown immediately before the paired drone kernel run. Use `--count=<n>`
+to run fewer or more kernel cases; counts above five random-fill from the
+remaining registry by default. Use `--deterministic` for a sorted fill,
+`--seed=<value>` to replay a random selection, `--cases=a,b,c` to choose exact
+cases, and `--all` to run the full registry.
 
-Case sections in `out/assay/index.html` are collapsed by default. The headline is
-the scan surface: kernel conclusion, clean-agent control when available,
-convergence, and generation-2 movement. The top facts show how many controls are
-attached, and the shared page nav links Assay, Microscope, and Architecture.
-Expand only the cases worth inspecting.
+Rows in `out/assay/index.html` are collapsed by default. The headline is the
+scan surface: row type, kernel conclusion or control framing, convergence, and
+generation-2 movement. The top facts distinguish total rows, kernel cases, and
+control cases. The shared page nav links Assay, Microscope, and Architecture.
+Expand only the rows worth inspecting.
 
 ## Control Lane
 
@@ -64,7 +69,7 @@ Use it to keep the kernel honest:
 - Did generation 2 sharpen anything the clean agent only gestured at?
 - Did the clean agent simply beat the machinery?
 
-The first control is attached to `jack-drone-privacy`.
+The first control is shown as its own row before `jack-drone-privacy`.
 
 ## Win Condition
 

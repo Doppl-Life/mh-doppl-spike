@@ -14,15 +14,20 @@ Files are for replay and investigation after the human already knows what happen
 ## Read Order
 
 1. `pnpm build` - default proof. Typecheck plus compact multi-seed board.
-2. `pnpm assay` - discovery-first outcome assay. Use it when you need to judge
+2. `pnpm assay:local` - local judging front door. Regenerates Assay, Review
+   Digest, Microscope, and Architecture, serves them together, and saves verdict
+   clicks to the local judgment ledger.
+3. `pnpm assay:report` - helper for writing the Review Digest file without
+   starting the local browser loop.
+4. `pnpm assay` - discovery-first outcome assay. Use it when you need to inspect
    whether the kernel produced entries worth human attention.
-3. `pnpm walkthrough` - single-seed terminal microscope. Use it when you need to
+5. `pnpm walkthrough` - single-seed terminal microscope. Use it when you need to
    understand the mechanism.
-4. `pnpm microscope` - single-seed HTML microscope over `RunTrace`.
-5. `pnpm architecture` - standalone engineer diagram over the current contracts
+6. `pnpm microscope` - single-seed HTML microscope over `RunTrace`.
+7. `pnpm architecture` - standalone engineer diagram over the current contracts
    and `RunTrace`.
-6. `pnpm proof:export` - optional replay output under `out/proof-board/**`.
-7. `run-trace.json` - machine trace. Use it for tooling, replay, comparison, or
+8. `pnpm proof:export` - optional replay output under `out/proof-board/**`.
+9. `run-trace.json` - machine trace. Use it for tooling, replay, comparison, or
    contract debugging when `pnpm proof:export` has created it.
 
 ## Artifact Classes
@@ -33,6 +38,8 @@ Files are for replay and investigation after the human already knows what happen
 | Fixture inputs | `fixtures/*.json` | yes | Reproducible seed material. |
 | Microscope tools | `tools/microscope/**` | no by default | Human translation layer; keep only while useful. |
 | Assay tools | `tools/assay.ts`, `fixtures/assay/**`, `fixtures/controls/**`, `ASSAY.md` | yes | Outcome surface for judging whether runs create useful discovery material. |
+| Judgment tools | `tools/judgments.ts`, `tools/assay-local.ts`, `tools/assay-report.ts` | yes | Local path from human verdicts to durable evidence and digest. |
+| Local judgment ledger | `records/assay-judgments/*.jsonl` | no by default | Personal/team local verdict events; promote only by explicit decision. |
 | Generated run output | `out/**` | no | Ephemeral inspection output; regenerate with `pnpm proof:export`. |
 | Promoted proof | `records/<slug>/...` | only by decision | Keep when a run becomes evidence for a design decision or regression. |
 
@@ -56,6 +63,8 @@ run only when the board or trace names a behavior we intend to compare against l
 - If the kernel behavior changes materially, the first viewport of any default
   microscope view must expose the new RunTrace facts before selector details and
   explain the reading order, terms, and current conclusion.
+- If a visibility surface needs another URL, command, or memory trick to find
+  the conclusion, make the default surface link it or demote the surface.
 
 Rich data is fine. Mandatory human reading is the scarce resource.
 

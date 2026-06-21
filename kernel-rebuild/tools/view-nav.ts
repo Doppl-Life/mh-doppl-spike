@@ -1,4 +1,4 @@
-export type KernelView = 'assay' | 'microscope' | 'architecture';
+export type KernelView = 'assay' | 'microscope' | 'architecture' | 'architecture-v2';
 
 type ViewLink = {
   key: KernelView;
@@ -10,12 +10,13 @@ const views: ViewLink[] = [
   { key: 'assay', label: 'Assay', blurb: 'cases + controls' },
   { key: 'microscope', label: 'Microscope', blurb: 'single trace' },
   { key: 'architecture', label: 'Architecture', blurb: 'system map' },
+  { key: 'architecture-v2', label: 'Architecture v2', blurb: "engineer's map" },
 ];
 
 export type KernelViewHrefs = Record<KernelView, string>;
 
 export function renderViewNav(
-  active: KernelView,
+  active: KernelView | 'none',
   hrefs: KernelViewHrefs,
   options: { hubHref?: string; hubLabel?: string } = {},
 ): string {

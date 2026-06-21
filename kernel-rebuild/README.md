@@ -71,8 +71,18 @@ multi-seed board:
 
 Run `pnpm proof:export` only when you need replay artifacts under `out/proof-board/**`.
 
-Run `pnpm assay` when you want the discovery-first outcome assay. It writes
-`out/assay/index.html` and `out/assay/feedback-template.json`.
+Run `pnpm assay:local` when you want to judge an assay. It is the local front
+door: it regenerates Assay, Review Digest, Microscope, and Architecture, serves
+them from one localhost surface, and saves verdict clicks automatically to
+`records/assay-judgments/judgments.jsonl`.
+
+Run `pnpm assay:report` only when you need the digest file without the local
+browser loop. The same digest is linked from the first viewport of
+`pnpm assay:local`.
+
+Run `pnpm assay` when you only want the static inspection files. It writes
+`out/assay/index.html` and `out/assay/feedback-template.json`; `file://` views
+cannot silently save verdicts.
 
 Run `pnpm microscope` from this folder for the single-seed visual view.
 
@@ -93,7 +103,8 @@ gitignored `index.html` rule). `published/` is committed.
 
 The root `build_index.py` auto-discovers every committed `*.html` under `kernel-rebuild/`
 (skipping `node_modules`, `out`, `dist`, `build`) and makes those pages the deployed
-kernel proof hub. The generated HTML pages also include local navigation between Assay,
-Microscope, and Architecture, so `out/**` and `published/**` are both navigable. After
-`pnpm publish:html`, run `python3 build_index.py` from the repo root to refresh the
-local hub, then commit `published/` and push; Render rebuilds the hub on deploy.
+kernel proof hub. The generated HTML pages include navigation between Assay,
+Microscope, and Architecture. Local judgment consensus is intentionally local-only
+until the team decides to promote a ledger. After `pnpm publish:html`, run
+`python3 build_index.py` from the repo root to refresh the local hub, then commit
+`published/` and push; Render rebuilds the hub on deploy.

@@ -16,12 +16,14 @@ const pages: Page[] = [
   { from: 'assay/index.html', to: 'assay.html', view: 'assay' },
   { from: 'microscope/index.html', to: 'microscope.html', view: 'microscope' },
   { from: 'microscope/architecture.html', to: 'architecture.html', view: 'architecture' },
+  { from: 'microscope/architecture-v2.html', to: 'architecture-v2.html', view: 'architecture-v2' },
 ];
 
 const publishedHrefs = {
   assay: 'assay.html',
   microscope: 'microscope.html',
   architecture: 'architecture.html',
+  'architecture-v2': 'architecture-v2.html',
 };
 
 function injectNav(html: string, active: KernelView): string {

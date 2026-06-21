@@ -6,7 +6,6 @@ import { assertSeedFixture } from '../../src/contracts/index.ts';
 import type { BoundaryContract, GenerationSummary, GoalCheck, RunTrace, TraceEvent } from '../../src/contracts/index.ts';
 import { buildRunTrace } from '../../src/trace.ts';
 import { capstoneDemoLens } from '../lens-config.ts';
-import { renderViewNav } from '../view-nav.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..');
@@ -142,7 +141,7 @@ function invariantCard(title: string, body: string, source: string): string {
     </article>`;
 }
 
-function renderArchitecture(trace: RunTrace, fixtureCount: number): string {
+export function renderArchitecture(trace: RunTrace, fixtureCount: number): string {
   const gen1 = gen(trace, 1);
   const gen2 = gen(trace, 2);
   const generate1 = eventAt(trace.events, 'generate', 0);
@@ -509,11 +508,6 @@ function renderArchitecture(trace: RunTrace, fixtureCount: number): string {
   </style>
 </head>
 <body>
-  ${renderViewNav('architecture', {
-    assay: '../assay/index.html',
-    microscope: 'index.html',
-    architecture: 'architecture.html',
-  }, { hubHref: '../../index.html', hubLabel: 'Root hub' })}
   <main>
     <header class="header">
       <div>
@@ -649,7 +643,9 @@ async function main(): Promise<void> {
   console.log(`architecture: ${path.relative(root, htmlPath)}`);
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-});
+if (path.resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}

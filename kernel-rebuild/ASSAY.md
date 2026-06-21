@@ -53,9 +53,17 @@ cases, and `--all` to run the full registry.
 
 Rows in `out/assay/index.html` are collapsed by default. The headline is the
 scan surface: row type, kernel conclusion or control framing, convergence, and
-generation-2 movement. The top facts distinguish total rows, kernel cases, and
-control cases. The shared page nav links Assay, Microscope, and Architecture.
-Expand only the rows worth inspecting.
+generation-2 movement. The first viewport also shows local save status and the
+Review Digest shape, so the human can see where judgments will land before
+opening any row. Expand only the rows worth inspecting.
+
+For real local judging, use `pnpm assay:local`, then open the printed localhost
+URL. The local server regenerates Assay, Review Digest, Microscope, and
+Architecture, serves them together, and saves every verdict click to an
+append-only judgment ledger automatically. The Review Digest link in the assay
+first viewport stays live against the same ledger. Opening `out/assay/index.html`
+by `file://` is inspection-only: browser security prevents silent filesystem
+writes.
 
 ## Control Lane
 
@@ -89,6 +97,9 @@ Kernel scores nominate. Human verdicts are bedrock.
   The button marks intent; it does not start investigation work.
 - `keeper` - strong enough to preserve as a candidate insight.
 
-Verdict buttons update the feedback JSON locally in the browser. They do not save
-to the repo or a server. Copy or download the JSON when a verdict set should be
-preserved.
+When served by `pnpm assay:local`, verdict buttons append events to
+`records/assay-judgments/judgments.jsonl`. The JSONL is local judgment data and
+is ignored by git unless deliberately promoted. The local Review Digest collapses
+repeated clicks to the latest verdict per reviewer and target. Run
+`pnpm assay:report` only when you need to write `out/assay-review/index.html`
+without starting the local server.

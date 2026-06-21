@@ -6,7 +6,6 @@ import { assertSeedFixture } from '../src/contracts/index.ts';
 import type { Dial, RunTrace, SelectedCandidate, SelectionResult } from '../src/contracts/index.ts';
 import { buildRunTrace } from '../src/trace.ts';
 import { capstoneDemoLens } from './lens-config.ts';
-import { renderViewNav } from './view-nav.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -85,6 +84,8 @@ type FeedbackTemplate = {
   schemaVersion: string;
   assaySchemaVersion: string;
   generatedAt: string;
+  runId: string;
+  assaySeed: string;
   verdictScale: Array<{
     value: Verdict;
     meaning: string;
@@ -439,11 +440,14 @@ function renderConsole(results: AssayResult[], args: Args): string {
   return lines.join('\n');
 }
 
-function feedbackTemplate(results: AssayResult[]): FeedbackTemplate {
+function feedbackTemplate(results: AssayResult[], args: Args): FeedbackTemplate {
+  const generatedAt = new Date().toISOString();
   return {
     schemaVersion: FEEDBACK_SCHEMA_VERSION,
     assaySchemaVersion: ASSAY_SCHEMA_VERSION,
-    generatedAt: new Date().toISOString(),
+    generatedAt,
+    runId: `assay-${args.seed}-${generatedAt.replace(/[-:.TZ]/g, '').slice(0, 14)}`,
+    assaySeed: args.seed,
     verdictScale: verdictScale.map((value) => ({ value, meaning: verdictHelp[value] })),
     cases: results.map((result) => ({
       slug: result.definition.slug,
@@ -488,6 +492,13 @@ function statusLabel(candidate: AssayCandidate): string {
   return 'not selected';
 }
 
+function caseVerdictButtons(caseSlug: string, label: string): string {
+  return `
+    <div class="verdict-row case-verdict" aria-label="Case verdict for ${escapeHtml(label)}">
+      ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-case-verdict="${verdict}" data-case-slug="${escapeHtml(caseSlug)}" data-target-title="${escapeHtml(label)}">${verdict}</button>`).join('')}
+    </div>`;
+}
+
 function candidateCard(result: AssayResult, candidate: AssayCandidate): string {
   return `
     <article class="idea-card ${candidate.status}" data-card="${escapeHtml(`${result.definition.slug}:${candidate.id}`)}">
@@ -516,7 +527,7 @@ function candidateCard(result: AssayResult, candidate: AssayCandidate): string {
         <p>${escapeHtml(candidate.ratingReason)}</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for ${escapeHtml(candidate.title)}">
-        ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-case="${escapeHtml(result.definition.slug)}" data-candidate="${escapeHtml(candidate.id)}" data-verdict="${verdict}">${verdict}</button>`).join('')}
+        ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-case="${escapeHtml(result.definition.slug)}" data-candidate="${escapeHtml(candidate.id)}" data-target-title="${escapeHtml(candidate.title)}" data-verdict="${verdict}">${verdict}</button>`).join('')}
       </div>
     </article>`;
 }
@@ -524,7 +535,7 @@ function candidateCard(result: AssayResult, candidate: AssayCandidate): string {
 function controlVerdictButtons(caseSlug: string, label: string): string {
   return `
     <div class="verdict-row control-verdict" aria-label="Control verdict for ${escapeHtml(label)}">
-      ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-control-case="${escapeHtml(caseSlug)}" data-control-verdict="${verdict}">${verdict}</button>`).join('')}
+      ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-control-case="${escapeHtml(caseSlug)}" data-control-target="control:${escapeHtml(caseSlug)}" data-target-title="${escapeHtml(label)}" data-control-verdict="${verdict}">${verdict}</button>`).join('')}
     </div>`;
 }
 
@@ -649,6 +660,7 @@ function caseSection(result: AssayResult): string {
           <div class="kicker">${help('strongest conclusion', 'The current best kernel-nominated discovery for this case. Human verdict can override it.')}</div>
           <h3>${escapeHtml(result.bestConclusion?.title || 'none')}</h3>
           <p>${escapeHtml(result.bestConclusion?.thesis || 'No candidates generated.')}</p>
+          ${caseVerdictButtons(result.definition.slug, result.definition.label)}
         </article>
         <article>
           <div class="kicker">${help('clean-agent control', 'A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.')}</div>
@@ -753,7 +765,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
     }
     .hero-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       margin-top: 12px;
     }
@@ -1057,6 +1069,65 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       color: #315d40;
       font-weight: 700;
     }
+    .save-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .save-strip span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: #f8faf6;
+      color: #34443b;
+      font-size: 12px;
+    }
+    .save-strip .connected { border-color: #46945c; background: #dff4e6; }
+    .save-strip .offline { border-color: #b97919; background: #fff1d4; }
+    .action-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid #25362c;
+      border-radius: 6px;
+      padding: 5px 9px;
+      background: #25362c;
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .action-link.is-disabled {
+      border-color: var(--line);
+      background: #f8faf6;
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+    .review-snapshot {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      margin: 10px 0;
+    }
+    .review-snapshot span {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 7px;
+      background: #f8faf6;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .review-snapshot strong {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.1;
+      letter-spacing: 0;
+      text-transform: none;
+    }
     textarea {
       width: 100%;
       min-height: 180px;
@@ -1082,11 +1153,6 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
   </style>
 </head>
 <body>
-  ${renderViewNav('assay', {
-    assay: 'index.html',
-    microscope: '../microscope/index.html',
-    architecture: '../microscope/architecture.html',
-  }, { hubHref: '../../index.html', hubLabel: 'Root hub' })}
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
@@ -1100,6 +1166,12 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
         <span>seed ${escapeHtml(args.seed)}</span>
         <span>failed checks ${failed}</span>
       </div>
+      <div class="save-strip" aria-label="local review status">
+        <span id="save-mode" class="offline">checking save path</span>
+        <span id="save-reviewer">reviewer local</span>
+        <span id="save-ledger">ledger unavailable</span>
+        <a id="review-link" class="action-link is-disabled" href="#feedback" aria-disabled="true">Review Digest unavailable</a>
+      </div>
       <div class="hero-grid">
         <article class="hero-card">
           <h3>Outcome Gate</h3>
@@ -1109,6 +1181,16 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
           <h3>Controls</h3>
           <p>The first row is the control case: one clean-context sub-agent answer for the drone paparazzi scenario. It is a baseline, not a judge. The next row is the paired kernel run.</p>
         </article>
+        <article class="hero-card">
+          <h3>Review Digest</h3>
+          <div class="review-snapshot" id="review-snapshot">
+            <span><strong>0</strong> latest</span>
+            <span><strong>0</strong> useful</span>
+            <span><strong>0</strong> strong</span>
+            <span><strong>0</strong> reviewers</span>
+          </div>
+          <p id="review-copy">Start <code>pnpm assay:local</code> to save verdicts and open the live digest from this page.</p>
+        </article>
       </div>
     </section>
 
@@ -1117,7 +1199,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
 
     <section class="feedback-panel" id="feedback">
       <h2>Feedback</h2>
-      <p class="feedback-note">Verdict buttons update this JSON locally in your browser. They do not save to the repo or server until you copy/download the JSON and decide to preserve it. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
+      <p class="feedback-note">When opened through <code>pnpm assay:local</code>, verdict buttons save automatically to the local judgment ledger. When opened as a file, they only update the browser JSON. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
       <div class="feedback-actions">
         <button type="button" id="copy-feedback">Copy JSON</button>
         <button type="button" id="download-feedback">Download JSON</button>
@@ -1127,6 +1209,17 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
   </main>
   <script>
     const feedback = ${jsonForScript(template)};
+    const saveState = {
+      connected: false,
+      reviewer: 'local',
+      ledgerPath: '',
+      reviewUrl: '',
+      eventCount: 0,
+      latestCount: 0,
+      reviewerCount: 0,
+      usefulCount: 0,
+      strongCount: 0
+    };
 
     function findCandidate(caseSlug, candidateId) {
       const foundCase = feedback.cases.find((item) => item.slug === caseSlug);
@@ -1138,6 +1231,59 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       return feedback.cases.find((item) => item.slug === caseSlug);
     }
 
+    function setSaveMode(kind, text) {
+      const mode = document.getElementById('save-mode');
+      mode.classList.toggle('connected', kind === 'connected');
+      mode.classList.toggle('offline', kind !== 'connected');
+      mode.textContent = text;
+    }
+
+    function renderSaveStrip() {
+      document.getElementById('save-reviewer').textContent = 'reviewer ' + saveState.reviewer;
+      document.getElementById('save-ledger').textContent = saveState.ledgerPath
+        ? saveState.ledgerPath + ' · ' + saveState.eventCount + ' event(s)'
+        : 'ledger unavailable';
+      renderReviewSnapshot();
+    }
+
+    function renderReviewSnapshot() {
+      const snapshot = document.getElementById('review-snapshot');
+      snapshot.innerHTML =
+        '<span><strong>' + saveState.latestCount + '</strong> latest</span>' +
+        '<span><strong>' + saveState.usefulCount + '</strong> useful</span>' +
+        '<span><strong>' + saveState.strongCount + '</strong> strong</span>' +
+        '<span><strong>' + saveState.reviewerCount + '</strong> reviewers</span>';
+      const copy = document.getElementById('review-copy');
+      const link = document.getElementById('review-link');
+      if (saveState.connected && saveState.reviewUrl) {
+        copy.textContent = saveState.latestCount
+          ? 'Open the digest to compare control, kernel case, candidate verdicts, reviewers, and the current action.'
+          : 'No saved verdicts yet. Mark rows below; the digest will fill automatically.';
+        link.href = saveState.reviewUrl;
+        link.textContent = 'Open Review Digest';
+        link.classList.remove('is-disabled');
+        link.setAttribute('aria-disabled', 'false');
+      } else {
+        copy.textContent = 'Start pnpm assay:local to save verdicts and open the live digest from this page.';
+        link.href = '#feedback';
+        link.textContent = 'Review Digest unavailable';
+        link.classList.add('is-disabled');
+        link.setAttribute('aria-disabled', 'true');
+      }
+    }
+
+    function applyStatus(status) {
+      saveState.connected = true;
+      saveState.reviewer = status.reviewer || saveState.reviewer;
+      saveState.ledgerPath = status.ledgerPath || '';
+      saveState.reviewUrl = status.reviewUrl || '/review/';
+      saveState.eventCount = status.eventCount || 0;
+      saveState.latestCount = status.latestCount || 0;
+      saveState.reviewerCount = status.reviewerCount || 0;
+      saveState.usefulCount = status.usefulCount || 0;
+      saveState.strongCount = status.strongCount || 0;
+    }
+
     function verdictCount() {
       return feedback.cases.reduce((sum, item) => {
         const caseCount = item.caseVerdict ? 1 : 0;
@@ -1147,10 +1293,11 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       }, 0);
     }
 
-    function renderFeedback() {
+    function renderFeedback(extra) {
       document.getElementById('feedback-json').value = JSON.stringify(feedback, null, 2);
       const count = verdictCount();
-      document.getElementById('feedback-status').textContent = count ? count + ' verdict(s) marked locally.' : 'No verdicts marked yet.';
+      const base = count ? count + ' verdict(s) marked locally.' : 'No verdicts marked yet.';
+      document.getElementById('feedback-status').textContent = extra ? base + ' ' + extra : base;
     }
 
     function markCard(caseSlug, candidateId, verdict) {
@@ -1162,6 +1309,119 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       });
     }
 
+    function markCase(caseSlug, verdict) {
+      const foundCase = findCase(caseSlug);
+      if (!foundCase) return;
+      foundCase.caseVerdict = verdict;
+      document.querySelectorAll('[data-case-slug="' + caseSlug + '"][data-case-verdict]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.caseVerdict === verdict);
+      });
+    }
+
+    function markControl(caseSlug, verdict) {
+      const foundCase = findCase(caseSlug);
+      if (!foundCase) return;
+      foundCase.controlVerdict = verdict;
+      document.querySelectorAll('[data-control-case="' + caseSlug + '"]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.controlVerdict === verdict);
+      });
+    }
+
+    function applySavedEvent(event) {
+      if (event.targetKind === 'candidate') {
+        const candidate = findCandidate(event.caseSlug, event.targetId);
+        if (!candidate) return;
+        candidate.verdict = event.verdict;
+        markCard(event.caseSlug, event.targetId, event.verdict);
+      } else if (event.targetKind === 'control') {
+        markControl(event.caseSlug, event.verdict);
+      } else if (event.targetKind === 'case') {
+        markCase(event.caseSlug, event.verdict);
+      }
+    }
+
+    function judgmentPayload(payload) {
+      return {
+        runId: feedback.runId,
+        assaySeed: feedback.assaySeed,
+        reviewer: saveState.reviewer,
+        note: '',
+        ...payload
+      };
+    }
+
+    async function saveJudgment(payload) {
+      if (!saveState.connected) {
+        renderFeedback('Not saved; run pnpm assay:local for automatic local persistence.');
+        return;
+      }
+
+      setSaveMode('connected', 'saving');
+      try {
+        const response = await fetch('/api/judgments', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(judgmentPayload(payload))
+        });
+        if (!response.ok) throw new Error('save failed');
+        const result = await response.json();
+        applyStatus(result);
+        setSaveMode('connected', 'saved');
+        renderSaveStrip();
+        renderFeedback('Saved to local judgment ledger.');
+      } catch {
+        setSaveMode('offline', 'save failed');
+        renderFeedback('Save failed; verdict is only in this browser tab.');
+      }
+    }
+
+    async function loadSavedJudgments() {
+      const response = await fetch('/api/judgments/latest?runId=' + encodeURIComponent(feedback.runId));
+      if (!response.ok) return;
+      const result = await response.json();
+      result.events.forEach(applySavedEvent);
+      renderFeedback(result.events.length ? 'Loaded saved verdicts for this run.' : '');
+    }
+
+    async function checkPersistence() {
+      if (location.protocol === 'file:') {
+        setSaveMode('offline', 'file mode');
+        renderSaveStrip();
+        renderFeedback('Open with pnpm assay:local to save automatically.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/judgments/status');
+        if (!response.ok) throw new Error('offline');
+        const status = await response.json();
+        applyStatus(status);
+        setSaveMode('connected', 'local save connected');
+        renderSaveStrip();
+        await loadSavedJudgments();
+      } catch {
+        saveState.connected = false;
+        setSaveMode('offline', 'local save unavailable');
+        renderSaveStrip();
+        renderFeedback('Verdicts are not persisted from this page.');
+      }
+    }
+
+    document.querySelectorAll('[data-case-verdict]').forEach((button) => {
+      button.addEventListener('click', () => {
+        markCase(button.dataset.caseSlug, button.dataset.caseVerdict);
+        renderFeedback();
+        void saveJudgment({
+          caseSlug: button.dataset.caseSlug,
+          rowType: 'kernel',
+          targetKind: 'case',
+          targetId: button.dataset.caseSlug,
+          targetTitle: button.dataset.targetTitle,
+          verdict: button.dataset.caseVerdict
+        });
+      });
+    });
+
     document.querySelectorAll('[data-verdict]').forEach((button) => {
       button.addEventListener('click', () => {
         const candidate = findCandidate(button.dataset.case, button.dataset.candidate);
@@ -1169,18 +1429,29 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
         candidate.verdict = button.dataset.verdict;
         markCard(button.dataset.case, button.dataset.candidate, button.dataset.verdict);
         renderFeedback();
+        void saveJudgment({
+          caseSlug: button.dataset.case,
+          rowType: 'kernel',
+          targetKind: 'candidate',
+          targetId: button.dataset.candidate,
+          targetTitle: button.dataset.targetTitle,
+          verdict: button.dataset.verdict
+        });
       });
     });
 
     document.querySelectorAll('[data-control-verdict]').forEach((button) => {
       button.addEventListener('click', () => {
-        const foundCase = findCase(button.dataset.controlCase);
-        if (!foundCase) return;
-        foundCase.controlVerdict = button.dataset.controlVerdict;
-        document.querySelectorAll('[data-control-case="' + button.dataset.controlCase + '"]').forEach((item) => {
-          item.classList.toggle('active', item.dataset.controlVerdict === button.dataset.controlVerdict);
-        });
+        markControl(button.dataset.controlCase, button.dataset.controlVerdict);
         renderFeedback();
+        void saveJudgment({
+          caseSlug: button.dataset.controlCase,
+          rowType: 'control',
+          targetKind: 'control',
+          targetId: button.dataset.controlTarget,
+          targetTitle: button.dataset.targetTitle,
+          verdict: button.dataset.controlVerdict
+        });
       });
     });
 
@@ -1201,13 +1472,14 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
     });
 
     renderFeedback();
+    void checkPersistence();
   </script>
 </body>
 </html>`;
 }
 
 async function writeOutputs(args: Args, results: AssayResult[]): Promise<void> {
-  const template = feedbackTemplate(results);
+  const template = feedbackTemplate(results, args);
   const controlCases = controlCaseResults(results);
   await mkdir(args.outDir, { recursive: true });
   await writeFile(path.join(args.outDir, 'index.html'), renderHtml(results, template, args), 'utf8');
@@ -1241,6 +1513,16 @@ async function writeOutputs(args: Args, results: AssayResult[]): Promise<void> {
   }, null, 2), 'utf8');
 }
 
+export async function renderAssayPage(): Promise<string> {
+  const args = parseArgs([]);
+  const definitions = selectCases(args);
+  const traces = await Promise.all(definitions.map(loadTrace));
+  const controls = await Promise.all(definitions.map(loadControl));
+  const results = definitions.map((definition, index) => assayResult(definition, traces[index], controls[index]));
+  const template = feedbackTemplate(results, args);
+  return renderHtml(results, template, args);
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   if (args.list) {
@@ -1264,7 +1546,9 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-});
+if (path.resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}

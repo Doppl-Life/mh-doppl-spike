@@ -18,13 +18,21 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import re
 import webbrowser
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent
 SPIKES_DIR = ROOT / "spikes"
+KERNEL_DIR = ROOT / "kernel-rebuild"
 INDEX_PATH = ROOT / "index.html"
+
+# Directories whose HTML is dependency noise or ephemeral working output. `out/` is
+# gitignored (regenerate with `pnpm publish:html`, which copies the live pages into
+# `kernel-rebuild/published/`); the committed `published/` surface is what reaches deploy.
+_SKIP_DIRS = {"node_modules", "out", ".git", "dist", "build"}
+_TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
 
 _CSS = """
 :root{--bg:#0b0e13;--surface:#141a22;--surface2:#1b232e;--border:#2a3544;
@@ -152,7 +160,52 @@ def collect() -> dict[str, list[tuple[Path, dict[str, Any]]]]:
     return by_spike
 
 
-def render(by_spike: dict[str, list[tuple[Path, dict[str, Any]]]]) -> str:
+def _extract_title(html_path: Path) -> str:
+    """Pull the <title> for a human-readable label, falling back to the file stem."""
+    try:
+        head = html_path.read_text(encoding="utf-8", errors="ignore")[:8000]
+    except OSError:
+        return html_path.stem
+    match = _TITLE_RE.search(head)
+    if match:
+        title = " ".join(match.group(1).split())
+        if title:
+            return title
+    return html_path.stem
+
+
+def collect_kernel() -> list[tuple[Path, str]]:
+    """Discover every committed HTML page under kernel-rebuild/ so the hub can link
+    them without anyone needing to know the paths. Skips dependency and ephemeral dirs."""
+    if not KERNEL_DIR.exists():
+        return []
+    pages: list[tuple[Path, str]] = []
+    for html_path in KERNEL_DIR.rglob("*.html"):
+        rel_parts = html_path.relative_to(KERNEL_DIR).parts
+        if any(part in _SKIP_DIRS for part in rel_parts):
+            continue
+        pages.append((html_path, _extract_title(html_path)))
+    pages.sort(key=lambda pair: pair[0].relative_to(ROOT).as_posix())
+    return pages
+
+
+def _kernel_card(html_path: Path, title: str) -> str:
+    rel = html_path.relative_to(ROOT).as_posix()
+    anchor = rel.replace("/", "__")
+    mtime = dt.datetime.fromtimestamp(html_path.stat().st_mtime).strftime("%Y-%m-%d %H:%M")
+    return (
+        f'<div class="card" id="{anchor}">'
+        f'<a class="title" href="{rel}">{_esc(title)}</a>'
+        f'<p class="meta">{rel} · updated {mtime}</p>'
+        "</div>"
+    )
+
+
+def render(
+    by_spike: dict[str, list[tuple[Path, dict[str, Any]]]],
+    kernel_pages: list[tuple[Path, str]] | None = None,
+) -> str:
+    kernel_pages = kernel_pages or []
     side, body = [], []
     total = 0
     for spike, rows in by_spike.items():
@@ -164,7 +217,15 @@ def render(by_spike: dict[str, list[tuple[Path, dict[str, Any]]]]) -> str:
             body.append(_card(html_path, record))
             total += 1
 
-    if not by_spike:
+    if kernel_pages:
+        side.append('<div class="spike">kernel-rebuild</div>')
+        body.append(f'<h2 style="margin-top:2rem">kernel-rebuild ({len(kernel_pages)})</h2>')
+        for html_path, title in kernel_pages:
+            anchor = html_path.relative_to(ROOT).as_posix().replace("/", "__")
+            side.append(f'<a href="#{anchor}">{_esc(title)}</a>')
+            body.append(_kernel_card(html_path, title))
+
+    if not by_spike and not kernel_pages:
         body.append(
             '<p class="empty">No trace HTML found yet. Run a spike with <code>--html</code> '
             "(e.g. <code>cd spikes/crucible && ./demo --html</code>), then rebuild this index.</p>"
@@ -192,9 +253,13 @@ def main() -> None:
     args = parser.parse_args()
 
     by_spike = collect()
-    INDEX_PATH.write_text(render(by_spike), encoding="utf-8")
+    kernel_pages = collect_kernel()
+    INDEX_PATH.write_text(render(by_spike, kernel_pages), encoding="utf-8")
     count = sum(len(v) for v in by_spike.values())
-    print(f"Wrote {INDEX_PATH.relative_to(ROOT)} — {count} run(s) across {len(by_spike)} spike(s).")
+    print(
+        f"Wrote {INDEX_PATH.relative_to(ROOT)} — {count} run(s) across {len(by_spike)} spike(s); "
+        f"{len(kernel_pages)} kernel-rebuild page(s)."
+    )
     if args.open:
         webbrowser.open(INDEX_PATH.resolve().as_uri())
 

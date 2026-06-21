@@ -7,6 +7,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "pnpm typecheck && pnpm proof",
+    "assay": "node --experimental-strip-types tools/assay.ts",
+    "architecture": "node --experimental-strip-types tools/microscope/architecture.ts",
+    "publish:html": "pnpm microscope && pnpm architecture && pnpm assay && node --experimental-strip-types tools/publish.ts",
     "microscope": "node --experimental-strip-types tools/microscope/view.ts",
     "walkthrough": "node --experimental-strip-types tools/microscope/walkthrough.ts",
     "walkthrough:detail": "node --experimental-strip-types tools/microscope/walkthrough.ts --detail",

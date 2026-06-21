@@ -14,11 +14,15 @@ Files are for replay and investigation after the human already knows what happen
 ## Read Order
 
 1. `pnpm build` - default proof. Typecheck plus compact multi-seed board.
-2. `pnpm walkthrough` - single-seed terminal microscope. Use it when you need to
+2. `pnpm assay` - discovery-first outcome assay. Use it when you need to judge
+   whether the kernel produced entries worth human attention.
+3. `pnpm walkthrough` - single-seed terminal microscope. Use it when you need to
    understand the mechanism.
-3. `pnpm microscope` - single-seed HTML microscope over `RunTrace`.
-4. `pnpm proof:export` - optional replay output under `out/proof-board/**`.
-5. `run-trace.json` - machine trace. Use it for tooling, replay, comparison, or
+4. `pnpm microscope` - single-seed HTML microscope over `RunTrace`.
+5. `pnpm architecture` - standalone engineer diagram over the current contracts
+   and `RunTrace`.
+6. `pnpm proof:export` - optional replay output under `out/proof-board/**`.
+7. `run-trace.json` - machine trace. Use it for tooling, replay, comparison, or
    contract debugging when `pnpm proof:export` has created it.
 
 ## Artifact Classes
@@ -28,6 +32,7 @@ Files are for replay and investigation after the human already knows what happen
 | Source contracts | `src/contracts/index.ts`, `contracts/README.md` | yes | Load-bearing boundary definitions. |
 | Fixture inputs | `fixtures/*.json` | yes | Reproducible seed material. |
 | Microscope tools | `tools/microscope/**` | no by default | Human translation layer; keep only while useful. |
+| Assay tools | `tools/assay.ts`, `fixtures/assay/**`, `ASSAY.md` | yes | Outcome surface for judging whether runs create useful discovery material. |
 | Generated run output | `out/**` | no | Ephemeral inspection output; regenerate with `pnpm proof:export`. |
 | Promoted proof | `records/<slug>/...` | only by decision | Keep when a run becomes evidence for a design decision or regression. |
 

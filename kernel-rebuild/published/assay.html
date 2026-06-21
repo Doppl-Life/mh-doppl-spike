@@ -1,0 +1,2045 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discovery Assay</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18211c;
+      --muted: #607067;
+      --line: #cfdbd3;
+      --bg: #f6f8f4;
+      --panel: #ffffff;
+      --good: #dff4e6;
+      --good-line: #46945c;
+      --warn: #fff1d4;
+      --warn-line: #b97919;
+      --odd: #e8edff;
+      --odd-line: #586fc0;
+      --reject: #ecefec;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 14px/1.38 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(1280px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { margin-bottom: 4px; font-size: 27px; letter-spacing: 0; }
+    h2 { font-size: 22px; letter-spacing: 0; }
+    h3 { margin-bottom: 10px; font-size: 15px; letter-spacing: 0; text-transform: uppercase; color: var(--muted); }
+    h4 { margin-bottom: 6px; font-size: 16px; letter-spacing: 0; }
+    p { color: #34443b; }
+    code {
+      padding: 2px 5px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f3f6f1;
+      color: #2f4237;
+      font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .hero, .case-section, .feedback-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 16px;
+      box-shadow: 2px 2px 0 rgba(24,33,28,.08);
+    }
+    .hero {
+      margin-bottom: 14px;
+      border-width: 2px;
+      border-color: #25362c;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .hero-card, .case-summary article, .mini-card, .idea-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px;
+    }
+    .kicker {
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .facts {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .facts span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: #f8faf6;
+      color: #34443b;
+      font-size: 12px;
+    }
+    .case-section { margin-top: 14px; }
+    .case-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+    .case-head a { color: #315d9c; }
+    .case-summary {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr .7fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .case-summary h3 {
+      margin-bottom: 6px;
+      color: var(--ink);
+      text-transform: none;
+      font-size: 18px;
+    }
+    .scan-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .mini-card p { margin-bottom: 0; }
+    .mini-card.rejected { background: var(--reject); }
+    .idea-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .idea-card { border-left-width: 5px; }
+    .idea-card.stable { background: var(--good); border-color: var(--good-line); }
+    .idea-card.explore-only, .idea-card.proof-only { background: var(--warn); border-color: var(--warn-line); }
+    .idea-card.not-selected { background: var(--panel); border-color: var(--line); }
+    .idea-card[data-marked="keeper"], .idea-card[data-marked="investigate"] { outline: 3px solid rgba(70,148,92,.35); }
+    .idea-card[data-marked="dead"], .idea-card[data-marked="obvious"] { opacity: .78; }
+    .idea-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+    }
+    dl {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+    dt {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    dd { margin: 2px 0 0; color: #2f4237; }
+    .scores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 9px 0;
+    }
+    .scores span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 7px;
+      background: #f8faf6;
+      color: #34443b;
+      font-size: 12px;
+    }
+    details {
+      margin-top: 8px;
+      color: var(--muted);
+    }
+    summary { cursor: pointer; }
+    .verdict-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #26362d;
+      padding: 5px 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+    }
+    button.active {
+      border-color: #26362d;
+      background: #26362d;
+      color: #fff;
+    }
+    .feedback-panel {
+      margin-top: 14px;
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+    }
+    .feedback-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #1f2b24;
+      background: #fbfdf9;
+    }
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--muted);
+      background: #fbfcfa;
+    }
+    @media (max-width: 900px) {
+      .hero-grid, .case-summary, .scan-grid, .mini-grid, .idea-list, dl {
+        grid-template-columns: 1fr;
+      }
+      .case-head { display: block; }
+      .feedback-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <h1>Discovery Assay</h1>
+      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Mark ideas as dead, obvious, interesting, investigate, or keeper.</p>
+      <div class="facts">
+        <span>schema kernel.discovery-assay.v1</span>
+        <span>cases 5</span>
+        <span>mode random fill</span>
+        <span>seed mqnx8ane</span>
+        <span>failed checks 0</span>
+      </div>
+      <div class="hero-grid">
+        <article class="hero-card">
+          <h3>Outcome Gate</h3>
+          <p>After these cases, did the run surface at least 3-5 entries a human would mark interesting or better?</p>
+        </article>
+        <article class="hero-card">
+          <h3>Read Order</h3>
+          <p>Start with strongest conclusion, then convergence, then interesting outlier, then all candidates. The scores are evidence; your verdict is bedrock.</p>
+        </article>
+      </div>
+    </section>
+
+    
+    <section class="case-section" id="jack-drone-privacy">
+      <div class="case-head">
+        <div>
+          <div class="kicker">case-studies/jack-drone-privacy/</div>
+          <h2>Jack drone privacy</h2>
+        </div>
+        <a href="#feedback">feedback JSON</a>
+      </div>
+      <div class="case-summary">
+        <article>
+          <div class="kicker">strongest conclusion</div>
+          <h3>Drone response becomes choreography</h3>
+          <p>The highest-leverage response may be a discreet cue and sightline protocol that moves the protected person and preserves normal deck activity instead of escalating around the drone.</p>
+        </article>
+        <article>
+          <div class="kicker">generation 2</div>
+          <h3>improved</h3>
+          <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
+        </article>
+        <article>
+          <div class="kicker">failed checks</div>
+          <h3>none</h3>
+          <p>Goal checks passed.</p>
+        </article>
+      </div>
+      <div class="scan-grid">
+        <div>
+          <h3>What It Found</h3>
+          <div class="mini-grid">
+    <article class="mini-card">
+      <h4>Constraint transfer x2</h4>
+      <p>Drone response becomes choreography; Non-interference is the design constraint</p>
+    </article>
+    <article class="mini-card">
+      <h4>Perimeter redefinition x2</h4>
+      <p>Privacy perimeter moves outward; Use the footage clock as the trigger</p>
+    </article></div>
+        </div>
+        <div>
+          <h3>Interesting Outlier</h3>
+          <div class="idea-list">
+    <article class="idea-card not-selected" data-card="jack-drone-privacy:jdp-c1a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g2</div>
+          <h4>Use the footage clock as the trigger</h4>
+        </div>
+        <code>jdp-c1a</code>
+      </div>
+      <p>The protocol should trigger on the estimated time until useful footage, turning sensor range into a countdown for moving people, closing sightlines, and preserving visible normalcy.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:jdp-c1 -&gt; jdp-c1a</dd></div>
+        <div><dt>operator</dt><dd>Perimeter redefinition</dd></div>
+        <div><dt>substrate</dt><dd>time before value extraction</dd></div>
+        <div><dt>delta</dt><dd>Sharpened footage-as-target into an operating metric the crew can actually use.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.79</span>
+        <span>grounding 0.38</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.903, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.79 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.69; decay-adjusted 0.69</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Use the footage clock as the trigger">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+        </div>
+      </div>
+      <h3>Promising Entries</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Drone response becomes choreography</h4>
+        </div>
+        <code>jdp-c2</code>
+      </div>
+      <p>The highest-leverage response may be a discreet cue and sightline protocol that moves the protected person and preserves normal deck activity instead of escalating around the drone.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c2</dd></div>
+        <div><dt>operator</dt><dd>Constraint transfer</dd></div>
+        <div><dt>substrate</dt><dd>public counter-drone spectacle</dd></div>
+        <div><dt>delta</dt><dd>Moved from technical interception to a low-signature operating protocol.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.85</span>
+        <span>grounding 0.43</span>
+        <span>decay 1.00</span>
+        <span>lens 0.67</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.929, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.65, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.85 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.74</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Drone response becomes choreography">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Privacy perimeter moves outward</h4>
+        </div>
+        <code>jdp-c3</code>
+      </div>
+      <p>The yacht's defensive perimeter is not its hull or airspace; it is the detection distance needed to close sightlines before the drone reaches a useful camera angle.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c3</dd></div>
+        <div><dt>operator</dt><dd>Perimeter redefinition</dd></div>
+        <div><dt>substrate</dt><dd>camera angle before response</dd></div>
+        <div><dt>delta</dt><dd>Moved from physical perimeter to time and angle as the defensive boundary.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.43</span>
+        <span>decay 1.00</span>
+        <span>lens 0.67</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.828, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.59, mechanismClarity=0.55, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Privacy perimeter moves outward">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Protect the footage window</h4>
+        </div>
+        <code>jdp-c1</code>
+      </div>
+      <p>The drone is a delivery mechanism; the real defensive surface is the short window in which a camera can turn a private scene into valuable footage.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c1</dd></div>
+        <div><dt>operator</dt><dd>Objective shift</dd></div>
+        <div><dt>substrate</dt><dd>usable image capture</dd></div>
+        <div><dt>delta</dt><dd>Moved from anti-drone action to denying the value the drone is trying to extract.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.62</span>
+        <span>grounding 0.44</span>
+        <span>decay 1.00</span>
+        <span>lens 0.67</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.704, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.475, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.62 drove selection; grounding 0.44 cleared floor 0.35; directional score 0.60; decay-adjusted 0.60</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Protect the footage window">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>All Candidates</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Drone response becomes choreography</h4>
+        </div>
+        <code>jdp-c2</code>
+      </div>
+      <p>The highest-leverage response may be a discreet cue and sightline protocol that moves the protected person and preserves normal deck activity instead of escalating around the drone.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c2</dd></div>
+        <div><dt>operator</dt><dd>Constraint transfer</dd></div>
+        <div><dt>substrate</dt><dd>public counter-drone spectacle</dd></div>
+        <div><dt>delta</dt><dd>Moved from technical interception to a low-signature operating protocol.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.85</span>
+        <span>grounding 0.43</span>
+        <span>decay 1.00</span>
+        <span>lens 0.67</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.929, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.65, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.85 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.74</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Drone response becomes choreography">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Privacy perimeter moves outward</h4>
+        </div>
+        <code>jdp-c3</code>
+      </div>
+      <p>The yacht's defensive perimeter is not its hull or airspace; it is the detection distance needed to close sightlines before the drone reaches a useful camera angle.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c3</dd></div>
+        <div><dt>operator</dt><dd>Perimeter redefinition</dd></div>
+        <div><dt>substrate</dt><dd>camera angle before response</dd></div>
+        <div><dt>delta</dt><dd>Moved from physical perimeter to time and angle as the defensive boundary.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.43</span>
+        <span>decay 1.00</span>
+        <span>lens 0.67</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.828, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.59, mechanismClarity=0.55, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Privacy perimeter moves outward">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Protect the footage window</h4>
+        </div>
+        <code>jdp-c1</code>
+      </div>
+      <p>The drone is a delivery mechanism; the real defensive surface is the short window in which a camera can turn a private scene into valuable footage.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c1</dd></div>
+        <div><dt>operator</dt><dd>Objective shift</dd></div>
+        <div><dt>substrate</dt><dd>usable image capture</dd></div>
+        <div><dt>delta</dt><dd>Moved from anti-drone action to denying the value the drone is trying to extract.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.62</span>
+        <span>grounding 0.44</span>
+        <span>decay 1.00</span>
+        <span>lens 0.67</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.704, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.475, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.62 drove selection; grounding 0.44 cleared floor 0.35; directional score 0.60; decay-adjusted 0.60</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Protect the footage window">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="jack-drone-privacy:jdp-c4">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Non-interference is the design constraint</h4>
+        </div>
+        <code>jdp-c4</code>
+      </div>
+      <p>The response should be built around what the yacht can legally control: guest movement, shades, deck activity, sensor alerting, and cue discipline.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-drone-privacy -&gt; jdp-c4</dd></div>
+        <div><dt>operator</dt><dd>Constraint transfer</dd></div>
+        <div><dt>substrate</dt><dd>illegal radio or kinetic interference</dd></div>
+        <div><dt>delta</dt><dd>Moved from forbidden drone control to legal control over onboard exposure.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.74</span>
+        <span>grounding 0.37</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.9, substrateDistance=0.667, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.4, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.74 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.65; decay-adjusted 0.65</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Non-interference is the design constraint">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="jack-drone-privacy:jdp-c1a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g2</div>
+          <h4>Use the footage clock as the trigger</h4>
+        </div>
+        <code>jdp-c1a</code>
+      </div>
+      <p>The protocol should trigger on the estimated time until useful footage, turning sensor range into a countdown for moving people, closing sightlines, and preserving visible normalcy.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:jdp-c1 -&gt; jdp-c1a</dd></div>
+        <div><dt>operator</dt><dd>Perimeter redefinition</dd></div>
+        <div><dt>substrate</dt><dd>time before value extraction</dd></div>
+        <div><dt>delta</dt><dd>Sharpened footage-as-target into an operating metric the crew can actually use.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.79</span>
+        <span>grounding 0.38</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.903, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.79 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.69; decay-adjusted 0.69</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Use the footage clock as the trigger">
+        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>Rejected Before Scoring</h3>
+      <div class="mini-grid">
+    <article class="mini-card rejected">
+      <h4>Shoot down the drone</h4>
+      <p>No discovery delta: it repeats the obvious countermeasure the case marks as tempting and wrong.</p>
+      <code>seed:seed-jack-drone-privacy -&gt; reject-jdp5</code>
+    </article></div>
+    </section>
+    <section class="case-section" id="jack-yacht-perimeter-intrusion">
+      <div class="case-head">
+        <div>
+          <div class="kicker">case-studies/jack-yacht-perimeter-intrusion/</div>
+          <h2>Jack security swimmer</h2>
+        </div>
+        <a href="#feedback">feedback JSON</a>
+      </div>
+      <div class="case-summary">
+        <article>
+          <div class="kicker">strongest conclusion</div>
+          <h3>Instrument the bridge, not only the water</h3>
+          <p>The tender-as-step branch sharpens into a sensing strategy: instrument or procedurally control the objects that convert water approach into boarding access.</p>
+        </article>
+        <article>
+          <div class="kicker">generation 2</div>
+          <h3>improved</h3>
+          <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
+        </article>
+        <article>
+          <div class="kicker">failed checks</div>
+          <h3>none</h3>
+          <p>Goal checks passed.</p>
+        </article>
+      </div>
+      <div class="scan-grid">
+        <div>
+          <h3>What It Found</h3>
+          <div class="mini-grid">
+    <article class="mini-card">
+      <h4>Hidden dependent x2</h4>
+      <p>Instrument the bridge, not only the water; The tender is part of the perimeter</p>
+    </article>
+    <article class="mini-card">
+      <h4>Response compression x2</h4>
+      <p>Detection must classify the water; Water alert becomes interior lockdown</p>
+    </article></div>
+        </div>
+        <div>
+          <h3>Interesting Outlier</h3>
+          <div class="idea-list">
+    <article class="idea-card explore-only" data-card="jack-yacht-perimeter-intrusion:jyp-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Explore only - g1</div>
+          <h4>The tender is part of the perimeter</h4>
+        </div>
+        <code>jyp-c2</code>
+      </div>
+      <p>The tender is not just equipment; when it sits in the water it becomes a bridge from the swimmer perimeter to the deck and should be sensed or treated as an exposed boundary object.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c2</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>tender left in water</dd></div>
+        <div><dt>delta</dt><dd>Moved from intruder path to the overlooked object that converted water access into boarding access.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.76</span>
+        <span>grounding 0.37</span>
+        <span>decay 1.00</span>
+        <span>lens 0.62</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.871, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.515, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.76 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for The tender is part of the perimeter">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+        </div>
+      </div>
+      <h3>Promising Entries</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c2a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g2</div>
+          <h4>Instrument the bridge, not only the water</h4>
+        </div>
+        <code>jyp-c2a</code>
+      </div>
+      <p>The tender-as-step branch sharpens into a sensing strategy: instrument or procedurally control the objects that convert water approach into boarding access.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:jyp-c2 -&gt; jyp-c2a</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>boundary object contact</dd></div>
+        <div><dt>delta</dt><dd>Sharpened the tender insight into a narrower detection surface.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.77</span>
+        <span>grounding 0.40</span>
+        <span>decay 1.00</span>
+        <span>lens 0.64</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.88, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.77 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Instrument the bridge, not only the water">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Detection must classify the water</h4>
+        </div>
+        <code>jyp-c3</code>
+      </div>
+      <p>The security problem is not only sensing motion; it is classifying human-vs-everything-else in water and triggering a preset response before a swimmer reaches the hull.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c3</dd></div>
+        <div><dt>operator</dt><dd>Response compression</dd></div>
+        <div><dt>substrate</dt><dd>late human attention</dd></div>
+        <div><dt>delta</dt><dd>Moved from cameras to classification and response timing.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.65</span>
+        <span>grounding 0.42</span>
+        <span>decay 1.00</span>
+        <span>lens 0.66</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.76, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.65 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.61; decay-adjusted 0.61</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Detection must classify the water">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card explore-only" data-card="jack-yacht-perimeter-intrusion:jyp-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Explore only - g1</div>
+          <h4>The tender is part of the perimeter</h4>
+        </div>
+        <code>jyp-c2</code>
+      </div>
+      <p>The tender is not just equipment; when it sits in the water it becomes a bridge from the swimmer perimeter to the deck and should be sensed or treated as an exposed boundary object.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c2</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>tender left in water</dd></div>
+        <div><dt>delta</dt><dd>Moved from intruder path to the overlooked object that converted water access into boarding access.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.76</span>
+        <span>grounding 0.37</span>
+        <span>decay 1.00</span>
+        <span>lens 0.62</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.871, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.515, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.76 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for The tender is part of the perimeter">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card proof-only" data-card="jack-yacht-perimeter-intrusion:jyp-c4">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Proof only - g1</div>
+          <h4>Water alert becomes interior lockdown</h4>
+        </div>
+        <code>jyp-c4</code>
+      </div>
+      <p>A waterline detection event should trigger a pre-rehearsed lockdown and intercept pattern, because the distance between water contact and interior access can be short.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c4</dd></div>
+        <div><dt>operator</dt><dd>Response compression</dd></div>
+        <div><dt>substrate</dt><dd>ad hoc response delay</dd></div>
+        <div><dt>delta</dt><dd>Moved from detection as awareness to detection as immediate control action.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.72</span>
+        <span>grounding 0.40</span>
+        <span>decay 1.00</span>
+        <span>lens 0.64</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.72 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.65; decay-adjusted 0.65</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Water alert becomes interior lockdown">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>All Candidates</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c2a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g2</div>
+          <h4>Instrument the bridge, not only the water</h4>
+        </div>
+        <code>jyp-c2a</code>
+      </div>
+      <p>The tender-as-step branch sharpens into a sensing strategy: instrument or procedurally control the objects that convert water approach into boarding access.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:jyp-c2 -&gt; jyp-c2a</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>boundary object contact</dd></div>
+        <div><dt>delta</dt><dd>Sharpened the tender insight into a narrower detection surface.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.77</span>
+        <span>grounding 0.40</span>
+        <span>decay 1.00</span>
+        <span>lens 0.64</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.88, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.77 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Instrument the bridge, not only the water">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Detection must classify the water</h4>
+        </div>
+        <code>jyp-c3</code>
+      </div>
+      <p>The security problem is not only sensing motion; it is classifying human-vs-everything-else in water and triggering a preset response before a swimmer reaches the hull.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c3</dd></div>
+        <div><dt>operator</dt><dd>Response compression</dd></div>
+        <div><dt>substrate</dt><dd>late human attention</dd></div>
+        <div><dt>delta</dt><dd>Moved from cameras to classification and response timing.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.65</span>
+        <span>grounding 0.42</span>
+        <span>decay 1.00</span>
+        <span>lens 0.66</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.76, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.65 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.61; decay-adjusted 0.61</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Detection must classify the water">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card explore-only" data-card="jack-yacht-perimeter-intrusion:jyp-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Explore only - g1</div>
+          <h4>The tender is part of the perimeter</h4>
+        </div>
+        <code>jyp-c2</code>
+      </div>
+      <p>The tender is not just equipment; when it sits in the water it becomes a bridge from the swimmer perimeter to the deck and should be sensed or treated as an exposed boundary object.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c2</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>tender left in water</dd></div>
+        <div><dt>delta</dt><dd>Moved from intruder path to the overlooked object that converted water access into boarding access.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.76</span>
+        <span>grounding 0.37</span>
+        <span>decay 1.00</span>
+        <span>lens 0.62</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.871, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.515, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.76 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for The tender is part of the perimeter">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="jack-yacht-perimeter-intrusion:jyp-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>The perimeter starts in the water</h4>
+        </div>
+        <code>jyp-c1</code>
+      </div>
+      <p>The breach is not a staffing failure; it exposes a perimeter definition failure where the protected volume stops at the deck instead of covering the water approach.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c1</dd></div>
+        <div><dt>operator</dt><dd>Perimeter redefinition</dd></div>
+        <div><dt>substrate</dt><dd>unwatched water surface and water column</dd></div>
+        <div><dt>delta</dt><dd>Moved from guards and boarding points to the water volume as the real boundary.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.68</span>
+        <span>grounding 0.38</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.75, substrateDistance=0.714, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.375, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.68 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.62; decay-adjusted 0.62</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for The perimeter starts in the water">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card proof-only" data-card="jack-yacht-perimeter-intrusion:jyp-c4">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Proof only - g1</div>
+          <h4>Water alert becomes interior lockdown</h4>
+        </div>
+        <code>jyp-c4</code>
+      </div>
+      <p>A waterline detection event should trigger a pre-rehearsed lockdown and intercept pattern, because the distance between water contact and interior access can be short.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-jack-yacht-perimeter-intrusion -&gt; jyp-c4</dd></div>
+        <div><dt>operator</dt><dd>Response compression</dd></div>
+        <div><dt>substrate</dt><dd>ad hoc response delay</dd></div>
+        <div><dt>delta</dt><dd>Moved from detection as awareness to detection as immediate control action.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.72</span>
+        <span>grounding 0.40</span>
+        <span>decay 1.00</span>
+        <span>lens 0.64</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.72 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.65; decay-adjusted 0.65</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Water alert becomes interior lockdown">
+        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>Rejected Before Scoring</h3>
+      <div class="mini-grid">
+    <article class="mini-card rejected">
+      <h4>Add more deck cameras</h4>
+      <p>No discovery delta: it repeats the obvious answer the case marks as insufficient.</p>
+      <code>seed:seed-jack-yacht-perimeter-intrusion -&gt; reject-jyp5</code>
+    </article></div>
+    </section>
+    <section class="case-section" id="fsd-accident-economy">
+      <div class="case-head">
+        <div>
+          <div class="kicker">case-studies/fsd-accident-economy/</div>
+          <h2>Tesla FSD accident economy</h2>
+        </div>
+        <a href="#feedback">feedback JSON</a>
+      </div>
+      <div class="case-summary">
+        <article>
+          <div class="kicker">strongest conclusion</div>
+          <h3>Insurer ads are a demand sink</h3>
+          <p>The advertising branch sharpens into a media-market problem: accident risk supports a repeat performance-marketing buyer that fills inventory across TV, sports, search, and local media.</p>
+        </article>
+        <article>
+          <div class="kicker">generation 2</div>
+          <h3>drifted</h3>
+          <p>drifted: Generation-2 children changed direction without improving combined novelty+grounding.</p>
+        </article>
+        <article>
+          <div class="kicker">failed checks</div>
+          <h3>none</h3>
+          <p>Goal checks passed.</p>
+        </article>
+      </div>
+      <div class="scan-grid">
+        <div>
+          <h3>What It Found</h3>
+          <div class="mini-grid">
+    <article class="mini-card">
+      <h4>Hidden dependent x3</h4>
+      <p>Crash removal hits ad-supported media; Organ supply loses a concentrated source; Insurer ads are a demand sink</p>
+    </article></div>
+        </div>
+        <div>
+          <h3>Interesting Outlier</h3>
+          <div class="idea-list">
+    <article class="idea-card explore-only" data-card="fsd-accident-economy:fae-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Explore only - g1</div>
+          <h4>Crash removal hits ad-supported media</h4>
+        </div>
+        <code>fae-c2</code>
+      </div>
+      <p>Auto insurers are large advertisers, so a shrinking accident-priced insurance pool can remove demand from media inventory that appears unrelated to road safety.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c2</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>auto-insurance customer acquisition</dd></div>
+        <div><dt>delta</dt><dd>Moved from insurer premiums to the ad markets insurers fund.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.41</span>
+        <span>decay 0.93</span>
+        <span>lens 0.65</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.821, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.545, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Crash removal hits ad-supported media">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+        </div>
+      </div>
+      <h3>Promising Entries</h3>
+      <div class="idea-list">
+    <article class="idea-card explore-only" data-card="fsd-accident-economy:fae-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Explore only - g1</div>
+          <h4>Crash removal hits ad-supported media</h4>
+        </div>
+        <code>fae-c2</code>
+      </div>
+      <p>Auto insurers are large advertisers, so a shrinking accident-priced insurance pool can remove demand from media inventory that appears unrelated to road safety.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c2</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>auto-insurance customer acquisition</dd></div>
+        <div><dt>delta</dt><dd>Moved from insurer premiums to the ad markets insurers fund.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.41</span>
+        <span>decay 0.93</span>
+        <span>lens 0.65</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.821, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.545, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Crash removal hits ad-supported media">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="fsd-accident-economy:fae-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Organ supply loses a concentrated source</h4>
+        </div>
+        <code>fae-c3</code>
+      </div>
+      <p>Removing crashes can tighten the high-quality edge of organ supply because young trauma victims are disproportionately valuable donors.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c3</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>young trauma organ supply</dd></div>
+        <div><dt>delta</dt><dd>Moved from fewer deaths to a downstream shortage in a system that depends on some trauma deaths.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.41</span>
+        <span>decay 0.93</span>
+        <span>lens 0.66</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.867, substrateDistance=0.667, hiddenDependents=0.6; signalStrength=0.65, mechanismClarity=0.375, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Organ supply loses a concentrated source">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="fsd-accident-economy:fae-c2a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g2</div>
+          <h4>Insurer ads are a demand sink</h4>
+        </div>
+        <code>fae-c2a</code>
+      </div>
+      <p>The advertising branch sharpens into a media-market problem: accident risk supports a repeat performance-marketing buyer that fills inventory across TV, sports, search, and local media.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:fae-c2 -&gt; fae-c2a</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>insurance ad inventory</dd></div>
+        <div><dt>delta</dt><dd>Sharpened insurer ad spend into a demand-sink thesis for media inventory.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.72</span>
+        <span>grounding 0.45</span>
+        <span>decay 0.93</span>
+        <span>lens 0.68</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.897, substrateDistance=0.5, hiddenDependents=0.6; signalStrength=0.53, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.72 drove selection; grounding 0.45 cleared floor 0.35; directional score 0.67; decay-adjusted 0.62</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Insurer ads are a demand sink">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card proof-only" data-card="fsd-accident-economy:fae-c4">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Proof only - g1</div>
+          <h4>Fault moves from driver to stack</h4>
+        </div>
+        <code>fae-c4</code>
+      </div>
+      <p>The plaintiff and insurance systems do not vanish cleanly; some pressure migrates from individual driver fault to autonomy stack liability and fleet-level audit trails.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c4</dd></div>
+        <div><dt>operator</dt><dd>Replacement surface</dd></div>
+        <div><dt>substrate</dt><dd>human driver fault</dd></div>
+        <div><dt>delta</dt><dd>Moved from accident-economy collapse to the replacement surface for residual harm.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.68</span>
+        <span>grounding 0.51</span>
+        <span>decay 0.93</span>
+        <span>lens 0.72</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.828, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.725, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.68 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.66; decay-adjusted 0.61</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Fault moves from driver to stack">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>All Candidates</h3>
+      <div class="idea-list">
+    <article class="idea-card explore-only" data-card="fsd-accident-economy:fae-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Explore only - g1</div>
+          <h4>Crash removal hits ad-supported media</h4>
+        </div>
+        <code>fae-c2</code>
+      </div>
+      <p>Auto insurers are large advertisers, so a shrinking accident-priced insurance pool can remove demand from media inventory that appears unrelated to road safety.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c2</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>auto-insurance customer acquisition</dd></div>
+        <div><dt>delta</dt><dd>Moved from insurer premiums to the ad markets insurers fund.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.41</span>
+        <span>decay 0.93</span>
+        <span>lens 0.65</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.821, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.545, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Crash removal hits ad-supported media">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="fsd-accident-economy:fae-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Organ supply loses a concentrated source</h4>
+        </div>
+        <code>fae-c3</code>
+      </div>
+      <p>Removing crashes can tighten the high-quality edge of organ supply because young trauma victims are disproportionately valuable donors.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c3</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>young trauma organ supply</dd></div>
+        <div><dt>delta</dt><dd>Moved from fewer deaths to a downstream shortage in a system that depends on some trauma deaths.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.41</span>
+        <span>decay 0.93</span>
+        <span>lens 0.66</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.867, substrateDistance=0.667, hiddenDependents=0.6; signalStrength=0.65, mechanismClarity=0.375, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Organ supply loses a concentrated source">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="fsd-accident-economy:fae-c2a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g2</div>
+          <h4>Insurer ads are a demand sink</h4>
+        </div>
+        <code>fae-c2a</code>
+      </div>
+      <p>The advertising branch sharpens into a media-market problem: accident risk supports a repeat performance-marketing buyer that fills inventory across TV, sports, search, and local media.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:fae-c2 -&gt; fae-c2a</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>insurance ad inventory</dd></div>
+        <div><dt>delta</dt><dd>Sharpened insurer ad spend into a demand-sink thesis for media inventory.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.72</span>
+        <span>grounding 0.45</span>
+        <span>decay 0.93</span>
+        <span>lens 0.68</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.897, substrateDistance=0.5, hiddenDependents=0.6; signalStrength=0.53, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.72 drove selection; grounding 0.45 cleared floor 0.35; directional score 0.67; decay-adjusted 0.62</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Insurer ads are a demand sink">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="fsd-accident-economy:fae-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Accident volume is the substrate</h4>
+        </div>
+        <code>fae-c1</code>
+      </div>
+      <p>The non-obvious object is not safer cars; it is the drying-up of a recurring economic event that feeds insurance, legal, repair, medical, and media systems.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c1</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>human-caused crash event</dd></div>
+        <div><dt>delta</dt><dd>Moved from safety improvement to crash event stream as the load-bearing substrate.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.44</span>
+        <span>grounding 0.46</span>
+        <span>decay 0.93</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.556, substrateDistance=0.2, hiddenDependents=0.52; signalStrength=0.68, mechanismClarity=0.525, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.44 drove selection; grounding 0.46 cleared floor 0.35; directional score 0.50; decay-adjusted 0.46</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Accident volume is the substrate">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card proof-only" data-card="fsd-accident-economy:fae-c4">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">Proof only - g1</div>
+          <h4>Fault moves from driver to stack</h4>
+        </div>
+        <code>fae-c4</code>
+      </div>
+      <p>The plaintiff and insurance systems do not vanish cleanly; some pressure migrates from individual driver fault to autonomy stack liability and fleet-level audit trails.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-accident-economy -&gt; fae-c4</dd></div>
+        <div><dt>operator</dt><dd>Replacement surface</dd></div>
+        <div><dt>substrate</dt><dd>human driver fault</dd></div>
+        <div><dt>delta</dt><dd>Moved from accident-economy collapse to the replacement surface for residual harm.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.68</span>
+        <span>grounding 0.51</span>
+        <span>decay 0.93</span>
+        <span>lens 0.72</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.828, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.725, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.68 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.66; decay-adjusted 0.61</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Fault moves from driver to stack">
+        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>Rejected Before Scoring</h3>
+      <div class="mini-grid">
+    <article class="mini-card rejected">
+      <h4>Car insurance gets cheaper</h4>
+      <p>No discovery delta: the case explicitly names this as the obvious first move.</p>
+      <code>seed:seed-fsd-accident-economy -&gt; reject-fae5</code>
+    </article></div>
+    </section>
+    <section class="case-section" id="starship-launch-cost-collapse">
+      <div class="case-head">
+        <div>
+          <div class="kicker">case-studies/starship-launch-cost-collapse/</div>
+          <h2>SpaceX launch-cost collapse</h2>
+        </div>
+        <a href="#feedback">feedback JSON</a>
+      </div>
+      <div class="case-summary">
+        <article>
+          <div class="kicker">strongest conclusion</div>
+          <h3>Orbit becomes a construction yard</h3>
+          <p>Starship-class cadence could make orbital assembly an infrastructure business, where parts, fuel, and servicing create a construction supply chain above Earth.</p>
+        </article>
+        <article>
+          <div class="kicker">generation 2</div>
+          <h3>drifted</h3>
+          <p>drifted: Generation-2 children changed direction without improving combined novelty+grounding.</p>
+        </article>
+        <article>
+          <div class="kicker">failed checks</div>
+          <h3>none</h3>
+          <p>Goal checks passed.</p>
+        </article>
+      </div>
+      <div class="scan-grid">
+        <div>
+          <h3>What It Found</h3>
+          <div class="mini-grid">
+    <article class="mini-card">
+      <h4>Infrastructure inversion x2</h4>
+      <p>Orbit becomes a construction yard; Orbital construction needs dry docks</p>
+    </article></div>
+        </div>
+        <div>
+          <h3>Interesting Outlier</h3>
+          <div class="idea-list">
+    <article class="idea-card not-selected" data-card="starship-launch-cost-collapse:ss-c2a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g2</div>
+          <h4>Orbital construction needs dry docks</h4>
+        </div>
+        <code>ss-c2a</code>
+      </div>
+      <p>The construction-yard thesis sharpens into orbital dry docks: reusable heavy launch is not enough unless platforms can be inspected, refueled, repaired, and mechanically standardized.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:ss-c2 -&gt; ss-c2a</dd></div>
+        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
+        <div><dt>substrate</dt><dd>serviceable orbital platform</dd></div>
+        <div><dt>delta</dt><dd>Moved from orbital construction to the service infrastructure that makes construction repeatable.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.64</span>
+        <span>grounding 0.36</span>
+        <span>decay 0.98</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.625, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.485, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.64 drove selection; grounding 0.36 cleared floor 0.35; directional score 0.59; decay-adjusted 0.58</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Orbital construction needs dry docks">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+        </div>
+      </div>
+      <h3>Promising Entries</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Orbit becomes a construction yard</h4>
+        </div>
+        <code>ss-c2</code>
+      </div>
+      <p>Starship-class cadence could make orbital assembly an infrastructure business, where parts, fuel, and servicing create a construction supply chain above Earth.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-starship -&gt; ss-c2</dd></div>
+        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
+        <div><dt>substrate</dt><dd>on-orbit assembly</dd></div>
+        <div><dt>delta</dt><dd>Moved from transportation cost to orbit as a construction substrate.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.81</span>
+        <span>grounding 0.38</span>
+        <span>decay 0.93</span>
+        <span>lens 0.61</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.821, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.485, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0.12; front 1; novelty 0.81 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.70; decay-adjusted 0.65</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Orbit becomes a construction yard">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Replacement beats perfection</h4>
+        </div>
+        <code>ss-c3</code>
+      </div>
+      <p>Cheap heavy launch lets some orbital businesses replace hardware often instead of over-insuring and over-qualifying every asset for long life.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-starship -&gt; ss-c3</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>expensive single-shot asset</dd></div>
+        <div><dt>delta</dt><dd>Moved from launch cost to asset-lifecycle economics.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.77</span>
+        <span>grounding 0.37</span>
+        <span>decay 0.82</span>
+        <span>lens 0.62</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.76, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.77 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.55</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Replacement beats perfection">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Space hardware gets less precious</h4>
+        </div>
+        <code>ss-c1</code>
+      </div>
+      <p>Cheap heavy launch moves spacecraft design from exquisite mass optimization toward heavier, redundant, serviceable hardware.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-starship -&gt; ss-c1</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>satellite mass budget</dd></div>
+        <div><dt>delta</dt><dd>Moved from cheaper launch to changed hardware design rules.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.71</span>
+        <span>grounding 0.37</span>
+        <span>decay 0.85</span>
+        <span>lens 0.63</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.731, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.575, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.71 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.64; decay-adjusted 0.54</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Space hardware gets less precious">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>All Candidates</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Orbit becomes a construction yard</h4>
+        </div>
+        <code>ss-c2</code>
+      </div>
+      <p>Starship-class cadence could make orbital assembly an infrastructure business, where parts, fuel, and servicing create a construction supply chain above Earth.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-starship -&gt; ss-c2</dd></div>
+        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
+        <div><dt>substrate</dt><dd>on-orbit assembly</dd></div>
+        <div><dt>delta</dt><dd>Moved from transportation cost to orbit as a construction substrate.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.81</span>
+        <span>grounding 0.38</span>
+        <span>decay 0.93</span>
+        <span>lens 0.61</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.821, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.485, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0.12; front 1; novelty 0.81 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.70; decay-adjusted 0.65</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Orbit becomes a construction yard">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Replacement beats perfection</h4>
+        </div>
+        <code>ss-c3</code>
+      </div>
+      <p>Cheap heavy launch lets some orbital businesses replace hardware often instead of over-insuring and over-qualifying every asset for long life.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-starship -&gt; ss-c3</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>expensive single-shot asset</dd></div>
+        <div><dt>delta</dt><dd>Moved from launch cost to asset-lifecycle economics.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.77</span>
+        <span>grounding 0.37</span>
+        <span>decay 0.82</span>
+        <span>lens 0.62</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.76, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.77 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.55</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Replacement beats perfection">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Space hardware gets less precious</h4>
+        </div>
+        <code>ss-c1</code>
+      </div>
+      <p>Cheap heavy launch moves spacecraft design from exquisite mass optimization toward heavier, redundant, serviceable hardware.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-starship -&gt; ss-c1</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>satellite mass budget</dd></div>
+        <div><dt>delta</dt><dd>Moved from cheaper launch to changed hardware design rules.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.71</span>
+        <span>grounding 0.37</span>
+        <span>decay 0.85</span>
+        <span>lens 0.63</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.731, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.575, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.71 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.64; decay-adjusted 0.54</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Space hardware gets less precious">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="starship-launch-cost-collapse:ss-c2a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g2</div>
+          <h4>Orbital construction needs dry docks</h4>
+        </div>
+        <code>ss-c2a</code>
+      </div>
+      <p>The construction-yard thesis sharpens into orbital dry docks: reusable heavy launch is not enough unless platforms can be inspected, refueled, repaired, and mechanically standardized.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:ss-c2 -&gt; ss-c2a</dd></div>
+        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
+        <div><dt>substrate</dt><dd>serviceable orbital platform</dd></div>
+        <div><dt>delta</dt><dd>Moved from orbital construction to the service infrastructure that makes construction repeatable.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.64</span>
+        <span>grounding 0.36</span>
+        <span>decay 0.98</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.625, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.485, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.64 drove selection; grounding 0.36 cleared floor 0.35; directional score 0.59; decay-adjusted 0.58</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Orbital construction needs dry docks">
+        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>Rejected Before Scoring</h3>
+      <div class="mini-grid">
+    <article class="mini-card rejected">
+      <h4>Rockets get cheaper</h4>
+      <p>No delta beyond the seed launch-cost thesis.</p>
+      <code>seed:seed-starship -&gt; reject-s4</code>
+    </article></div>
+    </section>
+    <section class="case-section" id="full-self-driving-unlock">
+      <div class="case-head">
+        <div>
+          <div class="kicker">case-studies/full-self-driving-unlock/</div>
+          <h2>Full self-driving unlock</h2>
+        </div>
+        <a href="#feedback">feedback JSON</a>
+      </div>
+      <div class="case-summary">
+        <article>
+          <div class="kicker">strongest conclusion</div>
+          <h3>Movement metering replaces fine revenue</h3>
+          <p>The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.</p>
+        </article>
+        <article>
+          <div class="kicker">generation 2</div>
+          <h3>drifted</h3>
+          <p>drifted: Generation-2 children changed direction without improving combined novelty+grounding.</p>
+        </article>
+        <article>
+          <div class="kicker">failed checks</div>
+          <h3>none</h3>
+          <p>Goal checks passed.</p>
+        </article>
+      </div>
+      <div class="scan-grid">
+        <div>
+          <h3>What It Found</h3>
+          <div class="mini-grid">
+    <article class="mini-card">
+      <h4>Hidden dependent x3</h4>
+      <p>Movement metering replaces fine revenue; Accident economy dries up; Road revenue moves to mobility accounts</p>
+    </article>
+    <article class="mini-card">
+      <h4>Substrate removal x3</h4>
+      <p>Traffic-state loses its subject; Ownership becomes fleet yield; Sleeper commute rewires geography</p>
+    </article></div>
+        </div>
+        <div>
+          <h3>Interesting Outlier</h3>
+          <div class="idea-list">
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c6">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Fleet compute becomes mobile edge</h4>
+        </div>
+        <code>c6</code>
+      </div>
+      <p>A large autonomous fleet could become a distributed sensing and compute substrate, turning parked or low-utilization vehicles into mobile edge infrastructure.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c6</dd></div>
+        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
+        <div><dt>substrate</dt><dd>fleet as compute substrate</dd></div>
+        <div><dt>delta</dt><dd>Moved from cars as transport to fleet as distributed infrastructure.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.89</span>
+        <span>grounding 0.30</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.3, falsifiability=0.24, riskPenalty=0.12; grounding 0.30 failed floor 0.35; directional score 0.72; decay-adjusted 0.72</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Fleet compute becomes mobile edge">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+        </div>
+      </div>
+      <h3>Promising Entries</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="full-self-driving-unlock:c8">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Movement metering replaces fine revenue</h4>
+        </div>
+        <code>c8</code>
+      </div>
+      <p>The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c8</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>state revenue replacement</dd></div>
+        <div><dt>delta</dt><dd>Moved from fines disappearing to states replacing the measurement basis for transport revenue.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.90</span>
+        <span>grounding 0.48</span>
+        <span>decay 1.00</span>
+        <span>lens 0.70</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.68, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.90 drove selection; grounding 0.48 cleared floor 0.35; directional score 0.79; decay-adjusted 0.79</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Movement metering replaces fine revenue">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="full-self-driving-unlock:c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Accident economy dries up</h4>
+        </div>
+        <code>c1</code>
+      </div>
+      <p>The visible crash reduction branch is not just safer roads; it removes revenue and labor from insurance, plaintiff law, collision repair, trauma workflows, and organ supply.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c1</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>crash/risk event</dd></div>
+        <div><dt>delta</dt><dd>Moved from safer roads to businesses dependent on accident volume.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.80</span>
+        <span>grounding 0.51</span>
+        <span>decay 1.00</span>
+        <span>lens 0.72</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.84; signalStrength=0.65, mechanismClarity=0.5, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.80 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.73; decay-adjusted 0.73</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Accident economy dries up">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="full-self-driving-unlock:c8a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g2</div>
+          <h4>Road revenue moves to mobility accounts</h4>
+        </div>
+        <code>c8a</code>
+      </div>
+      <p>Autonomous mobility lets road revenue move from driver punishment and fuel consumption to account-level trip metering, congestion pricing, and fleet access fees.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:c8 -&gt; c8a</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>account-level mobility ledger</dd></div>
+        <div><dt>delta</dt><dd>Took the revenue-replacement branch from VMT into account-level mobility taxation.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.89</span>
+        <span>grounding 0.46</span>
+        <span>decay 0.93</span>
+        <span>lens 0.69</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.967, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.56, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.89 drove selection; grounding 0.46 cleared floor 0.35; directional score 0.77; decay-adjusted 0.71</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Road revenue moves to mobility accounts">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>All Candidates</h3>
+      <div class="idea-list">
+    <article class="idea-card stable" data-card="full-self-driving-unlock:c8">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Movement metering replaces fine revenue</h4>
+        </div>
+        <code>c8</code>
+      </div>
+      <p>The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c8</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>state revenue replacement</dd></div>
+        <div><dt>delta</dt><dd>Moved from fines disappearing to states replacing the measurement basis for transport revenue.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.90</span>
+        <span>grounding 0.48</span>
+        <span>decay 1.00</span>
+        <span>lens 0.70</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.68, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.90 drove selection; grounding 0.48 cleared floor 0.35; directional score 0.79; decay-adjusted 0.79</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Movement metering replaces fine revenue">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="full-self-driving-unlock:c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Accident economy dries up</h4>
+        </div>
+        <code>c1</code>
+      </div>
+      <p>The visible crash reduction branch is not just safer roads; it removes revenue and labor from insurance, plaintiff law, collision repair, trauma workflows, and organ supply.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c1</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>crash/risk event</dd></div>
+        <div><dt>delta</dt><dd>Moved from safer roads to businesses dependent on accident volume.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.80</span>
+        <span>grounding 0.51</span>
+        <span>decay 1.00</span>
+        <span>lens 0.72</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.84; signalStrength=0.65, mechanismClarity=0.5, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.80 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.73; decay-adjusted 0.73</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Accident economy dries up">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="full-self-driving-unlock:c8a">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g2</div>
+          <h4>Road revenue moves to mobility accounts</h4>
+        </div>
+        <code>c8a</code>
+      </div>
+      <p>Autonomous mobility lets road revenue move from driver punishment and fuel consumption to account-level trip metering, congestion pricing, and fleet access fees.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>candidate:c8 -&gt; c8a</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>account-level mobility ledger</dd></div>
+        <div><dt>delta</dt><dd>Took the revenue-replacement branch from VMT into account-level mobility taxation.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.89</span>
+        <span>grounding 0.46</span>
+        <span>decay 0.93</span>
+        <span>lens 0.69</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.967, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.56, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.89 drove selection; grounding 0.46 cleared floor 0.35; directional score 0.77; decay-adjusted 0.71</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Road revenue moves to mobility accounts">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c2">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Traffic-state loses its subject</h4>
+        </div>
+        <code>c2</code>
+      </div>
+      <p>When the human stops being the driver, the traffic stop, ticket, pretext-search, points, DUI docket, and forfeiture pipeline lose their ordinary on-ramp.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c2</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>human driver as policeable subject</dd></div>
+        <div><dt>delta</dt><dd>Moved from autonomous driving to disappearance of the policeable driver.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.73</span>
+        <span>grounding 0.39</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.852, substrateDistance=0.667, hiddenDependents=0.52; signalStrength=0.575, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 4; novelty 0.73 drove selection; grounding 0.39 cleared floor 0.35; directional score 0.66; decay-adjusted 0.66</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Traffic-state loses its subject">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Ownership becomes fleet yield</h4>
+        </div>
+        <code>c3</code>
+      </div>
+      <p>Autonomy attacks the privately owned idle car: finance, dealers, residual values, aftermarket repair, and parking all reprice around service fleets or owner-operated robotaxi yield.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c3</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>private car ownership</dd></div>
+        <div><dt>delta</dt><dd>Moved from better cars to idle owned assets repricing as yield assets.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.68</span>
+        <span>grounding 0.42</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.912, substrateDistance=0.4, hiddenDependents=0.52; signalStrength=0.575, mechanismClarity=0.375, falsifiability=0.4, riskPenalty=0; front 4; novelty 0.68 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.64; decay-adjusted 0.64</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Ownership becomes fleet yield">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c4">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Sleeper commute rewires geography</h4>
+        </div>
+        <code>c4</code>
+      </div>
+      <p>Door-to-door autonomy changes the 200-700 mile band: sleeping or working through travel collapses the felt cost of distance and welds labor markets into megaregions.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c4</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>driver time and distance friction</dd></div>
+        <div><dt>delta</dt><dd>Moved from urban robotaxi to distance friction disappearing in the intercity band.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.79</span>
+        <span>grounding 0.42</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.967, substrateDistance=0.667, hiddenDependents=0.52; signalStrength=0.59, mechanismClarity=0.275, falsifiability=0.48, riskPenalty=0; front 3; novelty 0.79 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.70; decay-adjusted 0.70</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Sleeper commute rewires geography">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c5">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Adoption asymmetry creates border arbitrage</h4>
+        </div>
+        <code>c5</code>
+      </div>
+      <p>FSD arrives unevenly, so the edge lives at the boundary: believers versus disbelievers, served metros versus laggards, and leapfrog regions that skip old car ownership patterns.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c5</dd></div>
+        <div><dt>operator</dt><dd>Adoption boundary</dd></div>
+        <div><dt>substrate</dt><dd>uneven deployment boundary</dd></div>
+        <div><dt>delta</dt><dd>Moved from average arrival to edges where belief and deployment diverge.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.75</span>
+        <span>grounding 0.39</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.848, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.605, mechanismClarity=0.35, falsifiability=0.24, riskPenalty=0; front 4; novelty 0.75 drove selection; grounding 0.39 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Adoption asymmetry creates border arbitrage">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c6">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>Fleet compute becomes mobile edge</h4>
+        </div>
+        <code>c6</code>
+      </div>
+      <p>A large autonomous fleet could become a distributed sensing and compute substrate, turning parked or low-utilization vehicles into mobile edge infrastructure.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c6</dd></div>
+        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
+        <div><dt>substrate</dt><dd>fleet as compute substrate</dd></div>
+        <div><dt>delta</dt><dd>Moved from cars as transport to fleet as distributed infrastructure.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.89</span>
+        <span>grounding 0.30</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.3, falsifiability=0.24, riskPenalty=0.12; grounding 0.30 failed floor 0.35; directional score 0.72; decay-adjusted 0.72</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Fleet compute becomes mobile edge">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c7">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">not selected - g1</div>
+          <h4>LiDAR retrofit inventory is not a lead</h4>
+        </div>
+        <code>c7</code>
+      </div>
+      <p>Competitors with deployed LiDAR-heavy fleets may own expensive inventory rather than durable advantage if camera-only OTA economics dominate the cost curve.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c7</dd></div>
+        <div><dt>operator</dt><dd>Cost-curve inversion</dd></div>
+        <div><dt>substrate</dt><dd>autonomy stack cost structure</dd></div>
+        <div><dt>delta</dt><dd>Moved from deployment count to cost-curve liability.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.82</span>
+        <span>grounding 0.37</span>
+        <span>decay 1.00</span>
+        <span>lens n/a</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.964, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.5, mechanismClarity=0.35, falsifiability=0.32, riskPenalty=0; front 3; novelty 0.82 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.70; decay-adjusted 0.70</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for LiDAR retrofit inventory is not a lead">
+        <button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="keeper">keeper</button>
+      </div>
+    </article></div>
+      <h3>Rejected Before Scoring</h3>
+      <div class="mini-grid">
+    <article class="mini-card rejected">
+      <h4>Safer autonomous cars</h4>
+      <p>No new substrate or mechanism beyond the seed thesis.</p>
+      <code>seed:seed-fsd-unlock -&gt; reject-sp9</code>
+    </article>
+    <article class="mini-card rejected">
+      <h4>FSD becomes popular</h4>
+      <p>No delta: the packet names uptake but not a new dependent, substrate, or mechanism.</p>
+      <code>seed:seed-fsd-unlock -&gt; reject-sp10</code>
+    </article></div>
+    </section>
+
+    <section class="feedback-panel" id="feedback">
+      <h2>Feedback</h2>
+      <div class="feedback-actions">
+        <button type="button" id="copy-feedback">Copy JSON</button>
+        <button type="button" id="download-feedback">Download JSON</button>
+      </div>
+      <textarea id="feedback-json" spellcheck="false"></textarea>
+    </section>
+  </main>
+  <script>
+    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T15:08:07.290Z","verdictScale":["dead","obvious","interesting","investigate","keeper"],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"full-self-driving-unlock","label":"Full self-driving unlock","caseVerdict":null,"notes":"","candidates":[{"id":"c8","title":"Movement metering replaces fine revenue","verdict":null,"notes":""},{"id":"c1","title":"Accident economy dries up","verdict":null,"notes":""},{"id":"c8a","title":"Road revenue moves to mobility accounts","verdict":null,"notes":""},{"id":"c2","title":"Traffic-state loses its subject","verdict":null,"notes":""},{"id":"c3","title":"Ownership becomes fleet yield","verdict":null,"notes":""},{"id":"c4","title":"Sleeper commute rewires geography","verdict":null,"notes":""},{"id":"c5","title":"Adoption asymmetry creates border arbitrage","verdict":null,"notes":""},{"id":"c6","title":"Fleet compute becomes mobile edge","verdict":null,"notes":""},{"id":"c7","title":"LiDAR retrofit inventory is not a lead","verdict":null,"notes":""}]}]};
+
+    function findCandidate(caseSlug, candidateId) {
+      const foundCase = feedback.cases.find((item) => item.slug === caseSlug);
+      if (!foundCase) return undefined;
+      return foundCase.candidates.find((candidate) => candidate.id === candidateId);
+    }
+
+    function renderFeedback() {
+      document.getElementById('feedback-json').value = JSON.stringify(feedback, null, 2);
+    }
+
+    function markCard(caseSlug, candidateId, verdict) {
+      document.querySelectorAll('[data-card="' + caseSlug + ':' + candidateId + '"]').forEach((card) => {
+        card.dataset.marked = verdict;
+      });
+      document.querySelectorAll('[data-case="' + caseSlug + '"][data-candidate="' + candidateId + '"]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.verdict === verdict);
+      });
+    }
+
+    document.querySelectorAll('[data-verdict]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const candidate = findCandidate(button.dataset.case, button.dataset.candidate);
+        if (!candidate) return;
+        candidate.verdict = button.dataset.verdict;
+        markCard(button.dataset.case, button.dataset.candidate, button.dataset.verdict);
+        renderFeedback();
+      });
+    });
+
+    document.getElementById('copy-feedback').addEventListener('click', async () => {
+      renderFeedback();
+      await navigator.clipboard.writeText(document.getElementById('feedback-json').value);
+    });
+
+    document.getElementById('download-feedback').addEventListener('click', () => {
+      renderFeedback();
+      const blob = new Blob([document.getElementById('feedback-json').value], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'assay-feedback.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    renderFeedback();
+  </script>
+</body>
+</html>

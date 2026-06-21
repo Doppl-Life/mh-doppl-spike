@@ -144,3 +144,21 @@ still only being watched.
 - **Pass condition:** the first screen makes the changed contract/behavior
   visible and interpretable before the selector lanes.
 - **Carry forward:** visibility has to change shape when the kernel changes shape.
+
+### Hidden control edge - 2026-06-21
+
+- **Mistake:** letting a control decision affect downstream generation without
+  its own trace event.
+- **Symptom:** generation 2 depends on the gen-1 parent selection, but an
+  engineer reading `RunTrace.events` sees generate/fitness/final-select/lens and
+  has to infer the parent-selection edge from `GenerationSummary`.
+- **Mitigation:** architecture views must mark hidden control edges explicitly.
+  If recursion becomes more than fixture-bounded proof mode, emit the parent
+  selection as a first-class trace event.
+- **Tripwire:** a downstream stage filters, expands, or prunes work based on a
+  decision that is not present in `TraceEvent[]`.
+- **Pass condition:** every decision that changes reachable candidates is either
+  a `TraceEvent` or explicitly named as a non-event control edge in the
+  engineer view.
+- **Carry forward:** if it controls the next generation, it deserves a trace
+  surface.

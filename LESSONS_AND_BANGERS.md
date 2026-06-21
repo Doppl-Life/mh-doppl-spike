@@ -374,3 +374,10 @@ These are not commandments — interesting ideas that surfaced while we poked at
 - **Lesson:** For boundary visibility, render the real contract first (`interface SeedFixture { ... }`), then explain it with small affordances. Do not replace contracts with vague prose, repeated labels, or self-referential tool boxes.
 - **Evidence:** `kernel-rebuild` microscope first showed artifact/contract/module rows, repeated `CandidatePool` as multiple objects, and used mush like "apply operators to source packets." The corrected view uses `contract -> module transform -> contract` with TypeScript-style interfaces and maps the top input to `SeedFixture.seed`.
 - **Carry forward:** Future visibility tools start from source contracts and module transforms. Human readability is a projection over the native mechanism, not a new process baked into it.
+
+### Beware walls made of pipes — 2026-06-21
+
+- **Banger:** Beware of walls made of pipes.
+- **Lesson:** Once the kernel can move data, the next build should prove outcome delivery, not add more plumbing because the plumbing works.
+- **Evidence:** `kernel-rebuild` reached runnable multi-seed generation, scoring, recursion, decay, lens, proof board, microscope, and architecture surfaces; the next risk is building more engine without asking whether it creates useful ideas.
+- **Carry forward:** Every next kernel chunk needs a named human outcome and a cheap assay for whether the output was worth thinking about.

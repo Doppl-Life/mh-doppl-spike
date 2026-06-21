@@ -18,25 +18,27 @@ build a runnable prototype to test against real ideas, break, and tighten.
    what to reuse from the spike, settled vs open, how the agent-team build runs.
 4. **[`ARTIFACTS.md`](./ARTIFACTS.md)** — proof surfaces, generated-output policy,
    and artifact kill rules.
-5. **[`OPERATIONAL_WATCHLIST.md`](./OPERATIONAL_WATCHLIST.md)** — process traps and
+5. **[`ASSAY.md`](./ASSAY.md)** — outcome-oriented discovery assay: stages, default
+   cases, win condition, and feedback scale.
+6. **[`OPERATIONAL_WATCHLIST.md`](./OPERATIONAL_WATCHLIST.md)** — process traps and
    convergence signals to monitor while the kernel runs.
-6. **[`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md)** — mistakes and
+7. **[`BUGS_AND_MITIGATIONS.md`](./BUGS_AND_MITIGATIONS.md)** — mistakes and
    mitigations the kernel should not relearn.
-7. **[`HEURISTICS.md`](./HEURISTICS.md)** — portable moves and traps for runs.
-8. **[`docs/lineage-ledger.schema.md`](./docs/lineage-ledger.schema.md)** — the
+8. **[`HEURISTICS.md`](./HEURISTICS.md)** — portable moves and traps for runs.
+9. **[`docs/lineage-ledger.schema.md`](./docs/lineage-ledger.schema.md)** — the
    machine-readable delta/lineage memory contract for future runs.
-9. **[`GLOSSARY.md`](./GLOSSARY.md)** — local terms used by the rebuild.
-10. **[`COMPARISON.md`](./COMPARISON.md)** — for the team: where this synthesis stays
+10. **[`GLOSSARY.md`](./GLOSSARY.md)** — local terms used by the rebuild.
+11. **[`COMPARISON.md`](./COMPARISON.md)** — for the team: where this synthesis stays
    aligned with doppl-prime's architecture and where it genuinely diverges. No verdict —
    the team judges whether it's fundamentally sounder or just a variant.
-11. **[`DELTAS.md`](./DELTAS.md)** — the concrete change-list vs. prime: each item marked
+12. **[`DELTAS.md`](./DELTAS.md)** — the concrete change-list vs. prime: each item marked
    genuine-delta / aligns-with-prime / generalizes-a-prime-pattern, deep where settled and
    `[OPEN]` where not. The build agenda.
-12. **[`PANEL_FINDINGS.md`](./PANEL_FINDINGS.md)** — adversarial critique of the synthesis by
+13. **[`PANEL_FINDINGS.md`](./PANEL_FINDINGS.md)** — adversarial critique of the synthesis by
    the project's own mutagen skills (six-agent panel). **Unadjudicated — for team digestion.**
    Four operators independently flagged the same fault line (the two-axis fitness); includes
    ranked high-utility fixes and the free experiment that settles the central question.
-13. **[`CONVERSATION.md`](./CONVERSATION.md)** — the raw reasoning path the synthesis was
+14. **[`CONVERSATION.md`](./CONVERSATION.md)** — the raw reasoning path the synthesis was
    distilled from (the chat transcript).
 
 The kernel lives in `src/`. Human-facing views live in `tools/microscope/` and
@@ -69,8 +71,27 @@ multi-seed board:
 
 Run `pnpm proof:export` only when you need replay artifacts under `out/proof-board/**`.
 
+Run `pnpm assay` when you want the discovery-first outcome assay. It writes
+`out/assay/index.html` and `out/assay/feedback-template.json`.
+
 Run `pnpm microscope` from this folder for the single-seed visual view.
+
+Run `pnpm architecture` for the standalone engineer architecture diagram at
+`out/microscope/architecture.html`.
 
 Run `pnpm walkthrough` for the short terminal readout.
 
 Run `pnpm walkthrough:detail` only when you want the longer microscope view.
+
+## Publishing pages to the deployed hub
+
+`out/**` is ephemeral and gitignored, so those pages never reach the deploy. To surface
+the HTML views on the live site, run `pnpm publish:html`: it regenerates the microscope,
+architecture, and assay views and copies them into `published/` (flattened to
+`microscope.html`, `architecture.html`, `assay.html` so they dodge the repo-wide
+gitignored `index.html` rule). `published/` is committed.
+
+The root `build_index.py` auto-discovers every committed `*.html` under `kernel-rebuild/`
+(skipping `node_modules`, `out`, `dist`, `build`) and links it from the deployed Agarden
+hub under a `kernel-rebuild` section — no need to know the paths. After `pnpm publish:html`,
+commit `published/` and push; Render rebuilds the hub on deploy.

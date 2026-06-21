@@ -6,6 +6,7 @@ import { assertSeedFixture } from '../../src/contracts/index.ts';
 import type { BoundaryContract, GenerationSummary, GoalCheck, RunTrace, TraceEvent } from '../../src/contracts/index.ts';
 import { buildRunTrace } from '../../src/trace.ts';
 import { capstoneDemoLens } from '../lens-config.ts';
+import { renderViewNav } from '../view-nav.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..');
@@ -508,6 +509,11 @@ function renderArchitecture(trace: RunTrace, fixtureCount: number): string {
   </style>
 </head>
 <body>
+  ${renderViewNav('architecture', {
+    assay: '../assay/index.html',
+    microscope: 'index.html',
+    architecture: 'architecture.html',
+  }, { hubHref: '../../index.html', hubLabel: 'Root hub' })}
   <main>
     <header class="header">
       <div>

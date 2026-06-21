@@ -6,6 +6,7 @@ import { assertSeedFixture } from '../../src/contracts/index.ts';
 import type { Dial, RunTrace, SelectedCandidate } from '../../src/contracts/index.ts';
 import { buildRunTrace } from '../../src/trace.ts';
 import { capstoneDemoLens } from '../lens-config.ts';
+import { renderViewNav } from '../view-nav.ts';
 import { ideaSentence } from './glossary.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -1190,6 +1191,11 @@ function renderHtml(trace: RunTrace): string {
   </style>
 </head>
 <body>
+  ${renderViewNav('microscope', {
+    assay: '../assay/index.html',
+    microscope: 'index.html',
+    architecture: 'architecture.html',
+  }, { hubHref: '../../index.html', hubLabel: 'Root hub' })}
   <main>
     <h1>Kernel Microscope</h1>
     <p class="sub">One trace, bounded generation, two selectors, one post-selection lens.</p>

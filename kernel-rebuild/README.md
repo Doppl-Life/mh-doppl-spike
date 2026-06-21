@@ -92,6 +92,8 @@ architecture, and assay views and copies them into `published/` (flattened to
 gitignored `index.html` rule). `published/` is committed.
 
 The root `build_index.py` auto-discovers every committed `*.html` under `kernel-rebuild/`
-(skipping `node_modules`, `out`, `dist`, `build`) and links it from the deployed Agarden
-hub under a `kernel-rebuild` section — no need to know the paths. After `pnpm publish:html`,
-commit `published/` and push; Render rebuilds the hub on deploy.
+(skipping `node_modules`, `out`, `dist`, `build`) and makes those pages the deployed
+kernel proof hub. The generated HTML pages also include local navigation between Assay,
+Microscope, and Architecture, so `out/**` and `published/**` are both navigable. After
+`pnpm publish:html`, run `python3 build_index.py` from the repo root to refresh the
+local hub, then commit `published/` and push; Render rebuilds the hub on deploy.

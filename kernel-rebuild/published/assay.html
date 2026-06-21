@@ -32,11 +32,12 @@
       margin: 0 auto;
       padding: 24px 0 40px;
     }
-    h1, h2, h3, h4, p { margin-top: 0; }
+    h1, h2, h3, h4, h5, p { margin-top: 0; }
     h1 { margin-bottom: 4px; font-size: 27px; letter-spacing: 0; }
     h2 { font-size: 22px; letter-spacing: 0; }
     h3 { margin-bottom: 10px; font-size: 15px; letter-spacing: 0; text-transform: uppercase; color: var(--muted); }
     h4 { margin-bottom: 6px; font-size: 16px; letter-spacing: 0; }
+    h5 { margin-bottom: 4px; font-size: 14px; letter-spacing: 0; }
     p { color: #34443b; }
     code {
       padding: 2px 5px;
@@ -91,18 +92,90 @@
       color: #34443b;
       font-size: 12px;
     }
-    .case-section { margin-top: 14px; }
-    .case-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: start;
-      margin-bottom: 10px;
+    .case-section {
+      margin-top: 14px;
+      padding: 0;
+      overflow: visible;
     }
-    .case-head a { color: #315d9c; }
+    .case-section[open] {
+      border-color: #25362c;
+    }
+    .case-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 14px;
+      align-items: stretch;
+      padding: 14px 16px;
+      cursor: pointer;
+      list-style: none;
+    }
+    .case-head::-webkit-details-marker { display: none; }
+    .case-head::before {
+      content: "+";
+      position: absolute;
+      right: 18px;
+      margin-top: 3px;
+      width: 23px;
+      height: 23px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      text-align: center;
+      line-height: 20px;
+      background: #fff;
+      font-weight: 800;
+    }
+    .case-section[open] .case-head::before { content: "-"; }
+    .case-title h2 { margin-bottom: 0; padding-right: 24px; }
+    .headline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding-right: 30px;
+    }
+    .headline-grid div {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px;
+      background: #f8faf6;
+      min-height: 72px;
+    }
+    .headline-grid .has-control {
+      border-color: #25362c;
+      background: #f8fbff;
+    }
+    .headline-grid span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .headline-grid strong {
+      display: block;
+      margin-top: 4px;
+      color: #26362d;
+      font-size: 13px;
+      line-height: 1.24;
+    }
+    .headline-grid em {
+      display: inline-block;
+      margin-top: 6px;
+      border: 1px solid #b8c8dd;
+      border-radius: 999px;
+      padding: 2px 6px;
+      color: #2f4a64;
+      background: #fff;
+      font-size: 11px;
+      font-style: normal;
+    }
+    .case-body {
+      border-top: 1px solid var(--line);
+      padding: 16px;
+    }
     .case-summary {
       display: grid;
-      grid-template-columns: 1.4fr 1fr .7fr;
+      grid-template-columns: 1.25fr 1.05fr .85fr .65fr;
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -117,6 +190,44 @@
       grid-template-columns: .9fr 1.1fr;
       gap: 12px;
       margin-bottom: 14px;
+    }
+    .control-panel {
+      border: 2px solid #25362c;
+      border-radius: 8px;
+      background: #f8fbff;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+    .control-problem {
+      border: 1px solid #b8c8dd;
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .control-problem p { margin-bottom: 0; }
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .control-card {
+      margin-bottom: 8px;
+      border-color: #b8c8dd;
+    }
+    .test-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding-left: 18px;
+      color: #34443b;
     }
     .mini-grid {
       display: grid;
@@ -196,17 +307,56 @@
       background: #26362d;
       color: #fff;
     }
+    .help {
+      position: relative;
+      border-bottom: 1px dotted #69786e;
+      cursor: help;
+    }
+    .help:focus {
+      outline: 2px solid rgba(70,148,92,.35);
+      outline-offset: 2px;
+    }
+    .help::after {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 7px);
+      z-index: 20;
+      width: 250px;
+      padding: 8px;
+      border: 1px solid #25362c;
+      border-radius: 6px;
+      background: #18211c;
+      color: #fff;
+      content: attr(data-tip);
+      font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: opacity .12s ease, transform .12s ease;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .help:hover::after, .help:focus::after {
+      opacity: 1;
+      transform: translateY(0);
+    }
     .feedback-panel {
       margin-top: 14px;
-      position: sticky;
-      bottom: 0;
-      z-index: 5;
     }
     .feedback-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 8px;
+    }
+    .feedback-note {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .feedback-status {
+      color: #315d40;
+      font-weight: 700;
     }
     textarea {
       width: 100%;
@@ -226,81 +376,166 @@
       background: #fbfcfa;
     }
     @media (max-width: 900px) {
-      .hero-grid, .case-summary, .scan-grid, .mini-grid, .idea-list, dl {
+      .hero-grid, .case-head, .headline-grid, .case-summary, .scan-grid, .mini-grid, .idea-list, dl, .control-grid {
         grid-template-columns: 1fr;
       }
-      .case-head { display: block; }
-      .feedback-panel { position: static; }
     }
   </style>
 </head>
-<body>
+<body><!-- kernel-view-nav:start -->
 <style>
-.kx-nav{position:sticky;top:0;z-index:2147483647;display:flex;gap:.3rem;align-items:center;
-flex-wrap:wrap;padding:.55rem .8rem;background:#0b0e13;border-bottom:1px solid #2a3544;
-font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem;line-height:1.2;}
-.kx-nav .kx-brand{color:#8b9bb0;font-weight:600;margin-right:.4rem;text-transform:uppercase;
-letter-spacing:.06em;font-size:.7rem;}
-.kx-nav a{color:#e8edf4;text-decoration:none;padding:.3rem .6rem;border-radius:6px;white-space:nowrap;}
-.kx-nav a small{color:#8b9bb0;font-weight:400;margin-left:.35rem;}
-.kx-nav a:hover{background:#1b232e;color:#c084fc;}
-.kx-nav a:hover small{color:#c084fc;}
-.kx-nav a.kx-active{background:#c084fc;color:#0b0e13;font-weight:650;}
-.kx-nav a.kx-active small{color:#0b0e13;}
-.kx-nav .kx-hub{margin-left:auto;color:#8b9bb0;}
-</style><nav class="kx-nav"><span class="kx-brand">Kernel views</span><a class="kx-link" href="microscope.html">Microscope<small>single-run trace</small></a><a class="kx-link" href="architecture.html">Architecture<small>system diagram</small></a><a class="kx-link kx-active" href="assay.html">Assay<small>outcome discovery</small></a><a class="kx-hub" href="/">All runs (hub) &rsaquo;</a></nav>
+.kernel-view-nav{position:sticky;top:0;z-index:2147483647;display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;padding:.58rem .8rem;background:#0b0e13;border-bottom:1px solid #2a3544;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem;line-height:1.2;}
+.kernel-view-nav strong{color:#8b9bb0;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;margin-right:.25rem;}
+.kernel-view-nav a{color:#e8edf4;text-decoration:none;border-radius:6px;padding:.34rem .62rem;white-space:nowrap;}
+.kernel-view-nav a small{margin-left:.35rem;color:#8b9bb0;font-weight:400;}
+.kernel-view-nav a:hover{background:#1b232e;color:#c084fc;}
+.kernel-view-nav a:hover small{color:#c084fc;}
+.kernel-view-nav a.is-active{background:#c084fc;color:#0b0e13;font-weight:700;}
+.kernel-view-nav a.is-active small{color:#0b0e13;}
+.kernel-view-nav .kernel-view-hub{margin-left:auto;color:#8b9bb0;}
+@media (max-width:700px){.kernel-view-nav a small{display:none}.kernel-view-nav .kernel-view-hub{margin-left:0}}
+</style>
+<nav class="kernel-view-nav" aria-label="Kernel view navigation">
+  <strong>Kernel views</strong><a class="kernel-view-link is-active" href="assay.html">Assay<small>cases + controls</small></a><a class="kernel-view-link" href="microscope.html">Microscope<small>single trace</small></a><a class="kernel-view-link" href="architecture.html">Architecture<small>system map</small></a><a class="kernel-view-hub" href="/">Root hub</a>
+</nav>
+<!-- kernel-view-nav:end -->
+  
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
-      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Mark ideas as dead, obvious, interesting, investigate, or keeper.</p>
+      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Case rows are collapsed by default; expand only the ones worth inspecting.</p>
       <div class="facts">
         <span>schema kernel.discovery-assay.v1</span>
         <span>cases 5</span>
+        <span>controls 1/5</span>
         <span>mode random fill</span>
-        <span>seed mqnxuri7</span>
+        <span>seed mqnzg1lq</span>
         <span>failed checks 0</span>
       </div>
       <div class="hero-grid">
         <article class="hero-card">
           <h3>Outcome Gate</h3>
-          <p>After these cases, did the run surface at least 3-5 entries a human would mark interesting or better?</p>
+          <p>After these cases, did the run surface at least 3-5 entries you would mark <span class="help" tabindex="0" title="Worth thinking about. It changed your attention, but does not yet demand action." data-tip="Worth thinking about. It changed your attention, but does not yet demand action.">interesting</span>, <span class="help" tabindex="0" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-tip="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work.">investigate</span>, or <span class="help" tabindex="0" title="Strong signal. Preserve it as a candidate insight or future seed." data-tip="Strong signal. Preserve it as a candidate insight or future seed.">keeper</span>?</p>
         </article>
         <article class="hero-card">
-          <h3>Read Order</h3>
-          <p>Start with strongest conclusion, then convergence, then interesting outlier, then all candidates. The scores are evidence; your verdict is bedrock.</p>
+          <h3>Controls</h3>
+          <p>1/5 cases have a clean-agent control. In the collapsed rows, look for the <strong>control</strong> cell; open that row to compare the kernel output against the baseline and rate both.</p>
         </article>
       </div>
     </section>
 
     
-    <section class="case-section" id="jack-drone-privacy">
-      <div class="case-head">
-        <div>
+    <details class="case-section" id="jack-drone-privacy">
+      <summary class="case-head">
+        <div class="case-title">
           <div class="kicker">case-studies/jack-drone-privacy/</div>
           <h2>Jack drone privacy</h2>
         </div>
-        <a href="#feedback">feedback JSON</a>
-      </div>
+        <div class="headline-grid">
+          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Drone response becomes choreography</strong></div>
+          <div class="has-control"><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>The actual problem is not how to stop a drone. It is how to prevent a valuable ...</strong><em>clean-agent attached</em></div>
+          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Constraint transfer x2; Perimeter redefinition x2</strong></div>
+          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>improved: 1/1 generation-2 child candidate(s) improved on parent combined novel...</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
       <div class="case-summary">
         <article>
-          <div class="kicker">strongest conclusion</div>
+          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
           <h3>Drone response becomes choreography</h3>
           <p>The highest-leverage response may be a discreet cue and sightline protocol that moves the protected person and preserves normal deck activity instead of escalating around the drone.</p>
         </article>
         <article>
-          <div class="kicker">generation 2</div>
+          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
+          <h3>attached</h3>
+          <p>The actual problem is not how to stop a drone. It is how to prevent a valuable image from existing before anyone has to touch the drone.</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
           <h3>improved</h3>
           <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
         </article>
         <article>
-          <div class="kicker">failed checks</div>
+          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
           <h3>none</h3>
           <p>Goal checks passed.</p>
         </article>
       </div>
+      
+    <section class="control-panel">
+      <div class="control-head">
+        <div>
+          <div class="kicker">single clean-context sub-agent, no kernel or assay context</div>
+          <h3>Clean-Agent Control</h3>
+        </div>
+        <div class="verdict-row control-verdict" aria-label="Control verdict for Jack drone privacy">
+          <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-control-case="jack-drone-privacy" data-control-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-control-case="jack-drone-privacy" data-control-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-control-case="jack-drone-privacy" data-control-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-control-case="jack-drone-privacy" data-control-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-control-case="jack-drone-privacy" data-control-verdict="keeper">keeper</button>
+        </div>
+      </div>
+      <article class="control-problem">
+        <div class="kicker">actual problem</div>
+        <p>The actual problem is not how to stop a drone. It is how to prevent a valuable image from existing before anyone has to touch the drone.</p>
+      </article>
+      <div class="control-grid">
+        <div>
+          <h4>Discovery Insights</h4>
+          
+            <article class="mini-card control-card">
+              <h5>The attack is geometric</h5>
+              <p>The drone only needs line of sight to an exposed deck, tender transfer, beach club, hot tub, heli deck, or glass-heavy cabin.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>The perimeter is a camera cone</h5>
+              <p>The real perimeter is not the hull; it is the camera cone from plausible launch points, chase boats, marinas, shorelines, cliffs, hotels, and public anchorages.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>Time matters more than distance</h5>
+              <p>If the guest is exposed briefly during boarding, swimming, tender transfer, or deck service, valuable footage may already exist.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>Itinerary leaks create the window</h5>
+              <p>Crew chatter, AIS patterns, marina staff, provisioning, tender schedules, pilots, restaurants, and predictable anchorages can create the attack window.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>The yacht signature attracts the drone</h5>
+              <p>A famous yacht, support vessel, helicopter, tender, or escort pattern can reveal the target even if the guest is hidden.</p>
+            </article>
+        </div>
+        <div>
+          <h4>Ideas / Opportunities</h4>
+          
+            <article class="mini-card control-card">
+              <h5>Build a privacy envelope</h5>
+              <p>Pre-map camera cones around the vessel and expose the guest only in zones blocked by superstructure, screens, awnings, shore geometry, or backlighting.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>Treat transfers as the critical event</h5>
+              <p>Use covered tender docks, enclosed passerelles, privacy canopies, garage-to-garage tender movement, and timing that degrades useful footage.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>Use passive early warning</h5>
+              <p>Remote ID receiver, RF detection, visual observer, marine radar/operator reports, and acoustic/optical watch exist to move the guest before useful capture.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>Shift intervention to the operator</h5>
+              <p>Identify launch or control locations and use marina security, port authority, coast guard, police, or private investigators where lawful.</p>
+            </article>
+            <article class="mini-card control-card">
+              <h5>Design deck use like film blocking in reverse</h5>
+              <p>Avoid exposed rail lines, celebrity-facing open decks near shore, uncovered transitions, and high-contrast hero angles.</p>
+            </article>
+        </div>
+        <div>
+          <h4>Next Tests</h4>
+          <ul class="test-list">
+            <li>Map plausible drone launch points and simulate camera lines to guest-use zones.</li><li>Run a red-team exercise with a legal consumer drone or long-lens camera from shore and chase-boat positions.</li><li>Time exposure windows for embarkation, tendering, swimming, deck dining, helicopter operations, and crew service.</li><li>Test passive detection range and false positives for Remote ID, RF, visual watch, marina, anchorage, and open-water conditions.</li><li>Audit the itinerary leak chain: AIS behavior, marina bookings, provisioning vendors, crew phones, social posts, tender patterns, and local gossip nodes.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
       <div class="scan-grid">
         <div>
-          <h3>What It Found</h3>
+          <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
           <div class="mini-grid">
     <article class="mini-card">
       <h4>Constraint transfer x2</h4>
@@ -312,7 +547,7 @@ letter-spacing:.06em;font-size:.7rem;}
     </article></div>
         </div>
         <div>
-          <h3>Interesting Outlier</h3>
+          <h3><span class="help" tabindex="0" title="A high-novelty or non-stable candidate that may be fertile even if it did not win." data-tip="A high-novelty or non-stable candidate that may be fertile even if it did not win.">Interesting Outlier</span></h3>
           <div class="idea-list">
     <article class="idea-card not-selected" data-card="jack-drone-privacy:jdp-c1a">
       <div class="idea-head">
@@ -340,12 +575,12 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.903, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.79 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.69; decay-adjusted 0.69</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Use the footage clock as the trigger">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
         </div>
       </div>
-      <h3>Promising Entries</h3>
+      <h3><span class="help" tabindex="0" title="Candidates selected by Explore, Proof, or both. These are nominated, not proven." data-tip="Candidates selected by Explore, Proof, or both. These are nominated, not proven.">Promising Entries</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c2">
       <div class="idea-head">
@@ -373,7 +608,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.929, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.65, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.85 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.74</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Drone response becomes choreography">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c3">
@@ -402,7 +637,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.828, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.59, mechanismClarity=0.55, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Privacy perimeter moves outward">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c1">
@@ -431,10 +666,10 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.704, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.475, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.62 drove selection; grounding 0.44 cleared floor 0.35; directional score 0.60; decay-adjusted 0.60</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Protect the footage window">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>All Candidates</h3>
+      <h3><span class="help" tabindex="0" title="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered." data-tip="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered.">All Candidates</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c2">
       <div class="idea-head">
@@ -462,7 +697,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.929, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.65, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.85 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.74</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Drone response becomes choreography">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c3">
@@ -491,7 +726,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.828, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.59, mechanismClarity=0.55, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Privacy perimeter moves outward">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="jack-drone-privacy:jdp-c1">
@@ -520,7 +755,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.704, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.475, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.62 drove selection; grounding 0.44 cleared floor 0.35; directional score 0.60; decay-adjusted 0.60</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Protect the footage window">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c1" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card not-selected" data-card="jack-drone-privacy:jdp-c4">
@@ -549,7 +784,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.9, substrateDistance=0.667, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.4, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.74 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.65; decay-adjusted 0.65</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Non-interference is the design constraint">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c4" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card not-selected" data-card="jack-drone-privacy:jdp-c1a">
@@ -578,45 +813,58 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.903, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.79 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.69; decay-adjusted 0.69</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Use the footage clock as the trigger">
-        <button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="dead">dead</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-drone-privacy" data-candidate="jdp-c1a" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>Rejected Before Scoring</h3>
+      <h3><span class="help" tabindex="0" title="Source packets inspected but rejected because they produced no useful delta." data-tip="Source packets inspected but rejected because they produced no useful delta.">Rejected Before Scoring</span></h3>
       <div class="mini-grid">
     <article class="mini-card rejected">
       <h4>Shoot down the drone</h4>
       <p>No discovery delta: it repeats the obvious countermeasure the case marks as tempting and wrong.</p>
       <code>seed:seed-jack-drone-privacy -&gt; reject-jdp5</code>
     </article></div>
-    </section>
-    <section class="case-section" id="jack-yacht-perimeter-intrusion">
-      <div class="case-head">
-        <div>
+      </div>
+    </details>
+    <details class="case-section" id="jack-yacht-perimeter-intrusion">
+      <summary class="case-head">
+        <div class="case-title">
           <div class="kicker">case-studies/jack-yacht-perimeter-intrusion/</div>
           <h2>Jack security swimmer</h2>
         </div>
-        <a href="#feedback">feedback JSON</a>
-      </div>
+        <div class="headline-grid">
+          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Instrument the bridge, not only the water</strong></div>
+          <div class=""><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>no clean-agent control yet</strong></div>
+          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Hidden dependent x2; Response compression x2</strong></div>
+          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>improved: 1/1 generation-2 child candidate(s) improved on parent combined novel...</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
       <div class="case-summary">
         <article>
-          <div class="kicker">strongest conclusion</div>
+          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
           <h3>Instrument the bridge, not only the water</h3>
           <p>The tender-as-step branch sharpens into a sensing strategy: instrument or procedurally control the objects that convert water approach into boarding access.</p>
         </article>
         <article>
-          <div class="kicker">generation 2</div>
+          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
+          <h3>none attached</h3>
+          <p>no clean-agent control yet</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
           <h3>improved</h3>
           <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
         </article>
         <article>
-          <div class="kicker">failed checks</div>
+          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
           <h3>none</h3>
           <p>Goal checks passed.</p>
         </article>
       </div>
+      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
-          <h3>What It Found</h3>
+          <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
           <div class="mini-grid">
     <article class="mini-card">
       <h4>Hidden dependent x2</h4>
@@ -628,7 +876,7 @@ letter-spacing:.06em;font-size:.7rem;}
     </article></div>
         </div>
         <div>
-          <h3>Interesting Outlier</h3>
+          <h3><span class="help" tabindex="0" title="A high-novelty or non-stable candidate that may be fertile even if it did not win." data-tip="A high-novelty or non-stable candidate that may be fertile even if it did not win.">Interesting Outlier</span></h3>
           <div class="idea-list">
     <article class="idea-card explore-only" data-card="jack-yacht-perimeter-intrusion:jyp-c2">
       <div class="idea-head">
@@ -656,12 +904,12 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.871, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.515, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.76 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for The tender is part of the perimeter">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
         </div>
       </div>
-      <h3>Promising Entries</h3>
+      <h3><span class="help" tabindex="0" title="Candidates selected by Explore, Proof, or both. These are nominated, not proven." data-tip="Candidates selected by Explore, Proof, or both. These are nominated, not proven.">Promising Entries</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c2a">
       <div class="idea-head">
@@ -689,7 +937,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.88, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.77 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Instrument the bridge, not only the water">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c3">
@@ -718,7 +966,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.76, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.65 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.61; decay-adjusted 0.61</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Detection must classify the water">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card explore-only" data-card="jack-yacht-perimeter-intrusion:jyp-c2">
@@ -747,7 +995,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.871, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.515, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.76 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for The tender is part of the perimeter">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card proof-only" data-card="jack-yacht-perimeter-intrusion:jyp-c4">
@@ -776,10 +1024,10 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.72 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.65; decay-adjusted 0.65</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Water alert becomes interior lockdown">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>All Candidates</h3>
+      <h3><span class="help" tabindex="0" title="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered." data-tip="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered.">All Candidates</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c2a">
       <div class="idea-head">
@@ -807,7 +1055,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.88, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.77 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.68; decay-adjusted 0.68</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Instrument the bridge, not only the water">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2a" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="jack-yacht-perimeter-intrusion:jyp-c3">
@@ -836,7 +1084,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.76, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.53, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.65 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.61; decay-adjusted 0.61</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Detection must classify the water">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card explore-only" data-card="jack-yacht-perimeter-intrusion:jyp-c2">
@@ -865,7 +1113,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.871, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.515, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.76 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for The tender is part of the perimeter">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card not-selected" data-card="jack-yacht-perimeter-intrusion:jyp-c1">
@@ -894,7 +1142,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.75, substrateDistance=0.714, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.375, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.68 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.62; decay-adjusted 0.62</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for The perimeter starts in the water">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c1" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card proof-only" data-card="jack-yacht-perimeter-intrusion:jyp-c4">
@@ -923,45 +1171,58 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.545, mechanismClarity=0.475, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.72 drove selection; grounding 0.40 cleared floor 0.35; directional score 0.65; decay-adjusted 0.65</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Water alert becomes interior lockdown">
-        <button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="dead">dead</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="obvious">obvious</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="interesting">interesting</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="investigate">investigate</button><button type="button" data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="jack-yacht-perimeter-intrusion" data-candidate="jyp-c4" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>Rejected Before Scoring</h3>
+      <h3><span class="help" tabindex="0" title="Source packets inspected but rejected because they produced no useful delta." data-tip="Source packets inspected but rejected because they produced no useful delta.">Rejected Before Scoring</span></h3>
       <div class="mini-grid">
     <article class="mini-card rejected">
       <h4>Add more deck cameras</h4>
       <p>No discovery delta: it repeats the obvious answer the case marks as insufficient.</p>
       <code>seed:seed-jack-yacht-perimeter-intrusion -&gt; reject-jyp5</code>
     </article></div>
-    </section>
-    <section class="case-section" id="fsd-accident-economy">
-      <div class="case-head">
-        <div>
+      </div>
+    </details>
+    <details class="case-section" id="fsd-accident-economy">
+      <summary class="case-head">
+        <div class="case-title">
           <div class="kicker">case-studies/fsd-accident-economy/</div>
           <h2>Tesla FSD accident economy</h2>
         </div>
-        <a href="#feedback">feedback JSON</a>
-      </div>
+        <div class="headline-grid">
+          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Insurer ads are a demand sink</strong></div>
+          <div class=""><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>no clean-agent control yet</strong></div>
+          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Hidden dependent x3</strong></div>
+          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>drifted: Generation-2 children changed direction without improving combined nov...</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
       <div class="case-summary">
         <article>
-          <div class="kicker">strongest conclusion</div>
+          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
           <h3>Insurer ads are a demand sink</h3>
           <p>The advertising branch sharpens into a media-market problem: accident risk supports a repeat performance-marketing buyer that fills inventory across TV, sports, search, and local media.</p>
         </article>
         <article>
-          <div class="kicker">generation 2</div>
+          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
+          <h3>none attached</h3>
+          <p>no clean-agent control yet</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
           <h3>drifted</h3>
           <p>drifted: Generation-2 children changed direction without improving combined novelty+grounding.</p>
         </article>
         <article>
-          <div class="kicker">failed checks</div>
+          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
           <h3>none</h3>
           <p>Goal checks passed.</p>
         </article>
       </div>
+      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
-          <h3>What It Found</h3>
+          <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
           <div class="mini-grid">
     <article class="mini-card">
       <h4>Hidden dependent x3</h4>
@@ -969,7 +1230,7 @@ letter-spacing:.06em;font-size:.7rem;}
     </article></div>
         </div>
         <div>
-          <h3>Interesting Outlier</h3>
+          <h3><span class="help" tabindex="0" title="A high-novelty or non-stable candidate that may be fertile even if it did not win." data-tip="A high-novelty or non-stable candidate that may be fertile even if it did not win.">Interesting Outlier</span></h3>
           <div class="idea-list">
     <article class="idea-card explore-only" data-card="fsd-accident-economy:fae-c2">
       <div class="idea-head">
@@ -997,12 +1258,12 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.821, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.545, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Crash removal hits ad-supported media">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
         </div>
       </div>
-      <h3>Promising Entries</h3>
+      <h3><span class="help" tabindex="0" title="Candidates selected by Explore, Proof, or both. These are nominated, not proven." data-tip="Candidates selected by Explore, Proof, or both. These are nominated, not proven.">Promising Entries</span></h3>
       <div class="idea-list">
     <article class="idea-card explore-only" data-card="fsd-accident-economy:fae-c2">
       <div class="idea-head">
@@ -1030,7 +1291,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.821, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.545, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Crash removal hits ad-supported media">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="fsd-accident-economy:fae-c3">
@@ -1059,7 +1320,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.867, substrateDistance=0.667, hiddenDependents=0.6; signalStrength=0.65, mechanismClarity=0.375, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Organ supply loses a concentrated source">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="fsd-accident-economy:fae-c2a">
@@ -1088,7 +1349,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.897, substrateDistance=0.5, hiddenDependents=0.6; signalStrength=0.53, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.72 drove selection; grounding 0.45 cleared floor 0.35; directional score 0.67; decay-adjusted 0.62</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Insurer ads are a demand sink">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card proof-only" data-card="fsd-accident-economy:fae-c4">
@@ -1117,10 +1378,10 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.828, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.725, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.68 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.66; decay-adjusted 0.61</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Fault moves from driver to stack">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>All Candidates</h3>
+      <h3><span class="help" tabindex="0" title="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered." data-tip="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered.">All Candidates</span></h3>
       <div class="idea-list">
     <article class="idea-card explore-only" data-card="fsd-accident-economy:fae-c2">
       <div class="idea-head">
@@ -1148,7 +1409,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.821, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.545, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Crash removal hits ad-supported media">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="fsd-accident-economy:fae-c3">
@@ -1177,7 +1438,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.867, substrateDistance=0.667, hiddenDependents=0.6; signalStrength=0.65, mechanismClarity=0.375, falsifiability=0.24, riskPenalty=0; front 1; novelty 0.75 drove selection; grounding 0.41 cleared floor 0.35; directional score 0.68; decay-adjusted 0.63</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Organ supply loses a concentrated source">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="fsd-accident-economy:fae-c2a">
@@ -1206,7 +1467,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.897, substrateDistance=0.5, hiddenDependents=0.6; signalStrength=0.53, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.72 drove selection; grounding 0.45 cleared floor 0.35; directional score 0.67; decay-adjusted 0.62</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Insurer ads are a demand sink">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c2a" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card not-selected" data-card="fsd-accident-economy:fae-c1">
@@ -1235,7 +1496,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.556, substrateDistance=0.2, hiddenDependents=0.52; signalStrength=0.68, mechanismClarity=0.525, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.44 drove selection; grounding 0.46 cleared floor 0.35; directional score 0.50; decay-adjusted 0.46</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Accident volume is the substrate">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c1" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card proof-only" data-card="fsd-accident-economy:fae-c4">
@@ -1264,45 +1525,58 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.828, substrateDistance=0.6, hiddenDependents=0.44; signalStrength=0.56, mechanismClarity=0.725, falsifiability=0.4, riskPenalty=0; front 1; novelty 0.68 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.66; decay-adjusted 0.61</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Fault moves from driver to stack">
-        <button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="dead">dead</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="obvious">obvious</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="interesting">interesting</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="investigate">investigate</button><button type="button" data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="fsd-accident-economy" data-candidate="fae-c4" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>Rejected Before Scoring</h3>
+      <h3><span class="help" tabindex="0" title="Source packets inspected but rejected because they produced no useful delta." data-tip="Source packets inspected but rejected because they produced no useful delta.">Rejected Before Scoring</span></h3>
       <div class="mini-grid">
     <article class="mini-card rejected">
       <h4>Car insurance gets cheaper</h4>
       <p>No discovery delta: the case explicitly names this as the obvious first move.</p>
       <code>seed:seed-fsd-accident-economy -&gt; reject-fae5</code>
     </article></div>
-    </section>
-    <section class="case-section" id="starship-launch-cost-collapse">
-      <div class="case-head">
-        <div>
+      </div>
+    </details>
+    <details class="case-section" id="starship-launch-cost-collapse">
+      <summary class="case-head">
+        <div class="case-title">
           <div class="kicker">case-studies/starship-launch-cost-collapse/</div>
           <h2>SpaceX launch-cost collapse</h2>
         </div>
-        <a href="#feedback">feedback JSON</a>
-      </div>
+        <div class="headline-grid">
+          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Orbit becomes a construction yard</strong></div>
+          <div class=""><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>no clean-agent control yet</strong></div>
+          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Infrastructure inversion x2</strong></div>
+          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>drifted: Generation-2 children changed direction without improving combined nov...</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
       <div class="case-summary">
         <article>
-          <div class="kicker">strongest conclusion</div>
+          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
           <h3>Orbit becomes a construction yard</h3>
           <p>Starship-class cadence could make orbital assembly an infrastructure business, where parts, fuel, and servicing create a construction supply chain above Earth.</p>
         </article>
         <article>
-          <div class="kicker">generation 2</div>
+          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
+          <h3>none attached</h3>
+          <p>no clean-agent control yet</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
           <h3>drifted</h3>
           <p>drifted: Generation-2 children changed direction without improving combined novelty+grounding.</p>
         </article>
         <article>
-          <div class="kicker">failed checks</div>
+          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
           <h3>none</h3>
           <p>Goal checks passed.</p>
         </article>
       </div>
+      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
-          <h3>What It Found</h3>
+          <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
           <div class="mini-grid">
     <article class="mini-card">
       <h4>Infrastructure inversion x2</h4>
@@ -1310,7 +1584,7 @@ letter-spacing:.06em;font-size:.7rem;}
     </article></div>
         </div>
         <div>
-          <h3>Interesting Outlier</h3>
+          <h3><span class="help" tabindex="0" title="A high-novelty or non-stable candidate that may be fertile even if it did not win." data-tip="A high-novelty or non-stable candidate that may be fertile even if it did not win.">Interesting Outlier</span></h3>
           <div class="idea-list">
     <article class="idea-card not-selected" data-card="starship-launch-cost-collapse:ss-c2a">
       <div class="idea-head">
@@ -1338,12 +1612,12 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.625, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.485, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.64 drove selection; grounding 0.36 cleared floor 0.35; directional score 0.59; decay-adjusted 0.58</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Orbital construction needs dry docks">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
         </div>
       </div>
-      <h3>Promising Entries</h3>
+      <h3><span class="help" tabindex="0" title="Candidates selected by Explore, Proof, or both. These are nominated, not proven." data-tip="Candidates selected by Explore, Proof, or both. These are nominated, not proven.">Promising Entries</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c2">
       <div class="idea-head">
@@ -1371,7 +1645,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.821, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.485, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0.12; front 1; novelty 0.81 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.70; decay-adjusted 0.65</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Orbit becomes a construction yard">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c3">
@@ -1400,7 +1674,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.76, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.77 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.55</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Replacement beats perfection">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c1">
@@ -1429,10 +1703,10 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.731, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.575, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.71 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.64; decay-adjusted 0.54</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Space hardware gets less precious">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>All Candidates</h3>
+      <h3><span class="help" tabindex="0" title="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered." data-tip="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered.">All Candidates</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c2">
       <div class="idea-head">
@@ -1460,7 +1734,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.821, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.485, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0.12; front 1; novelty 0.81 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.70; decay-adjusted 0.65</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Orbit becomes a construction yard">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c2" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c3">
@@ -1489,7 +1763,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.76, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.45, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.77 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.67; decay-adjusted 0.55</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Replacement beats perfection">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="starship-launch-cost-collapse:ss-c1">
@@ -1518,7 +1792,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.731, substrateDistance=0.8, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.575, falsifiability=0.24, riskPenalty=0; front 2; novelty 0.71 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.64; decay-adjusted 0.54</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Space hardware gets less precious">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c1" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card not-selected" data-card="starship-launch-cost-collapse:ss-c2a">
@@ -1547,45 +1821,58 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.625, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.485, mechanismClarity=0.425, falsifiability=0.24, riskPenalty=0; front 3; novelty 0.64 drove selection; grounding 0.36 cleared floor 0.35; directional score 0.59; decay-adjusted 0.58</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Orbital construction needs dry docks">
-        <button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="dead">dead</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="obvious">obvious</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="interesting">interesting</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="investigate">investigate</button><button type="button" data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="starship-launch-cost-collapse" data-candidate="ss-c2a" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>Rejected Before Scoring</h3>
+      <h3><span class="help" tabindex="0" title="Source packets inspected but rejected because they produced no useful delta." data-tip="Source packets inspected but rejected because they produced no useful delta.">Rejected Before Scoring</span></h3>
       <div class="mini-grid">
     <article class="mini-card rejected">
       <h4>Rockets get cheaper</h4>
       <p>No delta beyond the seed launch-cost thesis.</p>
       <code>seed:seed-starship -&gt; reject-s4</code>
     </article></div>
-    </section>
-    <section class="case-section" id="glp1-snack-demand-destruction">
-      <div class="case-head">
-        <div>
+      </div>
+    </details>
+    <details class="case-section" id="glp1-snack-demand-destruction">
+      <summary class="case-head">
+        <div class="case-title">
           <div class="kicker">case-studies/glp1-snack-demand-destruction/</div>
           <h2>GLP-1 appetite shock</h2>
         </div>
-        <a href="#feedback">feedback JSON</a>
-      </div>
+        <div class="headline-grid">
+          <div><span><span class="help" tabindex="0" title="The kernel result from this assay run." data-tip="The kernel result from this assay run.">kernel</span></span><strong>Checkout shelf becomes loyalty real estate</strong></div>
+          <div class=""><span><span class="help" tabindex="0" title="A clean-context agent answer for comparison, when available." data-tip="A clean-context agent answer for comparison, when available.">control</span></span><strong>no clean-agent control yet</strong></div>
+          <div><span><span class="help" tabindex="0" title="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable." data-tip="Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.">convergence</span></span><strong>Hidden dependent x2</strong></div>
+          <div><span><span class="help" tabindex="0" title="Whether generation-2 children improved, drifted, duplicated, or did not run." data-tip="Whether generation-2 children improved, drifted, duplicated, or did not run.">gen2</span></span><strong>improved: 1/1 generation-2 child candidate(s) improved on parent combined novel...</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
       <div class="case-summary">
         <article>
-          <div class="kicker">strongest conclusion</div>
+          <div class="kicker"><span class="help" tabindex="0" title="The current best kernel-nominated discovery for this case. Human verdict can override it." data-tip="The current best kernel-nominated discovery for this case. Human verdict can override it.">strongest conclusion</span></div>
           <h3>Checkout shelf becomes loyalty real estate</h3>
           <p>The snack branch gets sharper at the checkout shelf: GLP-1s weaken the impulse slot, so retailers reprice that space toward pharmacy pickup, loyalty, or prepared essentials.</p>
         </article>
         <article>
-          <div class="kicker">generation 2</div>
+          <div class="kicker"><span class="help" tabindex="0" title="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge." data-tip="A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.">clean-agent control</span></div>
+          <h3>none attached</h3>
+          <p>no clean-agent control yet</p>
+        </article>
+        <article>
+          <div class="kicker"><span class="help" tabindex="0" title="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent." data-tip="A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.">generation 2</span></div>
           <h3>improved</h3>
           <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
         </article>
         <article>
-          <div class="kicker">failed checks</div>
+          <div class="kicker"><span class="help" tabindex="0" title="Run-level contract/proof failures. Passing checks does not mean the ideas are true." data-tip="Run-level contract/proof failures. Passing checks does not mean the ideas are true.">failed checks</span></div>
           <h3>none</h3>
           <p>Goal checks passed.</p>
         </article>
       </div>
+      <p class="empty">No clean-agent control is attached to this case yet.</p>
       <div class="scan-grid">
         <div>
-          <h3>What It Found</h3>
+          <h3><span class="help" tabindex="0" title="Repeated discovery terrain. Start here when scanning for soil enrichment." data-tip="Repeated discovery terrain. Start here when scanning for soil enrichment.">What It Found</span></h3>
           <div class="mini-grid">
     <article class="mini-card">
       <h4>Hidden dependent x2</h4>
@@ -1593,7 +1880,7 @@ letter-spacing:.06em;font-size:.7rem;}
     </article></div>
         </div>
         <div>
-          <h3>Interesting Outlier</h3>
+          <h3><span class="help" tabindex="0" title="A high-novelty or non-stable candidate that may be fertile even if it did not win." data-tip="A high-novelty or non-stable candidate that may be fertile even if it did not win.">Interesting Outlier</span></h3>
           <div class="idea-list">
     <article class="idea-card not-selected" data-card="glp1-snack-demand-destruction:glp-c2">
       <div class="idea-head">
@@ -1621,12 +1908,12 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.828, substrateDistance=0.75, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.425, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.49</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Alcohol gets hit through craving, not calories">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
         </div>
       </div>
-      <h3>Promising Entries</h3>
+      <h3><span class="help" tabindex="0" title="Candidates selected by Explore, Proof, or both. These are nominated, not proven." data-tip="Candidates selected by Explore, Proof, or both. These are nominated, not proven.">Promising Entries</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1a">
       <div class="idea-head">
@@ -1654,7 +1941,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.943, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.425, mechanismClarity=0.55, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.86 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.69</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Checkout shelf becomes loyalty real estate">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1">
@@ -1683,7 +1970,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.846, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.4, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.83 drove selection; grounding 0.35 cleared floor 0.35; directional score 0.70; decay-adjusted 0.61</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Snack shelf loses the impulse event">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c3">
@@ -1712,10 +1999,10 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.741, substrateDistance=0.8, hiddenDependents=0.6; signalStrength=0.485, mechanismClarity=0.325, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.54</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Appetite becomes an access class">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>All Candidates</h3>
+      <h3><span class="help" tabindex="0" title="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered." data-tip="Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered.">All Candidates</span></h3>
       <div class="idea-list">
     <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1a">
       <div class="idea-head">
@@ -1743,7 +2030,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.943, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.425, mechanismClarity=0.55, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.86 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.69</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Checkout shelf becomes loyalty real estate">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1">
@@ -1772,7 +2059,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.846, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.4, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.83 drove selection; grounding 0.35 cleared floor 0.35; directional score 0.70; decay-adjusted 0.61</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Snack shelf loses the impulse event">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c3">
@@ -1801,7 +2088,7 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.741, substrateDistance=0.8, hiddenDependents=0.6; signalStrength=0.485, mechanismClarity=0.325, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.54</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Appetite becomes an access class">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
     <article class="idea-card not-selected" data-card="glp1-snack-demand-destruction:glp-c2">
@@ -1830,20 +2117,22 @@ letter-spacing:.06em;font-size:.7rem;}
         <p>sourceAbsence=0.828, substrateDistance=0.75, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.425, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.49</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for Alcohol gets hit through craving, not calories">
-        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="keeper">keeper</button>
+        <button type="button" title="No useful signal. Do not revisit unless new evidence changes the case." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="dead">dead</button><button type="button" title="True or plausible, but already visible from the scenario. Not discovery." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="obvious">obvious</button><button type="button" title="Worth thinking about. It changed your attention, but does not yet demand action." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="interesting">interesting</button><button type="button" title="Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="investigate">investigate</button><button type="button" title="Strong signal. Preserve it as a candidate insight or future seed." data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
-      <h3>Rejected Before Scoring</h3>
+      <h3><span class="help" tabindex="0" title="Source packets inspected but rejected because they produced no useful delta." data-tip="Source packets inspected but rejected because they produced no useful delta.">Rejected Before Scoring</span></h3>
       <div class="mini-grid">
     <article class="mini-card rejected">
       <h4>People lose weight</h4>
       <p>No new substrate beyond the GLP-1 weight-loss thesis.</p>
       <code>seed:seed-glp1 -&gt; reject-g4</code>
     </article></div>
-    </section>
+      </div>
+    </details>
 
     <section class="feedback-panel" id="feedback">
       <h2>Feedback</h2>
+      <p class="feedback-note">Verdict buttons update this JSON locally in your browser. They do not save to the repo or server until you copy/download the JSON and decide to preserve it. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
       <div class="feedback-actions">
         <button type="button" id="copy-feedback">Copy JSON</button>
         <button type="button" id="download-feedback">Download JSON</button>
@@ -1852,7 +2141,7 @@ letter-spacing:.06em;font-size:.7rem;}
     </section>
   </main>
   <script>
-    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T15:25:35.566Z","verdictScale":["dead","obvious","interesting","investigate","keeper"],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
+    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T16:10:08.042Z","verdictScale":[{"value":"dead","meaning":"No useful signal. Do not revisit unless new evidence changes the case."},{"value":"obvious","meaning":"True or plausible, but already visible from the scenario. Not discovery."},{"value":"interesting","meaning":"Worth thinking about. It changed your attention, but does not yet demand action."},{"value":"investigate","meaning":"Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work."},{"value":"keeper","meaning":"Strong signal. Preserve it as a candidate insight or future seed."}],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"controlVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
 
     function findCandidate(caseSlug, candidateId) {
       const foundCase = feedback.cases.find((item) => item.slug === caseSlug);
@@ -1860,8 +2149,23 @@ letter-spacing:.06em;font-size:.7rem;}
       return foundCase.candidates.find((candidate) => candidate.id === candidateId);
     }
 
+    function findCase(caseSlug) {
+      return feedback.cases.find((item) => item.slug === caseSlug);
+    }
+
+    function verdictCount() {
+      return feedback.cases.reduce((sum, item) => {
+        const caseCount = item.caseVerdict ? 1 : 0;
+        const controlCount = item.controlVerdict ? 1 : 0;
+        const candidateCount = item.candidates.filter((candidate) => candidate.verdict).length;
+        return sum + caseCount + controlCount + candidateCount;
+      }, 0);
+    }
+
     function renderFeedback() {
       document.getElementById('feedback-json').value = JSON.stringify(feedback, null, 2);
+      const count = verdictCount();
+      document.getElementById('feedback-status').textContent = count ? count + ' verdict(s) marked locally.' : 'No verdicts marked yet.';
     }
 
     function markCard(caseSlug, candidateId, verdict) {
@@ -1879,6 +2183,18 @@ letter-spacing:.06em;font-size:.7rem;}
         if (!candidate) return;
         candidate.verdict = button.dataset.verdict;
         markCard(button.dataset.case, button.dataset.candidate, button.dataset.verdict);
+        renderFeedback();
+      });
+    });
+
+    document.querySelectorAll('[data-control-verdict]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const foundCase = findCase(button.dataset.controlCase);
+        if (!foundCase) return;
+        foundCase.controlVerdict = button.dataset.controlVerdict;
+        document.querySelectorAll('[data-control-case="' + button.dataset.controlCase + '"]').forEach((item) => {
+          item.classList.toggle('active', item.dataset.controlVerdict === button.dataset.controlVerdict);
+        });
         renderFeedback();
       });
     });

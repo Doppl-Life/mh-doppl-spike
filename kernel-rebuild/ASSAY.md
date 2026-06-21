@@ -48,7 +48,9 @@ the full registry.
 
 Case sections in `out/assay/index.html` are collapsed by default. The headline is
 the scan surface: kernel conclusion, clean-agent control when available,
-convergence, and generation-2 movement. Expand only the cases worth inspecting.
+convergence, and generation-2 movement. The top facts show how many controls are
+attached, and the shared page nav links Assay, Microscope, and Architecture.
+Expand only the cases worth inspecting.
 
 ## Control Lane
 

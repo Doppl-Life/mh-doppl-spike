@@ -238,21 +238,24 @@
     }
   </style>
 </head>
-<body>
+<body><!-- kernel-view-nav:start -->
 <style>
-.kx-nav{position:sticky;top:0;z-index:2147483647;display:flex;gap:.3rem;align-items:center;
-flex-wrap:wrap;padding:.55rem .8rem;background:#0b0e13;border-bottom:1px solid #2a3544;
-font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem;line-height:1.2;}
-.kx-nav .kx-brand{color:#8b9bb0;font-weight:600;margin-right:.4rem;text-transform:uppercase;
-letter-spacing:.06em;font-size:.7rem;}
-.kx-nav a{color:#e8edf4;text-decoration:none;padding:.3rem .6rem;border-radius:6px;white-space:nowrap;}
-.kx-nav a small{color:#8b9bb0;font-weight:400;margin-left:.35rem;}
-.kx-nav a:hover{background:#1b232e;color:#c084fc;}
-.kx-nav a:hover small{color:#c084fc;}
-.kx-nav a.kx-active{background:#c084fc;color:#0b0e13;font-weight:650;}
-.kx-nav a.kx-active small{color:#0b0e13;}
-.kx-nav .kx-hub{margin-left:auto;color:#8b9bb0;}
-</style><nav class="kx-nav"><span class="kx-brand">Kernel views</span><a class="kx-link" href="microscope.html">Microscope<small>single-run trace</small></a><a class="kx-link kx-active" href="architecture.html">Architecture<small>system diagram</small></a><a class="kx-link" href="assay.html">Assay<small>outcome discovery</small></a><a class="kx-hub" href="/">All runs (hub) &rsaquo;</a></nav>
+.kernel-view-nav{position:sticky;top:0;z-index:2147483647;display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;padding:.58rem .8rem;background:#0b0e13;border-bottom:1px solid #2a3544;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem;line-height:1.2;}
+.kernel-view-nav strong{color:#8b9bb0;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;margin-right:.25rem;}
+.kernel-view-nav a{color:#e8edf4;text-decoration:none;border-radius:6px;padding:.34rem .62rem;white-space:nowrap;}
+.kernel-view-nav a small{margin-left:.35rem;color:#8b9bb0;font-weight:400;}
+.kernel-view-nav a:hover{background:#1b232e;color:#c084fc;}
+.kernel-view-nav a:hover small{color:#c084fc;}
+.kernel-view-nav a.is-active{background:#c084fc;color:#0b0e13;font-weight:700;}
+.kernel-view-nav a.is-active small{color:#0b0e13;}
+.kernel-view-nav .kernel-view-hub{margin-left:auto;color:#8b9bb0;}
+@media (max-width:700px){.kernel-view-nav a small{display:none}.kernel-view-nav .kernel-view-hub{margin-left:0}}
+</style>
+<nav class="kernel-view-nav" aria-label="Kernel view navigation">
+  <strong>Kernel views</strong><a class="kernel-view-link" href="assay.html">Assay<small>cases + controls</small></a><a class="kernel-view-link" href="microscope.html">Microscope<small>single trace</small></a><a class="kernel-view-link is-active" href="architecture.html">Architecture<small>system map</small></a><a class="kernel-view-hub" href="/">Root hub</a>
+</nav>
+<!-- kernel-view-nav:end -->
+  
   <main>
     <header class="header">
       <div>

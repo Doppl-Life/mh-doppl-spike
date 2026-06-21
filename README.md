@@ -27,7 +27,7 @@ doppl-test/
   kernel-rebuild/              ← active self-contained kernel rebuild workspace
   skills/                      ← skill lineage registry
   harness/                     ← (embryology) run all spikes, compare traces
-  render.yaml                  ← deploy (serves the Agarden hub)
+  render.yaml                  ← deploy (serves the kernel proof hub)
   spikes/
     agenotype/                  ← Gen-0 fusion demo: breed child on blind spots
     crucible/                   ← belief-revision sibling spawner (built)

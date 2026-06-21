@@ -6,6 +6,7 @@ import { assertSeedFixture } from '../src/contracts/index.ts';
 import type { Dial, RunTrace, SelectedCandidate, SelectionResult } from '../src/contracts/index.ts';
 import { buildRunTrace } from '../src/trace.ts';
 import { capstoneDemoLens } from './lens-config.ts';
+import { renderViewNav } from './view-nav.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -565,6 +566,7 @@ function caseSection(result: AssayResult): string {
   const convergence = result.convergence.length
     ? result.convergence.map((group) => `${group.label} x${group.count}`).join('; ')
     : 'none';
+  const hasControl = Boolean(result.control);
   const controlProblem = result.control?.actualProblem || 'no clean-agent control yet';
   return `
     <details class="case-section" id="${escapeHtml(result.definition.slug)}">
@@ -575,7 +577,7 @@ function caseSection(result: AssayResult): string {
         </div>
         <div class="headline-grid">
           <div><span>${help('kernel', 'The kernel result from this assay run.')}</span><strong>${escapeHtml(result.bestConclusion?.title || 'none')}</strong></div>
-          <div><span>${help('control', 'A clean-context agent answer for comparison, when available.')}</span><strong>${escapeHtml(compact(controlProblem, 82))}</strong></div>
+          <div class="${hasControl ? 'has-control' : ''}"><span>${help('control', 'A clean-context agent answer for comparison, when available.')}</span><strong>${escapeHtml(compact(controlProblem, 82))}</strong>${hasControl ? '<em>clean-agent attached</em>' : ''}</div>
           <div><span>${help('convergence', 'Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.')}</span><strong>${escapeHtml(compact(convergence, 82))}</strong></div>
           <div><span>${help('gen2', 'Whether generation-2 children improved, drifted, duplicated, or did not run.')}</span><strong>${escapeHtml(compact(result.gen2, 82))}</strong></div>
         </div>
@@ -586,6 +588,11 @@ function caseSection(result: AssayResult): string {
           <div class="kicker">${help('strongest conclusion', 'The current best kernel-nominated discovery for this case. Human verdict can override it.')}</div>
           <h3>${escapeHtml(result.bestConclusion?.title || 'none')}</h3>
           <p>${escapeHtml(result.bestConclusion?.thesis || 'No candidates generated.')}</p>
+        </article>
+        <article>
+          <div class="kicker">${help('clean-agent control', 'A single clean-context answer produced without kernel machinery. It is a baseline, not a judge.')}</div>
+          <h3>${hasControl ? 'attached' : 'none attached'}</h3>
+          <p>${escapeHtml(controlProblem)}</p>
         </article>
         <article>
           <div class="kicker">${help('generation 2', 'A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.')}</div>
@@ -621,6 +628,7 @@ function caseSection(result: AssayResult): string {
 
 function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Args): string {
   const failed = results.reduce((sum, result) => sum + result.failedChecks.length, 0);
+  const controlCount = results.filter((result) => result.control).length;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -763,6 +771,10 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       background: #f8faf6;
       min-height: 72px;
     }
+    .headline-grid .has-control {
+      border-color: #25362c;
+      background: #f8fbff;
+    }
     .headline-grid span {
       display: block;
       color: var(--muted);
@@ -777,13 +789,24 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       font-size: 13px;
       line-height: 1.24;
     }
+    .headline-grid em {
+      display: inline-block;
+      margin-top: 6px;
+      border: 1px solid #b8c8dd;
+      border-radius: 999px;
+      padding: 2px 6px;
+      color: #2f4a64;
+      background: #fff;
+      font-size: 11px;
+      font-style: normal;
+    }
     .case-body {
       border-top: 1px solid var(--line);
       padding: 16px;
     }
     .case-summary {
       display: grid;
-      grid-template-columns: 1.4fr 1fr .7fr;
+      grid-template-columns: 1.25fr 1.05fr .85fr .65fr;
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -991,6 +1014,11 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
   </style>
 </head>
 <body>
+  ${renderViewNav('assay', {
+    assay: 'index.html',
+    microscope: '../microscope/index.html',
+    architecture: '../microscope/architecture.html',
+  }, { hubHref: '../../index.html', hubLabel: 'Root hub' })}
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
@@ -998,6 +1026,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       <div class="facts">
         <span>schema ${escapeHtml(ASSAY_SCHEMA_VERSION)}</span>
         <span>cases ${results.length}</span>
+        <span>controls ${controlCount}/${results.length}</span>
         <span>mode ${escapeHtml(args.random ? 'random fill' : 'deterministic fill')}</span>
         <span>seed ${escapeHtml(args.seed)}</span>
         <span>failed checks ${failed}</span>
@@ -1009,7 +1038,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
         </article>
         <article class="hero-card">
           <h3>Controls</h3>
-          <p>The clean-agent control is a baseline answer with no kernel context. The hard question is whether the kernel surfaced anything better, faster, or easier to judge.</p>
+          <p>${controlCount}/${results.length} cases have a clean-agent control. In the collapsed rows, look for the <strong>control</strong> cell; open that row to compare the kernel output against the baseline and rate both.</p>
         </article>
       </div>
     </section>

@@ -1,30 +1,23 @@
 #!/usr/bin/env python3
-"""Build a root-level index.html — the single, findable entry point into every
-run that currently exists across all Agardens and spawncidences.
+"""Build the root-level kernel proof hub.
 
-It scans `spikes/*/` for trace HTML files, enriches each with its sibling
-`*.trace.json` when present (prompt, judge score/verdict, roster), and writes a
-navigable hub with a reusable side menu. Mortal traces come and go; this index is
-regenerated on demand:
+It links the current committed kernel-rebuild HTML surfaces. Older spike traces
+still exist in the repo, but they are not the front door for this work.
 
-    python build_index.py            # write index.html
-    python build_index.py --open     # write + open in browser
-
-Run it after a spike emits a new HTML trace (or wire it into a spike's demo).
+    python3 build_index.py           # write index.html
+    python3 build_index.py --open    # write + open in browser
 """
 
 from __future__ import annotations
 
 import argparse
 import datetime as dt
-import json
 import re
 import webbrowser
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent
-SPIKES_DIR = ROOT / "spikes"
 KERNEL_DIR = ROOT / "kernel-rebuild"
 INDEX_PATH = ROOT / "index.html"
 
@@ -72,92 +65,10 @@ def _now() -> str:
     return dt.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
-def _find_sibling_json(html_path: Path) -> Path | None:
-    """Best-effort pairing of a trace HTML with its JSON record."""
-    stem = html_path.stem  # e.g. crucible_trace_rerun
-    candidates = [
-        html_path.with_suffix(".json"),
-        html_path.with_suffix(".trace.json"),
-    ]
-    for marker in ("crucible_trace_", "fusion_trace_", "trace_", "_trace"):
-        if marker in stem:
-            tag = stem.replace("crucible_trace_", "").replace("fusion_trace_", "")
-            tag = tag.replace("trace_", "").replace("_trace", "").strip("_-")
-            if tag:
-                candidates.append(html_path.with_name(f"{tag}.trace.json"))
-                candidates.append(html_path.with_name(f"{tag}.json"))
-    for c in candidates:
-        if c.exists():
-            return c
-    return None
-
-
-def _load_record(json_path: Path | None) -> dict[str, Any]:
-    if not json_path:
-        return {}
-    try:
-        with open(json_path, encoding="utf-8") as fh:
-            return json.load(fh)
-    except (OSError, json.JSONDecodeError):
-        return {}
-
-
 def _esc(value: Any) -> str:
     import html as _html
 
     return _html.escape(str(value if value is not None else ""))
-
-
-def _card(html_path: Path, record: dict[str, Any]) -> str:
-    rel = html_path.relative_to(ROOT).as_posix()
-    anchor = rel.replace("/", "__")
-    mtime = dt.datetime.fromtimestamp(html_path.stat().st_mtime).strftime("%Y-%m-%d %H:%M")
-    judge = record.get("judge", {}) or {}
-    prompt = str(record.get("prompt", "")).strip().replace("\n", " ")
-    if len(prompt) > 200:
-        prompt = prompt[:200] + "…"
-
-    pills = []
-    score = judge.get("score")
-    verdict = str(judge.get("verdict", ""))
-    if score is not None:
-        klass = "pass" if verdict.startswith("pass") else "fail"
-        pills.append(f'<span class="pill {klass}">{_esc(score)}/10 · {_esc(verdict or "?")}</span>')
-    consensus = str(judge.get("consensus_quality", ""))
-    if consensus:
-        cclass = "herded" if consensus == "herded" else ""
-        pills.append(f'<span class="pill {cclass}">consensus: {_esc(consensus)}</span>')
-    debaters = record.get("debaters", []) or []
-    if debaters:
-        names = ", ".join(str(d.get("name", "")) for d in debaters)
-        pills.append(f'<span class="pill">{_esc(len(debaters))} fusants: {_esc(names)}</span>')
-
-    prompt_html = f'<p class="prompt">{_esc(prompt)}</p>' if prompt else ""
-    return (
-        f'<div class="card" id="{anchor}">'
-        f'<a class="title" href="{rel}">{_esc(html_path.name)}</a>'
-        f'<div class="row">{"".join(pills)}</div>'
-        f"{prompt_html}"
-        f'<p class="meta">{rel} · updated {mtime}</p>'
-        "</div>"
-    )
-
-
-def collect() -> dict[str, list[tuple[Path, dict[str, Any]]]]:
-    by_spike: dict[str, list[tuple[Path, dict[str, Any]]]] = {}
-    if not SPIKES_DIR.exists():
-        return by_spike
-    for spike_dir in sorted(p for p in SPIKES_DIR.iterdir() if p.is_dir()):
-        traces = sorted(
-            (p for p in spike_dir.glob("*.html") if "trace" in p.name.lower()),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True,
-        )
-        if not traces:
-            continue
-        rows = [(t, _load_record(_find_sibling_json(t))) for t in traces]
-        by_spike[spike_dir.name] = rows
-    return by_spike
 
 
 def _extract_title(html_path: Path) -> str:
@@ -201,48 +112,34 @@ def _kernel_card(html_path: Path, title: str) -> str:
     )
 
 
-def render(
-    by_spike: dict[str, list[tuple[Path, dict[str, Any]]]],
-    kernel_pages: list[tuple[Path, str]] | None = None,
-) -> str:
-    kernel_pages = kernel_pages or []
+def render(kernel_pages: list[tuple[Path, str]]) -> str:
     side, body = [], []
-    total = 0
-    for spike, rows in by_spike.items():
-        side.append(f'<div class="spike">{_esc(spike)}</div>')
-        body.append(f'<h2 style="margin-top:2rem">{_esc(spike)}</h2>')
-        for html_path, record in rows:
-            anchor = html_path.relative_to(ROOT).as_posix().replace("/", "__")
-            side.append(f'<a href="#{anchor}">{_esc(html_path.name)}</a>')
-            body.append(_card(html_path, record))
-            total += 1
 
     if kernel_pages:
-        side.append('<div class="spike">kernel-rebuild</div>')
-        body.append(f'<h2 style="margin-top:2rem">kernel-rebuild ({len(kernel_pages)})</h2>')
+        side.append('<div class="spike">proof surfaces</div>')
+        body.append(f'<h2 style="margin-top:2rem">Proof surfaces ({len(kernel_pages)})</h2>')
         for html_path, title in kernel_pages:
             anchor = html_path.relative_to(ROOT).as_posix().replace("/", "__")
             side.append(f'<a href="#{anchor}">{_esc(title)}</a>')
             body.append(_kernel_card(html_path, title))
 
-    if not by_spike and not kernel_pages:
+    if not kernel_pages:
         body.append(
-            '<p class="empty">No trace HTML found yet. Run a spike with <code>--html</code> '
-            "(e.g. <code>cd spikes/crucible && ./demo --html</code>), then rebuild this index.</p>"
+            '<p class="empty">No kernel HTML found yet. Run <code>cd kernel-rebuild && pnpm publish:html</code>, '
+            "then rebuild this index.</p>"
         )
 
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Doppl Agarden — run index</title><style>{_CSS}</style></head>
+<title>Doppl Kernel Rebuild — proof hub</title><style>{_CSS}</style></head>
 <body><div class="layout">
-<aside><h2>Agarden</h2><a href="#">All runs ({total})</a>{"".join(side)}
-<div class="spike">docs</div>
-<a href="TREATISE.md">TREATISE.md</a><a href="GLOSSARY.md">GLOSSARY.md</a>
+<aside><h2>Kernel</h2><a href="#">Proof surfaces ({len(kernel_pages)})</a>{"".join(side)}
 </aside>
-<main><h1>Doppl Agarden — run index</h1>
-<p class="sub">Every trace that currently exists across spawncidences. Mortal artifacts;
-regenerate with <code>python build_index.py</code>. Generated {_now()}.</p>
+<main><h1>Doppl Kernel Rebuild — proof hub</h1>
+<p class="sub">Current human proof surfaces for the kernel rebuild. Regenerate with
+<code>cd kernel-rebuild && pnpm publish:html</code>, then <code>python3 build_index.py</code>.
+Generated {_now()}.</p>
 {"".join(body)}
 </main></div></body></html>"""
 
@@ -252,14 +149,9 @@ def main() -> None:
     parser.add_argument("--open", action="store_true", help="Open index.html after writing")
     args = parser.parse_args()
 
-    by_spike = collect()
     kernel_pages = collect_kernel()
-    INDEX_PATH.write_text(render(by_spike, kernel_pages), encoding="utf-8")
-    count = sum(len(v) for v in by_spike.values())
-    print(
-        f"Wrote {INDEX_PATH.relative_to(ROOT)} — {count} run(s) across {len(by_spike)} spike(s); "
-        f"{len(kernel_pages)} kernel-rebuild page(s)."
-    )
+    INDEX_PATH.write_text(render(kernel_pages), encoding="utf-8")
+    print(f"Wrote {INDEX_PATH.relative_to(ROOT)} — {len(kernel_pages)} kernel-rebuild page(s).")
     if args.open:
         webbrowser.open(INDEX_PATH.resolve().as_uri())
 

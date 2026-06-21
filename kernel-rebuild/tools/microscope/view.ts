@@ -71,6 +71,11 @@ function swapText(trace: RunTrace): string {
   return `Rank changed: ${ideaSentence(focus)} <> ${ideaSentence(alternate)}`;
 }
 
+function sentence(value: string): string {
+  const trimmed = value.trim().replace(/\.+$/g, '');
+  return `${trimmed}.`;
+}
+
 function stableIds(trace: RunTrace): Set<string> {
   return new Set(
     trace.comparison.contrasts
@@ -84,16 +89,25 @@ function lensScore(trace: RunTrace, candidateId: string): string {
   return score ? score.score.toFixed(2) : 'n/a';
 }
 
+function helpDot(tip: string): string {
+  const safeTip = escapeHtml(tip);
+  return `<span class="help-dot" tabindex="0" title="${safeTip}" data-tip="${safeTip}">?</span>`;
+}
+
+function scoreChip(label: string, value: string, tip: string): string {
+  return `<span title="${escapeHtml(tip)}">${escapeHtml(label)} ${escapeHtml(value)}</span>`;
+}
+
 function card(trace: RunTrace, candidate: SelectedCandidate, tone: 'stable' | 'swap' | 'normal'): string {
   const title = `${candidate.title}: novelty ${candidate.fitness.novelty.toFixed(2)}, grounding ${candidate.fitness.grounding.toFixed(2)}`;
   return `
     <article class="card ${tone}" title="${escapeHtml(title)}">
       <p>${escapeHtml(ideaSentence(candidate))}</p>
       <div class="scores">
-        <span>surprise ${candidate.fitness.novelty.toFixed(2)}</span>
-        <span>evidence ${candidate.fitness.grounding.toFixed(2)}</span>
-        <span>decay ${candidate.fitness.decay.factor.toFixed(2)}</span>
-        <span>lens ${lensScore(trace, candidate.id)}</span>
+        ${scoreChip('novelty', candidate.fitness.novelty.toFixed(2), 'How far this candidate moves from the seed and source record.')}
+        ${scoreChip('grounding', candidate.fitness.grounding.toFixed(2), 'How much source support, mechanism clarity, and testability the candidate has.')}
+        ${scoreChip('decay', candidate.fitness.decay.factor.toFixed(2), 'Engine-time factor used by selection without erasing novelty or grounding.')}
+        ${scoreChip('lens', lensScore(trace, candidate.id), 'Post-selection feasibility score. It does not enter core fitness.')}
       </div>
     </article>`;
 }
@@ -184,13 +198,164 @@ function goalPassed(trace: RunTrace, id: string): boolean {
   return trace.goalChecks.some((check) => check.id === id && check.passed);
 }
 
-function proofTile(label: string, value: string, detail: string, tone: 'good' | 'warn' | 'plain' = 'plain'): string {
+function proofTile(label: string, value: string, detail: string, tone: 'good' | 'warn' | 'plain' = 'plain', tip?: string): string {
   return `
     <article class="proof-tile ${tone}">
-      <div class="proof-label">${escapeHtml(label)}</div>
+      <div class="proof-label">${escapeHtml(label)}${tip ? ` ${helpDot(tip)}` : ''}</div>
       <div class="proof-value">${escapeHtml(value)}</div>
       <p>${escapeHtml(detail)}</p>
     </article>`;
+}
+
+function runConclusion(trace: RunTrace): { tone: 'good' | 'warn'; title: string; detail: string } {
+  const failed = trace.goalChecks.filter((check) => !check.passed);
+  const generation = trace.generations.find((item) => item.index === 2);
+  const swap = sentence(swapText(trace));
+  const contrastCount = trace.comparison.contrasts.length;
+  const stable = trace.comparison.contrasts.filter((contrast) => contrast.status === 'stable').length;
+
+  if (failed.length) {
+    return {
+      tone: 'warn',
+      title: 'The run is not contract-clean.',
+      detail: `${failed.length} goal check(s) failed. Start with Failed Checks, then inspect the stage strip below.`,
+    };
+  }
+
+  if (generation?.quality === 'improved') {
+    return {
+      tone: 'good',
+      title: 'Generation 2 improved at least one selected branch.',
+      detail: `${swap} ${stable}/${contrastCount} selected candidates survived both Explore and Proof.`,
+    };
+  }
+
+  if (generation?.quality === 'drifted') {
+    return {
+      tone: 'warn',
+      title: 'Generation 2 moved, but did not improve.',
+      detail: `The child candidates changed direction without beating their parents. ${swap}`,
+    };
+  }
+
+  if (generation?.quality === 'duplicated') {
+    return {
+      tone: 'warn',
+      title: 'Generation 2 mostly repeated its parents.',
+      detail: 'Treat the child expansion as noise unless the lineage cards show a real mechanism change.',
+    };
+  }
+
+  return {
+    tone: 'good',
+    title: 'The run is contract-clean.',
+    detail: `${trace.lineage.generated.length} candidates generated, ${trace.lineage.rejected.length} rejected before scoring. ${swap}`,
+  };
+}
+
+function renderStageStrip(trace: RunTrace): string {
+  const failed = trace.goalChecks.filter((check) => !check.passed);
+  const generation = trace.generations.find((item) => item.index === 2);
+  const lens = trace.lensResults[0];
+  const focusDial = trace.comparison.focus.schedule.dial === 'diverge' ? 'Explore' : 'Proof';
+  const alternateDial = trace.comparison.alternate.schedule.dial === 'diverge' ? 'Explore' : 'Proof';
+  const stages = [
+    {
+      label: 'Seed',
+      value: trace.seed.title,
+      tip: 'The fixture input. This page shows one seed; pnpm build shows all seeds.',
+    },
+    {
+      label: 'Generate',
+      value: `${trace.lineage.generated.length} kept / ${trace.lineage.rejected.length} rejected`,
+      tip: 'Creates candidate ideas from source packets. Rejected means no useful delta, not a scored failure.',
+    },
+    {
+      label: 'Fitness',
+      value: goalPassed(trace, 'fitness-computed-from-source') ? 'computed' : 'check failed',
+      tip: 'Computes novelty and grounding from candidate and source material.',
+    },
+    {
+      label: 'Select',
+      value: `${focusDial} vs ${alternateDial}`,
+      tip: 'Runs two dials over the same scored pool so we can see what changes when priorities change.',
+    },
+    {
+      label: 'Gen 2',
+      value: generation ? generation.quality : 'not run',
+      tip: 'Bounded child generation. Improved beats parent, drifted moves without beating parent, duplicated repeats parent.',
+    },
+    {
+      label: 'Lens',
+      value: lens ? lens.label : 'none',
+      tip: 'Post-selection feasibility view. It never becomes novelty or grounding.',
+    },
+    {
+      label: 'Checks',
+      value: failed.length ? `${failed.length} failed` : 'pass',
+      tip: 'Goal checks are run-level contract assertions, not truth claims about the ideas.',
+    },
+  ];
+
+  return `
+    <div class="stage-strip" aria-label="Kernel stage strip">
+      ${stages.map((stage) => `
+        <div class="stage-node">
+          <div class="stage-label">${escapeHtml(stage.label)} ${helpDot(stage.tip)}</div>
+          <div class="stage-value">${escapeHtml(stage.value)}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderReaderBrief(trace: RunTrace): string {
+  const conclusion = runConclusion(trace);
+  return `
+    <section class="reader-brief" aria-label="How to read this microscope">
+      <div class="brief-head">
+        <div>
+          <h2>Read This First</h2>
+          <p>This page is a single-seed view over <code>RunTrace</code>. Use it to understand the run; use <code>pnpm build</code> to prove all seeds.</p>
+        </div>
+        <div class="verdict ${conclusion.tone}">${conclusion.tone === 'good' ? 'clean run' : 'inspect'}</div>
+      </div>
+      <div class="brief-grid">
+        <article class="brief-card primary ${conclusion.tone}">
+          <div class="brief-label">Current conclusion</div>
+          <h3>${escapeHtml(conclusion.title)}</h3>
+          <p>${escapeHtml(conclusion.detail)}</p>
+        </article>
+        <article class="brief-card">
+          <div class="brief-label">Look here first</div>
+          <ol class="reading-order">
+            <li><strong>Gen 2</strong> tells whether recursion improved, drifted, or duplicated.</li>
+            <li><strong>Explore vs Proof</strong> shows whether novelty priority and grounding priority pick different survivors.</li>
+            <li><strong>Decay / Lens</strong> proves time and feasibility are visible without being merged into core fitness.</li>
+          </ol>
+        </article>
+        <article class="brief-card">
+          <div class="brief-label">Plain terms</div>
+          <div class="term-grid">
+            ${term('Explore', 'Selection mode that prioritizes novelty while keeping a grounding floor.')}
+            ${term('Proof', 'Selection mode that prioritizes grounding while keeping a novelty floor.')}
+            ${term('Novelty', 'A computed score for how non-obvious or source-distant the candidate is.')}
+            ${term('Grounding', 'A computed score for source support, mechanism clarity, and testability.')}
+            ${term('Decay', 'Engine-time pressure used during selection. It does not overwrite novelty or grounding.')}
+            ${term('Lens', 'A post-selection observer view, such as capstone-demo fit. It is not fitness.')}
+            ${term('Rejected', 'A source packet was inspected but did not create a useful candidate delta.')}
+            ${term('Drifted', 'A child candidate changed direction but did not beat its parent.')}
+          </div>
+        </article>
+      </div>
+      <div class="changed-surface">
+        <span>Changed since the old microscope:</span>
+        <b>build proves all seeds</b>
+        <b>computed fitness</b>
+        <b>bounded generation 2</b>
+        <b>decay separate from fitness</b>
+        <b>lens after selection</b>
+      </div>
+      ${renderStageStrip(trace)}
+    </section>`;
 }
 
 function renderRunState(trace: RunTrace): string {
@@ -208,18 +373,18 @@ function renderRunState(trace: RunTrace): string {
     <section class="run-state" aria-label="Current kernel run state">
       <div class="run-state-head">
         <div>
-          <h2>Current Kernel Slice</h2>
+          <h2>Run State Tiles</h2>
           <p>${escapeHtml(trace.schemaVersion)} over ${trace.seed.title}</p>
         </div>
         <div class="verdict ${failed.length ? 'warn' : 'good'}">${failed.length ? `${failed.length} failed` : 'checks pass'}</div>
       </div>
       <div class="proof-grid">
-        ${proofTile('Generate', `${trace.lineage.generated.length} / ${trace.lineage.rejected.length}`, 'generated candidates / no-delta rejects', 'plain')}
-        ${proofTile('Fitness', goalPassed(trace, 'fitness-computed-from-source') ? 'computed' : 'check failed', 'novelty and grounding come from source/candidate text', goalPassed(trace, 'fitness-computed-from-source') ? 'good' : 'warn')}
-        ${proofTile('Generation 2', gen2Value, gen2Detail, generation2?.quality === 'improved' ? 'good' : generation2?.quality === 'duplicated' ? 'warn' : 'plain')}
-        ${proofTile('Decay', goalPassed(trace, 'decay-visible-not-merged') ? 'separate' : 'check failed', decayLensText(trace).split('; ')[0], goalPassed(trace, 'decay-visible-not-merged') ? 'good' : 'warn')}
-        ${proofTile('Lens', lensValue, lens ? `${lens.label}; outside FitnessScore` : 'No lens result emitted.', lens ? 'good' : 'warn')}
-        ${proofTile('Failed Checks', failedCheckText(trace), 'kernel goal checks from RunTrace', failed.length ? 'warn' : 'good')}
+        ${proofTile('Generate', `${trace.lineage.generated.length} / ${trace.lineage.rejected.length}`, 'generated candidates / no-delta rejects', 'plain', 'First number moves forward to fitness. Second number was inspected but rejected before scoring.')}
+        ${proofTile('Fitness', goalPassed(trace, 'fitness-computed-from-source') ? 'computed' : 'check failed', 'novelty and grounding come from source/candidate text', goalPassed(trace, 'fitness-computed-from-source') ? 'good' : 'warn', 'Fitness has two axes: novelty and grounding. Selection may use both, but the trace keeps them separate.')}
+        ${proofTile('Generation 2', gen2Value, gen2Detail, generation2?.quality === 'improved' ? 'good' : generation2?.quality === 'duplicated' ? 'warn' : 'plain', 'Improved means a child beat its parent. Drifted means it changed direction without beating parent. Duplicated means it mostly repeated parent.')}
+        ${proofTile('Decay', goalPassed(trace, 'decay-visible-not-merged') ? 'separate' : 'check failed', decayLensText(trace).split('; ')[0], goalPassed(trace, 'decay-visible-not-merged') ? 'good' : 'warn', 'Decay is an engine-time factor used by selection. It is shown beside fitness, not merged into novelty or grounding.')}
+        ${proofTile('Lens', lensValue, lens ? `${lens.label}; outside FitnessScore` : 'No lens result emitted.', lens ? 'good' : 'warn', 'Lens means observer-specific feasibility after selection. This run uses capstone-demo fit.')}
+        ${proofTile('Failed Checks', failedCheckText(trace), 'kernel goal checks from RunTrace', failed.length ? 'warn' : 'good', 'Failed checks are contract/proof failures for the run. Passing checks does not prove the ideas are true.')}
       </div>
     </section>`;
 }
@@ -423,6 +588,161 @@ function renderHtml(trace: RunTrace): string {
       margin: 0 0 20px;
       color: var(--muted);
     }
+    code {
+      padding: 2px 5px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: #f4f7f2;
+      color: #344139;
+      font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .reader-brief {
+      margin: 18px 0;
+      border: 2px solid #17201b;
+      border-radius: 8px;
+      background: #f9fbf7;
+      box-shadow: 4px 4px 0 rgba(23,32,27,.18);
+      padding: 16px;
+    }
+    .brief-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .brief-head h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+    .brief-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .brief-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 10px;
+    }
+    .brief-card {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 12px;
+      min-height: 146px;
+    }
+    .brief-card.primary.good {
+      border-color: #4a9a5c;
+      background: #edf9ef;
+    }
+    .brief-card.primary.warn {
+      border-color: #bf6b14;
+      background: #fff5dc;
+    }
+    .brief-label {
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .brief-card h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      line-height: 1.15;
+    }
+    .brief-card p {
+      margin: 0;
+      color: #3e4d44;
+      font-size: 13px;
+    }
+    .reading-order {
+      margin: 0;
+      padding-left: 19px;
+      color: #344139;
+      font-size: 13px;
+    }
+    .reading-order li + li {
+      margin-top: 7px;
+    }
+    .term-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .term-grid .term {
+      display: inline-flex;
+      padding: 5px 7px;
+      border: 1px dotted #69766d;
+      border-radius: 999px;
+      background: #f6f8f4;
+      font-size: 12px;
+    }
+    .changed-surface {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 12px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .changed-surface b {
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #26332b;
+      font-weight: 650;
+    }
+    .stage-strip {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+      margin-top: 10px;
+    }
+    .stage-node {
+      position: relative;
+      min-height: 78px;
+      border: 1px solid #9fb0a5;
+      border-radius: 7px;
+      background: #17201b;
+      color: #eaf2ec;
+      padding: 9px;
+    }
+    .stage-node:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      z-index: 2;
+      width: 16px;
+      height: 16px;
+      margin-top: -8px;
+      border-radius: 999px;
+      background: #f9fbf7;
+      color: #26332b;
+      text-align: center;
+      font-weight: 800;
+      line-height: 15px;
+      font-size: 12px;
+    }
+    .stage-label {
+      color: #9fb0a5;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .stage-value {
+      margin-top: 6px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
     .run-state {
       margin: 18px 0;
       border: 2px solid #26332b;
@@ -565,6 +885,10 @@ function renderHtml(trace: RunTrace): string {
       flex-wrap: wrap;
       color: var(--muted);
       font-size: 12px;
+    }
+    .scores span {
+      border-bottom: 1px dotted #9aa79d;
+      cursor: help;
     }
     .summary {
       display: grid;
@@ -762,11 +1086,11 @@ function renderHtml(trace: RunTrace): string {
       border-bottom: 1px dotted #69766d;
       cursor: help;
     }
-    .term:focus {
+    .term:focus, .help-dot:focus {
       outline: 2px solid rgba(74,154,92,.35);
       outline-offset: 2px;
     }
-    .term::after {
+    .term::after, .help-dot::after {
       position: absolute;
       left: 0;
       bottom: calc(100% + 7px);
@@ -784,9 +1108,42 @@ function renderHtml(trace: RunTrace): string {
       transform: translateY(4px);
       transition: opacity .12s ease, transform .12s ease;
     }
-    .term:hover::after, .term:focus::after {
+    .term:hover::after, .term:focus::after, .help-dot:hover::after, .help-dot:focus::after {
       opacity: 1;
       transform: translateY(0);
+    }
+    .help-dot {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      margin-left: 3px;
+      border: 1px solid #9fb0a5;
+      border-radius: 999px;
+      background: #fff;
+      color: #2f3d34;
+      cursor: help;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .stage-label .help-dot {
+      width: 14px;
+      height: 14px;
+      border-color: #6f8476;
+      background: #223027;
+      color: #cfe3d3;
+      font-size: 10px;
+      vertical-align: 1px;
+    }
+    .stage-label .help-dot::after {
+      color: #17201b;
+      background: #fff;
+      border-color: #9fb0a5;
     }
     .arch-footnote {
       margin: 8px 0 0;
@@ -816,13 +1173,19 @@ function renderHtml(trace: RunTrace): string {
     .swatch.swap { background: var(--swap); border-color: var(--swap-line); }
     .swatch.reject { background: var(--reject); }
     @media (max-width: 900px) {
-      .pipeline, .summary, .proof-grid { grid-template-columns: 1fr; }
-      .run-state-head { display: block; }
+      .pipeline, .summary, .proof-grid, .brief-grid, .stage-strip { grid-template-columns: 1fr; }
+      .run-state-head, .brief-head { display: block; }
       .verdict { display: inline-block; margin-top: 10px; }
       .section-title { display: block; }
       .section-title h2 { margin-bottom: 4px; }
       .interface-code { font-size: 11px; }
       main { padding: 18px; }
+      .stage-node:not(:last-child)::after {
+        content: "↓";
+        right: 12px;
+        top: auto;
+        bottom: -12px;
+      }
     }
   </style>
 </head>
@@ -830,6 +1193,8 @@ function renderHtml(trace: RunTrace): string {
   <main>
     <h1>Kernel Microscope</h1>
     <p class="sub">One trace, bounded generation, two selectors, one post-selection lens.</p>
+
+    ${renderReaderBrief(trace)}
 
     ${renderRunState(trace)}
 

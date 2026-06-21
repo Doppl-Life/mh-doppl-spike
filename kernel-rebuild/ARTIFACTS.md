@@ -49,7 +49,8 @@ run only when the board or trace names a behavior we intend to compare against l
 - If a filename, command, heading, or doc frame uses conversational process
   language where object-level language would do, rename it before it hardens.
 - If the kernel behavior changes materially, the first viewport of any default
-  microscope view must expose the new RunTrace facts before selector details.
+  microscope view must expose the new RunTrace facts before selector details and
+  explain the reading order, terms, and current conclusion.
 
 Rich data is fine. Mandatory human reading is the scarce resource.
 

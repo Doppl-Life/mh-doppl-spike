@@ -135,9 +135,12 @@ still only being watched.
   has to infer whether anything changed from small labels or hidden fields.
 - **Mitigation:** the first viewport must expose current RunTrace facts that name
   the active slice: schema version, generation count, computed fitness, bounded
-  child expansion, decay, lens, and failed checks.
+  child expansion, decay, lens, and failed checks. It must also give a reading
+  order and define its terms at the point of use; otherwise visible facts still
+  require a narrator.
 - **Tripwire:** after a major kernel change, the first screen could be mistaken
-  for the previous microscope without scrolling.
+  for the previous microscope without scrolling, or a reader can see changed
+  fields but cannot say what to inspect first.
 - **Pass condition:** the first screen makes the changed contract/behavior
-  visible before the selector lanes.
+  visible and interpretable before the selector lanes.
 - **Carry forward:** visibility has to change shape when the kernel changes shape.

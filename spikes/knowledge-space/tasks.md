@@ -153,7 +153,9 @@ not because the goal is a disposable prototype.
 - [x] Persist collapse-derived records to the JSONL ledger with run, candidate,
       critic, agenome, and event-sequence provenance.
 - [x] Write `out/collapse_packet.json` from the demo.
-- [ ] Replace deterministic fixture extraction with schema-bound model extraction
+- [x] Add pluggable collapse extractors: deterministic fixture extraction, local
+      heuristic draft extraction, and optional cheap OpenRouter extraction.
+- [~] Replace deterministic fixture extraction with schema-bound model extraction
       when OpenRouter/local model use is warranted.
 
 ## Phase 7 - Promotion Workflow

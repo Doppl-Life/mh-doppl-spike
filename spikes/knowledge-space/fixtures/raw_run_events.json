@@ -1,0 +1,33 @@
+[
+  {
+    "type": "run.configured",
+    "runId": "ks-demo-run-raw-1",
+    "sequence": 1,
+    "payload": {
+      "target_case": "fsd-accident-economy",
+      "problem_summary": "Understand economic collapse paths after an FSD accident."
+    }
+  },
+  {
+    "type": "candidate.produced",
+    "runId": "ks-demo-run-raw-1",
+    "sequence": 2,
+    "payload": {
+      "candidate_id": "candidate-raw-accident-1",
+      "agenome_id": "cold-scout",
+      "survived": false,
+      "artifact": "The FSD crash is not only an insurance story. A useful signal is liability risk moving through hospitals, organ donation systems, media attention, and dealer finance before regulators settle blame."
+    }
+  },
+  {
+    "type": "critic.review",
+    "runId": "ks-demo-run-raw-1",
+    "sequence": 3,
+    "payload": {
+      "critic_id": "critic-accident-economy",
+      "candidate_id": "candidate-raw-accident-1",
+      "score": 0.38,
+      "verdict": "Rejected because the model overclaims timing, but it preserves a warning about crash liability risk crossing insurance, care, and finance systems."
+    }
+  }
+]

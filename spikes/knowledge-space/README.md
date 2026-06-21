@@ -83,6 +83,12 @@ Optional cheap OpenRouter enrichment is available, but off by default:
 python3 knowledge_space.py --demo --openrouter
 ```
 
+Collapse extraction has three modes:
+
+- `fixture` - reads explicit `payload.extracted_knowledge` from run events.
+- `heuristic` - locally extracts draft memory from candidate and critic text.
+- `openrouter` - optional cheap schema-bounded extraction when a key is present.
+
 The OpenRouter key is read from `OPENROUTER_API_KEY` or the workspace-level
 `tokens and keys.md` file outside this Git repo. Do not copy keys into this
 folder or commit them.

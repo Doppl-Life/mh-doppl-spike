@@ -481,6 +481,221 @@ def openrouter_research_summary(
     return str(data["choices"][0]["message"]["content"]).strip()
 
 
+def _run_metadata(events: list[dict[str, Any]]) -> tuple[str, str]:
+    run_event = next((event for event in events if event.get("type") == "run.configured"), {})
+    run_id = str(run_event.get("runId", "unknown-run"))
+    run_payload = run_event.get("payload") or {}
+    target_case = str(run_payload.get("target_case", "unknown-case"))
+    return run_id, target_case
+
+
+def _candidate_index(events: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    candidates: dict[str, dict[str, Any]] = {}
+    for event in events:
+        payload = event.get("payload") or {}
+        if event.get("type") == "candidate.produced":
+            candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
+            candidates[candidate_id] = {
+                "candidate_id": candidate_id,
+                "agenome_id": str(payload.get("agenome_id", "")),
+                "survived": bool(payload.get("survived", False)),
+                "artifact": str(payload.get("artifact", "")),
+                "sequence": int(event.get("sequence", 0)),
+            }
+    return candidates
+
+
+def _collapse_item(
+    item: dict[str, Any],
+    *,
+    run_id: str,
+    target_case: str,
+    candidate_id: str,
+    critic_id: str,
+    candidate: dict[str, Any],
+    sequence: int,
+) -> dict[str, Any]:
+    return {
+        "kind": str(item.get("kind", "ResearchFinding")),
+        "text": str(item.get("text", "")).strip(),
+        "tags": list(item.get("tags") or []),
+        "trust_tier": str(item.get("trust_tier", "candidate")),
+        "run_id": run_id,
+        "target_case": target_case,
+        "candidate_id": candidate_id,
+        "critic_id": critic_id,
+        "agenome_id": str(candidate.get("agenome_id", "")),
+        "candidate_survived": bool(candidate.get("survived", False)),
+        "origin_event_sequence": sequence,
+        "source_path": f"run-events/{run_id}.json",
+        "citation": f"run-events/{run_id}.json#sequence-{sequence}",
+    }
+
+
+def extract_fixture_collapse_items(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    run_id, target_case = _run_metadata(events)
+    candidates = _candidate_index(events)
+    extracted_items: list[dict[str, Any]] = []
+    for event in events:
+        payload = event.get("payload") or {}
+        if event.get("type") != "critic.review":
+            continue
+        candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
+        candidate = candidates.get(candidate_id, {})
+        critic_id = str(payload.get("critic_id", "unknown-critic"))
+        sequence = int(event.get("sequence", 0))
+        for item in payload.get("extracted_knowledge") or []:
+            extracted_items.append(
+                _collapse_item(
+                    item,
+                    run_id=run_id,
+                    target_case=target_case,
+                    candidate_id=candidate_id,
+                    critic_id=critic_id,
+                    candidate=candidate,
+                    sequence=sequence,
+                )
+            )
+    return extracted_items
+
+
+def extract_heuristic_collapse_items(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    run_id, target_case = _run_metadata(events)
+    candidates = _candidate_index(events)
+    extracted_items: list[dict[str, Any]] = []
+    for event in events:
+        payload = event.get("payload") or {}
+        if event.get("type") != "critic.review":
+            continue
+        candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
+        candidate = candidates.get(candidate_id, {})
+        critic_id = str(payload.get("critic_id", "unknown-critic"))
+        sequence = int(event.get("sequence", 0))
+        source_text = " ".join(
+            part
+            for part in (
+                str(candidate.get("artifact", "")),
+                str(payload.get("verdict", "")),
+                str(payload.get("rationale", "")),
+            )
+            if part
+        )
+        selected = [
+            sentence
+            for sentence in split_sentences(source_text)
+            if any(
+                term in sentence.lower()
+                for term in (
+                    "fsd",
+                    "autonomy",
+                    "crash",
+                    "insurance",
+                    "finance",
+                    "dealer",
+                    "liability",
+                    "risk",
+                    "signal",
+                    "warning",
+                    "not only",
+                    "before",
+                )
+            )
+        ][:2]
+        for sentence in selected:
+            kind = "NegativeFinding" if any(term in sentence.lower() for term in ("do not", "not only", "rejected", "warning")) else "ResearchFinding"
+            extracted_items.append(
+                _collapse_item(
+                    {
+                        "kind": kind,
+                        "text": sentence,
+                        "tags": infer_tags(sentence, target_case),
+                        "trust_tier": "draft",
+                    },
+                    run_id=run_id,
+                    target_case=target_case,
+                    candidate_id=candidate_id,
+                    critic_id=critic_id,
+                    candidate=candidate,
+                    sequence=sequence,
+                )
+            )
+    return extracted_items
+
+
+def _extract_json_object(text: str) -> dict[str, Any]:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        start = text.find("{")
+        end = text.rfind("}")
+        if start == -1 or end == -1 or end <= start:
+            raise
+        data = json.loads(text[start : end + 1])
+    if not isinstance(data, dict):
+        raise ValueError("OpenRouter collapse extractor returned non-object JSON")
+    return data
+
+
+def extract_openrouter_collapse_items(
+    events: list[dict[str, Any]],
+    *,
+    api_key: str,
+    model: str = DEFAULT_OPENROUTER_MODEL,
+) -> list[dict[str, Any]]:
+    run_id, target_case = _run_metadata(events)
+    prompt = (
+        "Extract durable Doppl knowledge from these run events. Return only JSON "
+        "with an items array. Each item must include kind, text, tags, trust_tier, "
+        "candidate_id, critic_id, origin_event_sequence, source_path, and citation. "
+        "Use draft or candidate trust tiers only. Prefer concise reusable findings "
+        "and negative findings from culled candidates.\n\n"
+        f"Run events:\n{json.dumps(events, sort_keys=True)[:12000]}"
+    )
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.1,
+        "max_tokens": 700,
+    }
+    request = urllib.request.Request(
+        "https://openrouter.ai/api/v1/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://github.com/Doppl-Life/mh-doppl-spike",
+            "X-Title": "Doppl Knowledge Space Spike",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=45) as response:
+        data = json.loads(response.read().decode("utf-8"))
+    content = str(data["choices"][0]["message"]["content"]).strip()
+    parsed = _extract_json_object(content)
+    items = parsed.get("items")
+    if not isinstance(items, list):
+        raise ValueError("OpenRouter collapse extractor returned JSON without items list")
+    candidates = _candidate_index(events)
+    normalized: list[dict[str, Any]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        candidate_id = str(item.get("candidate_id", "unknown-candidate"))
+        sequence = int(item.get("origin_event_sequence", 0))
+        normalized.append(
+            _collapse_item(
+                item,
+                run_id=run_id,
+                target_case=target_case,
+                candidate_id=candidate_id,
+                critic_id=str(item.get("critic_id", "unknown-critic")),
+                candidate=candidates.get(candidate_id, {}),
+                sequence=sequence,
+            )
+        )
+    return normalized
+
+
 def validate_packet_event(event: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if event.get("type") != "knowledge.packet_selected":
@@ -766,47 +981,26 @@ class KnowledgeSpace:
             excluded=excluded,
         )
 
-    def request_collapse(self, events: list[dict[str, Any]]) -> dict[str, Any]:
-        run_event = next((event for event in events if event.get("type") == "run.configured"), {})
-        run_id = str(run_event.get("runId", "unknown-run"))
-        run_payload = run_event.get("payload") or {}
-        target_case = str(run_payload.get("target_case", "unknown-case"))
-        candidates: dict[str, dict[str, Any]] = {}
-        extracted_items: list[dict[str, Any]] = []
-
-        for event in events:
-            payload = event.get("payload") or {}
-            if event.get("type") == "candidate.produced":
-                candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
-                candidates[candidate_id] = {
-                    "candidate_id": candidate_id,
-                    "agenome_id": str(payload.get("agenome_id", "")),
-                    "survived": bool(payload.get("survived", False)),
-                    "artifact": str(payload.get("artifact", "")),
-                    "sequence": int(event.get("sequence", 0)),
-                }
-            if event.get("type") == "critic.review":
-                candidate_id = str(payload.get("candidate_id", "unknown-candidate"))
-                candidate = candidates.get(candidate_id, {})
-                critic_id = str(payload.get("critic_id", "unknown-critic"))
-                for item in payload.get("extracted_knowledge") or []:
-                    extracted_items.append(
-                        {
-                            "kind": str(item.get("kind", "ResearchFinding")),
-                            "text": str(item.get("text", "")),
-                            "tags": list(item.get("tags") or []),
-                            "trust_tier": str(item.get("trust_tier", "candidate")),
-                            "run_id": run_id,
-                            "target_case": target_case,
-                            "candidate_id": candidate_id,
-                            "critic_id": critic_id,
-                            "agenome_id": str(candidate.get("agenome_id", "")),
-                            "candidate_survived": bool(candidate.get("survived", False)),
-                            "origin_event_sequence": int(event.get("sequence", 0)),
-                            "source_path": f"run-events/{run_id}.json",
-                            "citation": f"run-events/{run_id}.json#sequence-{event.get('sequence', 0)}",
-                        }
-                    )
+    def request_collapse(
+        self,
+        events: list[dict[str, Any]],
+        *,
+        extractor: str = "fixture",
+        api_key: str = "",
+        model: str = DEFAULT_OPENROUTER_MODEL,
+    ) -> dict[str, Any]:
+        run_id, target_case = _run_metadata(events)
+        if extractor == "fixture":
+            extracted_items = extract_fixture_collapse_items(events)
+        elif extractor == "heuristic":
+            extracted_items = extract_heuristic_collapse_items(events)
+        elif extractor == "openrouter":
+            key = api_key or load_openrouter_key()
+            if not key:
+                raise RuntimeError("OPENROUTER_API_KEY not found in environment or tokens and keys.md")
+            extracted_items = extract_openrouter_collapse_items(events, api_key=key, model=model)
+        else:
+            raise ValueError(f"unknown collapse extractor: {extractor}")
 
         return {
             "type": "knowledge.collapse_packet",

@@ -306,6 +306,28 @@ class KnowledgeSpaceTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "invalid collapse packet"):
                 space.ingest_collapse_packet(invalid)
 
+    def test_heuristic_collapse_extracts_from_raw_run_events(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            events = json_fixture("raw_run_events.json")
+
+            fixture_collapse = space.request_collapse(events)
+            heuristic_collapse = space.request_collapse(events, extractor="heuristic")
+            records = space.ingest_collapse_packet(heuristic_collapse)
+
+            self.assertEqual(fixture_collapse["items"], [])
+            self.assertGreaterEqual(len(records), 1)
+            self.assertEqual(validate_collapse_packet(heuristic_collapse), [])
+            self.assertTrue(all(record.trust_tier == "draft" for record in records))
+            self.assertIn("candidate-raw-accident-1", {record.candidate_id for record in records})
+            self.assertIn("crash", "\n".join(record.text.lower() for record in records))
+
+    def test_collapse_rejects_unknown_extractor(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            with self.assertRaisesRegex(ValueError, "unknown collapse extractor"):
+                space.request_collapse(json_fixture("mock_run_events.json"), extractor="mystery")
+
     def test_graph_projection_includes_run_candidate_and_critic_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")

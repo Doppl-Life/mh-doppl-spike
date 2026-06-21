@@ -32,7 +32,7 @@ Files are for replay and investigation after the human already knows what happen
 | Source contracts | `src/contracts/index.ts`, `contracts/README.md` | yes | Load-bearing boundary definitions. |
 | Fixture inputs | `fixtures/*.json` | yes | Reproducible seed material. |
 | Microscope tools | `tools/microscope/**` | no by default | Human translation layer; keep only while useful. |
-| Assay tools | `tools/assay.ts`, `fixtures/assay/**`, `ASSAY.md` | yes | Outcome surface for judging whether runs create useful discovery material. |
+| Assay tools | `tools/assay.ts`, `fixtures/assay/**`, `fixtures/controls/**`, `ASSAY.md` | yes | Outcome surface for judging whether runs create useful discovery material. |
 | Generated run output | `out/**` | no | Ephemeral inspection output; regenerate with `pnpm proof:export`. |
 | Promoted proof | `records/<slug>/...` | only by decision | Keep when a run becomes evidence for a design decision or regression. |
 

@@ -235,6 +235,20 @@
   </style>
 </head>
 <body>
+<style>
+.kx-nav{position:sticky;top:0;z-index:2147483647;display:flex;gap:.3rem;align-items:center;
+flex-wrap:wrap;padding:.55rem .8rem;background:#0b0e13;border-bottom:1px solid #2a3544;
+font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem;line-height:1.2;}
+.kx-nav .kx-brand{color:#8b9bb0;font-weight:600;margin-right:.4rem;text-transform:uppercase;
+letter-spacing:.06em;font-size:.7rem;}
+.kx-nav a{color:#e8edf4;text-decoration:none;padding:.3rem .6rem;border-radius:6px;white-space:nowrap;}
+.kx-nav a small{color:#8b9bb0;font-weight:400;margin-left:.35rem;}
+.kx-nav a:hover{background:#1b232e;color:#c084fc;}
+.kx-nav a:hover small{color:#c084fc;}
+.kx-nav a.kx-active{background:#c084fc;color:#0b0e13;font-weight:650;}
+.kx-nav a.kx-active small{color:#0b0e13;}
+.kx-nav .kx-hub{margin-left:auto;color:#8b9bb0;}
+</style><nav class="kx-nav"><span class="kx-brand">Kernel views</span><a class="kx-link" href="microscope.html">Microscope<small>single-run trace</small></a><a class="kx-link" href="architecture.html">Architecture<small>system diagram</small></a><a class="kx-link kx-active" href="assay.html">Assay<small>outcome discovery</small></a><a class="kx-hub" href="/">All runs (hub) &rsaquo;</a></nav>
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
@@ -243,7 +257,7 @@
         <span>schema kernel.discovery-assay.v1</span>
         <span>cases 5</span>
         <span>mode random fill</span>
-        <span>seed mqnx8ane</span>
+        <span>seed mqnxuri7</span>
         <span>failed checks 0</span>
       </div>
       <div class="hero-grid">
@@ -1544,24 +1558,24 @@
       <code>seed:seed-starship -&gt; reject-s4</code>
     </article></div>
     </section>
-    <section class="case-section" id="full-self-driving-unlock">
+    <section class="case-section" id="glp1-snack-demand-destruction">
       <div class="case-head">
         <div>
-          <div class="kicker">case-studies/full-self-driving-unlock/</div>
-          <h2>Full self-driving unlock</h2>
+          <div class="kicker">case-studies/glp1-snack-demand-destruction/</div>
+          <h2>GLP-1 appetite shock</h2>
         </div>
         <a href="#feedback">feedback JSON</a>
       </div>
       <div class="case-summary">
         <article>
           <div class="kicker">strongest conclusion</div>
-          <h3>Movement metering replaces fine revenue</h3>
-          <p>The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.</p>
+          <h3>Checkout shelf becomes loyalty real estate</h3>
+          <p>The snack branch gets sharper at the checkout shelf: GLP-1s weaken the impulse slot, so retailers reprice that space toward pharmacy pickup, loyalty, or prepared essentials.</p>
         </article>
         <article>
           <div class="kicker">generation 2</div>
-          <h3>drifted</h3>
-          <p>drifted: Generation-2 children changed direction without improving combined novelty+grounding.</p>
+          <h3>improved</h3>
+          <p>improved: 1/1 generation-2 child candidate(s) improved on parent combined novelty+grounding.</p>
         </article>
         <article>
           <div class="kicker">failed checks</div>
@@ -1574,411 +1588,257 @@
           <h3>What It Found</h3>
           <div class="mini-grid">
     <article class="mini-card">
-      <h4>Hidden dependent x3</h4>
-      <p>Movement metering replaces fine revenue; Accident economy dries up; Road revenue moves to mobility accounts</p>
-    </article>
-    <article class="mini-card">
-      <h4>Substrate removal x3</h4>
-      <p>Traffic-state loses its subject; Ownership becomes fleet yield; Sleeper commute rewires geography</p>
+      <h4>Hidden dependent x2</h4>
+      <p>Checkout shelf becomes loyalty real estate; Snack shelf loses the impulse event</p>
     </article></div>
         </div>
         <div>
           <h3>Interesting Outlier</h3>
           <div class="idea-list">
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c6">
+    <article class="idea-card not-selected" data-card="glp1-snack-demand-destruction:glp-c2">
       <div class="idea-head">
         <div>
           <div class="kicker">not selected - g1</div>
-          <h4>Fleet compute becomes mobile edge</h4>
+          <h4>Alcohol gets hit through craving, not calories</h4>
         </div>
-        <code>c6</code>
+        <code>glp-c2</code>
       </div>
-      <p>A large autonomous fleet could become a distributed sensing and compute substrate, turning parked or low-utilization vehicles into mobile edge infrastructure.</p>
+      <p>The larger GLP-1 branch may be reward-loop dampening, where alcohol demand falls because craving quiets, not because drink calories are counted.</p>
       <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c6</dd></div>
-        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
-        <div><dt>substrate</dt><dd>fleet as compute substrate</dd></div>
-        <div><dt>delta</dt><dd>Moved from cars as transport to fleet as distributed infrastructure.</dd></div>
+        <div><dt>lineage</dt><dd>seed:seed-glp1 -&gt; glp-c2</dd></div>
+        <div><dt>operator</dt><dd>Substrate removal</dd></div>
+        <div><dt>substrate</dt><dd>reward-loop consumption</dd></div>
+        <div><dt>delta</dt><dd>Moved from appetite to reward-loop consumption.</dd></div>
       </dl>
       <div class="scores">
-        <span>novelty 0.89</span>
-        <span>grounding 0.30</span>
-        <span>decay 1.00</span>
+        <span>novelty 0.73</span>
+        <span>grounding 0.38</span>
+        <span>decay 0.76</span>
         <span>lens n/a</span>
       </div>
       <details>
         <summary>Why it rated this way</summary>
-        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.3, falsifiability=0.24, riskPenalty=0.12; grounding 0.30 failed floor 0.35; directional score 0.72; decay-adjusted 0.72</p>
+        <p>sourceAbsence=0.828, substrateDistance=0.75, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.425, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.49</p>
       </details>
-      <div class="verdict-row" aria-label="Human verdict for Fleet compute becomes mobile edge">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="keeper">keeper</button>
+      <div class="verdict-row" aria-label="Human verdict for Alcohol gets hit through craving, not calories">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
         </div>
       </div>
       <h3>Promising Entries</h3>
       <div class="idea-list">
-    <article class="idea-card stable" data-card="full-self-driving-unlock:c8">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">kept by Explore and Proof - g1</div>
-          <h4>Movement metering replaces fine revenue</h4>
-        </div>
-        <code>c8</code>
-      </div>
-      <p>The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c8</dd></div>
-        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
-        <div><dt>substrate</dt><dd>state revenue replacement</dd></div>
-        <div><dt>delta</dt><dd>Moved from fines disappearing to states replacing the measurement basis for transport revenue.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.90</span>
-        <span>grounding 0.48</span>
-        <span>decay 1.00</span>
-        <span>lens 0.70</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.68, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.90 drove selection; grounding 0.48 cleared floor 0.35; directional score 0.79; decay-adjusted 0.79</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Movement metering replaces fine revenue">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card stable" data-card="full-self-driving-unlock:c1">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">kept by Explore and Proof - g1</div>
-          <h4>Accident economy dries up</h4>
-        </div>
-        <code>c1</code>
-      </div>
-      <p>The visible crash reduction branch is not just safer roads; it removes revenue and labor from insurance, plaintiff law, collision repair, trauma workflows, and organ supply.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c1</dd></div>
-        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
-        <div><dt>substrate</dt><dd>crash/risk event</dd></div>
-        <div><dt>delta</dt><dd>Moved from safer roads to businesses dependent on accident volume.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.80</span>
-        <span>grounding 0.51</span>
-        <span>decay 1.00</span>
-        <span>lens 0.72</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.84; signalStrength=0.65, mechanismClarity=0.5, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.80 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.73; decay-adjusted 0.73</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Accident economy dries up">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card stable" data-card="full-self-driving-unlock:c8a">
+    <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1a">
       <div class="idea-head">
         <div>
           <div class="kicker">kept by Explore and Proof - g2</div>
-          <h4>Road revenue moves to mobility accounts</h4>
+          <h4>Checkout shelf becomes loyalty real estate</h4>
         </div>
-        <code>c8a</code>
+        <code>glp-c1a</code>
       </div>
-      <p>Autonomous mobility lets road revenue move from driver punishment and fuel consumption to account-level trip metering, congestion pricing, and fleet access fees.</p>
+      <p>The snack branch gets sharper at the checkout shelf: GLP-1s weaken the impulse slot, so retailers reprice that space toward pharmacy pickup, loyalty, or prepared essentials.</p>
       <dl>
-        <div><dt>lineage</dt><dd>candidate:c8 -&gt; c8a</dd></div>
+        <div><dt>lineage</dt><dd>candidate:glp-c1 -&gt; glp-c1a</dd></div>
         <div><dt>operator</dt><dd>Hidden dependent</dd></div>
-        <div><dt>substrate</dt><dd>account-level mobility ledger</dd></div>
-        <div><dt>delta</dt><dd>Took the revenue-replacement branch from VMT into account-level mobility taxation.</dd></div>
+        <div><dt>substrate</dt><dd>checkout impulse shelf</dd></div>
+        <div><dt>delta</dt><dd>Moved from snack volume to the physical retail shelf whose economics depend on impulse.</dd></div>
       </dl>
       <div class="scores">
-        <span>novelty 0.89</span>
-        <span>grounding 0.46</span>
+        <span>novelty 0.86</span>
+        <span>grounding 0.43</span>
         <span>decay 0.93</span>
-        <span>lens 0.69</span>
+        <span>lens 0.66</span>
       </div>
       <details>
         <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.967, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.56, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.89 drove selection; grounding 0.46 cleared floor 0.35; directional score 0.77; decay-adjusted 0.71</p>
+        <p>sourceAbsence=0.943, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.425, mechanismClarity=0.55, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.86 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.69</p>
       </details>
-      <div class="verdict-row" aria-label="Human verdict for Road revenue moves to mobility accounts">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="keeper">keeper</button>
+      <div class="verdict-row" aria-label="Human verdict for Checkout shelf becomes loyalty real estate">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Snack shelf loses the impulse event</h4>
+        </div>
+        <code>glp-c1</code>
+      </div>
+      <p>GLP-1 pressure hits snacks hardest where profit depends on unplanned eating occasions, not staple calories.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-glp1 -&gt; glp-c1</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>impulse eating occasion</dd></div>
+        <div><dt>delta</dt><dd>Moved from weight loss to disappearance of impulse eating events.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.83</span>
+        <span>grounding 0.35</span>
+        <span>decay 0.87</span>
+        <span>lens 0.60</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.846, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.4, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.83 drove selection; grounding 0.35 cleared floor 0.35; directional score 0.70; decay-adjusted 0.61</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Snack shelf loses the impulse event">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Appetite becomes an access class</h4>
+        </div>
+        <code>glp-c3</code>
+      </div>
+      <p>GLP-1 adoption turns appetite suppression into an access class, splitting consumer behavior by coverage, cash-pay capacity, and supply reliability.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-glp1 -&gt; glp-c3</dd></div>
+        <div><dt>operator</dt><dd>Adoption boundary</dd></div>
+        <div><dt>substrate</dt><dd>insurance and cash-pay access</dd></div>
+        <div><dt>delta</dt><dd>Moved from average weight-loss adoption to uneven access as the market edge.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.73</span>
+        <span>grounding 0.38</span>
+        <span>decay 0.82</span>
+        <span>lens 0.62</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.741, substrateDistance=0.8, hiddenDependents=0.6; signalStrength=0.485, mechanismClarity=0.325, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.54</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Appetite becomes an access class">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
       <h3>All Candidates</h3>
       <div class="idea-list">
-    <article class="idea-card stable" data-card="full-self-driving-unlock:c8">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">kept by Explore and Proof - g1</div>
-          <h4>Movement metering replaces fine revenue</h4>
-        </div>
-        <code>c8</code>
-      </div>
-      <p>The state will claw back dying fine, fuel-tax, and registration revenue through VMT, congestion pricing, and fleet-level movement metering.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c8</dd></div>
-        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
-        <div><dt>substrate</dt><dd>state revenue replacement</dd></div>
-        <div><dt>delta</dt><dd>Moved from fines disappearing to states replacing the measurement basis for transport revenue.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.90</span>
-        <span>grounding 0.48</span>
-        <span>decay 1.00</span>
-        <span>lens 0.70</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.68, mechanismClarity=0.5, falsifiability=0.32, riskPenalty=0; front 1; novelty 0.90 drove selection; grounding 0.48 cleared floor 0.35; directional score 0.79; decay-adjusted 0.79</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Movement metering replaces fine revenue">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card stable" data-card="full-self-driving-unlock:c1">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">kept by Explore and Proof - g1</div>
-          <h4>Accident economy dries up</h4>
-        </div>
-        <code>c1</code>
-      </div>
-      <p>The visible crash reduction branch is not just safer roads; it removes revenue and labor from insurance, plaintiff law, collision repair, trauma workflows, and organ supply.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c1</dd></div>
-        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
-        <div><dt>substrate</dt><dd>crash/risk event</dd></div>
-        <div><dt>delta</dt><dd>Moved from safer roads to businesses dependent on accident volume.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.80</span>
-        <span>grounding 0.51</span>
-        <span>decay 1.00</span>
-        <span>lens 0.72</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.9, substrateDistance=0.6, hiddenDependents=0.84; signalStrength=0.65, mechanismClarity=0.5, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.80 drove selection; grounding 0.51 cleared floor 0.35; directional score 0.73; decay-adjusted 0.73</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Accident economy dries up">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c1" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card stable" data-card="full-self-driving-unlock:c8a">
+    <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1a">
       <div class="idea-head">
         <div>
           <div class="kicker">kept by Explore and Proof - g2</div>
-          <h4>Road revenue moves to mobility accounts</h4>
+          <h4>Checkout shelf becomes loyalty real estate</h4>
         </div>
-        <code>c8a</code>
+        <code>glp-c1a</code>
       </div>
-      <p>Autonomous mobility lets road revenue move from driver punishment and fuel consumption to account-level trip metering, congestion pricing, and fleet access fees.</p>
+      <p>The snack branch gets sharper at the checkout shelf: GLP-1s weaken the impulse slot, so retailers reprice that space toward pharmacy pickup, loyalty, or prepared essentials.</p>
       <dl>
-        <div><dt>lineage</dt><dd>candidate:c8 -&gt; c8a</dd></div>
+        <div><dt>lineage</dt><dd>candidate:glp-c1 -&gt; glp-c1a</dd></div>
         <div><dt>operator</dt><dd>Hidden dependent</dd></div>
-        <div><dt>substrate</dt><dd>account-level mobility ledger</dd></div>
-        <div><dt>delta</dt><dd>Took the revenue-replacement branch from VMT into account-level mobility taxation.</dd></div>
+        <div><dt>substrate</dt><dd>checkout impulse shelf</dd></div>
+        <div><dt>delta</dt><dd>Moved from snack volume to the physical retail shelf whose economics depend on impulse.</dd></div>
       </dl>
       <div class="scores">
-        <span>novelty 0.89</span>
-        <span>grounding 0.46</span>
+        <span>novelty 0.86</span>
+        <span>grounding 0.43</span>
         <span>decay 0.93</span>
-        <span>lens 0.69</span>
+        <span>lens 0.66</span>
       </div>
       <details>
         <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.967, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.56, mechanismClarity=0.625, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.89 drove selection; grounding 0.46 cleared floor 0.35; directional score 0.77; decay-adjusted 0.71</p>
+        <p>sourceAbsence=0.943, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.425, mechanismClarity=0.55, falsifiability=0.48, riskPenalty=0; front 1; novelty 0.86 drove selection; grounding 0.43 cleared floor 0.35; directional score 0.74; decay-adjusted 0.69</p>
       </details>
-      <div class="verdict-row" aria-label="Human verdict for Road revenue moves to mobility accounts">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c8a" data-verdict="keeper">keeper</button>
+      <div class="verdict-row" aria-label="Human verdict for Checkout shelf becomes loyalty real estate">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1a" data-verdict="keeper">keeper</button>
       </div>
     </article>
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c2">
+    <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c1">
       <div class="idea-head">
         <div>
-          <div class="kicker">not selected - g1</div>
-          <h4>Traffic-state loses its subject</h4>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Snack shelf loses the impulse event</h4>
         </div>
-        <code>c2</code>
+        <code>glp-c1</code>
       </div>
-      <p>When the human stops being the driver, the traffic stop, ticket, pretext-search, points, DUI docket, and forfeiture pipeline lose their ordinary on-ramp.</p>
+      <p>GLP-1 pressure hits snacks hardest where profit depends on unplanned eating occasions, not staple calories.</p>
       <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c2</dd></div>
-        <div><dt>operator</dt><dd>Substrate removal</dd></div>
-        <div><dt>substrate</dt><dd>human driver as policeable subject</dd></div>
-        <div><dt>delta</dt><dd>Moved from autonomous driving to disappearance of the policeable driver.</dd></div>
+        <div><dt>lineage</dt><dd>seed:seed-glp1 -&gt; glp-c1</dd></div>
+        <div><dt>operator</dt><dd>Hidden dependent</dd></div>
+        <div><dt>substrate</dt><dd>impulse eating occasion</dd></div>
+        <div><dt>delta</dt><dd>Moved from weight loss to disappearance of impulse eating events.</dd></div>
+      </dl>
+      <div class="scores">
+        <span>novelty 0.83</span>
+        <span>grounding 0.35</span>
+        <span>decay 0.87</span>
+        <span>lens 0.60</span>
+      </div>
+      <details>
+        <summary>Why it rated this way</summary>
+        <p>sourceAbsence=0.846, substrateDistance=1, hiddenDependents=0.52; signalStrength=0.425, mechanismClarity=0.4, falsifiability=0.32, riskPenalty=0; front 2; novelty 0.83 drove selection; grounding 0.35 cleared floor 0.35; directional score 0.70; decay-adjusted 0.61</p>
+      </details>
+      <div class="verdict-row" aria-label="Human verdict for Snack shelf loses the impulse event">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c1" data-verdict="keeper">keeper</button>
+      </div>
+    </article>
+    <article class="idea-card stable" data-card="glp1-snack-demand-destruction:glp-c3">
+      <div class="idea-head">
+        <div>
+          <div class="kicker">kept by Explore and Proof - g1</div>
+          <h4>Appetite becomes an access class</h4>
+        </div>
+        <code>glp-c3</code>
+      </div>
+      <p>GLP-1 adoption turns appetite suppression into an access class, splitting consumer behavior by coverage, cash-pay capacity, and supply reliability.</p>
+      <dl>
+        <div><dt>lineage</dt><dd>seed:seed-glp1 -&gt; glp-c3</dd></div>
+        <div><dt>operator</dt><dd>Adoption boundary</dd></div>
+        <div><dt>substrate</dt><dd>insurance and cash-pay access</dd></div>
+        <div><dt>delta</dt><dd>Moved from average weight-loss adoption to uneven access as the market edge.</dd></div>
       </dl>
       <div class="scores">
         <span>novelty 0.73</span>
-        <span>grounding 0.39</span>
-        <span>decay 1.00</span>
-        <span>lens n/a</span>
+        <span>grounding 0.38</span>
+        <span>decay 0.82</span>
+        <span>lens 0.62</span>
       </div>
       <details>
         <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.852, substrateDistance=0.667, hiddenDependents=0.52; signalStrength=0.575, mechanismClarity=0.325, falsifiability=0.32, riskPenalty=0; front 4; novelty 0.73 drove selection; grounding 0.39 cleared floor 0.35; directional score 0.66; decay-adjusted 0.66</p>
+        <p>sourceAbsence=0.741, substrateDistance=0.8, hiddenDependents=0.6; signalStrength=0.485, mechanismClarity=0.325, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.54</p>
       </details>
-      <div class="verdict-row" aria-label="Human verdict for Traffic-state loses its subject">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c2" data-verdict="keeper">keeper</button>
+      <div class="verdict-row" aria-label="Human verdict for Appetite becomes an access class">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c3" data-verdict="keeper">keeper</button>
       </div>
     </article>
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c3">
+    <article class="idea-card not-selected" data-card="glp1-snack-demand-destruction:glp-c2">
       <div class="idea-head">
         <div>
           <div class="kicker">not selected - g1</div>
-          <h4>Ownership becomes fleet yield</h4>
+          <h4>Alcohol gets hit through craving, not calories</h4>
         </div>
-        <code>c3</code>
+        <code>glp-c2</code>
       </div>
-      <p>Autonomy attacks the privately owned idle car: finance, dealers, residual values, aftermarket repair, and parking all reprice around service fleets or owner-operated robotaxi yield.</p>
+      <p>The larger GLP-1 branch may be reward-loop dampening, where alcohol demand falls because craving quiets, not because drink calories are counted.</p>
       <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c3</dd></div>
+        <div><dt>lineage</dt><dd>seed:seed-glp1 -&gt; glp-c2</dd></div>
         <div><dt>operator</dt><dd>Substrate removal</dd></div>
-        <div><dt>substrate</dt><dd>private car ownership</dd></div>
-        <div><dt>delta</dt><dd>Moved from better cars to idle owned assets repricing as yield assets.</dd></div>
+        <div><dt>substrate</dt><dd>reward-loop consumption</dd></div>
+        <div><dt>delta</dt><dd>Moved from appetite to reward-loop consumption.</dd></div>
       </dl>
       <div class="scores">
-        <span>novelty 0.68</span>
-        <span>grounding 0.42</span>
-        <span>decay 1.00</span>
+        <span>novelty 0.73</span>
+        <span>grounding 0.38</span>
+        <span>decay 0.76</span>
         <span>lens n/a</span>
       </div>
       <details>
         <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.912, substrateDistance=0.4, hiddenDependents=0.52; signalStrength=0.575, mechanismClarity=0.375, falsifiability=0.4, riskPenalty=0; front 4; novelty 0.68 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.64; decay-adjusted 0.64</p>
+        <p>sourceAbsence=0.828, substrateDistance=0.75, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.425, falsifiability=0.4, riskPenalty=0; front 2; novelty 0.73 drove selection; grounding 0.38 cleared floor 0.35; directional score 0.65; decay-adjusted 0.49</p>
       </details>
-      <div class="verdict-row" aria-label="Human verdict for Ownership becomes fleet yield">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c3" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c4">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">not selected - g1</div>
-          <h4>Sleeper commute rewires geography</h4>
-        </div>
-        <code>c4</code>
-      </div>
-      <p>Door-to-door autonomy changes the 200-700 mile band: sleeping or working through travel collapses the felt cost of distance and welds labor markets into megaregions.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c4</dd></div>
-        <div><dt>operator</dt><dd>Substrate removal</dd></div>
-        <div><dt>substrate</dt><dd>driver time and distance friction</dd></div>
-        <div><dt>delta</dt><dd>Moved from urban robotaxi to distance friction disappearing in the intercity band.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.79</span>
-        <span>grounding 0.42</span>
-        <span>decay 1.00</span>
-        <span>lens n/a</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.967, substrateDistance=0.667, hiddenDependents=0.52; signalStrength=0.59, mechanismClarity=0.275, falsifiability=0.48, riskPenalty=0; front 3; novelty 0.79 drove selection; grounding 0.42 cleared floor 0.35; directional score 0.70; decay-adjusted 0.70</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Sleeper commute rewires geography">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c4" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c5">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">not selected - g1</div>
-          <h4>Adoption asymmetry creates border arbitrage</h4>
-        </div>
-        <code>c5</code>
-      </div>
-      <p>FSD arrives unevenly, so the edge lives at the boundary: believers versus disbelievers, served metros versus laggards, and leapfrog regions that skip old car ownership patterns.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c5</dd></div>
-        <div><dt>operator</dt><dd>Adoption boundary</dd></div>
-        <div><dt>substrate</dt><dd>uneven deployment boundary</dd></div>
-        <div><dt>delta</dt><dd>Moved from average arrival to edges where belief and deployment diverge.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.75</span>
-        <span>grounding 0.39</span>
-        <span>decay 1.00</span>
-        <span>lens n/a</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.848, substrateDistance=0.8, hiddenDependents=0.44; signalStrength=0.605, mechanismClarity=0.35, falsifiability=0.24, riskPenalty=0; front 4; novelty 0.75 drove selection; grounding 0.39 cleared floor 0.35; directional score 0.67; decay-adjusted 0.67</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Adoption asymmetry creates border arbitrage">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c5" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c6">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">not selected - g1</div>
-          <h4>Fleet compute becomes mobile edge</h4>
-        </div>
-        <code>c6</code>
-      </div>
-      <p>A large autonomous fleet could become a distributed sensing and compute substrate, turning parked or low-utilization vehicles into mobile edge infrastructure.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c6</dd></div>
-        <div><dt>operator</dt><dd>Infrastructure inversion</dd></div>
-        <div><dt>substrate</dt><dd>fleet as compute substrate</dd></div>
-        <div><dt>delta</dt><dd>Moved from cars as transport to fleet as distributed infrastructure.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.89</span>
-        <span>grounding 0.30</span>
-        <span>decay 1.00</span>
-        <span>lens n/a</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=1, substrateDistance=1, hiddenDependents=0.44; signalStrength=0.44, mechanismClarity=0.3, falsifiability=0.24, riskPenalty=0.12; grounding 0.30 failed floor 0.35; directional score 0.72; decay-adjusted 0.72</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for Fleet compute becomes mobile edge">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c6" data-verdict="keeper">keeper</button>
-      </div>
-    </article>
-    <article class="idea-card not-selected" data-card="full-self-driving-unlock:c7">
-      <div class="idea-head">
-        <div>
-          <div class="kicker">not selected - g1</div>
-          <h4>LiDAR retrofit inventory is not a lead</h4>
-        </div>
-        <code>c7</code>
-      </div>
-      <p>Competitors with deployed LiDAR-heavy fleets may own expensive inventory rather than durable advantage if camera-only OTA economics dominate the cost curve.</p>
-      <dl>
-        <div><dt>lineage</dt><dd>seed:seed-fsd-unlock -&gt; c7</dd></div>
-        <div><dt>operator</dt><dd>Cost-curve inversion</dd></div>
-        <div><dt>substrate</dt><dd>autonomy stack cost structure</dd></div>
-        <div><dt>delta</dt><dd>Moved from deployment count to cost-curve liability.</dd></div>
-      </dl>
-      <div class="scores">
-        <span>novelty 0.82</span>
-        <span>grounding 0.37</span>
-        <span>decay 1.00</span>
-        <span>lens n/a</span>
-      </div>
-      <details>
-        <summary>Why it rated this way</summary>
-        <p>sourceAbsence=0.964, substrateDistance=0.833, hiddenDependents=0.44; signalStrength=0.5, mechanismClarity=0.35, falsifiability=0.32, riskPenalty=0; front 3; novelty 0.82 drove selection; grounding 0.37 cleared floor 0.35; directional score 0.70; decay-adjusted 0.70</p>
-      </details>
-      <div class="verdict-row" aria-label="Human verdict for LiDAR retrofit inventory is not a lead">
-        <button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="dead">dead</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="obvious">obvious</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="interesting">interesting</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="investigate">investigate</button><button type="button" data-case="full-self-driving-unlock" data-candidate="c7" data-verdict="keeper">keeper</button>
+      <div class="verdict-row" aria-label="Human verdict for Alcohol gets hit through craving, not calories">
+        <button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="dead">dead</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="obvious">obvious</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="interesting">interesting</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="investigate">investigate</button><button type="button" data-case="glp1-snack-demand-destruction" data-candidate="glp-c2" data-verdict="keeper">keeper</button>
       </div>
     </article></div>
       <h3>Rejected Before Scoring</h3>
       <div class="mini-grid">
     <article class="mini-card rejected">
-      <h4>Safer autonomous cars</h4>
-      <p>No new substrate or mechanism beyond the seed thesis.</p>
-      <code>seed:seed-fsd-unlock -&gt; reject-sp9</code>
-    </article>
-    <article class="mini-card rejected">
-      <h4>FSD becomes popular</h4>
-      <p>No delta: the packet names uptake but not a new dependent, substrate, or mechanism.</p>
-      <code>seed:seed-fsd-unlock -&gt; reject-sp10</code>
+      <h4>People lose weight</h4>
+      <p>No new substrate beyond the GLP-1 weight-loss thesis.</p>
+      <code>seed:seed-glp1 -&gt; reject-g4</code>
     </article></div>
     </section>
 
@@ -1992,7 +1852,7 @@
     </section>
   </main>
   <script>
-    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T15:08:07.290Z","verdictScale":["dead","obvious","interesting","investigate","keeper"],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"full-self-driving-unlock","label":"Full self-driving unlock","caseVerdict":null,"notes":"","candidates":[{"id":"c8","title":"Movement metering replaces fine revenue","verdict":null,"notes":""},{"id":"c1","title":"Accident economy dries up","verdict":null,"notes":""},{"id":"c8a","title":"Road revenue moves to mobility accounts","verdict":null,"notes":""},{"id":"c2","title":"Traffic-state loses its subject","verdict":null,"notes":""},{"id":"c3","title":"Ownership becomes fleet yield","verdict":null,"notes":""},{"id":"c4","title":"Sleeper commute rewires geography","verdict":null,"notes":""},{"id":"c5","title":"Adoption asymmetry creates border arbitrage","verdict":null,"notes":""},{"id":"c6","title":"Fleet compute becomes mobile edge","verdict":null,"notes":""},{"id":"c7","title":"LiDAR retrofit inventory is not a lead","verdict":null,"notes":""}]}]};
+    const feedback = {"schemaVersion":"kernel.assay-feedback.v1","assaySchemaVersion":"kernel.discovery-assay.v1","generatedAt":"2026-06-21T15:25:35.566Z","verdictScale":["dead","obvious","interesting","investigate","keeper"],"cases":[{"slug":"jack-drone-privacy","label":"Jack drone privacy","caseVerdict":null,"notes":"","candidates":[{"id":"jdp-c2","title":"Drone response becomes choreography","verdict":null,"notes":""},{"id":"jdp-c3","title":"Privacy perimeter moves outward","verdict":null,"notes":""},{"id":"jdp-c1","title":"Protect the footage window","verdict":null,"notes":""},{"id":"jdp-c4","title":"Non-interference is the design constraint","verdict":null,"notes":""},{"id":"jdp-c1a","title":"Use the footage clock as the trigger","verdict":null,"notes":""}]},{"slug":"jack-yacht-perimeter-intrusion","label":"Jack security swimmer","caseVerdict":null,"notes":"","candidates":[{"id":"jyp-c2a","title":"Instrument the bridge, not only the water","verdict":null,"notes":""},{"id":"jyp-c3","title":"Detection must classify the water","verdict":null,"notes":""},{"id":"jyp-c2","title":"The tender is part of the perimeter","verdict":null,"notes":""},{"id":"jyp-c1","title":"The perimeter starts in the water","verdict":null,"notes":""},{"id":"jyp-c4","title":"Water alert becomes interior lockdown","verdict":null,"notes":""}]},{"slug":"fsd-accident-economy","label":"Tesla FSD accident economy","caseVerdict":null,"notes":"","candidates":[{"id":"fae-c2","title":"Crash removal hits ad-supported media","verdict":null,"notes":""},{"id":"fae-c3","title":"Organ supply loses a concentrated source","verdict":null,"notes":""},{"id":"fae-c2a","title":"Insurer ads are a demand sink","verdict":null,"notes":""},{"id":"fae-c1","title":"Accident volume is the substrate","verdict":null,"notes":""},{"id":"fae-c4","title":"Fault moves from driver to stack","verdict":null,"notes":""}]},{"slug":"starship-launch-cost-collapse","label":"SpaceX launch-cost collapse","caseVerdict":null,"notes":"","candidates":[{"id":"ss-c2","title":"Orbit becomes a construction yard","verdict":null,"notes":""},{"id":"ss-c3","title":"Replacement beats perfection","verdict":null,"notes":""},{"id":"ss-c1","title":"Space hardware gets less precious","verdict":null,"notes":""},{"id":"ss-c2a","title":"Orbital construction needs dry docks","verdict":null,"notes":""}]},{"slug":"glp1-snack-demand-destruction","label":"GLP-1 appetite shock","caseVerdict":null,"notes":"","candidates":[{"id":"glp-c1a","title":"Checkout shelf becomes loyalty real estate","verdict":null,"notes":""},{"id":"glp-c1","title":"Snack shelf loses the impulse event","verdict":null,"notes":""},{"id":"glp-c3","title":"Appetite becomes an access class","verdict":null,"notes":""},{"id":"glp-c2","title":"Alcohol gets hit through craving, not calories","verdict":null,"notes":""}]}]};
 
     function findCandidate(caseSlug, candidateId) {
       const foundCase = feedback.cases.find((item) => item.slug === caseSlug);

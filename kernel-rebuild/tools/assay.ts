@@ -19,6 +19,7 @@ type AssayCaseDefinition = {
   label: string;
   caseStudyPath: string;
   fixturePath: string;
+  controlPath?: string;
   fixedDefault?: boolean;
 };
 
@@ -57,6 +58,7 @@ type AssayResult = {
   trace: RunTrace;
   candidates: AssayCandidate[];
   convergence: ConvergenceGroup[];
+  control?: CleanControl;
   bestConclusion?: AssayCandidate;
   bestOutlier?: AssayCandidate;
   gen2: string;
@@ -73,11 +75,15 @@ type FeedbackTemplate = {
   schemaVersion: string;
   assaySchemaVersion: string;
   generatedAt: string;
-  verdictScale: Verdict[];
+  verdictScale: Array<{
+    value: Verdict;
+    meaning: string;
+  }>;
   cases: Array<{
     slug: string;
     label: string;
     caseVerdict: Verdict | null;
+    controlVerdict: Verdict | null;
     notes: string;
     candidates: Array<{
       id: string;
@@ -88,12 +94,30 @@ type FeedbackTemplate = {
   }>;
 };
 
+type CleanControl = {
+  schemaVersion: string;
+  caseSlug: string;
+  label: string;
+  source: string;
+  actualProblem: string;
+  discoveryInsights: Array<{
+    title: string;
+    detail: string;
+  }>;
+  ideas: Array<{
+    title: string;
+    detail: string;
+  }>;
+  nextTests: string[];
+};
+
 const registry: AssayCaseDefinition[] = [
   {
     slug: 'jack-drone-privacy',
     label: 'Jack drone privacy',
     caseStudyPath: 'case-studies/jack-drone-privacy/',
     fixturePath: 'fixtures/assay/jack-drone-privacy.json',
+    controlPath: 'fixtures/controls/jack-drone-privacy.clean-agent.json',
     fixedDefault: true,
   },
   {
@@ -136,6 +160,14 @@ const registry: AssayCaseDefinition[] = [
     fixturePath: 'fixtures/glp1-seed.json',
   },
 ];
+
+const verdictHelp: Record<Verdict, string> = {
+  dead: 'No useful signal. Do not revisit unless new evidence changes the case.',
+  obvious: 'True or plausible, but already visible from the scenario. Not discovery.',
+  interesting: 'Worth thinking about. It changed your attention, but does not yet demand action.',
+  investigate: 'Worth a follow-up search, case split, red-team test, or falsification pass. This button does not launch that work.',
+  keeper: 'Strong signal. Preserve it as a candidate insight or future seed.',
+};
 
 const verdictScale: Verdict[] = ['dead', 'obvious', 'interesting', 'investigate', 'keeper'];
 
@@ -240,6 +272,15 @@ async function loadTrace(definition: AssayCaseDefinition): Promise<RunTrace> {
   return buildRunTrace(fixture, 'diverge', { lenses: [capstoneDemoLens] });
 }
 
+async function loadControl(definition: AssayCaseDefinition): Promise<CleanControl | undefined> {
+  if (!definition.controlPath) return undefined;
+  const raw = JSON.parse(await readFile(path.join(root, definition.controlPath), 'utf8')) as CleanControl;
+  if (raw.caseSlug !== definition.slug) {
+    throw new Error(`Control ${definition.controlPath} is for ${raw.caseSlug}, not ${definition.slug}.`);
+  }
+  return raw;
+}
+
 function selectionForDial(trace: RunTrace, dial: Dial): SelectionResult {
   return trace.comparison.focus.schedule.dial === dial ? trace.comparison.focus : trace.comparison.alternate;
 }
@@ -328,13 +369,14 @@ function generationLine(trace: RunTrace): string {
   return `${generation.quality}: ${generation.detail}`;
 }
 
-function assayResult(definition: AssayCaseDefinition, trace: RunTrace): AssayResult {
+function assayResult(definition: AssayCaseDefinition, trace: RunTrace, control?: CleanControl): AssayResult {
   const candidates = allSelectedCandidates(trace).map((candidate) => toAssayCandidate(trace, candidate));
   return {
     definition,
     trace,
     candidates,
     convergence: convergenceGroups(candidates),
+    control,
     bestConclusion: bestConclusion(candidates),
     bestOutlier: bestOutlier(candidates),
     gen2: generationLine(trace),
@@ -352,17 +394,18 @@ function tableCell(value: string): string {
 }
 
 function renderConsole(results: AssayResult[], args: Args): string {
+  const controlCount = results.filter((result) => result.control).length;
   const lines = [
-    'case -> conclusion -> convergence -> outlier -> gen2 -> failed checks',
-    `selection: count=${results.length}; mode=${args.random ? 'random-fill' : 'deterministic-fill'}; seed=${args.seed}; cases=${results.map((item) => item.definition.slug).join(', ')}`,
-    '| case | conclusion | convergence | outlier | gen2 | failed checks |',
-    '| --- | --- | --- | --- | --- | --- |',
+    'case -> conclusion -> control -> convergence -> outlier -> gen2 -> failed checks',
+    `selection: count=${results.length}; controls=${controlCount}; mode=${args.random ? 'random-fill' : 'deterministic-fill'}; seed=${args.seed}; cases=${results.map((item) => item.definition.slug).join(', ')}`,
+    '| case | conclusion | control | convergence | outlier | gen2 | failed checks |',
+    '| --- | --- | --- | --- | --- | --- | --- |',
   ];
   for (const result of results) {
     const convergence = result.convergence.length
       ? result.convergence.map((group) => `${group.label} x${group.count}`).join('; ')
       : 'none';
-    lines.push(`| ${tableCell(result.definition.label)} | ${tableCell(result.bestConclusion?.title || 'none')} | ${tableCell(convergence)} | ${tableCell(result.bestOutlier?.title || 'none')} | ${tableCell(result.gen2)} | ${tableCell(result.failedChecks.join(', ') || 'none')} |`);
+    lines.push(`| ${tableCell(result.definition.label)} | ${tableCell(result.bestConclusion?.title || 'none')} | ${tableCell(result.control?.actualProblem || 'none')} | ${tableCell(convergence)} | ${tableCell(result.bestOutlier?.title || 'none')} | ${tableCell(result.gen2)} | ${tableCell(result.failedChecks.join(', ') || 'none')} |`);
   }
   return lines.join('\n');
 }
@@ -372,11 +415,12 @@ function feedbackTemplate(results: AssayResult[]): FeedbackTemplate {
     schemaVersion: FEEDBACK_SCHEMA_VERSION,
     assaySchemaVersion: ASSAY_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
-    verdictScale,
+    verdictScale: verdictScale.map((value) => ({ value, meaning: verdictHelp[value] })),
     cases: results.map((result) => ({
       slug: result.definition.slug,
       label: result.definition.label,
       caseVerdict: null,
+      controlVerdict: null,
       notes: '',
       candidates: result.candidates.map((candidate) => ({
         id: candidate.id,
@@ -398,6 +442,10 @@ function escapeHtml(value: string): string {
 
 function jsonForScript(value: unknown): string {
   return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
+function help(label: string, tip: string): string {
+  return `<span class="help" tabindex="0" title="${escapeHtml(tip)}" data-tip="${escapeHtml(tip)}">${escapeHtml(label)}</span>`;
 }
 
 function metric(value: number | null): string {
@@ -439,9 +487,57 @@ function candidateCard(result: AssayResult, candidate: AssayCandidate): string {
         <p>${escapeHtml(candidate.ratingReason)}</p>
       </details>
       <div class="verdict-row" aria-label="Human verdict for ${escapeHtml(candidate.title)}">
-        ${verdictScale.map((verdict) => `<button type="button" data-case="${escapeHtml(result.definition.slug)}" data-candidate="${escapeHtml(candidate.id)}" data-verdict="${verdict}">${verdict}</button>`).join('')}
+        ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-case="${escapeHtml(result.definition.slug)}" data-candidate="${escapeHtml(candidate.id)}" data-verdict="${verdict}">${verdict}</button>`).join('')}
       </div>
     </article>`;
+}
+
+function controlBlock(result: AssayResult): string {
+  const control = result.control;
+  if (!control) {
+    return '<p class="empty">No clean-agent control is attached to this case yet.</p>';
+  }
+
+  return `
+    <section class="control-panel">
+      <div class="control-head">
+        <div>
+          <div class="kicker">${escapeHtml(control.source)}</div>
+          <h3>Clean-Agent Control</h3>
+        </div>
+        <div class="verdict-row control-verdict" aria-label="Control verdict for ${escapeHtml(result.definition.label)}">
+          ${verdictScale.map((verdict) => `<button type="button" title="${escapeHtml(verdictHelp[verdict])}" data-control-case="${escapeHtml(result.definition.slug)}" data-control-verdict="${verdict}">${verdict}</button>`).join('')}
+        </div>
+      </div>
+      <article class="control-problem">
+        <div class="kicker">actual problem</div>
+        <p>${escapeHtml(control.actualProblem)}</p>
+      </article>
+      <div class="control-grid">
+        <div>
+          <h4>Discovery Insights</h4>
+          ${control.discoveryInsights.map((item) => `
+            <article class="mini-card control-card">
+              <h5>${escapeHtml(item.title)}</h5>
+              <p>${escapeHtml(item.detail)}</p>
+            </article>`).join('')}
+        </div>
+        <div>
+          <h4>Ideas / Opportunities</h4>
+          ${control.ideas.map((item) => `
+            <article class="mini-card control-card">
+              <h5>${escapeHtml(item.title)}</h5>
+              <p>${escapeHtml(item.detail)}</p>
+            </article>`).join('')}
+        </div>
+        <div>
+          <h4>Next Tests</h4>
+          <ul class="test-list">
+            ${control.nextTests.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    </section>`;
 }
 
 function convergenceBlock(result: AssayResult): string {
@@ -466,49 +562,61 @@ function rejectedBlock(trace: RunTrace): string {
 function caseSection(result: AssayResult): string {
   const selected = result.candidates.filter((candidate) => candidate.status !== 'not-selected');
   const outliers = result.bestOutlier ? [result.bestOutlier] : [];
+  const convergence = result.convergence.length
+    ? result.convergence.map((group) => `${group.label} x${group.count}`).join('; ')
+    : 'none';
+  const controlProblem = result.control?.actualProblem || 'no clean-agent control yet';
   return `
-    <section class="case-section" id="${escapeHtml(result.definition.slug)}">
-      <div class="case-head">
-        <div>
+    <details class="case-section" id="${escapeHtml(result.definition.slug)}">
+      <summary class="case-head">
+        <div class="case-title">
           <div class="kicker">${escapeHtml(result.definition.caseStudyPath)}</div>
           <h2>${escapeHtml(result.definition.label)}</h2>
         </div>
-        <a href="#feedback">feedback JSON</a>
-      </div>
+        <div class="headline-grid">
+          <div><span>${help('kernel', 'The kernel result from this assay run.')}</span><strong>${escapeHtml(result.bestConclusion?.title || 'none')}</strong></div>
+          <div><span>${help('control', 'A clean-context agent answer for comparison, when available.')}</span><strong>${escapeHtml(compact(controlProblem, 82))}</strong></div>
+          <div><span>${help('convergence', 'Repeated themes or operators across candidates. Useful when several ideas point at the same hidden variable.')}</span><strong>${escapeHtml(compact(convergence, 82))}</strong></div>
+          <div><span>${help('gen2', 'Whether generation-2 children improved, drifted, duplicated, or did not run.')}</span><strong>${escapeHtml(compact(result.gen2, 82))}</strong></div>
+        </div>
+      </summary>
+      <div class="case-body">
       <div class="case-summary">
         <article>
-          <div class="kicker">strongest conclusion</div>
+          <div class="kicker">${help('strongest conclusion', 'The current best kernel-nominated discovery for this case. Human verdict can override it.')}</div>
           <h3>${escapeHtml(result.bestConclusion?.title || 'none')}</h3>
           <p>${escapeHtml(result.bestConclusion?.thesis || 'No candidates generated.')}</p>
         </article>
         <article>
-          <div class="kicker">generation 2</div>
+          <div class="kicker">${help('generation 2', 'A bounded child generation from selected parents. Improved means child beat parent score; drifted means it changed without beating parent.')}</div>
           <h3>${escapeHtml(result.gen2.split(':')[0])}</h3>
           <p>${escapeHtml(result.gen2)}</p>
         </article>
         <article>
-          <div class="kicker">failed checks</div>
+          <div class="kicker">${help('failed checks', 'Run-level contract/proof failures. Passing checks does not mean the ideas are true.')}</div>
           <h3>${escapeHtml(result.failedChecks.length ? `${result.failedChecks.length}` : 'none')}</h3>
           <p>${escapeHtml(result.failedChecks.join(', ') || 'Goal checks passed.')}</p>
         </article>
       </div>
+      ${controlBlock(result)}
       <div class="scan-grid">
         <div>
-          <h3>What It Found</h3>
+          <h3>${help('What It Found', 'Repeated discovery terrain. Start here when scanning for soil enrichment.')}</h3>
           <div class="mini-grid">${convergenceBlock(result)}</div>
         </div>
         <div>
-          <h3>Interesting Outlier</h3>
+          <h3>${help('Interesting Outlier', 'A high-novelty or non-stable candidate that may be fertile even if it did not win.')}</h3>
           <div class="idea-list">${outliers.map((candidate) => candidateCard(result, candidate)).join('') || '<p class="empty">No outlier selected.</p>'}</div>
         </div>
       </div>
-      <h3>Promising Entries</h3>
+      <h3>${help('Promising Entries', 'Candidates selected by Explore, Proof, or both. These are nominated, not proven.')}</h3>
       <div class="idea-list">${selected.map((candidate) => candidateCard(result, candidate)).join('') || '<p class="empty">No selected candidates.</p>'}</div>
-      <h3>All Candidates</h3>
+      <h3>${help('All Candidates', 'Every scored candidate in the combined pool. Use this when you want to audit what the kernel considered.')}</h3>
       <div class="idea-list">${result.candidates.map((candidate) => candidateCard(result, candidate)).join('')}</div>
-      <h3>Rejected Before Scoring</h3>
+      <h3>${help('Rejected Before Scoring', 'Source packets inspected but rejected because they produced no useful delta.')}</h3>
       <div class="mini-grid">${rejectedBlock(result.trace)}</div>
-    </section>`;
+      </div>
+    </details>`;
 }
 
 function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Args): string {
@@ -547,11 +655,12 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       margin: 0 auto;
       padding: 24px 0 40px;
     }
-    h1, h2, h3, h4, p { margin-top: 0; }
+    h1, h2, h3, h4, h5, p { margin-top: 0; }
     h1 { margin-bottom: 4px; font-size: 27px; letter-spacing: 0; }
     h2 { font-size: 22px; letter-spacing: 0; }
     h3 { margin-bottom: 10px; font-size: 15px; letter-spacing: 0; text-transform: uppercase; color: var(--muted); }
     h4 { margin-bottom: 6px; font-size: 16px; letter-spacing: 0; }
+    h5 { margin-bottom: 4px; font-size: 14px; letter-spacing: 0; }
     p { color: #34443b; }
     code {
       padding: 2px 5px;
@@ -606,15 +715,72 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       color: #34443b;
       font-size: 12px;
     }
-    .case-section { margin-top: 14px; }
-    .case-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: start;
-      margin-bottom: 10px;
+    .case-section {
+      margin-top: 14px;
+      padding: 0;
+      overflow: visible;
     }
-    .case-head a { color: #315d9c; }
+    .case-section[open] {
+      border-color: #25362c;
+    }
+    .case-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 14px;
+      align-items: stretch;
+      padding: 14px 16px;
+      cursor: pointer;
+      list-style: none;
+    }
+    .case-head::-webkit-details-marker { display: none; }
+    .case-head::before {
+      content: "+";
+      position: absolute;
+      right: 18px;
+      margin-top: 3px;
+      width: 23px;
+      height: 23px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      text-align: center;
+      line-height: 20px;
+      background: #fff;
+      font-weight: 800;
+    }
+    .case-section[open] .case-head::before { content: "-"; }
+    .case-title h2 { margin-bottom: 0; padding-right: 24px; }
+    .headline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding-right: 30px;
+    }
+    .headline-grid div {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px;
+      background: #f8faf6;
+      min-height: 72px;
+    }
+    .headline-grid span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .headline-grid strong {
+      display: block;
+      margin-top: 4px;
+      color: #26362d;
+      font-size: 13px;
+      line-height: 1.24;
+    }
+    .case-body {
+      border-top: 1px solid var(--line);
+      padding: 16px;
+    }
     .case-summary {
       display: grid;
       grid-template-columns: 1.4fr 1fr .7fr;
@@ -632,6 +798,44 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       grid-template-columns: .9fr 1.1fr;
       gap: 12px;
       margin-bottom: 14px;
+    }
+    .control-panel {
+      border: 2px solid #25362c;
+      border-radius: 8px;
+      background: #f8fbff;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .control-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+    .control-problem {
+      border: 1px solid #b8c8dd;
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .control-problem p { margin-bottom: 0; }
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .control-card {
+      margin-bottom: 8px;
+      border-color: #b8c8dd;
+    }
+    .test-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding-left: 18px;
+      color: #34443b;
     }
     .mini-grid {
       display: grid;
@@ -711,17 +915,56 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       background: #26362d;
       color: #fff;
     }
+    .help {
+      position: relative;
+      border-bottom: 1px dotted #69786e;
+      cursor: help;
+    }
+    .help:focus {
+      outline: 2px solid rgba(70,148,92,.35);
+      outline-offset: 2px;
+    }
+    .help::after {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 7px);
+      z-index: 20;
+      width: 250px;
+      padding: 8px;
+      border: 1px solid #25362c;
+      border-radius: 6px;
+      background: #18211c;
+      color: #fff;
+      content: attr(data-tip);
+      font: 12px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: opacity .12s ease, transform .12s ease;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .help:hover::after, .help:focus::after {
+      opacity: 1;
+      transform: translateY(0);
+    }
     .feedback-panel {
       margin-top: 14px;
-      position: sticky;
-      bottom: 0;
-      z-index: 5;
     }
     .feedback-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 8px;
+    }
+    .feedback-note {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .feedback-status {
+      color: #315d40;
+      font-weight: 700;
     }
     textarea {
       width: 100%;
@@ -741,11 +984,9 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       background: #fbfcfa;
     }
     @media (max-width: 900px) {
-      .hero-grid, .case-summary, .scan-grid, .mini-grid, .idea-list, dl {
+      .hero-grid, .case-head, .headline-grid, .case-summary, .scan-grid, .mini-grid, .idea-list, dl, .control-grid {
         grid-template-columns: 1fr;
       }
-      .case-head { display: block; }
-      .feedback-panel { position: static; }
     }
   </style>
 </head>
@@ -753,7 +994,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
   <main>
     <section class="hero">
       <h1>Discovery Assay</h1>
-      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Mark ideas as dead, obvious, interesting, investigate, or keeper.</p>
+      <p>This run asks whether the kernel makes five cases more fertile. It is not asking whether the machine solved them. Case rows are collapsed by default; expand only the ones worth inspecting.</p>
       <div class="facts">
         <span>schema ${escapeHtml(ASSAY_SCHEMA_VERSION)}</span>
         <span>cases ${results.length}</span>
@@ -764,11 +1005,11 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       <div class="hero-grid">
         <article class="hero-card">
           <h3>Outcome Gate</h3>
-          <p>After these cases, did the run surface at least 3-5 entries a human would mark interesting or better?</p>
+          <p>After these cases, did the run surface at least 3-5 entries you would mark ${help('interesting', verdictHelp.interesting)}, ${help('investigate', verdictHelp.investigate)}, or ${help('keeper', verdictHelp.keeper)}?</p>
         </article>
         <article class="hero-card">
-          <h3>Read Order</h3>
-          <p>Start with strongest conclusion, then convergence, then interesting outlier, then all candidates. The scores are evidence; your verdict is bedrock.</p>
+          <h3>Controls</h3>
+          <p>The clean-agent control is a baseline answer with no kernel context. The hard question is whether the kernel surfaced anything better, faster, or easier to judge.</p>
         </article>
       </div>
     </section>
@@ -777,6 +1018,7 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
 
     <section class="feedback-panel" id="feedback">
       <h2>Feedback</h2>
+      <p class="feedback-note">Verdict buttons update this JSON locally in your browser. They do not save to the repo or server until you copy/download the JSON and decide to preserve it. <span class="feedback-status" id="feedback-status">No verdicts marked yet.</span></p>
       <div class="feedback-actions">
         <button type="button" id="copy-feedback">Copy JSON</button>
         <button type="button" id="download-feedback">Download JSON</button>
@@ -793,8 +1035,23 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
       return foundCase.candidates.find((candidate) => candidate.id === candidateId);
     }
 
+    function findCase(caseSlug) {
+      return feedback.cases.find((item) => item.slug === caseSlug);
+    }
+
+    function verdictCount() {
+      return feedback.cases.reduce((sum, item) => {
+        const caseCount = item.caseVerdict ? 1 : 0;
+        const controlCount = item.controlVerdict ? 1 : 0;
+        const candidateCount = item.candidates.filter((candidate) => candidate.verdict).length;
+        return sum + caseCount + controlCount + candidateCount;
+      }, 0);
+    }
+
     function renderFeedback() {
       document.getElementById('feedback-json').value = JSON.stringify(feedback, null, 2);
+      const count = verdictCount();
+      document.getElementById('feedback-status').textContent = count ? count + ' verdict(s) marked locally.' : 'No verdicts marked yet.';
     }
 
     function markCard(caseSlug, candidateId, verdict) {
@@ -812,6 +1069,18 @@ function renderHtml(results: AssayResult[], template: FeedbackTemplate, args: Ar
         if (!candidate) return;
         candidate.verdict = button.dataset.verdict;
         markCard(button.dataset.case, button.dataset.candidate, button.dataset.verdict);
+        renderFeedback();
+      });
+    });
+
+    document.querySelectorAll('[data-control-verdict]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const foundCase = findCase(button.dataset.controlCase);
+        if (!foundCase) return;
+        foundCase.controlVerdict = button.dataset.controlVerdict;
+        document.querySelectorAll('[data-control-case="' + button.dataset.controlCase + '"]').forEach((item) => {
+          item.classList.toggle('active', item.dataset.controlVerdict === button.dataset.controlVerdict);
+        });
         renderFeedback();
       });
     });
@@ -851,6 +1120,8 @@ async function writeOutputs(args: Args, results: AssayResult[]): Promise<void> {
       label: result.definition.label,
       fixturePath: result.definition.fixturePath,
       caseStudyPath: result.definition.caseStudyPath,
+      controlPath: result.definition.controlPath || null,
+      controlActualProblem: result.control?.actualProblem || null,
       bestConclusion: result.bestConclusion?.title || null,
       bestOutlier: result.bestOutlier?.title || null,
       convergence: result.convergence,
@@ -864,14 +1135,15 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   if (args.list) {
     for (const item of registry) {
-      console.log(`${item.slug} -> ${item.fixturePath}${item.fixedDefault ? ' (fixed default)' : ''}`);
+      console.log(`${item.slug} -> ${item.fixturePath}${item.controlPath ? `; control=${item.controlPath}` : ''}${item.fixedDefault ? ' (fixed default)' : ''}`);
     }
     return;
   }
 
   const definitions = selectCases(args);
   const traces = await Promise.all(definitions.map(loadTrace));
-  const results = definitions.map((definition, index) => assayResult(definition, traces[index]));
+  const controls = await Promise.all(definitions.map(loadControl));
+  const results = definitions.map((definition, index) => assayResult(definition, traces[index], controls[index]));
   await writeOutputs(args, results);
   console.log(renderConsole(results, args));
   console.log(`html: ${path.relative(root, path.join(args.outDir, 'index.html'))}`);

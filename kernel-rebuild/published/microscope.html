@@ -640,6 +640,20 @@
   </style>
 </head>
 <body>
+<style>
+.kx-nav{position:sticky;top:0;z-index:2147483647;display:flex;gap:.3rem;align-items:center;
+flex-wrap:wrap;padding:.55rem .8rem;background:#0b0e13;border-bottom:1px solid #2a3544;
+font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem;line-height:1.2;}
+.kx-nav .kx-brand{color:#8b9bb0;font-weight:600;margin-right:.4rem;text-transform:uppercase;
+letter-spacing:.06em;font-size:.7rem;}
+.kx-nav a{color:#e8edf4;text-decoration:none;padding:.3rem .6rem;border-radius:6px;white-space:nowrap;}
+.kx-nav a small{color:#8b9bb0;font-weight:400;margin-left:.35rem;}
+.kx-nav a:hover{background:#1b232e;color:#c084fc;}
+.kx-nav a:hover small{color:#c084fc;}
+.kx-nav a.kx-active{background:#c084fc;color:#0b0e13;font-weight:650;}
+.kx-nav a.kx-active small{color:#0b0e13;}
+.kx-nav .kx-hub{margin-left:auto;color:#8b9bb0;}
+</style><nav class="kx-nav"><span class="kx-brand">Kernel views</span><a class="kx-link kx-active" href="microscope.html">Microscope<small>single-run trace</small></a><a class="kx-link" href="architecture.html">Architecture<small>system diagram</small></a><a class="kx-link" href="assay.html">Assay<small>outcome discovery</small></a><a class="kx-hub" href="/">All runs (hub) &rsaquo;</a></nav>
   <main>
     <h1>Kernel Microscope</h1>
     <p class="sub">One trace, bounded generation, two selectors, one post-selection lens.</p>

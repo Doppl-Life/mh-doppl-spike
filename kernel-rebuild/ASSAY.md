@@ -46,6 +46,24 @@ sorted fill, `--seed=<value>` to replay a random selection, `--count=<n>` to run
 fewer or more cases, `--cases=a,b,c` to choose exact cases, and `--all` to run
 the full registry.
 
+Case sections in `out/assay/index.html` are collapsed by default. The headline is
+the scan surface: kernel conclusion, clean-agent control when available,
+convergence, and generation-2 movement. Expand only the cases worth inspecting.
+
+## Control Lane
+
+The clean-agent control is a baseline answer from a single clean-context agent
+with no knowledge of the kernel, assay, or surrounding machinery.
+
+Use it to keep the kernel honest:
+
+- Did the kernel surface anything the clean agent missed?
+- Did the kernel make the case easier to judge?
+- Did generation 2 sharpen anything the clean agent only gestured at?
+- Did the clean agent simply beat the machinery?
+
+The first control is attached to `jack-drone-privacy`.
+
 ## Win Condition
 
 The first outcome gate is simple:
@@ -61,4 +79,9 @@ Kernel scores nominate. Human verdicts are bedrock.
 - `obvious` - true or plausible but already in the visible case.
 - `interesting` - worth thinking about.
 - `investigate` - worth a follow-up search, case split, or falsification test.
+  The button marks intent; it does not start investigation work.
 - `keeper` - strong enough to preserve as a candidate insight.
+
+Verdict buttons update the feedback JSON locally in the browser. They do not save
+to the repo or a server. Copy or download the JSON when a verdict set should be
+preserved.

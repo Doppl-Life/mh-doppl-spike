@@ -89,6 +89,17 @@ Collapse extraction has three modes:
 - `heuristic` - locally extracts draft memory from candidate and critic text.
 - `openrouter` - optional cheap schema-bounded extraction when a key is present.
 
+Collapse a real run export into the local ledger:
+
+```bash
+python3 knowledge_space.py \
+  --collapse-events-file fixtures/raw_run_events.json \
+  --collapse-extractor heuristic
+```
+
+The importer accepts JSON arrays, `{ "events": [...] }` files, JSONL event logs,
+and whole current `my-doppl` run objects with `candidates` and `verdicts`.
+
 The OpenRouter key is read from `OPENROUTER_API_KEY` or the workspace-level
 `tokens and keys.md` file outside this Git repo. Do not copy keys into this
 folder or commit them.

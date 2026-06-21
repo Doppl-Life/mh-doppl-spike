@@ -8,6 +8,7 @@ from pathlib import Path
 
 from knowledge_space import (
     KnowledgeSpace,
+    load_run_events,
     load_openrouter_key,
     validate_collapse_packet,
     validate_packet_event,
@@ -327,6 +328,63 @@ class KnowledgeSpaceTest(unittest.TestCase):
             space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
             with self.assertRaisesRegex(ValueError, "unknown collapse extractor"):
                 space.request_collapse(json_fixture("mock_run_events.json"), extractor="mystery")
+
+    def test_load_run_events_accepts_jsonl_exports(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            events = json_fixture("raw_run_events.json")
+            path.write_text("\n".join(json.dumps(event) for event in events), encoding="utf-8")
+
+            loaded = load_run_events(path)
+
+            self.assertEqual([event["sequence"] for event in loaded], [1, 2, 3])
+            self.assertEqual(loaded[1]["type"], "candidate.produced")
+
+    def test_load_run_events_normalizes_my_doppl_run_exports(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "run.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "id": "run-current-doppl-1",
+                        "prompt": {"id": "fsd-accident-economy", "title": "FSD accident economy collapse"},
+                        "comparison": {"winnerCandidateId": "cand-survivor"},
+                        "candidates": [
+                            {
+                                "id": "cand-cold",
+                                "agenomeId": "cold-scout",
+                                "title": "Crash liability cascade",
+                                "summary": "FSD crash risk crosses insurance, care, media, and dealer finance.",
+                                "proposal": "Track liability before regulator blame settles.",
+                                "risks": ["may overclaim timing"],
+                                "evidence": ["case notes"],
+                            }
+                        ],
+                        "verdicts": [
+                            {
+                                "candidateId": "cand-cold",
+                                "criticMandate": "factual-grounding",
+                                "score": 0.42,
+                                "objections": ["The crash liability timing is underspecified."],
+                                "praise": ["Useful cross-system accident economy signal."],
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            events = load_run_events(path)
+            collapse = KnowledgeSpace(Path(tmp) / "knowledge.jsonl").request_collapse(
+                events,
+                extractor="heuristic",
+            )
+
+            self.assertEqual(events[0]["type"], "run.configured")
+            self.assertEqual(events[0]["payload"]["target_case"], "fsd-accident-economy")
+            self.assertEqual(validate_collapse_packet(collapse), [])
+            self.assertGreaterEqual(len(collapse["items"]), 1)
+            self.assertIn("cand-cold", {item["candidate_id"] for item in collapse["items"]})
 
     def test_graph_projection_includes_run_candidate_and_critic_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

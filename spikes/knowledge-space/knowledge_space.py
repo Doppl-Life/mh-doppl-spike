@@ -696,6 +696,119 @@ def extract_openrouter_collapse_items(
     return normalized
 
 
+def normalize_run_export(data: Any) -> list[dict[str, Any]]:
+    if isinstance(data, list):
+        return [event for event in data if isinstance(event, dict)]
+    if not isinstance(data, dict):
+        raise ValueError("run-event export must be a JSON array, JSON object, or JSONL stream")
+
+    events = data.get("events")
+    if isinstance(events, list) and not data.get("candidates") and not data.get("verdicts"):
+        return [event for event in events if isinstance(event, dict)]
+
+    run_id = str(data.get("id") or data.get("runId") or data.get("run_id") or "unknown-run")
+    prompt = data.get("prompt") if isinstance(data.get("prompt"), dict) else {}
+    comparison = data.get("comparison") if isinstance(data.get("comparison"), dict) else {}
+    winner = data.get("winner") if isinstance(data.get("winner"), dict) else {}
+    winner_id = str(
+        comparison.get("winnerCandidateId")
+        or data.get("winnerCandidateId")
+        or winner.get("id")
+        or ""
+    )
+    normalized: list[dict[str, Any]] = [
+        {
+            "type": "run.configured",
+            "runId": run_id,
+            "sequence": 1,
+            "payload": {
+                "target_case": str(prompt.get("id") or prompt.get("domain") or "imported-run"),
+                "problem_summary": str(prompt.get("title") or prompt.get("livePrompt") or prompt.get("id") or ""),
+            },
+        }
+    ]
+
+    sequence = 2
+    candidates = data.get("candidates") if isinstance(data.get("candidates"), list) else []
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        candidate_id = str(candidate.get("id", "unknown-candidate"))
+        artifact_parts = [
+            candidate.get("title"),
+            candidate.get("summary"),
+            candidate.get("proposal"),
+            " ".join(str(item) for item in candidate.get("evidence", []) if item),
+            " ".join(str(item) for item in candidate.get("risks", []) if item),
+            candidate.get("testableClaim"),
+            candidate.get("nearTermTest"),
+        ]
+        normalized.append(
+            {
+                "type": "candidate.produced",
+                "runId": run_id,
+                "sequence": sequence,
+                "payload": {
+                    "candidate_id": candidate_id,
+                    "agenome_id": str(candidate.get("agenomeId", "")),
+                    "survived": candidate_id == winner_id,
+                    "artifact": " ".join(str(part) for part in artifact_parts if part),
+                },
+            }
+        )
+        sequence += 1
+
+    verdicts = data.get("verdicts") if isinstance(data.get("verdicts"), list) else []
+    for verdict in verdicts:
+        if not isinstance(verdict, dict):
+            continue
+        text_parts = [
+            " ".join(str(item) for item in verdict.get("objections", []) if item),
+            " ".join(str(item) for item in verdict.get("praise", []) if item),
+            " ".join(str(item) for item in verdict.get("evidenceRequests", []) if item),
+            verdict.get("rawOutput"),
+        ]
+        normalized.append(
+            {
+                "type": "critic.review",
+                "runId": run_id,
+                "sequence": sequence,
+                "payload": {
+                    "critic_id": str(verdict.get("criticMandate") or verdict.get("criticLabel") or "critic"),
+                    "candidate_id": str(verdict.get("candidateId", "unknown-candidate")),
+                    "score": verdict.get("score"),
+                    "verdict": " ".join(str(part) for part in text_parts if part),
+                },
+            }
+        )
+        sequence += 1
+
+    if len(normalized) == 1 and isinstance(events, list):
+        for event in events:
+            if not isinstance(event, dict):
+                continue
+            normalized.append(
+                {
+                    "type": event.get("type"),
+                    "runId": event.get("runId", run_id),
+                    "sequence": sequence,
+                    "payload": event.get("payload") or {},
+                }
+            )
+            sequence += 1
+    return normalized
+
+
+def load_run_events(path: Path) -> list[dict[str, Any]]:
+    text = path.read_text(encoding="utf-8").strip()
+    if not text:
+        return []
+    if path.suffix == ".jsonl":
+        rows = [json.loads(line) for line in text.splitlines() if line.strip()]
+        return normalize_run_export(rows)
+    return normalize_run_export(json.loads(text))
+
+
 def validate_packet_event(event: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if event.get("type") != "knowledge.packet_selected":
@@ -1913,15 +2026,41 @@ def main() -> None:
     parser.add_argument("--query-case", help="case-study folder name to query")
     parser.add_argument("--research-problem-file", help="problem statement file to research against the local corpus")
     parser.add_argument("--exclude-case", action="append", default=[], help="case folder name to exclude from research")
+    parser.add_argument("--collapse-events-file", help="JSON/JSONL run-event export to collapse into durable memory")
+    parser.add_argument(
+        "--collapse-extractor",
+        default="fixture",
+        choices=["fixture", "heuristic", "openrouter"],
+        help="collapse extraction mode for --collapse-events-file",
+    )
     parser.add_argument("--openrouter", action="store_true", help="use a cheap OpenRouter call to enrich the research report")
     parser.add_argument("--openrouter-model", default=DEFAULT_OPENROUTER_MODEL, help="OpenRouter model id")
     args = parser.parse_args()
 
-    if args.demo or (not args.ingest_case and not args.query_case and not args.research_problem_file):
+    if args.demo or (
+        not args.ingest_case
+        and not args.query_case
+        and not args.research_problem_file
+        and not args.collapse_events_file
+    ):
         demo(use_openrouter=args.openrouter, model=args.openrouter_model)
         return
 
     space = KnowledgeSpace(DEFAULT_LEDGER)
+    if args.collapse_events_file:
+        events = load_run_events(Path(args.collapse_events_file))
+        collapse = space.request_collapse(
+            events,
+            extractor=args.collapse_extractor,
+            model=args.openrouter_model,
+        )
+        records = space.ingest_collapse_packet(collapse)
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        (OUT_DIR / "collapse_packet.json").write_text(
+            json.dumps(collapse, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(f"collapsed {len(records)} record(s) from {len(events)} event(s)")
     if args.research_problem_file:
         problem = Path(args.research_problem_file).read_text(encoding="utf-8")
         report = space.research_problem(

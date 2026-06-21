@@ -69,7 +69,7 @@ not because the goal is a disposable prototype.
 
 ## Phase 2 - Run Event Ingestion
 
-- [ ] Add ordered run-event export reader.
+- [~] Add ordered run-event export reader.
 - [ ] Mirror `Run`, `Generation`, `Agenome`, `Candidate`, `CriticReview`,
       `CheckResult`, `FitnessScore`, and `NoveltyScore` into graph nodes.
 - [ ] Link mirrored graph nodes back to authoritative `run_events`.
@@ -86,7 +86,10 @@ not because the goal is a disposable prototype.
       `Candidate`, and `CriticReview`.
 - [x] Link extracted records to run/candidate/critic provenance in graph HTML and
       Neo4j Cypher.
-- [ ] Add full ordered run-event export reader with watermarks.
+- [x] Add JSON array, `{ events: [...] }`, JSONL, and current `my-doppl` whole-run
+      import support for collapse writeback.
+- [ ] Add sequence watermarks and raw-event receipt hashes to the run-event
+      reader.
 
 ## Phase 3 - Embedding And Retrieval
 

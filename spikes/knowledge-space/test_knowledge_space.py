@@ -6,7 +6,12 @@ import unittest
 import json
 from pathlib import Path
 
-from knowledge_space import KnowledgeSpace, load_openrouter_key, validate_packet_event
+from knowledge_space import (
+    KnowledgeSpace,
+    load_openrouter_key,
+    validate_collapse_packet,
+    validate_packet_event,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -282,6 +287,24 @@ class KnowledgeSpaceTest(unittest.TestCase):
             packet_text = "\n".join(item.record.text.lower() for item in packet.items)
             self.assertIn("dealer finance inventory", packet_text)
             self.assertIn("candidate-cold-ownership-1", packet.to_json()["items"][0]["record"]["candidate_id"])
+
+    def test_validate_collapse_packet_rejects_bad_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            collapse = space.request_collapse(json_fixture("mock_run_events.json"))
+
+            self.assertEqual(validate_collapse_packet(collapse), [])
+
+            invalid = json.loads(json.dumps(collapse))
+            invalid["items"][0].pop("citation")
+            invalid["items"][0]["trust_tier"] = "totally-real"
+
+            errors = validate_collapse_packet(invalid)
+            self.assertIn("item 0 missing citation", errors)
+            self.assertIn("item 0 has invalid trust_tier: totally-real", errors)
+
+            with self.assertRaisesRegex(ValueError, "invalid collapse packet"):
+                space.ingest_collapse_packet(invalid)
 
     def test_graph_projection_includes_run_candidate_and_critic_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

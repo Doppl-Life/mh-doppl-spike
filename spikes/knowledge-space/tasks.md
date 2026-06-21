@@ -7,13 +7,13 @@ not because the goal is a disposable prototype.
 ## Phase 0 - Contracts And Boundaries
 
 - [~] Define `KnowledgeNodeBase` schema.
-- [ ] Define node kind schemas: `Receipt`, `Claim`, `ResearchFinding`,
+- [~] Define node kind schemas: `Receipt`, `Claim`, `ResearchFinding`,
       `Hypothesis`, `HiddenVariable`, `Heuristic`, `SkillCandidate`,
       `NegativeFinding`, `CaseInsight`, `KnowledgePacket`, `CollapsePacket`.
 - [ ] Define edge enum and required edge properties.
 - [~] Define `KnowledgePacketRequest`, `KnowledgePacket`, `PacketItem`, and
       `ExcludedKnowledgeItem`.
-- [ ] Define `CollapseRequest`, `CollapsePacket`, `ExtractedKnowledgeItem`, and
+- [~] Define `CollapseRequest`, `CollapsePacket`, `ExtractedKnowledgeItem`, and
       `PromotionProposal`.
 - [ ] Define knowledge event payloads for the Doppl event log:
       `knowledge.packet_requested`, `knowledge.packet_selected`,
@@ -33,6 +33,8 @@ not because the goal is a disposable prototype.
 - [x] Add stable source chunk IDs, line spans, headings, and citation strings to
       persisted `KnowledgeRecord` rows.
 - [x] Add packet item citation handles suitable for future prompt citation.
+- [x] Add strict `CollapsePacket` validation for item kind, trust tier, text, and
+      provenance before ledger writeback.
 - [x] Add `KnowledgePacketRequest`, `ExcludedKnowledgeItem`, and
       `knowledge.packet_selected` JSON event export in the local prototype.
 - [x] Propagate citation metadata into JSONL, packet JSON, report Markdown,

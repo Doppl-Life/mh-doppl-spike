@@ -22,6 +22,16 @@ OUT_DIR = ROOT / "out"
 FIXTURE_DIR = ROOT / "fixtures"
 DEFAULT_KEY_FILE = WORKSPACE_ROOT / "tokens and keys.md"
 DEFAULT_OPENROUTER_MODEL = "openai/gpt-4.1-nano"
+COLLAPSE_KINDS = {
+    "Claim",
+    "ResearchFinding",
+    "HiddenVariable",
+    "Heuristic",
+    "SkillCandidate",
+    "NegativeFinding",
+    "CaseInsight",
+}
+TRUST_TIERS = {"draft", "candidate", "validated", "canonical", "deprecated"}
 
 STOPWORDS = {
     "a",
@@ -515,6 +525,50 @@ def validate_packet_event(event: dict[str, Any]) -> list[str]:
     return errors
 
 
+def validate_collapse_packet(packet: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if packet.get("type") != "knowledge.collapse_packet":
+        errors.append("packet type must be knowledge.collapse_packet")
+    if not packet.get("run_id"):
+        errors.append("packet missing run_id")
+    if not packet.get("target_case"):
+        errors.append("packet missing target_case")
+    if not isinstance(packet.get("source_event_count"), int):
+        errors.append("packet missing integer source_event_count")
+
+    items = packet.get("items")
+    if not isinstance(items, list):
+        return errors + ["packet items must be a list"]
+
+    required = (
+        "kind",
+        "text",
+        "trust_tier",
+        "candidate_id",
+        "critic_id",
+        "origin_event_sequence",
+        "source_path",
+        "citation",
+    )
+    for index, item in enumerate(items):
+        if not isinstance(item, dict):
+            errors.append(f"item {index} must be an object")
+            continue
+        for key in required:
+            if key == "origin_event_sequence":
+                if not isinstance(item.get(key), int):
+                    errors.append(f"item {index} missing integer {key}")
+            elif not item.get(key):
+                errors.append(f"item {index} missing {key}")
+        if item.get("kind") and item.get("kind") not in COLLAPSE_KINDS:
+            errors.append(f"item {index} has invalid kind: {item.get('kind')}")
+        if item.get("trust_tier") and item.get("trust_tier") not in TRUST_TIERS:
+            errors.append(f"item {index} has invalid trust_tier: {item.get('trust_tier')}")
+        if "tags" in item and not isinstance(item.get("tags"), list):
+            errors.append(f"item {index} tags must be a list")
+    return errors
+
+
 class KnowledgeSpace:
     def __init__(self, ledger_path: Path = DEFAULT_LEDGER) -> None:
         self.ledger_path = ledger_path
@@ -763,6 +817,10 @@ class KnowledgeSpace:
         }
 
     def ingest_collapse_packet(self, collapse_packet: dict[str, Any]) -> list[KnowledgeRecord]:
+        errors = validate_collapse_packet(collapse_packet)
+        if errors:
+            raise ValueError("invalid collapse packet: " + "; ".join(errors))
+
         created: list[KnowledgeRecord] = []
         existing_ids = set(self.records)
         run_id = str(collapse_packet.get("run_id", "unknown-run"))

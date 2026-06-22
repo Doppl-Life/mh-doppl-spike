@@ -111,7 +111,7 @@ not because the goal is a disposable prototype.
       or a drop-in compatible local embedding model.
 - [ ] Store embedding model ID, dimension, instruction, and vector with each
       embedded node.
-- [ ] Implement hybrid retrieval:
+- [~] Implement hybrid retrieval:
       graph filters first, vector search second, rerank third.
 - [ ] Add optional local reranker adapter using `Qwen/Qwen3-Reranker-0.6B`.
 - [x] Implement local `KnowledgeGateway.selectPacket` contract.
@@ -129,8 +129,10 @@ not because the goal is a disposable prototype.
 - [x] Add deterministic packet budgets for `max_items`, `max_tokens`, and
       `required_warning_slots`.
 - [x] Add excluded-record audit metadata for withheld and over-budget items.
+- [x] Add graph-first local retrieval filters for target case, source-case
+      prefix, kind, required tags, visibility, and minimum trust tier.
 - [ ] Add stale item metadata and enforce `max_stale_items`.
-- [ ] Replace lexical ranking with graph-filtered vector retrieval and rerank.
+- [ ] Replace graph-filtered lexical ranking with vector retrieval and rerank.
 
 ## Phase 4 - Runtime Read Integration
 

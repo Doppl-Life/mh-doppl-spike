@@ -255,6 +255,98 @@ class KnowledgeSpaceTest(unittest.TestCase):
                 {item.reason for item in packet.excluded},
             )
 
+    def test_local_gateway_applies_graph_filters_before_scoring(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            valid = KnowledgeRecord(
+                id="ks_valid_graph_filter",
+                kind="claim",
+                text="FSD insurance finance crash memory should survive graph filtering.",
+                tags=["fsd", "insurance", "finance"],
+                source_case="fsd-accident-economy",
+                source_path="case-studies/fsd-accident-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:valid-graph-filter",
+                line_start=1,
+                line_end=1,
+                heading="Valid prior",
+                citation="case-studies/fsd-accident-economy/problem-statement.md:1-1",
+            )
+            missing_tag = KnowledgeRecord(
+                id="ks_missing_graph_tag",
+                kind="claim",
+                text="FSD insurance finance crash memory has tempting lexical overlap.",
+                tags=["fsd", "crash"],
+                source_case="fsd-mobility-and-time",
+                source_path="case-studies/fsd-mobility-and-time/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:missing-graph-tag",
+                line_start=1,
+                line_end=1,
+                heading="Missing tag prior",
+                citation="case-studies/fsd-mobility-and-time/problem-statement.md:1-1",
+            )
+            draft = KnowledgeRecord(
+                id="ks_draft_graph_filter",
+                kind="claim",
+                text="FSD insurance finance crash memory is draft and should be held back.",
+                tags=["fsd", "insurance", "finance"],
+                source_case="fsd-enforcement-economy",
+                source_path="case-studies/fsd-enforcement-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="draft",
+                source_chunk_id="chunk:draft-graph-filter",
+                line_start=1,
+                line_end=1,
+                heading="Draft prior",
+                citation="case-studies/fsd-enforcement-economy/problem-statement.md:1-1",
+            )
+            target_case_record = KnowledgeRecord(
+                id="ks_target_graph_filter",
+                kind="claim",
+                text="FSD insurance finance crash memory from the active case must not leak into priors.",
+                tags=["fsd", "insurance", "finance"],
+                source_case="fsd-ownership-unwind",
+                source_path="case-studies/fsd-ownership-unwind/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:target-graph-filter",
+                line_start=1,
+                line_end=1,
+                heading="Target case prior",
+                citation="case-studies/fsd-ownership-unwind/problem-statement.md:1-1",
+            )
+            for record in [valid, missing_tag, draft, target_case_record]:
+                space.records[record.id] = record
+
+            packet = LocalKnowledgeGateway(space).select_packet(
+                KnowledgePacketRequest(
+                    problem_summary="FSD insurance finance crash",
+                    target_case="fsd-ownership-unwind",
+                    max_items=5,
+                    required_tags=["insurance", "finance"],
+                    min_trust_tier="candidate",
+                )
+            )
+            selected_ids = {item.record.id for item in packet.items}
+            excluded_reasons = {item.record_id: item.reason for item in packet.excluded}
+            event = packet.to_run_event(run_id="demo-run-1", sequence=10)
+
+            self.assertIn(valid.id, selected_ids)
+            self.assertNotIn(missing_tag.id, selected_ids)
+            self.assertNotIn(draft.id, selected_ids)
+            self.assertNotIn(target_case_record.id, selected_ids)
+            self.assertEqual(excluded_reasons[missing_tag.id], "missing required graph tag")
+            self.assertEqual(excluded_reasons[draft.id], "below minimum trust tier")
+            self.assertEqual(
+                excluded_reasons[target_case_record.id],
+                "target case excluded from prior-memory retrieval",
+            )
+            self.assertEqual(event["payload"]["request"]["required_tags"], ["insurance", "finance"])
+            self.assertEqual(event["payload"]["request"]["min_trust_tier"], "candidate")
+
     def test_validate_packet_event_rejects_missing_provenance_and_leakage(self) -> None:
         valid_event = {
             "type": "knowledge.packet_selected",

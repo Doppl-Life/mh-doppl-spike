@@ -3,6 +3,20 @@
     {
       "case": "fsd-ownership-unwind",
       "reason": "target case excluded from prior-memory retrieval"
+    },
+    {
+      "case": "fsd-ownership-unwind",
+      "kind": "ResearchFinding",
+      "reason": "target case excluded from prior-memory retrieval",
+      "record_id": "ks_790a6a42a3e0d827",
+      "visibility": "public"
+    },
+    {
+      "case": "fsd-ownership-unwind",
+      "kind": "NegativeFinding",
+      "reason": "target case excluded from prior-memory retrieval",
+      "record_id": "ks_ee78a17aedd6a531",
+      "visibility": "public"
     }
   ],
   "items": [
@@ -364,9 +378,12 @@
     "max_items": 10,
     "max_tokens": 1200,
     "memory_mode": "auto",
+    "min_trust_tier": "draft",
     "problem_summary": "# Problem Statement: The Ownership Unwind / Car-as-a-Service After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`). > **Cluster:** **Sub-cluster D** of the `full-self-driving-unlock` fa...",
+    "required_tags": [],
     "required_warning_slots": 0,
     "role": "candidate",
+    "source_case_prefixes": [],
     "target_case": "fsd-ownership-unwind"
   }
 }

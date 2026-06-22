@@ -300,6 +300,9 @@ class KnowledgePacketRequest:
     max_tokens: int = 1200
     required_warning_slots: int = 0
     include_kinds: list[str] = field(default_factory=list)
+    required_tags: list[str] = field(default_factory=list)
+    source_case_prefixes: list[str] = field(default_factory=list)
+    min_trust_tier: str = "draft"
     role: str = "candidate"
 
     def to_json(self) -> dict[str, Any]:
@@ -312,6 +315,9 @@ class KnowledgePacketRequest:
             "max_tokens": self.max_tokens,
             "required_warning_slots": self.required_warning_slots,
             "include_kinds": self.include_kinds,
+            "required_tags": self.required_tags,
+            "source_case_prefixes": self.source_case_prefixes,
+            "min_trust_tier": self.min_trust_tier,
             "role": self.role,
         }
 
@@ -2070,6 +2076,7 @@ class LocalKnowledgeGateway(KnowledgeGateway):
         "generation",
     }
     WARNING_KINDS = {"warning", "negativefinding", "negative_finding"}
+    TRUST_RANK = {tier: index for index, tier in enumerate(["draft", "candidate", "validated", "canonical"])}
 
     def __init__(self, space: KnowledgeSpace):
         self.space = space
@@ -2129,22 +2136,38 @@ class LocalKnowledgeGateway(KnowledgeGateway):
     ) -> list[PacketItem]:
         excluded_cases = set(request.excluded_cases)
         include_kinds = {kind.lower() for kind in request.include_kinds}
+        required_tags = {tag.lower() for tag in request.required_tags}
+        source_case_prefixes = tuple(request.source_case_prefixes)
         ranked: list[PacketItem] = []
         for record in self.space.records.values():
+            if record.source_case == request.target_case:
+                self._exclude_record(
+                    excluded,
+                    record,
+                    "target case excluded from prior-memory retrieval",
+                )
+                continue
             if record.source_case in excluded_cases:
+                self._exclude_record(
+                    excluded,
+                    record,
+                    "case excluded from prior-memory retrieval",
+                )
+                continue
+            if source_case_prefixes and not record.source_case.startswith(source_case_prefixes):
+                self._exclude_record(excluded, record, "outside source case graph filter")
                 continue
             if include_kinds and record.kind.lower() not in include_kinds:
+                self._exclude_record(excluded, record, "outside requested knowledge kind")
+                continue
+            if required_tags and not required_tags.issubset({tag.lower() for tag in record.tags}):
+                self._exclude_record(excluded, record, "missing required graph tag")
+                continue
+            if self._trust_rank(record.trust_tier) < self._trust_rank(request.min_trust_tier):
+                self._exclude_record(excluded, record, "below minimum trust tier")
                 continue
             if self._is_withheld_for_role(record, request.role):
-                excluded.append(
-                    ExcludedKnowledgeItem(
-                        case=record.source_case,
-                        reason="withheld from candidate-producing role",
-                        record_id=record.id,
-                        kind=record.kind,
-                        visibility=record.visibility,
-                    )
-                )
+                self._exclude_record(excluded, record, "withheld from candidate-producing role")
                 continue
 
             record_tokens = tokenize(record.text)
@@ -2197,6 +2220,22 @@ class LocalKnowledgeGateway(KnowledgeGateway):
         selected_ids.add(item.record.id)
         return used_tokens + item_tokens
 
+    def _exclude_record(
+        self,
+        excluded: list[ExcludedKnowledgeItem],
+        record: KnowledgeRecord,
+        reason: str,
+    ) -> None:
+        excluded.append(
+            ExcludedKnowledgeItem(
+                case=record.source_case,
+                reason=reason,
+                record_id=record.id,
+                kind=record.kind,
+                visibility=record.visibility,
+            )
+        )
+
     def _is_withheld_for_role(self, record: KnowledgeRecord, role: str) -> bool:
         normalized_role = role.lower()
         if normalized_role not in self.CANDIDATE_PRODUCING_ROLES:
@@ -2205,6 +2244,9 @@ class LocalKnowledgeGateway(KnowledgeGateway):
 
     def _is_warning(self, record: KnowledgeRecord) -> bool:
         return record.kind.lower().replace("-", "_") in self.WARNING_KINDS
+
+    def _trust_rank(self, trust_tier: str) -> int:
+        return self.TRUST_RANK.get(trust_tier, -1)
 
 
 def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) -> None:

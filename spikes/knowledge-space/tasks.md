@@ -153,15 +153,26 @@ not because the goal is a disposable prototype.
 
 ## Phase 4 - Runtime Read Integration
 
-- [ ] Add `memoryMode`: `off | auto | pinned`.
-- [ ] Call `KnowledgeGateway.selectPacket` after `run.configured` and before
+- [x] Add `memoryMode`: `off | auto | pinned`.
+- [x] Call `KnowledgeGateway.selectPacket` after `run.configured` and before
       generation starts.
-- [ ] Persist `knowledge.packet_requested` and `knowledge.packet_selected`.
-- [ ] Include packet slices in agenome prompt construction.
-- [ ] Emit `knowledge.item_injected` per agenome/candidate role.
+- [x] Persist `knowledge.packet_requested` and `knowledge.packet_selected`.
+- [x] Include packet slices in agenome prompt construction.
+- [x] Emit `knowledge.item_injected` per agenome/candidate role.
 - [ ] Show selected packet in operator/debug UI or run summary.
-- [ ] Acceptance gate: replay uses persisted packet events and performs no fresh
+- [x] Acceptance gate: replay uses persisted packet events and performs no fresh
       knowledge retrieval.
+
+### Phase 4 Walking Notes
+
+- [x] Add kernel `KnowledgeGateway` port, `KnowledgePacket`, `KnowledgePacketRequest`,
+      and `memoryMode` contracts without importing graph storage drivers.
+- [x] Emit `run.configured` before knowledge and generation events in
+      `kernel-rebuild` traces.
+- [x] Inject cited packet items into deterministic candidate context/evidence as
+      the kernel's prompt-construction surface.
+- [x] Add replay coverage proving persisted knowledge events are reused without
+      calling the gateway.
 
 ## Phase 5 - Influence Tracking
 

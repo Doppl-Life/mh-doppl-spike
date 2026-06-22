@@ -2,6 +2,7 @@
 import type {
   Candidate,
   CandidatePool,
+  KnowledgePacket,
   LineageLedger,
   LineageNode,
   ParentRef,
@@ -18,6 +19,15 @@ type GenerateOptions = {
   parentCandidateIds?: string[];
   caps?: RunCaps;
   existingCandidateCount?: number;
+  knowledgePacket?: KnowledgePacket;
+};
+
+type ResolvedGenerateOptions = {
+  generation: number;
+  parentCandidateIds: string[];
+  caps: RunCaps;
+  existingCandidateCount: number;
+  knowledgePacket?: KnowledgePacket;
 };
 
 function operatorFor(packet: SourcePacket, operators: ReproductionOperator[]): ReproductionOperator {
@@ -55,7 +65,21 @@ function rejectNode(seedId: string, packet: SourcePacket, operators: Reproductio
   };
 }
 
-function generateCandidate(seedId: string, packet: SourcePacket, operators: ReproductionOperator[]): Candidate {
+function knowledgeEvidence(packet?: KnowledgePacket): string[] {
+  if (!packet) return [];
+  return packet.items.map((item) => `[${item.citeHandle}] ${item.text} (${item.citation})`);
+}
+
+function knowledgeContext(packet?: KnowledgePacket): Candidate['knowledgeContext'] {
+  if (!packet || !packet.items.length) return undefined;
+  return {
+    packetId: packet.id,
+    citeHandles: packet.items.map((item) => item.citeHandle),
+    injectedText: packet.items.map((item) => item.text),
+  };
+}
+
+function generateCandidate(seedId: string, packet: SourcePacket, operators: ReproductionOperator[], knowledgePacket?: KnowledgePacket): Candidate {
   const operator = operatorFor(packet, operators);
   if (!packet.candidateId || !packet.candidate || !packet.delta) {
     throw new Error(`Cannot generate candidate from incomplete source packet: ${packet.id}`);
@@ -77,7 +101,8 @@ function generateCandidate(seedId: string, packet: SourcePacket, operators: Repr
     mechanism: packet.mechanism,
     delta: packet.delta,
     claims: packet.claims || [],
-    evidence: packet.evidence || [],
+    evidence: [...(packet.evidence || []), ...knowledgeEvidence(knowledgePacket)],
+    knowledgeContext: knowledgeContext(knowledgePacket),
     metricHints: packet.metrics,
     observedAt: packet.observedAt,
   };
@@ -98,7 +123,7 @@ function generatedNode(candidate: Candidate): LineageNode {
   };
 }
 
-function packetsForGeneration(fixture: SeedFixture, options: Required<GenerateOptions>): SourcePacket[] {
+function packetsForGeneration(fixture: SeedFixture, options: ResolvedGenerateOptions): SourcePacket[] {
   const selectedParents = new Set(options.parentCandidateIds);
   return fixture.sourcePackets.filter((packet) => {
     const generation = packetGeneration(packet);
@@ -108,7 +133,7 @@ function packetsForGeneration(fixture: SeedFixture, options: Required<GenerateOp
   });
 }
 
-function capPackets(seedId: string, packets: SourcePacket[], options: Required<GenerateOptions>): SourcePacket[] {
+function capPackets(seedId: string, packets: SourcePacket[], options: ResolvedGenerateOptions): SourcePacket[] {
   const remainingSlots = Math.max(0, options.caps.maxPopulation - options.existingCandidateCount);
   const childrenByParent = new Map<string, number>();
   const capped: SourcePacket[] = [];
@@ -142,11 +167,12 @@ export function generateCandidatePool(fixture: SeedFixture, options: GenerateOpt
   pool: CandidatePool;
   event: TraceEvent;
 } {
-  const resolved: Required<GenerateOptions> = {
+  const resolved: ResolvedGenerateOptions = {
     generation: options.generation || 1,
     parentCandidateIds: options.parentCandidateIds || [],
     caps: options.caps || defaultRunCaps,
     existingCandidateCount: options.existingCandidateCount || 0,
+    knowledgePacket: options.knowledgePacket,
   };
   const stoppedByGenerationCap = resolved.generation > resolved.caps.maxGenerations;
   const packets = stoppedByGenerationCap
@@ -157,7 +183,7 @@ export function generateCandidatePool(fixture: SeedFixture, options: GenerateOpt
     .map((packet) => rejectNode(fixture.seed.id, packet, fixture.operators));
   const candidates = packets
     .filter((packet) => !packet.noDeltaReason)
-    .map((packet) => generateCandidate(fixture.seed.id, packet, fixture.operators));
+    .map((packet) => generateCandidate(fixture.seed.id, packet, fixture.operators, resolved.knowledgePacket));
   const lineage: LineageLedger = {
     seedId: fixture.seed.id,
     generated: candidates.map(generatedNode),

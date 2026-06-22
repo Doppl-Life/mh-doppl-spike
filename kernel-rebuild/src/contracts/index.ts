@@ -45,6 +45,54 @@ export type CandidateMetricInputs = {
   riskPenalty: number;
 };
 
+export type MemoryMode = 'off' | 'auto' | 'pinned';
+
+export type KnowledgePacketRequest = {
+  requestId: string;
+  runId: string;
+  targetCase: string;
+  problemSummary: string;
+  memoryMode: MemoryMode;
+  role: 'candidate';
+  maxItems: number;
+};
+
+export type KnowledgePacketItem = {
+  recordId: string;
+  citeHandle: string;
+  kind: string;
+  text: string;
+  sourceCase: string;
+  citation: string;
+  trustTier: string;
+  visibility: string;
+};
+
+export type ExcludedKnowledgeItem = {
+  recordId?: string;
+  case?: string;
+  reason: string;
+  kind?: string;
+  visibility?: string;
+};
+
+export type KnowledgePacket = {
+  id: string;
+  request: KnowledgePacketRequest;
+  items: KnowledgePacketItem[];
+  excluded: ExcludedKnowledgeItem[];
+};
+
+export type KnowledgeGateway = {
+  selectPacket(request: KnowledgePacketRequest): KnowledgePacket;
+};
+
+export type KnowledgeContext = {
+  packetId: string;
+  citeHandles: string[];
+  injectedText: string[];
+};
+
 export type CandidateDelta = {
   summary: string;
   changes: string[];
@@ -112,6 +160,7 @@ export type Candidate = {
   delta: CandidateDelta;
   claims: string[];
   evidence: string[];
+  knowledgeContext?: KnowledgeContext;
   metricHints?: CandidateMetricInputs;
   observedAt?: string;
 };
@@ -321,11 +370,14 @@ export type LensResult = {
 };
 
 export type TraceEvent = {
+  type?: string;
+  sequence?: number;
   stage: string;
   input: string;
   decision: string;
   reason: string;
   output: string;
+  payload?: Record<string, any>;
   goalChecks: GoalCheck[];
   boundary?: BoundaryContract;
 };
@@ -334,8 +386,10 @@ export type RunTrace = {
   schemaVersion: string;
   runId: string;
   dial: Dial;
+  memoryMode: MemoryMode;
   seed: Seed;
   caps: RunCaps;
+  knowledgePacket?: KnowledgePacket;
   candidateCount: number;
   lineage: LineageLedger;
   generations: GenerationSummary[];

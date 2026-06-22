@@ -4,7 +4,12 @@ import type {
   Dial,
   GenerationQuality,
   GenerationSummary,
+  KnowledgeGateway,
+  KnowledgePacket,
+  KnowledgePacketItem,
+  KnowledgePacketRequest,
   LensConfig,
+  MemoryMode,
   RunCaps,
   RunTrace,
   ScoredCandidate,
@@ -18,7 +23,7 @@ import { generateCandidatePool } from './generate.ts';
 import { applyLenses } from './lens.ts';
 import { compareSelections } from './select.ts';
 
-function runId(dial: Dial): string {
+function generatedRunId(dial: Dial): string {
   return `kernel-${dial}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
 }
 
@@ -46,6 +51,198 @@ function mergeScoredPools(seed: SeedFixture['seed'], pools: ScoredCandidatePool[
     seed,
     candidates: pools.flatMap((pool) => pool.candidates),
   };
+}
+
+function eventPayload(event: TraceEvent): Record<string, any> {
+  return event.payload || {};
+}
+
+function knowledgeRequestPayload(request: KnowledgePacketRequest): Record<string, any> {
+  return {
+    request_id: request.requestId,
+    run_id: request.runId,
+    target_case: request.targetCase,
+    problem_summary: request.problemSummary,
+    memory_mode: request.memoryMode,
+    role: request.role,
+    max_items: request.maxItems,
+  };
+}
+
+function knowledgeItemPayload(item: KnowledgePacketItem): Record<string, any> {
+  return {
+    record_id: item.recordId,
+    cite_handle: item.citeHandle,
+    kind: item.kind,
+    text: item.text,
+    source_case: item.sourceCase,
+    citation: item.citation,
+    trust_tier: item.trustTier,
+    visibility: item.visibility,
+  };
+}
+
+function knowledgePacketPayload(packet: KnowledgePacket): Record<string, any> {
+  return {
+    packet_id: packet.id,
+    request: knowledgeRequestPayload(packet.request),
+    items: packet.items.map(knowledgeItemPayload),
+    excluded: packet.excluded.map((item) => ({
+      record_id: item.recordId,
+      case: item.case,
+      reason: item.reason,
+      kind: item.kind,
+      visibility: item.visibility,
+    })),
+  };
+}
+
+function packetFromSelectedEvent(event: TraceEvent): KnowledgePacket | undefined {
+  const payload = eventPayload(event);
+  const request = payload.request;
+  const items = payload.items;
+  if (!request || !Array.isArray(items)) return undefined;
+  return {
+    id: String(payload.packet_id || `packet:${request.run_id || 'replay'}`),
+    request: {
+      requestId: String(request.request_id || 'replay-request'),
+      runId: String(request.run_id || ''),
+      targetCase: String(request.target_case || ''),
+      problemSummary: String(request.problem_summary || ''),
+      memoryMode: (request.memory_mode || 'auto') as MemoryMode,
+      role: 'candidate',
+      maxItems: Number(request.max_items || items.length),
+    },
+    items: items.map((item: Record<string, any>) => ({
+      recordId: String(item.record_id || ''),
+      citeHandle: String(item.cite_handle || ''),
+      kind: String(item.kind || ''),
+      text: String(item.text || ''),
+      sourceCase: String(item.source_case || ''),
+      citation: String(item.citation || ''),
+      trustTier: String(item.trust_tier || ''),
+      visibility: String(item.visibility || ''),
+    })),
+    excluded: Array.isArray(payload.excluded)
+      ? payload.excluded.map((item: Record<string, any>) => ({
+          recordId: item.record_id ? String(item.record_id) : undefined,
+          case: item.case ? String(item.case) : undefined,
+          reason: String(item.reason || ''),
+          kind: item.kind ? String(item.kind) : undefined,
+          visibility: item.visibility ? String(item.visibility) : undefined,
+        }))
+      : [],
+  };
+}
+
+function persistedKnowledgeEvents(replayEvents: TraceEvent[] | undefined): TraceEvent[] {
+  return (replayEvents || []).filter((event) => event.type?.startsWith('knowledge.'));
+}
+
+function resolveKnowledge(
+  fixture: SeedFixture,
+  runId: string,
+  memoryMode: MemoryMode,
+  gateway?: KnowledgeGateway,
+  pinnedPacket?: KnowledgePacket,
+  replayEvents?: TraceEvent[],
+): { packet?: KnowledgePacket; events: TraceEvent[]; replayed: boolean } {
+  const replayKnowledgeEvents = persistedKnowledgeEvents(replayEvents);
+  if (replayKnowledgeEvents.length) {
+    const selected = replayKnowledgeEvents.find((event) => event.type === 'knowledge.packet_selected');
+    return {
+      packet: selected ? packetFromSelectedEvent(selected) : undefined,
+      events: replayKnowledgeEvents,
+      replayed: true,
+    };
+  }
+
+  if (memoryMode === 'off') return { events: [], replayed: false };
+
+  const request: KnowledgePacketRequest = {
+    requestId: `kreq:${runId}`,
+    runId,
+    targetCase: fixture.seed.id,
+    problemSummary: fixture.seed.prompt,
+    memoryMode,
+    role: 'candidate',
+    maxItems: 6,
+  };
+  const packet = memoryMode === 'pinned'
+    ? pinnedPacket
+    : gateway?.selectPacket(request);
+  if (!packet) return { events: [], replayed: false };
+
+  const requestEvent: TraceEvent = {
+    type: 'knowledge.packet_requested',
+    stage: 'knowledge',
+    input: 'RunConfig',
+    decision: `Request ${memoryMode} memory for ${fixture.seed.id}.`,
+    reason: 'Knowledge retrieval happens after run configuration and before generation.',
+    output: request.requestId,
+    payload: knowledgeRequestPayload(request),
+    goalChecks: [
+      {
+        id: 'knowledge-request-before-generation',
+        label: 'Knowledge packet is requested before candidate generation.',
+        passed: true,
+        detail: `${request.requestId} targets ${request.targetCase}.`,
+      },
+    ],
+  };
+  const selectedEvent: TraceEvent = {
+    type: 'knowledge.packet_selected',
+    stage: 'knowledge',
+    input: request.requestId,
+    decision: `Select ${packet.items.length} knowledge item(s).`,
+    reason: 'The selected packet is persisted so replay does not query mutable memory.',
+    output: packet.id,
+    payload: knowledgePacketPayload(packet),
+    goalChecks: [
+      {
+        id: 'knowledge-packet-persisted',
+        label: 'Selected knowledge packet is persisted before generation.',
+        passed: true,
+        detail: `${packet.id} contains ${packet.items.length} items and ${packet.excluded.length} exclusions.`,
+      },
+    ],
+  };
+  const injectionEvents = packet.items.map((item): TraceEvent => ({
+    type: 'knowledge.item_injected',
+    stage: 'knowledge',
+    input: packet.id,
+    decision: `Inject ${item.citeHandle} into candidate role context.`,
+    reason: 'Agenome/candidate roles receive cited packet slices, not the whole graph.',
+    output: `${packet.id}:${item.recordId}:candidate`,
+    payload: {
+      packet_id: packet.id,
+      record_id: item.recordId,
+      cite_handle: item.citeHandle,
+      recipient_role: 'candidate',
+      injected_text: item.text,
+    },
+    goalChecks: [
+      {
+        id: 'knowledge-item-injected',
+        label: 'Each injected memory item has a citation handle and recipient role.',
+        passed: Boolean(item.citeHandle && item.recordId),
+        detail: `${item.citeHandle} -> candidate`,
+      },
+    ],
+  }));
+
+  return {
+    packet,
+    events: [requestEvent, selectedEvent, ...injectionEvents],
+    replayed: false,
+  };
+}
+
+function sequenceEvents(events: TraceEvent[]): TraceEvent[] {
+  return events.map((event, index) => ({
+    ...event,
+    sequence: event.sequence || index + 1,
+  }));
 }
 
 function total(candidate: ScoredCandidate): number {
@@ -106,12 +303,56 @@ function generationSummary(
   };
 }
 
-export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: { caps?: Partial<RunCaps>; lenses?: LensConfig[] } = {}): RunTrace {
+export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: {
+  caps?: Partial<RunCaps>;
+  lenses?: LensConfig[];
+  runId?: string;
+  memoryMode?: MemoryMode;
+  knowledgeGateway?: KnowledgeGateway;
+  pinnedKnowledgePacket?: KnowledgePacket;
+  replayEvents?: TraceEvent[];
+} = {}): RunTrace {
   const caps = mergeCaps(options.caps);
   const events: TraceEvent[] = [];
   const generationSummaries: GenerationSummary[] = [];
+  const id = options.runId || generatedRunId(dial);
+  const memoryMode = options.memoryMode || 'off';
 
-  const generated1 = generateCandidatePool(fixture, { generation: 1, caps });
+  events.push({
+    type: 'run.configured',
+    stage: 'configure',
+    input: fixture.seed.id,
+    decision: `Configure ${dial} run with memoryMode=${memoryMode}.`,
+    reason: 'Run configuration freezes caps, dial, seed, and memory policy before generation.',
+    output: id,
+    payload: {
+      run_id: id,
+      dial,
+      seed_id: fixture.seed.id,
+      memory_mode: memoryMode,
+      caps,
+    },
+    goalChecks: [
+      {
+        id: 'run-configured-before-generation',
+        label: 'Run configuration is emitted before generation.',
+        passed: true,
+        detail: `${id} configured for ${fixture.seed.id}.`,
+      },
+    ],
+  });
+
+  const knowledge = resolveKnowledge(
+    fixture,
+    id,
+    memoryMode,
+    options.knowledgeGateway,
+    options.pinnedKnowledgePacket,
+    options.replayEvents,
+  );
+  events.push(...knowledge.events);
+
+  const generated1 = generateCandidatePool(fixture, { generation: 1, caps, knowledgePacket: knowledge.packet });
   events.push(generated1.event);
 
   const scored1 = scoreCandidatePool(generated1.pool, { asOf: fixture.asOf });
@@ -130,6 +371,7 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: { caps?
       parentCandidateIds: parents.map((candidate) => candidate.id),
       caps,
       existingCandidateCount: generated1.pool.candidates.length,
+      knowledgePacket: knowledge.packet,
     });
     events.push(generated2.event);
     pools.push(generated2.pool);
@@ -180,24 +422,35 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: { caps?
           finalGenerationSummaries.every((summary) => summary.index <= caps.maxGenerations),
         detail: `generations=${finalGenerationSummaries.length}; candidates=${combinedPool.candidates.length}; caps=${JSON.stringify(caps)}`,
       },
+      {
+        id: 'replay-uses-persisted-knowledge',
+        label: 'Replay uses persisted knowledge events and performs no fresh retrieval.',
+        passed: !options.replayEvents || knowledge.replayed || memoryMode === 'off',
+        detail: options.replayEvents
+          ? `replayKnowledgeEvents=${persistedKnowledgeEvents(options.replayEvents).length}`
+          : 'live run',
+      },
     ],
     boundary: getBoundary('trace'),
   };
   events.push(traceEvent);
 
-  const goalChecks = events.flatMap((event) => event.goalChecks);
+  const sequencedEvents = sequenceEvents(events);
+  const goalChecks = sequencedEvents.flatMap((event) => event.goalChecks);
 
   return {
     schemaVersion: RUN_TRACE_SCHEMA_VERSION,
-    runId: runId(dial),
+    runId: id,
     dial,
+    memoryMode,
     seed: fixture.seed,
     caps,
+    knowledgePacket: knowledge.packet,
     candidateCount: combinedPool.candidates.length,
     lineage: combinedPool.lineage,
     generations: finalGenerationSummaries,
     boundaryContracts,
-    events,
+    events: sequencedEvents,
     goalChecks,
     comparison: selected.comparison,
     lensResults: lensed.lensResults,

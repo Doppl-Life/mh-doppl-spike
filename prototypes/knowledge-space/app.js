@@ -19,6 +19,11 @@ const labels = {
     title: "Selected runtime packet",
     note: "The memory slice that would be injected into a Doppl run, with citation handles and exclusion audit.",
   },
+  exclusions: {
+    eyebrow: "Exclusions",
+    title: "Memory held back",
+    note: "Records the gateway refused to inject, grouped by target-case, visibility, trust, budget, or graph-filter reason.",
+  },
   collapse: {
     eyebrow: "Collapse",
     title: "Preserved cold-agenome intelligence",
@@ -51,6 +56,7 @@ const els = {
   graphView: document.querySelector("#graphView"),
   explanationView: document.querySelector("#explanationView"),
   packetView: document.querySelector("#packetView"),
+  exclusionsView: document.querySelector("#exclusionsView"),
   collapseView: document.querySelector("#collapseView"),
   graphSvg: document.querySelector("#graphSvg"),
   inspectorTitle: document.querySelector("#inspectorTitle"),
@@ -92,6 +98,7 @@ function render() {
   setMode(state.mode);
   renderGraph();
   renderPacket();
+  renderExclusions();
   renderCollapse();
 }
 
@@ -133,8 +140,9 @@ function setMode(mode) {
   els.modeTitle.textContent = copy.title;
   els.modeNote.textContent = copy.note;
   els.graphView.classList.toggle("hidden", mode !== "graph");
-  els.explanationView.classList.toggle("hidden", mode !== "packet");
+  els.explanationView.classList.toggle("hidden", mode !== "packet" && mode !== "exclusions");
   els.packetView.classList.toggle("hidden", mode !== "packet");
+  els.exclusionsView.classList.toggle("hidden", mode !== "exclusions");
   els.collapseView.classList.toggle("hidden", mode !== "collapse");
   els.viewMode.querySelectorAll("button").forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === mode);
@@ -247,6 +255,25 @@ function renderPacketExplanation(packet) {
     .join("");
 }
 
+function renderExclusions() {
+  const packet = activePacket();
+  const grouped = groupBy(packet.excluded, (item) => item.reason || "excluded");
+  const rows = Object.entries(grouped).flatMap(([reason, items]) => [
+    `<div class="reason-header"><strong>${escapeHtml(reason)}</strong><span>${items.length}</span></div>`,
+    ...items.map((item, index) => {
+      const recordNode = item.record_id ? findGraphRecord(item.record_id) : null;
+      return `
+        <button type="button" class="row excluded ${state.selectedRecordId === item.record_id ? "selected" : ""}" data-excluded-index="${index}" data-excluded-reason="${escapeAttr(reason)}">
+          <small>${escapeHtml(item.case)}${item.kind ? ` / ${escapeHtml(item.kind)}` : ""}${item.visibility ? ` / ${escapeHtml(item.visibility)}` : ""}</small>
+          <h3>${escapeHtml(item.record_id || "case-level exclusion")}</h3>
+          <p>${escapeHtml(recordNode?.text || item.reason)}</p>
+        </button>
+      `;
+    }),
+  ]);
+  els.exclusionsView.innerHTML = rows.join("");
+}
+
 function renderCollapse() {
   els.collapseView.innerHTML = state.collapse.items
     .map(
@@ -282,6 +309,7 @@ function inspectNode(id) {
   if (node.id.startsWith("record:")) {
     state.selectedRecordId = node.id.replace(/^record:/, "");
     renderPacket();
+    renderExclusions();
     renderGraph();
     updatePermalink();
   }
@@ -296,6 +324,26 @@ function inspectNode(id) {
     node.runId ? kv("Run", node.runId) : "",
     node.text ? `<p class="body-text">${escapeHtml(node.text)}</p>` : "",
   ].join("");
+}
+
+function inspectExclusion(reason, index) {
+  const grouped = groupBy(activePacket().excluded, (item) => item.reason || "excluded");
+  const item = grouped[reason]?.[index];
+  if (!item) return;
+  const recordNode = item.record_id ? findGraphRecord(item.record_id) : null;
+  if (item.record_id) state.selectedRecordId = item.record_id;
+  els.inspectorTitle.textContent = item.record_id || item.case;
+  els.inspectorMeta.textContent = `${item.case} / ${item.reason}`;
+  els.inspectorBody.innerHTML = [
+    item.kind ? kv("Kind", item.kind) : "",
+    item.visibility ? kv("Visibility", item.visibility) : "",
+    recordNode?.citation ? kv("Citation", recordNode.citation) : "",
+    recordNode?.sourceChunkId ? kv("Chunk", recordNode.sourceChunkId) : "",
+    `<p class="body-text">${escapeHtml(recordNode?.text || item.reason)}</p>`,
+  ].join("");
+  renderExclusions();
+  renderGraph();
+  updatePermalink();
 }
 
 function inspectPacketRecord(recordId) {
@@ -314,6 +362,7 @@ function inspectPacketRecord(recordId) {
     `<p class="body-text">${escapeHtml(record.text)}</p>`,
   ].join("");
   renderPacket();
+  renderExclusions();
   renderGraph();
   updatePermalink();
 }
@@ -334,6 +383,19 @@ function inspectCollapse(index) {
 
 function kv(label, value) {
   return `<div class="kv"><span>${escapeHtml(label)}</span><code>${escapeHtml(String(value))}</code></div>`;
+}
+
+function groupBy(items, keyFn) {
+  return items.reduce((groups, item) => {
+    const key = keyFn(item);
+    groups[key] = groups[key] || [];
+    groups[key].push(item);
+    return groups;
+  }, {});
+}
+
+function findGraphRecord(recordId) {
+  return state.graph.nodes.find((node) => node.id === `record:${recordId}`);
 }
 
 function activePacket() {
@@ -413,6 +475,7 @@ els.caseSelect.addEventListener("change", (event) => {
   renderStatus();
   renderGraph();
   renderPacket();
+  renderExclusions();
   updatePermalink();
   const firstPacket = activePacket().items[0];
   if (firstPacket) inspectPacketRecord(firstPacket.record.id);
@@ -448,6 +511,11 @@ els.graphSvg.addEventListener("keydown", (event) => {
 els.packetView.addEventListener("click", (event) => {
   const row = event.target.closest("[data-record-id]");
   if (row) inspectPacketRecord(row.dataset.recordId);
+});
+
+els.exclusionsView.addEventListener("click", (event) => {
+  const row = event.target.closest("[data-excluded-index]");
+  if (row) inspectExclusion(row.dataset.excludedReason, Number(row.dataset.excludedIndex));
 });
 
 els.collapseView.addEventListener("click", (event) => {

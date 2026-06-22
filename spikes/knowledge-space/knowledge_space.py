@@ -358,6 +358,7 @@ class KnowledgePacketRequest:
     memory_mode: str = "auto"
     excluded_cases: list[str] = field(default_factory=list)
     max_tokens: int = 1200
+    max_stale_items: int = 0
     required_warning_slots: int = 0
     include_kinds: list[str] = field(default_factory=list)
     required_tags: list[str] = field(default_factory=list)
@@ -373,6 +374,7 @@ class KnowledgePacketRequest:
             "memory_mode": self.memory_mode,
             "excluded_cases": self.excluded_cases,
             "max_tokens": self.max_tokens,
+            "max_stale_items": self.max_stale_items,
             "required_warning_slots": self.required_warning_slots,
             "include_kinds": self.include_kinds,
             "required_tags": self.required_tags,
@@ -435,6 +437,12 @@ class KnowledgePacket:
     def retrieval_summary(self) -> dict[str, Any]:
         embedded_items = [item for item in self.items if item.embedding_model_id]
         lexical_only_items = len(self.items) - len(embedded_items)
+        stale_items = [
+            item
+            for item in self.items
+            if "stale" in {tag.lower() for tag in item.record.tags}
+            or item.record.trust_tier == "deprecated"
+        ]
         average_vector_similarity = (
             sum(item.vector_similarity for item in embedded_items) / len(embedded_items)
             if embedded_items
@@ -445,6 +453,7 @@ class KnowledgePacket:
             "item_count": len(self.items),
             "embedded_items": len(embedded_items),
             "lexical_only_items": lexical_only_items,
+            "stale_items": len(stale_items),
             "average_vector_similarity": round(average_vector_similarity, 4),
         }
 
@@ -2365,6 +2374,19 @@ class LocalKnowledgeGateway(KnowledgeGateway):
     ) -> int:
         if len(selected) >= request.max_items:
             return used_tokens
+        if self._is_stale(item.record):
+            selected_stale_count = sum(1 for selected_item in selected if self._is_stale(selected_item.record))
+            if selected_stale_count >= request.max_stale_items:
+                excluded.append(
+                    ExcludedKnowledgeItem(
+                        case=item.record.source_case,
+                        reason="over stale item budget",
+                        record_id=item.record.id,
+                        kind=item.record.kind,
+                        visibility=item.record.visibility,
+                    )
+                )
+                return used_tokens
         item_tokens = approximate_token_count(item.record.text)
         if used_tokens + item_tokens > request.max_tokens:
             excluded.append(
@@ -2405,6 +2427,9 @@ class LocalKnowledgeGateway(KnowledgeGateway):
 
     def _is_warning(self, record: KnowledgeRecord) -> bool:
         return record.kind.lower().replace("-", "_") in self.WARNING_KINDS
+
+    def _is_stale(self, record: KnowledgeRecord) -> bool:
+        return record.trust_tier == "deprecated" or "stale" in {tag.lower() for tag in record.tags}
 
     def _trust_rank(self, trust_tier: str) -> int:
         return self.TRUST_RANK.get(trust_tier, -1)

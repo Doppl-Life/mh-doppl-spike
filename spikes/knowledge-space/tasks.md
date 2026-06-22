@@ -125,7 +125,7 @@ not because the goal is a disposable prototype.
       graph filters first, vector search second, rerank third.
 - [ ] Add optional local reranker adapter using `Qwen/Qwen3-Reranker-0.6B`.
 - [x] Implement local `KnowledgeGateway.selectPacket` contract.
-- [~] Add packet budget controls: max items, max tokens, max stale items, required
+- [x] Add packet budget controls: max items, max tokens, max stale items, required
       warning slots.
 - [x] Acceptance gate: a packet for a case-study run includes relevant public
       priors but excludes withheld evaluator-only solution content.
@@ -147,7 +147,7 @@ not because the goal is a disposable prototype.
       summary.
 - [x] Add hybrid packet scoring components: lexical score, vector similarity,
       final score, and embedding model ID.
-- [ ] Add stale item metadata and enforce `max_stale_items`.
+- [x] Add stale item metadata and enforce `max_stale_items`.
 - [ ] Replace graph-filtered lexical ranking with vector retrieval and rerank.
 
 ## Phase 4 - Runtime Read Integration

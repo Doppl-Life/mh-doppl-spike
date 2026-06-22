@@ -349,6 +349,80 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertEqual(event["payload"]["request"]["required_tags"], ["insurance", "finance"])
             self.assertEqual(event["payload"]["request"]["min_trust_tier"], "candidate")
 
+    def test_local_gateway_enforces_stale_item_budget(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            fresh = KnowledgeRecord(
+                id="ks_fresh_stale_budget",
+                kind="claim",
+                text="FSD insurance finance crash prior is fresh enough for default packet use.",
+                tags=["fsd", "insurance", "finance"],
+                source_case="fsd-accident-economy",
+                source_path="case-studies/fsd-accident-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:fresh-stale-budget",
+                line_start=1,
+                line_end=1,
+                heading="Fresh prior",
+                citation="case-studies/fsd-accident-economy/problem-statement.md:1-1",
+            )
+            stale_allowed = KnowledgeRecord(
+                id="ks_allowed_stale_budget",
+                kind="claim",
+                text="FSD insurance finance crash stale prior can be used when one stale slot is allowed.",
+                tags=["fsd", "insurance", "finance", "stale"],
+                source_case="fsd-accident-economy",
+                source_path="case-studies/fsd-accident-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:allowed-stale-budget",
+                line_start=2,
+                line_end=2,
+                heading="Stale prior",
+                citation="case-studies/fsd-accident-economy/problem-statement.md:2-2",
+            )
+            stale_excluded = KnowledgeRecord(
+                id="ks_excluded_stale_budget",
+                kind="claim",
+                text="FSD insurance finance crash stale prior should be excluded after the stale budget is full.",
+                tags=["fsd", "insurance", "finance", "stale"],
+                source_case="fsd-accident-economy",
+                source_path="case-studies/fsd-accident-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:excluded-stale-budget",
+                line_start=3,
+                line_end=3,
+                heading="Second stale prior",
+                citation="case-studies/fsd-accident-economy/problem-statement.md:3-3",
+            )
+            for record in [fresh, stale_allowed, stale_excluded]:
+                space.records[record.id] = record
+
+            packet = LocalKnowledgeGateway(space).select_packet(
+                KnowledgePacketRequest(
+                    problem_summary="FSD insurance finance crash",
+                    target_case="fsd-next-case",
+                    max_items=5,
+                    max_stale_items=1,
+                )
+            )
+
+            selected_ids = {item.record.id for item in packet.items}
+            excluded_reasons = {item.record_id: item.reason for item in packet.excluded}
+            stale_count = sum(1 for item in packet.items if "stale" in item.record.tags)
+            event = packet.to_run_event(run_id="demo-run-1", sequence=11)
+
+            self.assertIn(fresh.id, selected_ids)
+            self.assertEqual(stale_count, 1)
+            self.assertEqual(event["payload"]["request"]["max_stale_items"], 1)
+            self.assertEqual(event["payload"]["retrieval_summary"]["stale_items"], 1)
+            self.assertEqual(
+                excluded_reasons[stale_excluded.id],
+                "over stale item budget",
+            )
+
     def test_build_case_packets_exports_gateway_packets_for_each_case(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")

@@ -12,6 +12,7 @@ from knowledge_space import (
     KnowledgeRecord,
     LocalKnowledgeGateway,
     approximate_token_count,
+    build_case_packets,
     load_graph_snapshot,
     load_run_events,
     load_openrouter_key,
@@ -346,6 +347,33 @@ class KnowledgeSpaceTest(unittest.TestCase):
             )
             self.assertEqual(event["payload"]["request"]["required_tags"], ["insurance", "finance"])
             self.assertEqual(event["payload"]["request"]["min_trust_tier"], "candidate")
+
+    def test_build_case_packets_exports_gateway_packets_for_each_case(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            case_paths = [
+                CASES / "fsd-accident-economy",
+                CASES / "fsd-mobility-and-time",
+                CASES / "fsd-enforcement-economy",
+                CASES / "fsd-ownership-unwind",
+            ]
+            for case_path in case_paths:
+                space.ingest_case(case_path)
+            packets = build_case_packets(space, case_paths, limit=4)
+
+            self.assertEqual(set(packets.keys()), {case_path.name for case_path in case_paths})
+            for case_name, packet_json in packets.items():
+                self.assertEqual(packet_json["request"]["target_case"], case_name)
+                self.assertLessEqual(len(packet_json["items"]), 4)
+                self.assertGreaterEqual(len(packet_json["items"]), 1)
+                self.assertNotIn(
+                    case_name,
+                    {item["record"]["source_case"] for item in packet_json["items"]},
+                )
+                self.assertIn(
+                    case_name,
+                    {item["case"] for item in packet_json["excluded"]},
+                )
 
     def test_validate_packet_event_rejects_missing_provenance_and_leakage(self) -> None:
         valid_event = {

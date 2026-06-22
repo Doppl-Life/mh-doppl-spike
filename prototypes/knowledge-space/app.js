@@ -29,8 +29,10 @@ const labels = {
 const state = {
   graph: { nodes: [], edges: [] },
   packet: null,
+  packetsByCase: {},
   collapse: null,
   summary: null,
+  activeCase: "",
   search: "",
   activeTypes: new Set(["Case", "KnowledgeRecord", "RunEventReceipt", "Candidate", "CriticReview", "Run"]),
   mode: "graph",
@@ -38,6 +40,7 @@ const state = {
 
 const els = {
   statusStrip: document.querySelector("#statusStrip"),
+  caseSelect: document.querySelector("#caseSelect"),
   searchInput: document.querySelector("#searchInput"),
   typeFilters: document.querySelector("#typeFilters"),
   viewMode: document.querySelector("#viewMode"),
@@ -45,6 +48,7 @@ const els = {
   modeTitle: document.querySelector("#modeTitle"),
   modeNote: document.querySelector("#modeNote"),
   graphView: document.querySelector("#graphView"),
+  explanationView: document.querySelector("#explanationView"),
   packetView: document.querySelector("#packetView"),
   collapseView: document.querySelector("#collapseView"),
   graphSvg: document.querySelector("#graphSvg"),
@@ -54,16 +58,23 @@ const els = {
 };
 
 async function loadData() {
-  const [graph, packet, collapse, summary] = await Promise.all([
+  const [graph, packet, packetsByCase, collapse, summary] = await Promise.all([
     fetchJson("./data/graph.json"),
     fetchJson("./data/knowledge_packet.json"),
+    fetchJson("./data/knowledge_packets_by_case.json"),
     fetchJson("./data/collapse_packet.json"),
     fetchJson("./data/summary.json"),
   ]);
   state.graph = graph;
   state.packet = packet;
+  state.packetsByCase = packetsByCase;
   state.collapse = collapse;
   state.summary = summary;
+  const params = new URLSearchParams(window.location.search);
+  const caseParam = params.get("case");
+  state.activeCase = packetsByCase[caseParam] ? caseParam : Object.keys(packetsByCase).sort()[0];
+  const viewParam = params.get("view");
+  if (labels[viewParam]) state.mode = viewParam;
 }
 
 async function fetchJson(url) {
@@ -74,6 +85,7 @@ async function fetchJson(url) {
 
 function render() {
   renderStatus();
+  renderCaseSelect();
   renderTypeFilters();
   setMode(state.mode);
   renderGraph();
@@ -87,10 +99,19 @@ function renderStatus() {
     ["Nodes", counts.nodes],
     ["Edges", counts.edges],
     ["Records", counts.records],
-    ["Packet", counts.packetItems],
+    ["Cases", counts.casePackets || state.summary.cases.length],
+    ["Packet", activePacket().items.length],
   ]
     .map(([label, value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`)
     .join("");
+}
+
+function renderCaseSelect() {
+  const cases = Object.keys(state.packetsByCase).sort();
+  els.caseSelect.innerHTML = cases
+    .map((caseName) => `<option value="${escapeAttr(caseName)}">${escapeHtml(caseName)}</option>`)
+    .join("");
+  els.caseSelect.value = state.activeCase;
 }
 
 function renderTypeFilters() {
@@ -110,11 +131,13 @@ function setMode(mode) {
   els.modeTitle.textContent = copy.title;
   els.modeNote.textContent = copy.note;
   els.graphView.classList.toggle("hidden", mode !== "graph");
+  els.explanationView.classList.toggle("hidden", mode !== "packet");
   els.packetView.classList.toggle("hidden", mode !== "packet");
   els.collapseView.classList.toggle("hidden", mode !== "collapse");
   els.viewMode.querySelectorAll("button").forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === mode);
   });
+  updatePermalink();
 }
 
 function renderGraph() {
@@ -173,7 +196,9 @@ function renderNode(node) {
 }
 
 function renderPacket() {
-  els.packetView.innerHTML = state.packet.items
+  const packet = activePacket();
+  renderPacketExplanation(packet);
+  els.packetView.innerHTML = packet.items
     .map((item, index) => {
       const record = item.record;
       return `
@@ -185,6 +210,25 @@ function renderPacket() {
         </button>
       `;
     })
+    .join("");
+}
+
+function renderPacketExplanation(packet) {
+  const request = packet.request || {};
+  const excludedRecords = packet.excluded.filter((item) => item.record_id).length;
+  const warningCount = packet.items.filter((item) => item.record.kind === "warning").length;
+  const sourceCases = new Set(packet.items.map((item) => item.record.source_case)).size;
+  els.explanationView.innerHTML = [
+    ["Target", request.target_case || state.activeCase],
+    ["Items", `${packet.items.length}/${request.max_items || packet.items.length}`],
+    ["Sources", sourceCases],
+    ["Warnings", warningCount],
+    ["Excluded", excludedRecords],
+    ["Budget", request.max_tokens || "n/a"],
+    ["Trust", request.min_trust_tier || "draft"],
+    ["Role", request.role || "candidate"],
+  ]
+    .map(([label, value]) => `<div class="explain-tile"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`)
     .join("");
 }
 
@@ -234,7 +278,7 @@ function inspectNode(id) {
 }
 
 function inspectPacketRecord(recordId) {
-  const item = state.packet.items.find((packetItem) => packetItem.record.id === recordId);
+  const item = activePacket().items.find((packetItem) => packetItem.record.id === recordId);
   if (!item) return;
   const record = item.record;
   els.inspectorTitle.textContent = `${item.cite_handle} ${record.kind}`;
@@ -267,6 +311,18 @@ function kv(label, value) {
   return `<div class="kv"><span>${escapeHtml(label)}</span><code>${escapeHtml(String(value))}</code></div>`;
 }
 
+function activePacket() {
+  return state.packetsByCase[state.activeCase] || state.packet;
+}
+
+function updatePermalink() {
+  if (!state.activeCase) return;
+  const params = new URLSearchParams();
+  params.set("case", state.activeCase);
+  params.set("view", state.mode);
+  window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+}
+
 function typeLabel(type) {
   return type.replace(/([a-z])([A-Z])/g, "$1 $2");
 }
@@ -292,6 +348,16 @@ function escapeAttr(value) {
 els.searchInput.addEventListener("input", (event) => {
   state.search = event.target.value;
   renderGraph();
+});
+
+els.caseSelect.addEventListener("change", (event) => {
+  state.activeCase = event.target.value;
+  renderStatus();
+  renderGraph();
+  renderPacket();
+  updatePermalink();
+  const firstPacket = activePacket().items[0];
+  if (firstPacket) inspectPacketRecord(firstPacket.record.id);
 });
 
 els.typeFilters.addEventListener("click", (event) => {
@@ -338,7 +404,7 @@ window.addEventListener("resize", () => {
 loadData()
   .then(() => {
     render();
-    const firstPacket = state.packet.items[0];
+    const firstPacket = activePacket().items[0];
     if (firstPacket) inspectPacketRecord(firstPacket.record.id);
   })
   .catch((error) => {

@@ -19,6 +19,10 @@
       <section class="workspace" aria-label="Knowledge graph workspace">
         <aside class="filters" aria-label="Filters">
           <label class="search">
+            <span>Case study</span>
+            <select id="caseSelect"></select>
+          </label>
+          <label class="search">
             <span>Search memory</span>
             <input id="searchInput" type="search" placeholder="case, claim, citation, source..." />
           </label>
@@ -47,6 +51,7 @@
           <div id="graphView" class="graph-view">
             <svg id="graphSvg" role="img" aria-label="Knowledge graph"></svg>
           </div>
+          <div id="explanationView" class="explanation-view hidden"></div>
           <div id="packetView" class="list-view hidden"></div>
           <div id="collapseView" class="list-view hidden"></div>
         </section>

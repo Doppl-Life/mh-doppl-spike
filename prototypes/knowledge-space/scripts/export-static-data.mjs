@@ -31,6 +31,7 @@ function writeJson(file, data) {
 
 const graph = readSnapshotJsonl("graph_snapshot.jsonl");
 const packet = readJson("knowledge_packet.json");
+const packetsByCase = readJson("knowledge_packets_by_case.json");
 const packetEvent = readJson("knowledge_packet_event.json");
 const collapsePacket = readJson("collapse_packet.json");
 const researchReport = readJson("research_report.json");
@@ -40,6 +41,7 @@ const receipts = graph.nodes.filter((node) => node.type === "RunEventReceipt");
 
 writeJson("graph.json", graph);
 writeJson("knowledge_packet.json", packet);
+writeJson("knowledge_packets_by_case.json", packetsByCase);
 writeJson("knowledge_packet_event.json", packetEvent);
 writeJson("collapse_packet.json", collapsePacket);
 writeJson("research_report.json", researchReport);
@@ -53,6 +55,7 @@ writeJson("summary.json", {
     cases: cases.length,
     receipts: receipts.length,
     packetItems: packet.items.length,
+    casePackets: Object.keys(packetsByCase).length,
     collapsedItems: collapsePacket.items.length,
   },
   kinds: [...new Set(records.map((record) => record.kind))].sort(),

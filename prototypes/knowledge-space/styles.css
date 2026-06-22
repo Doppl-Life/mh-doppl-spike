@@ -26,7 +26,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -145,7 +146,8 @@ h3 {
   font-weight: 800;
 }
 
-.search input {
+.search input,
+.search select {
   width: 100%;
   border: 1px solid #cbd5e1;
   padding: 12px 13px;
@@ -154,7 +156,8 @@ h3 {
   outline: none;
 }
 
-.search input:focus {
+.search input:focus,
+.search select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
 }
@@ -254,6 +257,32 @@ svg {
 .list-view {
   display: grid;
   gap: 12px;
+}
+
+.explanation-view {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.explain-tile {
+  border: 1px solid var(--line);
+  background: #fbfdff;
+  padding: 12px;
+}
+
+.explain-tile strong {
+  display: block;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.explain-tile span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .row {
@@ -359,6 +388,10 @@ svg {
   .button-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .explanation-view {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 640px) {
@@ -367,7 +400,8 @@ svg {
   }
 
   .status-strip,
-  .button-grid {
+  .button-grid,
+  .explanation-view {
     grid-template-columns: 1fr 1fr;
   }
 

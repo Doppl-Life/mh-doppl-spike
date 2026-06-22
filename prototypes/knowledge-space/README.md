@@ -22,3 +22,9 @@ node scripts/export-static-data.mjs
 
 The exporter copies web-ready JSON into `data/` from
 `spikes/knowledge-space/out/`.
+
+## Permalinks
+
+The workbench keeps case and view state in the URL:
+
+`?case=fsd-accident-economy&view=packet`

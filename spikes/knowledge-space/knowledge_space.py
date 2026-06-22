@@ -2249,6 +2249,27 @@ class LocalKnowledgeGateway(KnowledgeGateway):
         return self.TRUST_RANK.get(trust_tier, -1)
 
 
+def build_case_packets(
+    space: KnowledgeSpace,
+    case_paths: list[Path],
+    limit: int = 10,
+) -> dict[str, dict[str, Any]]:
+    packets: dict[str, dict[str, Any]] = {}
+    for case_path in case_paths:
+        problem_path = case_path / "problem-statement.md"
+        if not problem_path.exists():
+            continue
+        problem_statement = problem_path.read_text(encoding="utf-8")
+        packet = space.select_packet(
+            problem_statement,
+            target_case=case_path.name,
+            limit=limit,
+            exclude_cases={case_path.name},
+        )
+        packets[case_path.name] = packet.to_json()
+    return packets
+
+
 def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) -> None:
     ledger = DEFAULT_LEDGER
     if ledger.exists():
@@ -2275,6 +2296,15 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
         limit=10,
         exclude_cases={target_case.name},
     )
+    case_packets = build_case_packets(
+        space,
+        [
+            CASE_ROOT / case_name
+            for case_name in sorted({record.source_case for record in space.records.values()})
+            if (CASE_ROOT / case_name / "problem-statement.md").exists()
+        ],
+        limit=10,
+    )
     openrouter_summary = None
     if use_openrouter:
         api_key = load_openrouter_key()
@@ -2293,6 +2323,10 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     )
     (OUT_DIR / "knowledge_packet.json").write_text(
         json.dumps(packet.to_json(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (OUT_DIR / "knowledge_packets_by_case.json").write_text(
+        json.dumps(case_packets, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     packet_event = packet.to_run_event(run_id="demo-knowledge-space", sequence=1)
@@ -2321,6 +2355,7 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     print(f"Collapse packet: {(OUT_DIR / 'collapse_packet.json').relative_to(ROOT)}")
     print(f"Report: {(OUT_DIR / 'report.md').relative_to(ROOT)}")
     print(f"Packet: {(OUT_DIR / 'knowledge_packet.json').relative_to(ROOT)}")
+    print(f"Case packets: {(OUT_DIR / 'knowledge_packets_by_case.json').relative_to(ROOT)}")
     print(f"Packet event: {(OUT_DIR / 'knowledge_packet_event.json').relative_to(ROOT)}")
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
     print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")

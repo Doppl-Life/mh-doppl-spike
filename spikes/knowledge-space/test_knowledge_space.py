@@ -8,6 +8,10 @@ from pathlib import Path
 
 from knowledge_space import (
     KnowledgeSpace,
+    KnowledgePacketRequest,
+    KnowledgeRecord,
+    LocalKnowledgeGateway,
+    approximate_token_count,
     load_graph_snapshot,
     load_run_events,
     load_openrouter_key,
@@ -124,6 +128,131 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertEqual(
                 event["payload"]["excluded"][0]["reason"],
                 "target case excluded from prior-memory retrieval",
+            )
+
+    def test_local_gateway_select_packet_enforces_runtime_budget_and_warning_slot(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            space.ingest_case(CASES / "fsd-mobility-and-time")
+            warning = KnowledgeRecord(
+                id="ks_warning_budget",
+                kind="warning",
+                text=(
+                    "FSD crash economy prior warning: insurance finance mobility and enforcement "
+                    "shifts can dominate the result when autonomous crashes are removed."
+                ),
+                tags=["fsd", "warning", "insurance", "finance", "mobility"],
+                source_case="fsd-accident-economy",
+                source_path="case-studies/fsd-accident-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:warning-budget",
+                line_start=1,
+                line_end=1,
+                heading="Synthetic warning",
+                citation="case-studies/fsd-accident-economy/problem-statement.md:1-1",
+            )
+            oversized = KnowledgeRecord(
+                id="ks_oversized_budget",
+                kind="claim",
+                text=" ".join(["fsd", "insurance", "finance", "mobility"] * 80),
+                tags=["fsd", "insurance", "finance", "mobility"],
+                source_case="fsd-accident-economy",
+                source_path="case-studies/fsd-accident-economy/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:oversized-budget",
+                line_start=2,
+                line_end=2,
+                heading="Synthetic oversized prior",
+                citation="case-studies/fsd-accident-economy/problem-statement.md:2-2",
+            )
+            space.records[warning.id] = warning
+            space.records[oversized.id] = oversized
+            query = (CASES / "fsd-ownership-unwind" / "problem-statement.md").read_text(
+                encoding="utf-8"
+            )
+
+            packet = LocalKnowledgeGateway(space).select_packet(
+                KnowledgePacketRequest(
+                    problem_summary=query,
+                    target_case="fsd-ownership-unwind",
+                    max_items=3,
+                    max_tokens=75,
+                    required_warning_slots=1,
+                    excluded_cases=["fsd-ownership-unwind"],
+                    role="candidate",
+                )
+            )
+            event = packet.to_run_event(run_id="demo-run-1", sequence=9)
+
+            self.assertEqual(validate_packet_event(event), [])
+            self.assertLessEqual(len(packet.items), 3)
+            self.assertLessEqual(
+                sum(approximate_token_count(item.record.text) for item in packet.items),
+                75,
+            )
+            self.assertTrue(any(item.record.kind == "warning" for item in packet.items))
+            self.assertNotIn("ks_oversized_budget", {item.record.id for item in packet.items})
+            self.assertEqual(event["payload"]["request"]["max_tokens"], 75)
+            self.assertEqual(event["payload"]["request"]["required_warning_slots"], 1)
+            self.assertEqual(event["payload"]["request"]["role"], "candidate")
+            self.assertIn(
+                "over packet token budget",
+                {item["reason"] for item in event["payload"]["excluded"]},
+            )
+
+    def test_local_gateway_excludes_withheld_for_candidate_roles(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            public = KnowledgeRecord(
+                id="ks_public_runtime",
+                kind="claim",
+                text="FSD insurance finance memory should be reusable by later candidate runs.",
+                tags=["fsd", "insurance", "finance"],
+                source_case="fsd-public-prior",
+                source_path="case-studies/fsd-public-prior/problem-statement.md",
+                visibility="public",
+                trust_tier="candidate",
+                source_chunk_id="chunk:public-runtime",
+                line_start=1,
+                line_end=1,
+                heading="Public prior",
+                citation="case-studies/fsd-public-prior/problem-statement.md:1-1",
+            )
+            withheld = KnowledgeRecord(
+                id="ks_withheld_runtime",
+                kind="claim",
+                text="FSD insurance finance hidden evaluator answer must never leak.",
+                tags=["fsd", "insurance", "finance"],
+                source_case="fsd-hidden-evaluator",
+                source_path="case-studies/fsd-hidden-evaluator/withheld-solution.md",
+                visibility="withheld_evaluator",
+                trust_tier="candidate",
+                source_chunk_id="chunk:withheld-runtime",
+                line_start=1,
+                line_end=1,
+                heading="Withheld evaluator answer",
+                citation="case-studies/fsd-hidden-evaluator/withheld-solution.md:1-1",
+            )
+            space.records[public.id] = public
+            space.records[withheld.id] = withheld
+
+            packet = LocalKnowledgeGateway(space).select_packet(
+                KnowledgePacketRequest(
+                    problem_summary="FSD insurance finance candidate run",
+                    target_case="fsd-next-case",
+                    max_items=4,
+                    role="candidate",
+                )
+            )
+
+            self.assertIn(public.id, {item.record.id for item in packet.items})
+            self.assertNotIn(withheld.id, {item.record.id for item in packet.items})
+            self.assertIn(
+                "withheld from candidate-producing role",
+                {item.reason for item in packet.excluded},
             )
 
     def test_validate_packet_event_rejects_missing_provenance_and_leakage(self) -> None:

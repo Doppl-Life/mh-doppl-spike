@@ -114,11 +114,23 @@ not because the goal is a disposable prototype.
 - [ ] Implement hybrid retrieval:
       graph filters first, vector search second, rerank third.
 - [ ] Add optional local reranker adapter using `Qwen/Qwen3-Reranker-0.6B`.
-- [ ] Implement `KnowledgeGateway.selectPacket`.
-- [ ] Add packet budget controls: max items, max tokens, max stale items, required
+- [x] Implement local `KnowledgeGateway.selectPacket` contract.
+- [~] Add packet budget controls: max items, max tokens, max stale items, required
       warning slots.
-- [ ] Acceptance gate: a packet for a case-study run includes relevant public
+- [x] Acceptance gate: a packet for a case-study run includes relevant public
       priors but excludes withheld evaluator-only solution content.
+
+### Phase 3 Walking Notes
+
+- [x] Add `LocalKnowledgeGateway` as the runtime-facing packet selection port for
+      the local ledger.
+- [x] Add role-aware leakage filtering so candidate-producing roles receive no
+      `withheld_evaluator` or `secret_forbidden` records.
+- [x] Add deterministic packet budgets for `max_items`, `max_tokens`, and
+      `required_warning_slots`.
+- [x] Add excluded-record audit metadata for withheld and over-budget items.
+- [ ] Add stale item metadata and enforce `max_stale_items`.
+- [ ] Replace lexical ranking with graph-filtered vector retrieval and rerank.
 
 ## Phase 4 - Runtime Read Integration
 

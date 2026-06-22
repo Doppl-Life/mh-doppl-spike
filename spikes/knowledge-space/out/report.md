@@ -33,7 +33,7 @@ Chunk: `chunk:d00210b74196`
 
 ### 2. KC9B4E9 - case_frame from `fsd-accident-economy`
 
-Score: `29.5`
+Score: `28.5`
 
 Reason: shared tags: accident, autonomy, cluster, economy, fsd, sibling, substrate; shared terms: accident, autonomy, crossing, economy, load-bearing, sibling, sub-cluster, substrate; sibling-cluster reference
 
@@ -43,21 +43,9 @@ Source: `case-studies/fsd-accident-economy/problem-statement.md:24-32`
 
 Chunk: `chunk:e119a8478d26`
 
-### 3. K3939F5 - hidden_variable from `fsd-enforcement-economy`
+### 3. K11109A - warning from `fsd-enforcement-economy`
 
 Score: `26.5`
-
-Reason: shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory
-
-Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not "fewer tickets"), map the web (breadth), game out the non-obvious second/third-order effects (depth) — including the state's revenue-replacement fight — and synthesize what it converges to.
-
-Source: `case-studies/fsd-enforcement-economy/problem-statement.md:46-49`
-
-Chunk: `chunk:8867ed267356`
-
-### 4. K11109A - warning from `fsd-enforcement-economy`
-
-Score: `25.5`
 
 Reason: shared tags: accident, economy, fsd, mobility, ownership, sibling, time; shared terms: accident, adoption-asymmetry, economy, governed, lens, mobility, ownership, sibling; sibling-cluster reference; warning memory
 
@@ -67,9 +55,21 @@ Source: `case-studies/fsd-enforcement-economy/problem-statement.md:5-7`
 
 Chunk: `chunk:2ea36f550288`
 
+### 4. K3939F5 - hidden_variable from `fsd-enforcement-economy`
+
+Score: `24.0`
+
+Reason: shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory
+
+Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not "fewer tickets"), map the web (breadth), game out the non-obvious second/third-order effects (depth) — including the state's revenue-replacement fight — and synthesize what it converges to.
+
+Source: `case-studies/fsd-enforcement-economy/problem-statement.md:46-49`
+
+Chunk: `chunk:8867ed267356`
+
 ### 5. K8A4644 - hidden_variable from `fsd-accident-economy`
 
-Score: `23.5`
+Score: `21.0`
 
 Reason: shared tags: accident, fsd, substrate; shared terms: accident, actual, ask, breadth, converges, depth, game, map; hidden_variable memory
 
@@ -81,7 +81,7 @@ Chunk: `chunk:0536290b6198`
 
 ### 6. KE810E1 - case_frame from `fsd-enforcement-economy`
 
-Score: `19.5`
+Score: `18.0`
 
 Reason: shared tags: autonomy, economy, enforcement, fsd; shared terms: autonomy, doppl, economy, enforcement, problem, statement, subtype, subtype-index
 
@@ -93,7 +93,7 @@ Chunk: `chunk:dcc6f431d4e8`
 
 ### 7. K24A61E - case_frame from `fsd-mobility-and-time`
 
-Score: `19.5`
+Score: `18.0`
 
 Reason: shared tags: autonomy, fsd, mobility, time; shared terms: autonomy, doppl, mobility, problem, statement, subtype, subtype-index, synthesis
 
@@ -105,7 +105,7 @@ Chunk: `chunk:c549d560683d`
 
 ### 8. K5D4E25 - case_frame from `fsd-mobility-and-time`
 
-Score: `18.5`
+Score: `17.0`
 
 Reason: shared tags: cluster, fsd, mobility, time; shared terms: cluster, family, full-self-driving-unlock, mobility, pepsis, perfect, sub-cluster, time
 
@@ -117,7 +117,7 @@ Chunk: `chunk:83abb5fa65f3`
 
 ### 9. K7A9590 - signal from `fsd-accident-economy`
 
-Score: `17.5`
+Score: `16.0`
 
 Reason: shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection
 
@@ -129,7 +129,7 @@ Chunk: `chunk:6412a984d853`
 
 ### 10. K58A24E - signal from `fsd-enforcement-economy`
 
-Score: `17.5`
+Score: `16.0`
 
 Reason: shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection
 

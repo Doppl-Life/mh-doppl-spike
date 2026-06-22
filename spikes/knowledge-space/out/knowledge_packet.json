@@ -78,40 +78,8 @@
         "visibility": "public"
       },
       "record_id": "ks_c9b4e98f2fe4425f",
-      "score": 29.5,
+      "score": 28.5,
       "source_chunk_id": "chunk:e119a8478d26"
-    },
-    {
-      "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:46-49",
-      "cite_handle": "K3939F5",
-      "reason": "shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory",
-      "record": {
-        "agenome_id": "",
-        "candidate_id": "",
-        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:46-49",
-        "critic_id": "",
-        "heading": "Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\")",
-        "id": "ks_3939f5a0799cd8bc",
-        "kind": "hidden_variable",
-        "line_end": 49,
-        "line_start": 46,
-        "origin_event_sequence": 0,
-        "run_id": "",
-        "source_case": "fsd-enforcement-economy",
-        "source_chunk_id": "chunk:8867ed267356",
-        "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
-        "tags": [
-          "enforcement",
-          "fsd",
-          "substrate"
-        ],
-        "text": "Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not \"fewer tickets\"), map the web (breadth), game out the non-obvious second/third-order effects (depth) \u2014 including the state's revenue-replacement fight \u2014 and synthesize what it converges to.",
-        "trust_tier": "candidate",
-        "visibility": "public"
-      },
-      "record_id": "ks_3939f5a0799cd8bc",
-      "score": 26.5,
-      "source_chunk_id": "chunk:8867ed267356"
     },
     {
       "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:5-7",
@@ -146,8 +114,40 @@
         "visibility": "public"
       },
       "record_id": "ks_11109aa0df49ddaf",
-      "score": 25.5,
+      "score": 26.5,
       "source_chunk_id": "chunk:2ea36f550288"
+    },
+    {
+      "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:46-49",
+      "cite_handle": "K3939F5",
+      "reason": "shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory",
+      "record": {
+        "agenome_id": "",
+        "candidate_id": "",
+        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:46-49",
+        "critic_id": "",
+        "heading": "Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\")",
+        "id": "ks_3939f5a0799cd8bc",
+        "kind": "hidden_variable",
+        "line_end": 49,
+        "line_start": 46,
+        "origin_event_sequence": 0,
+        "run_id": "",
+        "source_case": "fsd-enforcement-economy",
+        "source_chunk_id": "chunk:8867ed267356",
+        "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
+        "tags": [
+          "enforcement",
+          "fsd",
+          "substrate"
+        ],
+        "text": "Ask the system to recover the actual problem (removal of the *enforcement/compliance substrate*, not \"fewer tickets\"), map the web (breadth), game out the non-obvious second/third-order effects (depth) \u2014 including the state's revenue-replacement fight \u2014 and synthesize what it converges to.",
+        "trust_tier": "candidate",
+        "visibility": "public"
+      },
+      "record_id": "ks_3939f5a0799cd8bc",
+      "score": 24.0,
+      "source_chunk_id": "chunk:8867ed267356"
     },
     {
       "citation": "case-studies/fsd-accident-economy/problem-statement.md:35-38",
@@ -178,7 +178,7 @@
         "visibility": "public"
       },
       "record_id": "ks_8a464491ea6290ab",
-      "score": 23.5,
+      "score": 21.0,
       "source_chunk_id": "chunk:0536290b6198"
     },
     {
@@ -211,7 +211,7 @@
         "visibility": "public"
       },
       "record_id": "ks_e810e181edfba949",
-      "score": 19.5,
+      "score": 18.0,
       "source_chunk_id": "chunk:dcc6f431d4e8"
     },
     {
@@ -245,7 +245,7 @@
         "visibility": "public"
       },
       "record_id": "ks_24a61e27c77ae552",
-      "score": 19.5,
+      "score": 18.0,
       "source_chunk_id": "chunk:c549d560683d"
     },
     {
@@ -278,7 +278,7 @@
         "visibility": "public"
       },
       "record_id": "ks_5d4e25516970c8bf",
-      "score": 18.5,
+      "score": 17.0,
       "source_chunk_id": "chunk:83abb5fa65f3"
     },
     {
@@ -308,7 +308,7 @@
         "visibility": "public"
       },
       "record_id": "ks_7a95906b90ef92b9",
-      "score": 17.5,
+      "score": 16.0,
       "source_chunk_id": "chunk:6412a984d853"
     },
     {
@@ -338,7 +338,7 @@
         "visibility": "public"
       },
       "record_id": "ks_58a24eaeebb5f84c",
-      "score": 17.5,
+      "score": 16.0,
       "source_chunk_id": "chunk:4a528ada7014"
     }
   ],
@@ -360,9 +360,13 @@
     "excluded_cases": [
       "fsd-ownership-unwind"
     ],
+    "include_kinds": [],
     "max_items": 10,
+    "max_tokens": 1200,
     "memory_mode": "auto",
     "problem_summary": "# Problem Statement: The Ownership Unwind / Car-as-a-Service After Autonomy > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`). > **Cluster:** **Sub-cluster D** of the `full-self-driving-unlock` fa...",
+    "required_warning_slots": 0,
+    "role": "candidate",
     "target_case": "fsd-ownership-unwind"
   }
 }

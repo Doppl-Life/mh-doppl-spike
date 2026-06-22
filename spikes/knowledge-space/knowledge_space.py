@@ -294,8 +294,13 @@ class KnowledgePacketRequest:
     problem_summary: str
     target_case: str
     max_items: int
+    retrieval_text: str = field(default="", repr=False, compare=False)
     memory_mode: str = "auto"
     excluded_cases: list[str] = field(default_factory=list)
+    max_tokens: int = 1200
+    required_warning_slots: int = 0
+    include_kinds: list[str] = field(default_factory=list)
+    role: str = "candidate"
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -304,6 +309,10 @@ class KnowledgePacketRequest:
             "max_items": self.max_items,
             "memory_mode": self.memory_mode,
             "excluded_cases": self.excluded_cases,
+            "max_tokens": self.max_tokens,
+            "required_warning_slots": self.required_warning_slots,
+            "include_kinds": self.include_kinds,
+            "role": self.role,
         }
 
 
@@ -311,9 +320,19 @@ class KnowledgePacketRequest:
 class ExcludedKnowledgeItem:
     case: str
     reason: str
+    record_id: str = ""
+    kind: str = ""
+    visibility: str = ""
 
     def to_json(self) -> dict[str, str]:
-        return {"case": self.case, "reason": self.reason}
+        data = {"case": self.case, "reason": self.reason}
+        if self.record_id:
+            data["record_id"] = self.record_id
+        if self.kind:
+            data["kind"] = self.kind
+        if self.visibility:
+            data["visibility"] = self.visibility
+        return data
 
 
 @dataclass(frozen=True)
@@ -354,6 +373,10 @@ class KnowledgePacket:
 def tokenize(text: str) -> set[str]:
     words = set(re.findall(r"[a-zA-Z][a-zA-Z0-9-]{2,}", text.lower()))
     return {word for word in words if word not in STOPWORDS}
+
+
+def approximate_token_count(text: str) -> int:
+    return max(1, (len(re.findall(r"\S+", text)) * 4 + 2) // 3)
 
 
 def split_sentences(text: str) -> list[str]:
@@ -1356,32 +1379,14 @@ class KnowledgeSpace:
         exclude_cases: set[str] | None = None,
     ) -> KnowledgePacket:
         excluded_cases = sorted(exclude_cases or set())
-        base_packet = self.retrieve(problem_statement, limit=max(limit * 4, limit))
         request = KnowledgePacketRequest(
             problem_summary=summarize_problem(problem_statement),
             target_case=target_case,
             max_items=limit,
+            retrieval_text=problem_statement,
             excluded_cases=excluded_cases,
         )
-        excluded = [
-            ExcludedKnowledgeItem(
-                case=case,
-                reason="target case excluded from prior-memory retrieval"
-                if case == target_case
-                else "case excluded from prior-memory retrieval",
-            )
-            for case in excluded_cases
-        ]
-        return KnowledgePacket(
-            query_tags=base_packet.query_tags,
-            items=[
-                item
-                for item in base_packet.items
-                if item.record.source_case not in set(excluded_cases)
-            ][:limit],
-            request=request,
-            excluded=excluded,
-        )
+        return LocalKnowledgeGateway(self).select_packet(request)
 
     def request_collapse(
         self,
@@ -2049,6 +2054,157 @@ class KnowledgeSpace:
         if record.kind in {"hidden_variable", "warning"}:
             parts.append(f"{record.kind} memory")
         return "; ".join(parts) or "lexical relevance"
+
+
+class KnowledgeGateway:
+    def select_packet(self, request: KnowledgePacketRequest) -> KnowledgePacket:
+        raise NotImplementedError
+
+
+class LocalKnowledgeGateway(KnowledgeGateway):
+    CANDIDATE_PRODUCING_ROLES = {
+        "agenome",
+        "candidate",
+        "council",
+        "critic",
+        "generation",
+    }
+    WARNING_KINDS = {"warning", "negativefinding", "negative_finding"}
+
+    def __init__(self, space: KnowledgeSpace):
+        self.space = space
+
+    def select_packet(self, request: KnowledgePacketRequest) -> KnowledgePacket:
+        query_text = request.retrieval_text or request.problem_summary
+        query_tokens = tokenize(query_text)
+        tag_set = set(infer_tags(query_text, "query"))
+        if "fsd" in query_text.lower() or "autonom" in query_text.lower():
+            tag_set.add("fsd")
+        query_tags = sorted(tag_set)
+
+        excluded: list[ExcludedKnowledgeItem] = [
+            ExcludedKnowledgeItem(
+                case=case,
+                reason="target case excluded from prior-memory retrieval"
+                if case == request.target_case
+                else "case excluded from prior-memory retrieval",
+            )
+            for case in request.excluded_cases
+        ]
+        if request.memory_mode == "off":
+            return KnowledgePacket(query_tags=query_tags, items=[], request=request, excluded=excluded)
+
+        ranked = self._rank_records(query_tokens, query_tags, request, excluded)
+        selected: list[PacketItem] = []
+        selected_ids: set[str] = set()
+        used_tokens = 0
+
+        required_warning_slots = max(0, request.required_warning_slots)
+        warning_items = [item for item in ranked if self._is_warning(item.record)]
+        for item in warning_items:
+            if sum(1 for selected_item in selected if self._is_warning(selected_item.record)) >= required_warning_slots:
+                break
+            used_tokens = self._maybe_select(item, request, selected, selected_ids, used_tokens, excluded)
+
+        for item in ranked:
+            if len(selected) >= request.max_items:
+                break
+            if item.record.id in selected_ids:
+                continue
+            used_tokens = self._maybe_select(item, request, selected, selected_ids, used_tokens, excluded)
+
+        return KnowledgePacket(
+            query_tags=query_tags,
+            items=selected,
+            request=request,
+            excluded=excluded,
+        )
+
+    def _rank_records(
+        self,
+        query_tokens: set[str],
+        query_tags: list[str],
+        request: KnowledgePacketRequest,
+        excluded: list[ExcludedKnowledgeItem],
+    ) -> list[PacketItem]:
+        excluded_cases = set(request.excluded_cases)
+        include_kinds = {kind.lower() for kind in request.include_kinds}
+        ranked: list[PacketItem] = []
+        for record in self.space.records.values():
+            if record.source_case in excluded_cases:
+                continue
+            if include_kinds and record.kind.lower() not in include_kinds:
+                continue
+            if self._is_withheld_for_role(record, request.role):
+                excluded.append(
+                    ExcludedKnowledgeItem(
+                        case=record.source_case,
+                        reason="withheld from candidate-producing role",
+                        record_id=record.id,
+                        kind=record.kind,
+                        visibility=record.visibility,
+                    )
+                )
+                continue
+
+            record_tokens = tokenize(record.text)
+            overlap = query_tokens & record_tokens
+            tag_overlap = set(query_tags) & set(record.tags)
+            if not overlap and not tag_overlap:
+                continue
+            score = len(overlap) + (2.0 * len(tag_overlap))
+            if self._is_warning(record):
+                score += 1.0
+            if "sibling" in record.text.lower() or "sibling" in request.problem_summary.lower():
+                score += 1.5
+            if "substrate" in record.text.lower() and "substrate" in request.problem_summary.lower():
+                score += 1.0
+            ranked.append(
+                PacketItem(
+                    record=record,
+                    score=round(score, 2),
+                    reason=self.space._reason(overlap, tag_overlap, record),
+                )
+            )
+
+        ranked.sort(key=lambda item: (-item.score, item.record.source_case, item.record.id))
+        return ranked
+
+    def _maybe_select(
+        self,
+        item: PacketItem,
+        request: KnowledgePacketRequest,
+        selected: list[PacketItem],
+        selected_ids: set[str],
+        used_tokens: int,
+        excluded: list[ExcludedKnowledgeItem],
+    ) -> int:
+        if len(selected) >= request.max_items:
+            return used_tokens
+        item_tokens = approximate_token_count(item.record.text)
+        if used_tokens + item_tokens > request.max_tokens:
+            excluded.append(
+                ExcludedKnowledgeItem(
+                    case=item.record.source_case,
+                    reason="over packet token budget",
+                    record_id=item.record.id,
+                    kind=item.record.kind,
+                    visibility=item.record.visibility,
+                )
+            )
+            return used_tokens
+        selected.append(item)
+        selected_ids.add(item.record.id)
+        return used_tokens + item_tokens
+
+    def _is_withheld_for_role(self, record: KnowledgeRecord, role: str) -> bool:
+        normalized_role = role.lower()
+        if normalized_role not in self.CANDIDATE_PRODUCING_ROLES:
+            return False
+        return record.visibility in {"withheld_evaluator", "secret_forbidden"}
+
+    def _is_warning(self, record: KnowledgeRecord) -> bool:
+        return record.kind.lower().replace("-", "_") in self.WARNING_KINDS
 
 
 def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) -> None:

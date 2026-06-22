@@ -244,6 +244,41 @@ class RunEventReceipt:
 
 
 @dataclass(frozen=True)
+class RunEventWatermark:
+    id: str
+    run_id: str
+    high_watermark: int
+    max_sequence_seen: int
+    receipt_count: int
+    missing_sequences: list[int]
+    source_paths: list[str]
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "row_type": "run_event_watermark",
+            "id": self.id,
+            "run_id": self.run_id,
+            "high_watermark": self.high_watermark,
+            "max_sequence_seen": self.max_sequence_seen,
+            "receipt_count": self.receipt_count,
+            "missing_sequences": self.missing_sequences,
+            "source_paths": self.source_paths,
+        }
+
+    @classmethod
+    def from_json(cls, data: dict[str, Any]) -> "RunEventWatermark":
+        return cls(
+            id=str(data["id"]),
+            run_id=str(data["run_id"]),
+            high_watermark=int(data.get("high_watermark", 0)),
+            max_sequence_seen=int(data.get("max_sequence_seen", 0)),
+            receipt_count=int(data.get("receipt_count", 0)),
+            missing_sequences=[int(item) for item in data.get("missing_sequences", [])],
+            source_paths=list(data.get("source_paths") or []),
+        )
+
+
+@dataclass(frozen=True)
 class PacketItem:
     record: KnowledgeRecord
     score: float
@@ -390,6 +425,10 @@ def stable_hash(prefix: str, data: Any) -> str:
 
 def receipt_id(run_id: str, sequence: int) -> str:
     return f"receipt:{run_id}:{sequence}"
+
+
+def watermark_id(run_id: str) -> str:
+    return f"watermark:{run_id}"
 
 
 def source_chunk_id(source_path: str, line_start: int, line_end: int, text: str) -> str:
@@ -965,6 +1004,7 @@ class KnowledgeSpace:
         self.ledger_path = ledger_path
         self.records: dict[str, KnowledgeRecord] = {}
         self.run_event_receipts: dict[str, RunEventReceipt] = {}
+        self.run_event_watermarks: dict[str, RunEventWatermark] = {}
         self._load()
 
     def _load(self) -> None:
@@ -979,6 +1019,10 @@ class KnowledgeSpace:
                     receipt = RunEventReceipt.from_json(data)
                     self.run_event_receipts[receipt.id] = receipt
                     continue
+                if data.get("row_type") == "run_event_watermark":
+                    watermark = RunEventWatermark.from_json(data)
+                    self.run_event_watermarks[watermark.id] = watermark
+                    continue
                 record = KnowledgeRecord.from_json(data)
                 self.records[record.id] = record
 
@@ -990,6 +1034,7 @@ class KnowledgeSpace:
     ) -> list[RunEventReceipt]:
         created: list[RunEventReceipt] = []
         existing_ids = set(self.run_event_receipts)
+        affected_run_ids: set[str] = set()
         for index, event in enumerate(events, start=1):
             run_id = str(event.get("runId") or event.get("run_id") or "unknown-run")
             sequence = int(event.get("sequence") or index)
@@ -1014,8 +1059,41 @@ class KnowledgeSpace:
             self.run_event_receipts[receipt.id] = receipt
             created.append(receipt)
             existing_ids.add(receipt.id)
+            affected_run_ids.add(run_id)
         self._append_receipts(created)
+        watermarks = [self._build_watermark(run_id) for run_id in sorted(affected_run_ids)]
+        self._append_watermarks(watermarks)
         return created
+
+    def _build_watermark(self, run_id: str) -> RunEventWatermark:
+        receipts = [
+            receipt
+            for receipt in self.run_event_receipts.values()
+            if receipt.run_id == run_id
+        ]
+        sequences = sorted({receipt.sequence for receipt in receipts})
+        max_sequence_seen = sequences[-1] if sequences else 0
+        missing_sequences = [
+            sequence
+            for sequence in range(1, max_sequence_seen + 1)
+            if sequence not in set(sequences)
+        ]
+        high_watermark = 0
+        for sequence in range(1, max_sequence_seen + 1):
+            if sequence in missing_sequences:
+                break
+            high_watermark = sequence
+        watermark = RunEventWatermark(
+            id=watermark_id(run_id),
+            run_id=run_id,
+            high_watermark=high_watermark,
+            max_sequence_seen=max_sequence_seen,
+            receipt_count=len(receipts),
+            missing_sequences=missing_sequences,
+            source_paths=sorted({receipt.source_path for receipt in receipts}),
+        )
+        self.run_event_watermarks[watermark.id] = watermark
+        return watermark
 
     def ingest_case(self, case_dir: Path, include_evaluator: bool = False) -> list[KnowledgeRecord]:
         if not case_dir.exists():
@@ -1276,6 +1354,25 @@ class KnowledgeSpace:
         nodes: dict[str, dict[str, Any]] = {}
         edges: list[dict[str, str]] = []
 
+        for watermark in sorted(
+            self.run_event_watermarks.values(),
+            key=lambda item: item.run_id,
+        ):
+            run_id = f"run:{watermark.run_id}"
+            nodes[watermark.id] = {
+                "id": watermark.id,
+                "label": f"watermark {watermark.high_watermark}/{watermark.max_sequence_seen}",
+                "type": "RunEventWatermark",
+                "runId": watermark.run_id,
+                "highWatermark": watermark.high_watermark,
+                "maxSequenceSeen": watermark.max_sequence_seen,
+                "receiptCount": watermark.receipt_count,
+                "missingSequences": watermark.missing_sequences,
+                "sourcePaths": watermark.source_paths,
+            }
+            nodes.setdefault(run_id, {"id": run_id, "label": watermark.run_id, "type": "Run"})
+            edges.append({"source": watermark.id, "target": run_id, "type": "WATERMARK_FOR_RUN"})
+
         for receipt in sorted(
             self.run_event_receipts.values(),
             key=lambda item: (item.run_id, item.sequence),
@@ -1407,8 +1504,34 @@ class KnowledgeSpace:
             "CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.id IS UNIQUE;",
             "CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;",
             "CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;",
+            "CREATE CONSTRAINT run_event_watermark_id IF NOT EXISTS FOR (watermark:RunEventWatermark) REQUIRE watermark.id IS UNIQUE;",
             "",
         ]
+        for watermark in sorted(
+            self.run_event_watermarks.values(),
+            key=lambda item: item.run_id,
+        ):
+            lines.extend(
+                [
+                    f"MERGE (run:Run {{id: {cypher_value(watermark.run_id)}}}) SET run.title = {cypher_value(watermark.run_id)};",
+                    f"MERGE (watermark:RunEventWatermark {{id: {cypher_value(watermark.id)}}})",
+                    "  SET "
+                    + ", ".join(
+                        [
+                            f"watermark.runId = {cypher_value(watermark.run_id)}",
+                            f"watermark.highWatermark = {watermark.high_watermark}",
+                            f"watermark.maxSequenceSeen = {watermark.max_sequence_seen}",
+                            f"watermark.receiptCount = {watermark.receipt_count}",
+                            f"watermark.missingSequences = {cypher_value(watermark.missing_sequences)}",
+                            f"watermark.sourcePaths = {cypher_value(watermark.source_paths)}",
+                        ]
+                    )
+                    + ";",
+                    f"MATCH (watermark:RunEventWatermark {{id: {cypher_value(watermark.id)}}}), (run:Run {{id: {cypher_value(watermark.run_id)}}})",
+                    "MERGE (watermark)-[:WATERMARK_FOR_RUN]->(run);",
+                    "",
+                ]
+            )
         for receipt in sorted(
             self.run_event_receipts.values(),
             key=lambda item: (item.run_id, item.sequence),
@@ -1577,6 +1700,14 @@ class KnowledgeSpace:
             for receipt in receipts:
                 f.write(json.dumps(receipt.to_json(), sort_keys=True) + "\n")
 
+    def _append_watermarks(self, watermarks: list[RunEventWatermark]) -> None:
+        if not watermarks:
+            return
+        self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.ledger_path.open("a", encoding="utf-8") as f:
+            for watermark in watermarks:
+                f.write(json.dumps(watermark.to_json(), sort_keys=True) + "\n")
+
     def _research_sentences(self, text: str) -> list[str]:
         selected: list[str] = []
         for sentence in split_sentences(text):
@@ -1675,6 +1806,13 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
     print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")
     print(f"Imported {len(receipt_records)} run-event receipt(s)")
+    for watermark in sorted(space.run_event_watermarks.values(), key=lambda item: item.run_id):
+        missing = ",".join(str(sequence) for sequence in watermark.missing_sequences) or "none"
+        print(
+            f"Run watermark {watermark.run_id}: "
+            f"{watermark.high_watermark}/{watermark.max_sequence_seen} "
+            f"(missing: {missing})"
+        )
     print(f"Collapsed {len(collapse_records)} run-derived memory item(s)")
     print(f"Retrieved {len(packet.items)} memory item(s) for {target_case.name}")
 
@@ -2057,6 +2195,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
           <button type="button" data-filter="Candidate">Candidates</button>
           <button type="button" data-filter="CriticReview">Critics</button>
           <button type="button" data-filter="RunEventReceipt">Receipts</button>
+          <button type="button" data-filter="RunEventWatermark">Watermarks</button>
           <button type="button" data-filter="Case">Cases</button>
           <button type="button" data-filter="Source">Sources</button>
           <button type="button" data-filter="Tag">Tags</button>
@@ -2092,6 +2231,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       KnowledgeRecord: "#7c3aed",
       Run: "#0f172a",
       RunEventReceipt: "#0891b2",
+      RunEventWatermark: "#16a34a",
       Source: "#475569",
       Tag: "#c2410c"
     }};
@@ -2122,12 +2262,16 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         node.eventType,
         node.eventHash,
         node.payloadHash,
-        node.sourcePath
+        node.sourcePath,
+        node.highWatermark,
+        node.maxSequenceSeen,
+        node.missingSequences,
+        node.sourcePaths
       ].filter(Boolean).join(" ").toLowerCase().includes(term);
     }}
 
     function layoutNodes(width, height) {{
-      const buckets = ["Run", "RunEventReceipt", "Candidate", "CriticReview", "Case", "Source", "KnowledgeRecord", "Tag"];
+      const buckets = ["Run", "RunEventWatermark", "RunEventReceipt", "Candidate", "CriticReview", "Case", "Source", "KnowledgeRecord", "Tag"];
       const byType = Object.fromEntries(buckets.map((type) => [type, []]));
       graphData.nodes.forEach((node) => {{
         (byType[node.type] || byType.KnowledgeRecord).push(node);
@@ -2165,11 +2309,15 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       const eventHash = node.eventHash ? `<div class="detail-kv"><strong>Event hash:</strong> ${{escapeHtml(node.eventHash)}}</div>` : "";
       const payloadHash = node.payloadHash ? `<div class="detail-kv"><strong>Payload hash:</strong> ${{escapeHtml(node.payloadHash)}}</div>` : "";
       const sourcePath = node.sourcePath ? `<div class="detail-kv"><strong>Source path:</strong> ${{escapeHtml(node.sourcePath)}}</div>` : "";
+      const highWatermark = node.highWatermark !== undefined ? `<div class="detail-kv"><strong>High watermark:</strong> ${{escapeHtml(node.highWatermark)}} / ${{escapeHtml(node.maxSequenceSeen || 0)}}</div>` : "";
+      const receiptCount = node.receiptCount !== undefined ? `<div class="detail-kv"><strong>Receipts:</strong> ${{escapeHtml(node.receiptCount)}}</div>` : "";
+      const missingSequences = node.missingSequences ? `<div class="detail-kv"><strong>Missing sequences:</strong> ${{escapeHtml(node.missingSequences.length ? node.missingSequences.join(", ") : "none")}}</div>` : "";
+      const sourcePaths = node.sourcePaths ? `<div class="detail-kv"><strong>Source paths:</strong> ${{escapeHtml(node.sourcePaths.join(", "))}}</div>` : "";
       const text = node.text ? `<div class="detail-text">${{escapeHtml(node.text)}}</div>` : "";
       detail.innerHTML = `
         <h2>${{escapeHtml(node.label)}}</h2>
         <div class="detail-kv"><strong>Type:</strong> ${{escapeHtml(node.type)}}</div>
-        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{eventType}}${{eventHash}}${{payloadHash}}${{sourcePath}}${{text}}
+        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{eventType}}${{eventHash}}${{payloadHash}}${{sourcePath}}${{highWatermark}}${{receiptCount}}${{missingSequences}}${{sourcePaths}}${{text}}
         <div class="detail-kv"><strong>Outgoing:</strong></div>
         <ul>${{outgoing || "<li>None</li>"}}</ul>
       `;
@@ -2294,6 +2442,13 @@ def main() -> None:
             encoding="utf-8",
         )
         print(f"imported {len(receipts)} receipt(s); collapsed {len(records)} record(s) from {len(events)} event(s)")
+        for watermark in sorted(space.run_event_watermarks.values(), key=lambda item: item.run_id):
+            missing = ",".join(str(sequence) for sequence in watermark.missing_sequences) or "none"
+            print(
+                f"run watermark {watermark.run_id}: "
+                f"{watermark.high_watermark}/{watermark.max_sequence_seen} "
+                f"(missing: {missing})"
+            )
     if args.research_problem_file:
         problem = Path(args.research_problem_file).read_text(encoding="utf-8")
         report = space.research_problem(

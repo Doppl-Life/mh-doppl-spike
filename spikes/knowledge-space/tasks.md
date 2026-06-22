@@ -75,7 +75,7 @@ not because the goal is a disposable prototype.
 - [ ] Link mirrored graph nodes back to authoritative `run_events`.
 - [x] Preserve raw event payload receipt hashes.
 - [x] Add idempotent ingestion by `(runId, sequence)`.
-- [ ] Add sequence watermark per ingested run.
+- [x] Add sequence watermark per ingested run.
 - [ ] Acceptance gate: ingesting the same run twice creates no duplicate nodes or
       edges.
 
@@ -92,7 +92,9 @@ not because the goal is a disposable prototype.
       event and payload hashes.
 - [x] Link receipt nodes to runs, candidates, critics, and collapse-derived
       knowledge in graph HTML and Neo4j Cypher.
-- [ ] Add sequence watermarks to the run-event reader.
+- [x] Add sequence watermarks to the run-event reader.
+- [x] Detect missing sequence gaps and expose watermark nodes in graph HTML and
+      Neo4j Cypher.
 
 ## Phase 3 - Embedding And Retrieval
 

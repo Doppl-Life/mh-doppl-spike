@@ -102,7 +102,9 @@ and whole current `my-doppl` run objects with `candidates` and `verdicts`.
 Each imported event is stored as a `RunEventReceipt` row keyed by `(runId,
 sequence)` with stable event and payload hashes. Collapse-derived knowledge then
 links back to the exact receipt sequence that produced it, so the visual graph
-and Neo4j projection can show a receipt-backed provenance chain.
+and Neo4j projection can show a receipt-backed provenance chain. Each run also
+gets a `RunEventWatermark` row that records the safe contiguous sequence,
+highest sequence seen, missing sequence gaps, receipt count, and source paths.
 
 The OpenRouter key is read from `OPENROUTER_API_KEY` or the workspace-level
 `tokens and keys.md` file outside this Git repo. Do not copy keys into this

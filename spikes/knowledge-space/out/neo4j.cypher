@@ -8,6 +8,13 @@ CREATE CONSTRAINT run_id IF NOT EXISTS FOR (run:Run) REQUIRE run.id IS UNIQUE;
 CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.id IS UNIQUE;
 CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;
 CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;
+CREATE CONSTRAINT run_event_watermark_id IF NOT EXISTS FOR (watermark:RunEventWatermark) REQUIRE watermark.id IS UNIQUE;
+
+MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
+MERGE (watermark:RunEventWatermark {id: "watermark:ks-demo-run-culled-1"})
+  SET watermark.runId = "ks-demo-run-culled-1", watermark.highWatermark = 3, watermark.maxSequenceSeen = 3, watermark.receiptCount = 3, watermark.missingSequences = [], watermark.sourcePaths = ["fixtures/mock_run_events.json"];
+MATCH (watermark:RunEventWatermark {id: "watermark:ks-demo-run-culled-1"}), (run:Run {id: "ks-demo-run-culled-1"})
+MERGE (watermark)-[:WATERMARK_FOR_RUN]->(run);
 
 MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
 MERGE (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:1"})

@@ -405,6 +405,25 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertTrue(first[0].event_hash.startswith("evt_"))
             self.assertTrue(first[0].payload_hash.startswith("payload_"))
             self.assertEqual(first[0].event_hash, reloaded.run_event_receipts[first[0].id].event_hash)
+            self.assertEqual(reloaded.run_event_watermarks["watermark:ks-demo-run-raw-1"].high_watermark, 3)
+            self.assertEqual(reloaded.run_event_watermarks["watermark:ks-demo-run-raw-1"].max_sequence_seen, 3)
+            self.assertEqual(reloaded.run_event_watermarks["watermark:ks-demo-run-raw-1"].missing_sequences, [])
+
+    def test_run_event_watermark_detects_sequence_gaps(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            events = load_run_events(FIXTURES / "raw_run_events.json")
+            gapped = [events[0], events[2]]
+
+            space.ingest_run_events(gapped, source_path="fixtures/raw_run_events.json")
+            watermark = space.run_event_watermarks["watermark:ks-demo-run-raw-1"]
+            reloaded = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+
+            self.assertEqual(watermark.high_watermark, 1)
+            self.assertEqual(watermark.max_sequence_seen, 3)
+            self.assertEqual(watermark.missing_sequences, [2])
+            self.assertEqual(watermark.receipt_count, 2)
+            self.assertEqual(reloaded.run_event_watermarks[watermark.id].missing_sequences, [2])
 
     def test_graph_projection_links_receipts_to_run_entities_and_records(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -427,12 +446,16 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertIn("receipt:ks-demo-run-raw-1:1", node_ids)
             self.assertIn("receipt:ks-demo-run-raw-1:2", node_ids)
             self.assertIn("receipt:ks-demo-run-raw-1:3", node_ids)
+            self.assertIn("watermark:ks-demo-run-raw-1", node_ids)
             self.assertIn("RECEIPT_OF_RUN", edge_types)
+            self.assertIn("WATERMARK_FOR_RUN", edge_types)
             self.assertIn("RECEIPT_OF_CANDIDATE", edge_types)
             self.assertIn("RECEIPT_OF_CRITIC", edge_types)
             self.assertIn("DERIVED_FROM_RECEIPT", edge_types)
             self.assertIn("MERGE (receipt:RunEventReceipt", cypher)
+            self.assertIn("MERGE (watermark:RunEventWatermark", cypher)
             self.assertIn('data-filter="RunEventReceipt"', html)
+            self.assertIn('data-filter="RunEventWatermark"', html)
 
     def test_graph_projection_includes_run_candidate_and_critic_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

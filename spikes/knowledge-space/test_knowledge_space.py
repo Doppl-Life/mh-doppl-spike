@@ -529,12 +529,16 @@ class KnowledgeSpaceTest(unittest.TestCase):
         importer = (NEO4J / "import.sh").read_text(encoding="utf-8")
 
         self.assertIn("neo4j:5", compose)
-        self.assertIn("NEO4J_AUTH=neo4j/doppl-local-dev", compose)
+        self.assertIn("NEO4J_AUTH=none", compose)
+        self.assertIn("NEO4J_browser_post__connect__cmd", compose)
+        self.assertIn("run-rich-runtime-1", compose)
         self.assertIn("JSONL remains the source of truth", readme)
+        self.assertIn("auth disabled", readme)
         self.assertIn("RunEventReceipt", schema)
         self.assertIn("RunEventWatermark", schema)
         self.assertIn("DERIVED_FROM_RECEIPT", smoke)
         self.assertIn("spikes/knowledge-space/out/neo4j.cypher", importer)
+        self.assertNotIn("doppl-local-dev", importer)
 
     def test_graph_snapshot_export_rebuilds_stable_ids_and_links(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

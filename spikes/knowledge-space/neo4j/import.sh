@@ -14,12 +14,12 @@ docker compose -f "$COMPOSE_FILE" up -d
 
 echo "Waiting for local Neo4j..."
 for _ in $(seq 1 45); do
-  if docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell -u neo4j -p doppl-local-dev "RETURN 1;" >/dev/null 2>&1; then
+  if docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell "RETURN 1;" >/dev/null 2>&1; then
     break
   fi
   sleep 2
 done
 
-docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell -u neo4j -p doppl-local-dev < "$SCRIPT_DIR/schema.cypher"
-docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell -u neo4j -p doppl-local-dev < "$CYPHER_FILE"
-docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell -u neo4j -p doppl-local-dev < "$SCRIPT_DIR/smoke.cypher"
+docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell < "$SCRIPT_DIR/schema.cypher"
+docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell < "$CYPHER_FILE"
+docker compose -f "$COMPOSE_FILE" exec -T neo4j cypher-shell < "$SCRIPT_DIR/smoke.cypher"

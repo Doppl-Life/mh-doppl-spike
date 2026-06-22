@@ -6,17 +6,25 @@ JSONL remains the source of truth. Neo4j is a rebuildable query projection
 generated from `spikes/knowledge-space/data/knowledge.jsonl` via
 `spikes/knowledge-space/out/neo4j.cypher`.
 
-No hosted Neo4j account is required. The Docker Compose password is a local-only
-development credential:
+No hosted Neo4j account is required. The Docker Compose harness disables auth
+for local development only:
 
-- user: `neo4j`
-- password: `doppl-local-dev`
 - browser: `http://localhost:7474`
 - bolt: `bolt://localhost:7687`
 
 Do not replace this with real hosted credentials in Git. If the project later
 uses Neo4j Aura or another hosted database, keep `NEO4J_URI`, `NEO4J_USERNAME`,
 and `NEO4J_PASSWORD` in environment variables or an ignored local file.
+
+The local Browser is also configured with `browser.post_connect_cmd`, so after
+the graph is imported, opening `http://localhost:7474` lands directly on the
+rich runtime graph query:
+
+```cypher
+MATCH path = (:Run {id: "run-rich-runtime-1"})-[*1..3]-()
+RETURN path
+LIMIT 80;
+```
 
 ## Import
 
@@ -40,11 +48,11 @@ The script:
 ```bash
 docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml up -d
 docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml exec -T neo4j \
-  cypher-shell -u neo4j -p doppl-local-dev < spikes/knowledge-space/neo4j/schema.cypher
+  cypher-shell < spikes/knowledge-space/neo4j/schema.cypher
 docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml exec -T neo4j \
-  cypher-shell -u neo4j -p doppl-local-dev < spikes/knowledge-space/out/neo4j.cypher
+  cypher-shell < spikes/knowledge-space/out/neo4j.cypher
 docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml exec -T neo4j \
-  cypher-shell -u neo4j -p doppl-local-dev < spikes/knowledge-space/neo4j/smoke.cypher
+  cypher-shell < spikes/knowledge-space/neo4j/smoke.cypher
 ```
 
 ## What The Smoke Checks Prove
@@ -61,7 +69,8 @@ docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml exec -T neo4j 
 
 ## Visual Graph In Neo4j Browser
 
-Open `http://localhost:7474`, sign in with `neo4j / doppl-local-dev`, and run:
+Open `http://localhost:7474`. The local dev harness has auth disabled and should
+auto-open the richer runtime fixture query. If you want the broader graph, run:
 
 ```cypher
 MATCH path = (:Run)-[*1..3]-()

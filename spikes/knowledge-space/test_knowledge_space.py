@@ -8,6 +8,7 @@ from pathlib import Path
 
 from knowledge_space import (
     KnowledgeSpace,
+    load_graph_snapshot,
     load_run_events,
     load_openrouter_key,
     validate_collapse_packet,
@@ -534,6 +535,93 @@ class KnowledgeSpaceTest(unittest.TestCase):
         self.assertIn("RunEventWatermark", schema)
         self.assertIn("DERIVED_FROM_RECEIPT", smoke)
         self.assertIn("spikes/knowledge-space/out/neo4j.cypher", importer)
+
+    def test_graph_snapshot_export_rebuilds_stable_ids_and_links(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            events = load_run_events(FIXTURES / "raw_run_events.json")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            space.ingest_run_events(events, source_path="fixtures/raw_run_events.json")
+            space.ingest_collapse_packet(space.request_collapse(events, extractor="heuristic"))
+
+            snapshot_dir = Path(tmp) / "snapshot"
+            jsonl_path, markdown_path = space.export_graph_snapshot(snapshot_dir)
+            rebuilt = load_graph_snapshot(jsonl_path)
+            original = space.graph_projection()
+
+            original_node_ids = {node["id"] for node in original["nodes"]}
+            rebuilt_node_ids = {node["id"] for node in rebuilt["nodes"]}
+            original_edges = {(edge["source"], edge["target"], edge["type"]) for edge in original["edges"]}
+            rebuilt_edges = {(edge["source"], edge["target"], edge["type"]) for edge in rebuilt["edges"]}
+            markdown = markdown_path.read_text(encoding="utf-8")
+
+            self.assertEqual(original_node_ids, rebuilt_node_ids)
+            self.assertEqual(original_edges, rebuilt_edges)
+            self.assertIn("RunEventReceipt", markdown)
+            self.assertIn("DERIVED_FROM_RECEIPT", markdown)
+            self.assertIn("snapshot_node", jsonl_path.read_text(encoding="utf-8"))
+
+    def test_whole_run_import_mirrors_richer_runtime_nodes(self) -> None:
+        run = {
+            "id": "run-rich-1",
+            "prompt": {"id": "fsd-accident-economy", "title": "FSD accident economy"},
+            "generations": [
+                {"index": 0, "agenomes": [{"id": "agenome-cold", "name": "Cold Scout", "generation": 0}]}
+            ],
+            "candidates": [
+                {
+                    "id": "cand-rich",
+                    "agenomeId": "agenome-cold",
+                    "generation": 0,
+                    "title": "Accident substrate",
+                    "summary": "Crash risk crosses insurance and care.",
+                    "proposal": "Track liability shifts.",
+                    "groundedCheck": {"score": 0.77, "notes": "Grounded in case receipts."},
+                }
+            ],
+            "fitnessRecords": [
+                {
+                    "id": "fit-rich",
+                    "candidateId": "cand-rich",
+                    "totalFitness": 0.82,
+                    "noveltyScore": 0.64,
+                }
+            ],
+            "verdicts": [
+                {
+                    "candidateId": "cand-rich",
+                    "criticMandate": "factual-grounding",
+                    "score": 0.81,
+                    "praise": ["Good substrate mapping."],
+                }
+            ],
+            "comparison": {"winnerCandidateId": "cand-rich"},
+        }
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "run.json"
+            path.write_text(json.dumps(run), encoding="utf-8")
+            events = load_run_events(path)
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_run_events(events, source_path="run.json")
+            graph = space.graph_projection()
+            node_types = {node["type"] for node in graph["nodes"]}
+            edge_types = {edge["type"] for edge in graph["edges"]}
+            cypher = space.to_cypher()
+
+            self.assertIn("Generation", node_types)
+            self.assertIn("Agenome", node_types)
+            self.assertIn("FitnessScore", node_types)
+            self.assertIn("NoveltyScore", node_types)
+            self.assertIn("CheckResult", node_types)
+            self.assertIn("RECEIPT_OF_GENERATION", edge_types)
+            self.assertIn("RECEIPT_OF_AGENOME", edge_types)
+            self.assertIn("RECEIPT_OF_FITNESS", edge_types)
+            self.assertIn("RECEIPT_OF_NOVELTY", edge_types)
+            self.assertIn("RECEIPT_OF_CHECK", edge_types)
+            self.assertIn("MERGE (generation:Generation", cypher)
+            self.assertIn("MERGE (fitness:FitnessScore", cypher)
+            self.assertIn("MERGE (check:CheckResult", cypher)
 
 
 def json_fixture(name: str) -> list[dict]:

@@ -1,0 +1,57 @@
+{
+  "id": "run-rich-runtime-1",
+  "prompt": {
+    "id": "fsd-accident-economy",
+    "title": "FSD accident economy runtime trace"
+  },
+  "generations": [
+    {
+      "index": 0,
+      "agenomes": [
+        {
+          "id": "agenome-cold-scout",
+          "name": "Cold Scout",
+          "generation": 0,
+          "parentIds": []
+        }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "id": "cand-rich-accident",
+      "agenomeId": "agenome-cold-scout",
+      "generation": 0,
+      "title": "Accident substrate cascade",
+      "summary": "Crash risk crosses insurance, care, media, and dealer finance.",
+      "proposal": "Track liability shifts before regulator blame settles.",
+      "evidence": ["fsd-accident-economy", "case notes"],
+      "risks": ["may overclaim timing"],
+      "testableClaim": "A liability-shift watchlist catches movement before household behavior changes.",
+      "groundedCheck": {
+        "score": 0.77,
+        "notes": "Grounded in local case receipts."
+      }
+    }
+  ],
+  "fitnessRecords": [
+    {
+      "id": "fit-rich-accident",
+      "candidateId": "cand-rich-accident",
+      "totalFitness": 0.82,
+      "noveltyScore": 0.64
+    }
+  ],
+  "verdicts": [
+    {
+      "candidateId": "cand-rich-accident",
+      "criticMandate": "factual-grounding",
+      "score": 0.81,
+      "praise": ["Good substrate mapping."],
+      "objections": ["Needs sharper timing evidence."]
+    }
+  ],
+  "comparison": {
+    "winnerCandidateId": "cand-rich-accident"
+  }
+}

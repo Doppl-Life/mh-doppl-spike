@@ -831,6 +831,44 @@ def normalize_run_export(data: Any) -> list[dict[str, Any]]:
     ]
 
     sequence = 2
+    generations = data.get("generations") if isinstance(data.get("generations"), list) else []
+    for generation in generations:
+        if not isinstance(generation, dict):
+            continue
+        generation_index = int(generation.get("index", 0))
+        agenomes = generation.get("agenomes") if isinstance(generation.get("agenomes"), list) else []
+        normalized.append(
+            {
+                "type": "generation.created",
+                "runId": run_id,
+                "sequence": sequence,
+                "payload": {
+                    "generation_id": f"{run_id}:generation:{generation_index}",
+                    "generation_index": generation_index,
+                    "agenome_ids": [str(agenome.get("id", "")) for agenome in agenomes if isinstance(agenome, dict)],
+                },
+            }
+        )
+        sequence += 1
+        for agenome in agenomes:
+            if not isinstance(agenome, dict):
+                continue
+            normalized.append(
+                {
+                    "type": "agenome.spawned",
+                    "runId": run_id,
+                    "sequence": sequence,
+                    "payload": {
+                        "agenome_id": str(agenome.get("id", "unknown-agenome")),
+                        "generation_id": f"{run_id}:generation:{generation_index}",
+                        "generation_index": generation_index,
+                        "label": str(agenome.get("name") or agenome.get("label") or agenome.get("id", "unknown-agenome")),
+                        "parent_ids": list(agenome.get("parentIds") or []),
+                    },
+                }
+            )
+            sequence += 1
+
     candidates = data.get("candidates") if isinstance(data.get("candidates"), list) else []
     for candidate in candidates:
         if not isinstance(candidate, dict):
@@ -853,12 +891,66 @@ def normalize_run_export(data: Any) -> list[dict[str, Any]]:
                 "payload": {
                     "candidate_id": candidate_id,
                     "agenome_id": str(candidate.get("agenomeId", "")),
+                    "generation_id": f"{run_id}:generation:{int(candidate.get('generation', 0))}",
+                    "generation_index": int(candidate.get("generation", 0)),
                     "survived": candidate_id == winner_id,
                     "artifact": " ".join(str(part) for part in artifact_parts if part),
                 },
             }
         )
         sequence += 1
+        grounded_check = candidate.get("groundedCheck") if isinstance(candidate.get("groundedCheck"), dict) else {}
+        if grounded_check:
+            normalized.append(
+                {
+                    "type": "check.completed",
+                    "runId": run_id,
+                    "sequence": sequence,
+                    "payload": {
+                        "check_id": f"check:{candidate_id}:grounded",
+                        "candidate_id": candidate_id,
+                        "check_type": "grounded",
+                        "score": grounded_check.get("score"),
+                        "notes": str(grounded_check.get("notes", "")),
+                    },
+                }
+            )
+            sequence += 1
+
+    fitness_records = data.get("fitnessRecords") if isinstance(data.get("fitnessRecords"), list) else []
+    for fitness in fitness_records:
+        if not isinstance(fitness, dict):
+            continue
+        fitness_id = str(fitness.get("id") or f"fitness:{fitness.get('candidateId', 'unknown-candidate')}")
+        candidate_id = str(fitness.get("candidateId", "unknown-candidate"))
+        normalized.append(
+            {
+                "type": "fitness.scored",
+                "runId": run_id,
+                "sequence": sequence,
+                "payload": {
+                    "fitness_id": fitness_id,
+                    "candidate_id": candidate_id,
+                    "total_fitness": fitness.get("totalFitness"),
+                },
+            }
+        )
+        sequence += 1
+        if "noveltyScore" in fitness:
+            normalized.append(
+                {
+                    "type": "novelty.scored",
+                    "runId": run_id,
+                    "sequence": sequence,
+                    "payload": {
+                        "novelty_id": f"novelty:{candidate_id}",
+                        "candidate_id": candidate_id,
+                        "score": fitness.get("noveltyScore"),
+                        "fitness_id": fitness_id,
+                    },
+                }
+            )
+            sequence += 1
 
     verdicts = data.get("verdicts") if isinstance(data.get("verdicts"), list) else []
     for verdict in verdicts:
@@ -909,6 +1001,21 @@ def load_run_events(path: Path) -> list[dict[str, Any]]:
         rows = [json.loads(line) for line in text.splitlines() if line.strip()]
         return normalize_run_export(rows)
     return normalize_run_export(json.loads(text))
+
+
+def load_graph_snapshot(path: Path) -> dict[str, list[dict[str, Any]]]:
+    nodes: list[dict[str, Any]] = []
+    edges: list[dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if row.get("row_type") == "snapshot_node":
+                nodes.append(dict(row["node"]))
+            if row.get("row_type") == "snapshot_edge":
+                edges.append(dict(row["edge"]))
+    return {"nodes": nodes, "edges": edges}
 
 
 def validate_packet_event(event: dict[str, Any]) -> list[str]:
@@ -1394,6 +1501,43 @@ class KnowledgeSpace:
             }
             nodes.setdefault(run_id, {"id": run_id, "label": receipt.run_id, "type": "Run"})
             edges.append({"source": receipt_node_id, "target": run_id, "type": "RECEIPT_OF_RUN"})
+            if receipt.event_type == "generation.created":
+                generation_id_value = str(receipt.payload.get("generation_id", f"{receipt.run_id}:generation:{receipt.payload.get('generation_index', 0)}"))
+                generation_node_id = f"generation:{generation_id_value}"
+                nodes.setdefault(
+                    generation_node_id,
+                    {
+                        "id": generation_node_id,
+                        "label": f"generation {receipt.payload.get('generation_index', 0)}",
+                        "type": "Generation",
+                        "runId": receipt.run_id,
+                        "generationIndex": receipt.payload.get("generation_index", 0),
+                    },
+                )
+                edges.append({"source": receipt_node_id, "target": generation_node_id, "type": "RECEIPT_OF_GENERATION"})
+                edges.append({"source": generation_node_id, "target": run_id, "type": "GENERATION_OF_RUN"})
+            if receipt.event_type == "agenome.spawned":
+                agenome_id = str(receipt.payload.get("agenome_id", "unknown-agenome"))
+                generation_id_value = str(receipt.payload.get("generation_id", ""))
+                agenome_node_id = f"agenome:{agenome_id}"
+                nodes.setdefault(
+                    agenome_node_id,
+                    {
+                        "id": agenome_node_id,
+                        "label": str(receipt.payload.get("label", agenome_id)),
+                        "type": "Agenome",
+                        "runId": receipt.run_id,
+                        "generationId": generation_id_value,
+                    },
+                )
+                edges.append({"source": receipt_node_id, "target": agenome_node_id, "type": "RECEIPT_OF_AGENOME"})
+                if generation_id_value:
+                    generation_node_id = f"generation:{generation_id_value}"
+                    nodes.setdefault(
+                        generation_node_id,
+                        {"id": generation_node_id, "label": generation_id_value, "type": "Generation", "runId": receipt.run_id},
+                    )
+                    edges.append({"source": agenome_node_id, "target": generation_node_id, "type": "AGENOME_IN_GENERATION"})
             if receipt.event_type == "candidate.produced" and receipt.candidate_id:
                 candidate_id = f"candidate:{receipt.candidate_id}"
                 nodes.setdefault(
@@ -1402,6 +1546,14 @@ class KnowledgeSpace:
                 )
                 edges.append({"source": receipt_node_id, "target": candidate_id, "type": "RECEIPT_OF_CANDIDATE"})
                 edges.append({"source": candidate_id, "target": run_id, "type": "PART_OF_RUN"})
+                agenome_id = str(receipt.payload.get("agenome_id", ""))
+                if agenome_id:
+                    agenome_node_id = f"agenome:{agenome_id}"
+                    nodes.setdefault(
+                        agenome_node_id,
+                        {"id": agenome_node_id, "label": agenome_id, "type": "Agenome", "runId": receipt.run_id},
+                    )
+                    edges.append({"source": candidate_id, "target": agenome_node_id, "type": "PRODUCED_BY_AGENOME"})
             if receipt.event_type == "critic.review" and receipt.critic_id:
                 critic_id = f"critic:{receipt.critic_id}"
                 nodes.setdefault(
@@ -1416,6 +1568,67 @@ class KnowledgeSpace:
                         {"id": candidate_id, "label": receipt.candidate_id, "type": "Candidate"},
                     )
                     edges.append({"source": critic_id, "target": candidate_id, "type": "REVIEWED_CANDIDATE"})
+            if receipt.event_type == "fitness.scored":
+                fitness_id = str(receipt.payload.get("fitness_id", f"fitness:{receipt.candidate_id}"))
+                candidate_id_value = str(receipt.payload.get("candidate_id", receipt.candidate_id))
+                fitness_node_id = f"fitness:{fitness_id}"
+                nodes.setdefault(
+                    fitness_node_id,
+                    {
+                        "id": fitness_node_id,
+                        "label": fitness_id,
+                        "type": "FitnessScore",
+                        "runId": receipt.run_id,
+                        "candidateId": candidate_id_value,
+                        "totalFitness": receipt.payload.get("total_fitness"),
+                    },
+                )
+                edges.append({"source": receipt_node_id, "target": fitness_node_id, "type": "RECEIPT_OF_FITNESS"})
+                if candidate_id_value:
+                    candidate_id = f"candidate:{candidate_id_value}"
+                    nodes.setdefault(candidate_id, {"id": candidate_id, "label": candidate_id_value, "type": "Candidate"})
+                    edges.append({"source": fitness_node_id, "target": candidate_id, "type": "SCORES_CANDIDATE"})
+            if receipt.event_type == "novelty.scored":
+                novelty_id = str(receipt.payload.get("novelty_id", f"novelty:{receipt.candidate_id}"))
+                candidate_id_value = str(receipt.payload.get("candidate_id", receipt.candidate_id))
+                novelty_node_id = f"novelty:{novelty_id}"
+                nodes.setdefault(
+                    novelty_node_id,
+                    {
+                        "id": novelty_node_id,
+                        "label": novelty_id,
+                        "type": "NoveltyScore",
+                        "runId": receipt.run_id,
+                        "candidateId": candidate_id_value,
+                        "score": receipt.payload.get("score"),
+                    },
+                )
+                edges.append({"source": receipt_node_id, "target": novelty_node_id, "type": "RECEIPT_OF_NOVELTY"})
+                if candidate_id_value:
+                    candidate_id = f"candidate:{candidate_id_value}"
+                    nodes.setdefault(candidate_id, {"id": candidate_id, "label": candidate_id_value, "type": "Candidate"})
+                    edges.append({"source": novelty_node_id, "target": candidate_id, "type": "SCORES_CANDIDATE"})
+            if receipt.event_type == "check.completed":
+                check_id = str(receipt.payload.get("check_id", f"check:{receipt.candidate_id}"))
+                candidate_id_value = str(receipt.payload.get("candidate_id", receipt.candidate_id))
+                check_node_id = f"check:{check_id}"
+                nodes.setdefault(
+                    check_node_id,
+                    {
+                        "id": check_node_id,
+                        "label": check_id,
+                        "type": "CheckResult",
+                        "runId": receipt.run_id,
+                        "candidateId": candidate_id_value,
+                        "checkType": receipt.payload.get("check_type"),
+                        "score": receipt.payload.get("score"),
+                    },
+                )
+                edges.append({"source": receipt_node_id, "target": check_node_id, "type": "RECEIPT_OF_CHECK"})
+                if candidate_id_value:
+                    candidate_id = f"candidate:{candidate_id_value}"
+                    nodes.setdefault(candidate_id, {"id": candidate_id, "label": candidate_id_value, "type": "Candidate"})
+                    edges.append({"source": check_node_id, "target": candidate_id, "type": "CHECKS_CANDIDATE"})
 
         for record in sorted(self.records.values(), key=lambda item: item.id):
             case_id = f"case:{record.source_case}"
@@ -1505,6 +1718,11 @@ class KnowledgeSpace:
             "CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;",
             "CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;",
             "CREATE CONSTRAINT run_event_watermark_id IF NOT EXISTS FOR (watermark:RunEventWatermark) REQUIRE watermark.id IS UNIQUE;",
+            "CREATE CONSTRAINT generation_id IF NOT EXISTS FOR (generation:Generation) REQUIRE generation.id IS UNIQUE;",
+            "CREATE CONSTRAINT agenome_id IF NOT EXISTS FOR (agenome:Agenome) REQUIRE agenome.id IS UNIQUE;",
+            "CREATE CONSTRAINT fitness_score_id IF NOT EXISTS FOR (fitness:FitnessScore) REQUIRE fitness.id IS UNIQUE;",
+            "CREATE CONSTRAINT novelty_score_id IF NOT EXISTS FOR (novelty:NoveltyScore) REQUIRE novelty.id IS UNIQUE;",
+            "CREATE CONSTRAINT check_result_id IF NOT EXISTS FOR (check:CheckResult) REQUIRE check.id IS UNIQUE;",
             "",
         ]
         for watermark in sorted(
@@ -1558,6 +1776,38 @@ class KnowledgeSpace:
                     "MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);",
                 ]
             )
+            if receipt.event_type == "generation.created":
+                generation_id_value = str(receipt.payload.get("generation_id", f"{receipt.run_id}:generation:{receipt.payload.get('generation_index', 0)}"))
+                generation_node_id = f"generation:{generation_id_value}"
+                lines.extend(
+                    [
+                        f"MERGE (generation:Generation {{id: {cypher_value(generation_node_id)}}}) SET generation.runId = {cypher_value(receipt.run_id)}, generation.generationIndex = {int(receipt.payload.get('generation_index', 0))};",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (generation:Generation {{id: {cypher_value(generation_node_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_GENERATION]->(generation);",
+                        f"MATCH (generation:Generation {{id: {cypher_value(generation_node_id)}}}), (run:Run {{id: {cypher_value(receipt.run_id)}}})",
+                        "MERGE (generation)-[:GENERATION_OF_RUN]->(run);",
+                    ]
+                )
+            if receipt.event_type == "agenome.spawned":
+                agenome_id = str(receipt.payload.get("agenome_id", "unknown-agenome"))
+                generation_id_value = str(receipt.payload.get("generation_id", ""))
+                agenome_node_id = f"agenome:{agenome_id}"
+                lines.extend(
+                    [
+                        f"MERGE (agenome:Agenome {{id: {cypher_value(agenome_node_id)}}}) SET agenome.runId = {cypher_value(receipt.run_id)}, agenome.label = {cypher_value(str(receipt.payload.get('label', agenome_id)))};",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (agenome:Agenome {{id: {cypher_value(agenome_node_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_AGENOME]->(agenome);",
+                    ]
+                )
+                if generation_id_value:
+                    generation_node_id = f"generation:{generation_id_value}"
+                    lines.extend(
+                        [
+                            f"MERGE (generation:Generation {{id: {cypher_value(generation_node_id)}}}) SET generation.runId = {cypher_value(receipt.run_id)};",
+                            f"MATCH (agenome:Agenome {{id: {cypher_value(agenome_node_id)}}}), (generation:Generation {{id: {cypher_value(generation_node_id)}}})",
+                            "MERGE (agenome)-[:AGENOME_IN_GENERATION]->(generation);",
+                        ]
+                    )
             if receipt.event_type == "candidate.produced" and receipt.candidate_id:
                 lines.extend(
                     [
@@ -1568,6 +1818,16 @@ class KnowledgeSpace:
                         "MERGE (cand)-[:PART_OF_RUN]->(run);",
                     ]
                 )
+                agenome_id = str(receipt.payload.get("agenome_id", ""))
+                if agenome_id:
+                    agenome_node_id = f"agenome:{agenome_id}"
+                    lines.extend(
+                        [
+                            f"MERGE (agenome:Agenome {{id: {cypher_value(agenome_node_id)}}}) SET agenome.runId = {cypher_value(receipt.run_id)};",
+                            f"MATCH (cand:Candidate {{id: {cypher_value(receipt.candidate_id)}}}), (agenome:Agenome {{id: {cypher_value(agenome_node_id)}}})",
+                            "MERGE (cand)-[:PRODUCED_BY_AGENOME]->(agenome);",
+                        ]
+                    )
             if receipt.event_type == "critic.review" and receipt.critic_id:
                 lines.extend(
                     [
@@ -1583,6 +1843,48 @@ class KnowledgeSpace:
                             "MERGE (critic)-[:REVIEWED_CANDIDATE]->(cand);",
                         ]
                     )
+            if receipt.event_type == "fitness.scored":
+                fitness_id = str(receipt.payload.get("fitness_id", f"fitness:{receipt.candidate_id}"))
+                candidate_id_value = str(receipt.payload.get("candidate_id", receipt.candidate_id))
+                fitness_node_id = f"fitness:{fitness_id}"
+                lines.extend(
+                    [
+                        f"MERGE (fitness:FitnessScore {{id: {cypher_value(fitness_node_id)}}}) SET fitness.runId = {cypher_value(receipt.run_id)}, fitness.candidateId = {cypher_value(candidate_id_value)}, fitness.totalFitness = {cypher_value(receipt.payload.get('total_fitness'))};",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (fitness:FitnessScore {{id: {cypher_value(fitness_node_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_FITNESS]->(fitness);",
+                        f"MERGE (cand:Candidate {{id: {cypher_value(candidate_id_value)}}});",
+                        f"MATCH (fitness:FitnessScore {{id: {cypher_value(fitness_node_id)}}}), (cand:Candidate {{id: {cypher_value(candidate_id_value)}}})",
+                        "MERGE (fitness)-[:SCORES_CANDIDATE]->(cand);",
+                    ]
+                )
+            if receipt.event_type == "novelty.scored":
+                novelty_id = str(receipt.payload.get("novelty_id", f"novelty:{receipt.candidate_id}"))
+                candidate_id_value = str(receipt.payload.get("candidate_id", receipt.candidate_id))
+                novelty_node_id = f"novelty:{novelty_id}"
+                lines.extend(
+                    [
+                        f"MERGE (novelty:NoveltyScore {{id: {cypher_value(novelty_node_id)}}}) SET novelty.runId = {cypher_value(receipt.run_id)}, novelty.candidateId = {cypher_value(candidate_id_value)}, novelty.score = {cypher_value(receipt.payload.get('score'))};",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (novelty:NoveltyScore {{id: {cypher_value(novelty_node_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_NOVELTY]->(novelty);",
+                        f"MERGE (cand:Candidate {{id: {cypher_value(candidate_id_value)}}});",
+                        f"MATCH (novelty:NoveltyScore {{id: {cypher_value(novelty_node_id)}}}), (cand:Candidate {{id: {cypher_value(candidate_id_value)}}})",
+                        "MERGE (novelty)-[:SCORES_CANDIDATE]->(cand);",
+                    ]
+                )
+            if receipt.event_type == "check.completed":
+                check_id = str(receipt.payload.get("check_id", f"check:{receipt.candidate_id}"))
+                candidate_id_value = str(receipt.payload.get("candidate_id", receipt.candidate_id))
+                check_node_id = f"check:{check_id}"
+                lines.extend(
+                    [
+                        f"MERGE (check:CheckResult {{id: {cypher_value(check_node_id)}}}) SET check.runId = {cypher_value(receipt.run_id)}, check.candidateId = {cypher_value(candidate_id_value)}, check.checkType = {cypher_value(receipt.payload.get('check_type'))}, check.score = {cypher_value(receipt.payload.get('score'))};",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (check:CheckResult {{id: {cypher_value(check_node_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_CHECK]->(check);",
+                        f"MERGE (cand:Candidate {{id: {cypher_value(candidate_id_value)}}});",
+                        f"MATCH (check:CheckResult {{id: {cypher_value(check_node_id)}}}), (cand:Candidate {{id: {cypher_value(candidate_id_value)}}})",
+                        "MERGE (check)-[:CHECKS_CANDIDATE]->(cand);",
+                    ]
+                )
             lines.append("")
         for record in sorted(self.records.values(), key=lambda item: item.id):
             case_id = record.source_case
@@ -1684,6 +1986,22 @@ class KnowledgeSpace:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(render_graph_html(self.graph_projection()), encoding="utf-8")
 
+    def export_graph_snapshot(self, directory: Path) -> tuple[Path, Path]:
+        directory.mkdir(parents=True, exist_ok=True)
+        graph = self.graph_projection()
+        jsonl_path = directory / "graph_snapshot.jsonl"
+        markdown_path = directory / "graph_snapshot.md"
+        with jsonl_path.open("w", encoding="utf-8") as f:
+            for node in sorted(graph["nodes"], key=lambda item: item["id"]):
+                f.write(json.dumps({"row_type": "snapshot_node", "node": node}, sort_keys=True) + "\n")
+            for edge in sorted(
+                graph["edges"],
+                key=lambda item: (item["source"], item["target"], item["type"]),
+            ):
+                f.write(json.dumps({"row_type": "snapshot_edge", "edge": edge}, sort_keys=True) + "\n")
+        markdown_path.write_text(render_graph_snapshot_markdown(graph), encoding="utf-8")
+        return jsonl_path, markdown_path
+
     def _append(self, records: list[KnowledgeRecord]) -> None:
         if not records:
             return
@@ -1748,7 +2066,9 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
         exclude_cases={target_case.name},
     )
     mock_events = json.loads((FIXTURE_DIR / "mock_run_events.json").read_text(encoding="utf-8"))
+    rich_events = load_run_events(FIXTURE_DIR / "rich_run_export.json")
     receipt_records = space.ingest_run_events(mock_events, source_path="fixtures/mock_run_events.json")
+    rich_receipt_records = space.ingest_run_events(rich_events, source_path="fixtures/rich_run_export.json")
     collapse_packet = space.request_collapse(mock_events)
     collapse_records = space.ingest_collapse_packet(collapse_packet)
     packet = space.select_packet(
@@ -1796,6 +2116,7 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     )
     space.write_cypher(OUT_DIR / "neo4j.cypher")
     space.write_graph_html(OUT_DIR / "graph.html")
+    graph_snapshot_jsonl, graph_snapshot_md = space.export_graph_snapshot(OUT_DIR)
 
     print(f"Knowledge ledger: {ledger.relative_to(ROOT)}")
     print(f"Research report: {(OUT_DIR / 'research_report.json').relative_to(ROOT)}")
@@ -1805,7 +2126,9 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     print(f"Packet event: {(OUT_DIR / 'knowledge_packet_event.json').relative_to(ROOT)}")
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
     print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")
-    print(f"Imported {len(receipt_records)} run-event receipt(s)")
+    print(f"Graph snapshot JSONL: {graph_snapshot_jsonl.relative_to(ROOT)}")
+    print(f"Graph snapshot Markdown: {graph_snapshot_md.relative_to(ROOT)}")
+    print(f"Imported {len(receipt_records) + len(rich_receipt_records)} run-event receipt(s)")
     for watermark in sorted(space.run_event_watermarks.values(), key=lambda item: item.run_id):
         missing = ",".join(str(sequence) for sequence in watermark.missing_sequences) or "none"
         print(
@@ -1882,6 +2205,45 @@ def render_report(
             ]
         )
     return "\n".join(lines)
+
+
+def render_graph_snapshot_markdown(graph: dict[str, Any]) -> str:
+    nodes = sorted(graph["nodes"], key=lambda item: item["id"])
+    edges = sorted(
+        graph["edges"],
+        key=lambda item: (item["type"], item["source"], item["target"]),
+    )
+    type_counts: dict[str, int] = {}
+    for node in nodes:
+        type_counts[str(node["type"])] = type_counts.get(str(node["type"]), 0) + 1
+
+    lines = [
+        "# Knowledge Graph Snapshot",
+        "",
+        f"Nodes: `{len(nodes)}`",
+        f"Edges: `{len(edges)}`",
+        "",
+        "## Node Types",
+        "",
+    ]
+    for node_type, count in sorted(type_counts.items()):
+        lines.append(f"- `{node_type}`: `{count}`")
+
+    lines.extend(["", "## Provenance Edges", ""])
+    for edge in edges:
+        if edge["type"] in {
+            "DERIVED_FROM_RECEIPT",
+            "RECEIPT_OF_RUN",
+            "RECEIPT_OF_CANDIDATE",
+            "RECEIPT_OF_CRITIC",
+            "WATERMARK_FOR_RUN",
+        }:
+            lines.append(f"- `{edge['type']}`: `{edge['source']}` -> `{edge['target']}`")
+
+    lines.extend(["", "## Sample Nodes", ""])
+    for node in nodes[:24]:
+        lines.append(f"- `{node['id']}` [{node['type']}] {node.get('label', '')}")
+    return "\n".join(lines) + "\n"
 
 
 def render_graph_html(graph: dict[str, Any]) -> str:
@@ -2194,6 +2556,11 @@ def render_graph_html(graph: dict[str, Any]) -> str:
           <button type="button" data-filter="Run">Runs</button>
           <button type="button" data-filter="Candidate">Candidates</button>
           <button type="button" data-filter="CriticReview">Critics</button>
+          <button type="button" data-filter="Generation">Generations</button>
+          <button type="button" data-filter="Agenome">Agenomes</button>
+          <button type="button" data-filter="FitnessScore">Fitness</button>
+          <button type="button" data-filter="NoveltyScore">Novelty</button>
+          <button type="button" data-filter="CheckResult">Checks</button>
           <button type="button" data-filter="RunEventReceipt">Receipts</button>
           <button type="button" data-filter="RunEventWatermark">Watermarks</button>
           <button type="button" data-filter="Case">Cases</button>
@@ -2226,9 +2593,14 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     const graphData = JSON.parse(document.getElementById("graph-data").textContent);
     const colors = {{
       Case: "#0f766e",
+      Agenome: "#4f46e5",
       Candidate: "#2563eb",
+      CheckResult: "#65a30d",
       CriticReview: "#be123c",
+      FitnessScore: "#ca8a04",
+      Generation: "#0369a1",
       KnowledgeRecord: "#7c3aed",
+      NoveltyScore: "#db2777",
       Run: "#0f172a",
       RunEventReceipt: "#0891b2",
       RunEventWatermark: "#16a34a",
@@ -2266,12 +2638,17 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         node.highWatermark,
         node.maxSequenceSeen,
         node.missingSequences,
-        node.sourcePaths
+        node.sourcePaths,
+        node.generationIndex,
+        node.generationId,
+        node.totalFitness,
+        node.checkType,
+        node.score
       ].filter(Boolean).join(" ").toLowerCase().includes(term);
     }}
 
     function layoutNodes(width, height) {{
-      const buckets = ["Run", "RunEventWatermark", "RunEventReceipt", "Candidate", "CriticReview", "Case", "Source", "KnowledgeRecord", "Tag"];
+      const buckets = ["Run", "Generation", "Agenome", "Candidate", "CriticReview", "FitnessScore", "NoveltyScore", "CheckResult", "RunEventWatermark", "RunEventReceipt", "Case", "Source", "KnowledgeRecord", "Tag"];
       const byType = Object.fromEntries(buckets.map((type) => [type, []]));
       graphData.nodes.forEach((node) => {{
         (byType[node.type] || byType.KnowledgeRecord).push(node);
@@ -2313,11 +2690,16 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       const receiptCount = node.receiptCount !== undefined ? `<div class="detail-kv"><strong>Receipts:</strong> ${{escapeHtml(node.receiptCount)}}</div>` : "";
       const missingSequences = node.missingSequences ? `<div class="detail-kv"><strong>Missing sequences:</strong> ${{escapeHtml(node.missingSequences.length ? node.missingSequences.join(", ") : "none")}}</div>` : "";
       const sourcePaths = node.sourcePaths ? `<div class="detail-kv"><strong>Source paths:</strong> ${{escapeHtml(node.sourcePaths.join(", "))}}</div>` : "";
+      const generation = node.generationIndex !== undefined ? `<div class="detail-kv"><strong>Generation:</strong> ${{escapeHtml(node.generationIndex)}}</div>` : "";
+      const generationId = node.generationId ? `<div class="detail-kv"><strong>Generation ID:</strong> ${{escapeHtml(node.generationId)}}</div>` : "";
+      const totalFitness = node.totalFitness !== undefined ? `<div class="detail-kv"><strong>Total fitness:</strong> ${{escapeHtml(node.totalFitness)}}</div>` : "";
+      const checkType = node.checkType ? `<div class="detail-kv"><strong>Check:</strong> ${{escapeHtml(node.checkType)}}</div>` : "";
+      const score = node.score !== undefined ? `<div class="detail-kv"><strong>Score:</strong> ${{escapeHtml(node.score)}}</div>` : "";
       const text = node.text ? `<div class="detail-text">${{escapeHtml(node.text)}}</div>` : "";
       detail.innerHTML = `
         <h2>${{escapeHtml(node.label)}}</h2>
         <div class="detail-kv"><strong>Type:</strong> ${{escapeHtml(node.type)}}</div>
-        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{eventType}}${{eventHash}}${{payloadHash}}${{sourcePath}}${{highWatermark}}${{receiptCount}}${{missingSequences}}${{sourcePaths}}${{text}}
+        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{generation}}${{generationId}}${{totalFitness}}${{checkType}}${{score}}${{eventType}}${{eventHash}}${{payloadHash}}${{sourcePath}}${{highWatermark}}${{receiptCount}}${{missingSequences}}${{sourcePaths}}${{text}}
         <div class="detail-kv"><strong>Outgoing:</strong></div>
         <ul>${{outgoing || "<li>None</li>"}}</ul>
       `;

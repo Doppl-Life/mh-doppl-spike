@@ -52,7 +52,30 @@ docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml exec -T neo4j 
 - Runs exist.
 - Imported `RunEventReceipt` nodes link to runs.
 - `RunEventWatermark` nodes link to runs.
+- Rich runtime nodes such as `Generation`, `Agenome`, `FitnessScore`,
+  `NoveltyScore`, and `CheckResult` link back to run-event receipts.
 - Collapse-derived knowledge records link back to the exact run-event receipt
   they came from.
 - Tag/trust/provenance queries can be run against the projection without making
   Neo4j authoritative.
+
+## Visual Graph In Neo4j Browser
+
+Open `http://localhost:7474`, sign in with `neo4j / doppl-local-dev`, and run:
+
+```cypher
+MATCH path = (:Run)-[*1..3]-()
+RETURN path
+LIMIT 120;
+```
+
+For the richer runtime fixture specifically:
+
+```cypher
+MATCH path = (:Run {id: "run-rich-runtime-1"})-[*1..3]-()
+RETURN path
+LIMIT 80;
+```
+
+Neo4j Browser will render the returned paths as an interactive graph. This is the
+"cool visual" Neo4j layer; `graph.html` remains the repo-native static view.

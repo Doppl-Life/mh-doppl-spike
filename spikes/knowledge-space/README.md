@@ -64,6 +64,8 @@ ledger the projection is generated from.
 
 For a local Neo4j harness with Docker Compose, constraints, import script, and
 smoke queries, see [neo4j/README.md](./neo4j/README.md).
+Neo4j Browser gives an interactive graph visualization after import; start at
+`http://localhost:7474` and run the visual query in the Neo4j README.
 
 Run tests:
 
@@ -123,6 +125,8 @@ The demo writes both human and runtime-facing artifacts:
 - `out/report.md` - human-readable transfer proof with citations.
 - `out/graph.html` - interactive local graph workbench with search, filters, SVG graph inspection, and citation details.
 - `out/neo4j.cypher` - Neo4j import projection, not the source of truth.
+- `out/graph_snapshot.jsonl` - portable graph snapshot rows for nodes and edges.
+- `out/graph_snapshot.md` - human-readable graph snapshot summary.
 
 ## One Sentence
 

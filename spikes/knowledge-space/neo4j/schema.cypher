@@ -7,6 +7,11 @@ CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.i
 CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;
 CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;
 CREATE CONSTRAINT run_event_watermark_id IF NOT EXISTS FOR (watermark:RunEventWatermark) REQUIRE watermark.id IS UNIQUE;
+CREATE CONSTRAINT generation_id IF NOT EXISTS FOR (generation:Generation) REQUIRE generation.id IS UNIQUE;
+CREATE CONSTRAINT agenome_id IF NOT EXISTS FOR (agenome:Agenome) REQUIRE agenome.id IS UNIQUE;
+CREATE CONSTRAINT fitness_score_id IF NOT EXISTS FOR (fitness:FitnessScore) REQUIRE fitness.id IS UNIQUE;
+CREATE CONSTRAINT novelty_score_id IF NOT EXISTS FOR (novelty:NoveltyScore) REQUIRE novelty.id IS UNIQUE;
+CREATE CONSTRAINT check_result_id IF NOT EXISTS FOR (check:CheckResult) REQUIRE check.id IS UNIQUE;
 
 CREATE INDEX knowledge_record_trust_tier IF NOT EXISTS FOR (r:KnowledgeRecord) ON (r.trustTier);
 CREATE INDEX knowledge_record_visibility IF NOT EXISTS FOR (r:KnowledgeRecord) ON (r.visibility);
@@ -14,3 +19,7 @@ CREATE INDEX knowledge_record_run_id IF NOT EXISTS FOR (r:KnowledgeRecord) ON (r
 CREATE INDEX run_event_receipt_run_sequence IF NOT EXISTS FOR (receipt:RunEventReceipt) ON (receipt.runId, receipt.sequence);
 CREATE INDEX run_event_receipt_event_type IF NOT EXISTS FOR (receipt:RunEventReceipt) ON (receipt.eventType);
 CREATE INDEX run_event_watermark_run_id IF NOT EXISTS FOR (watermark:RunEventWatermark) ON (watermark.runId);
+CREATE INDEX generation_run_id IF NOT EXISTS FOR (generation:Generation) ON (generation.runId);
+CREATE INDEX fitness_candidate_id IF NOT EXISTS FOR (fitness:FitnessScore) ON (fitness.candidateId);
+CREATE INDEX novelty_candidate_id IF NOT EXISTS FOR (novelty:NoveltyScore) ON (novelty.candidateId);
+CREATE INDEX check_candidate_id IF NOT EXISTS FOR (check:CheckResult) ON (check.candidateId);

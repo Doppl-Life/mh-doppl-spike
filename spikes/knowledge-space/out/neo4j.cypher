@@ -9,11 +9,22 @@ CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.i
 CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;
 CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;
 CREATE CONSTRAINT run_event_watermark_id IF NOT EXISTS FOR (watermark:RunEventWatermark) REQUIRE watermark.id IS UNIQUE;
+CREATE CONSTRAINT generation_id IF NOT EXISTS FOR (generation:Generation) REQUIRE generation.id IS UNIQUE;
+CREATE CONSTRAINT agenome_id IF NOT EXISTS FOR (agenome:Agenome) REQUIRE agenome.id IS UNIQUE;
+CREATE CONSTRAINT fitness_score_id IF NOT EXISTS FOR (fitness:FitnessScore) REQUIRE fitness.id IS UNIQUE;
+CREATE CONSTRAINT novelty_score_id IF NOT EXISTS FOR (novelty:NoveltyScore) REQUIRE novelty.id IS UNIQUE;
+CREATE CONSTRAINT check_result_id IF NOT EXISTS FOR (check:CheckResult) REQUIRE check.id IS UNIQUE;
 
 MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
 MERGE (watermark:RunEventWatermark {id: "watermark:ks-demo-run-culled-1"})
   SET watermark.runId = "ks-demo-run-culled-1", watermark.highWatermark = 3, watermark.maxSequenceSeen = 3, watermark.receiptCount = 3, watermark.missingSequences = [], watermark.sourcePaths = ["fixtures/mock_run_events.json"];
 MATCH (watermark:RunEventWatermark {id: "watermark:ks-demo-run-culled-1"}), (run:Run {id: "ks-demo-run-culled-1"})
+MERGE (watermark)-[:WATERMARK_FOR_RUN]->(run);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (watermark:RunEventWatermark {id: "watermark:run-rich-runtime-1"})
+  SET watermark.runId = "run-rich-runtime-1", watermark.highWatermark = 8, watermark.maxSequenceSeen = 8, watermark.receiptCount = 8, watermark.missingSequences = [], watermark.sourcePaths = ["fixtures/rich_run_export.json"];
+MATCH (watermark:RunEventWatermark {id: "watermark:run-rich-runtime-1"}), (run:Run {id: "run-rich-runtime-1"})
 MERGE (watermark)-[:WATERMARK_FOR_RUN]->(run);
 
 MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
@@ -32,6 +43,9 @@ MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:2"}), (cand:Ca
 MERGE (receipt)-[:RECEIPT_OF_CANDIDATE]->(cand);
 MATCH (cand:Candidate {id: "candidate-cold-ownership-1"}), (run:Run {id: "ks-demo-run-culled-1"})
 MERGE (cand)-[:PART_OF_RUN]->(run);
+MERGE (agenome:Agenome {id: "agenome:cold-scout"}) SET agenome.runId = "ks-demo-run-culled-1";
+MATCH (cand:Candidate {id: "candidate-cold-ownership-1"}), (agenome:Agenome {id: "agenome:cold-scout"})
+MERGE (cand)-[:PRODUCED_BY_AGENOME]->(agenome);
 
 MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
 MERGE (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"})
@@ -42,6 +56,96 @@ MERGE (critic:CriticReview {id: "critic-market-structure"}) SET critic.title = "
 MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"}), (critic:CriticReview {id: "critic-market-structure"})
 MERGE (receipt)-[:RECEIPT_OF_CRITIC]->(critic);
 MATCH (critic:CriticReview {id: "critic-market-structure"}), (cand:Candidate {id: "candidate-cold-ownership-1"})
+MERGE (critic)-[:REVIEWED_CANDIDATE]->(cand);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:1"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 1, receipt.eventType = "run.configured", receipt.eventHash = "evt_bc51b26e13259708", receipt.payloadHash = "payload_54e202205b9d70aa", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:1"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:2"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 2, receipt.eventType = "generation.created", receipt.eventHash = "evt_3d849f728528f8b1", receipt.payloadHash = "payload_becfd4989cf15b18", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:2"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (generation:Generation {id: "generation:run-rich-runtime-1:generation:0"}) SET generation.runId = "run-rich-runtime-1", generation.generationIndex = 0;
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:2"}), (generation:Generation {id: "generation:run-rich-runtime-1:generation:0"})
+MERGE (receipt)-[:RECEIPT_OF_GENERATION]->(generation);
+MATCH (generation:Generation {id: "generation:run-rich-runtime-1:generation:0"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (generation)-[:GENERATION_OF_RUN]->(run);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:3"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 3, receipt.eventType = "agenome.spawned", receipt.eventHash = "evt_35db7b99a51b41cf", receipt.payloadHash = "payload_e8edc1ae0e5be40f", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:3"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (agenome:Agenome {id: "agenome:agenome-cold-scout"}) SET agenome.runId = "run-rich-runtime-1", agenome.label = "Cold Scout";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:3"}), (agenome:Agenome {id: "agenome:agenome-cold-scout"})
+MERGE (receipt)-[:RECEIPT_OF_AGENOME]->(agenome);
+MERGE (generation:Generation {id: "generation:run-rich-runtime-1:generation:0"}) SET generation.runId = "run-rich-runtime-1";
+MATCH (agenome:Agenome {id: "agenome:agenome-cold-scout"}), (generation:Generation {id: "generation:run-rich-runtime-1:generation:0"})
+MERGE (agenome)-[:AGENOME_IN_GENERATION]->(generation);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:4"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 4, receipt.eventType = "candidate.produced", receipt.eventHash = "evt_28d80b76d13742f9", receipt.payloadHash = "payload_dd444214a27f3b61", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "cand-rich-accident", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:4"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (cand:Candidate {id: "cand-rich-accident"});
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:4"}), (cand:Candidate {id: "cand-rich-accident"})
+MERGE (receipt)-[:RECEIPT_OF_CANDIDATE]->(cand);
+MATCH (cand:Candidate {id: "cand-rich-accident"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (cand)-[:PART_OF_RUN]->(run);
+MERGE (agenome:Agenome {id: "agenome:agenome-cold-scout"}) SET agenome.runId = "run-rich-runtime-1";
+MATCH (cand:Candidate {id: "cand-rich-accident"}), (agenome:Agenome {id: "agenome:agenome-cold-scout"})
+MERGE (cand)-[:PRODUCED_BY_AGENOME]->(agenome);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:5"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 5, receipt.eventType = "check.completed", receipt.eventHash = "evt_4fda5fc4a4b87627", receipt.payloadHash = "payload_1d69cfaadb4dfeaf", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "cand-rich-accident", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:5"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (check:CheckResult {id: "check:check:cand-rich-accident:grounded"}) SET check.runId = "run-rich-runtime-1", check.candidateId = "cand-rich-accident", check.checkType = "grounded", check.score = 0.77;
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:5"}), (check:CheckResult {id: "check:check:cand-rich-accident:grounded"})
+MERGE (receipt)-[:RECEIPT_OF_CHECK]->(check);
+MERGE (cand:Candidate {id: "cand-rich-accident"});
+MATCH (check:CheckResult {id: "check:check:cand-rich-accident:grounded"}), (cand:Candidate {id: "cand-rich-accident"})
+MERGE (check)-[:CHECKS_CANDIDATE]->(cand);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:6"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 6, receipt.eventType = "fitness.scored", receipt.eventHash = "evt_f1e801c5a31ecade", receipt.payloadHash = "payload_7a38e28daddf4c72", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "cand-rich-accident", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:6"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (fitness:FitnessScore {id: "fitness:fit-rich-accident"}) SET fitness.runId = "run-rich-runtime-1", fitness.candidateId = "cand-rich-accident", fitness.totalFitness = 0.82;
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:6"}), (fitness:FitnessScore {id: "fitness:fit-rich-accident"})
+MERGE (receipt)-[:RECEIPT_OF_FITNESS]->(fitness);
+MERGE (cand:Candidate {id: "cand-rich-accident"});
+MATCH (fitness:FitnessScore {id: "fitness:fit-rich-accident"}), (cand:Candidate {id: "cand-rich-accident"})
+MERGE (fitness)-[:SCORES_CANDIDATE]->(cand);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:7"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 7, receipt.eventType = "novelty.scored", receipt.eventHash = "evt_74ab70e4eaa91bff", receipt.payloadHash = "payload_5f075245bb38a413", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "cand-rich-accident", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:7"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (novelty:NoveltyScore {id: "novelty:novelty:cand-rich-accident"}) SET novelty.runId = "run-rich-runtime-1", novelty.candidateId = "cand-rich-accident", novelty.score = 0.64;
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:7"}), (novelty:NoveltyScore {id: "novelty:novelty:cand-rich-accident"})
+MERGE (receipt)-[:RECEIPT_OF_NOVELTY]->(novelty);
+MERGE (cand:Candidate {id: "cand-rich-accident"});
+MATCH (novelty:NoveltyScore {id: "novelty:novelty:cand-rich-accident"}), (cand:Candidate {id: "cand-rich-accident"})
+MERGE (novelty)-[:SCORES_CANDIDATE]->(cand);
+
+MERGE (run:Run {id: "run-rich-runtime-1"}) SET run.title = "run-rich-runtime-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:8"})
+  SET receipt.runId = "run-rich-runtime-1", receipt.sequence = 8, receipt.eventType = "critic.review", receipt.eventHash = "evt_cc15bac8ee1368de", receipt.payloadHash = "payload_35f02881358c4059", receipt.sourcePath = "fixtures/rich_run_export.json", receipt.candidateId = "cand-rich-accident", receipt.criticId = "factual-grounding";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:8"}), (run:Run {id: "run-rich-runtime-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (critic:CriticReview {id: "factual-grounding"}) SET critic.title = "factual-grounding";
+MATCH (receipt:RunEventReceipt {id: "receipt:run-rich-runtime-1:8"}), (critic:CriticReview {id: "factual-grounding"})
+MERGE (receipt)-[:RECEIPT_OF_CRITIC]->(critic);
+MATCH (critic:CriticReview {id: "factual-grounding"}), (cand:Candidate {id: "cand-rich-accident"})
 MERGE (critic)-[:REVIEWED_CANDIDATE]->(cand);
 
 MERGE (c:Case {id: "fsd-enforcement-economy"})

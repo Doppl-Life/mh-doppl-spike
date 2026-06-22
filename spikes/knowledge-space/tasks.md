@@ -51,8 +51,8 @@ not because the goal is a disposable prototype.
 - [ ] Ingest `mh-doppl-spike/case-studies/` with withheld boundary metadata.
 - [ ] Ingest root registers: `MEMORY.md`, `LESSONS_AND_BANGERS.md`,
       `BUGS_AND_MITIGATIONS.md`, and `HEURISTICS.md`.
-- [ ] Export graph snapshot to JSONL and Markdown.
-- [ ] Acceptance gate: clean rebuild from exported receipts creates the same node
+- [x] Export graph snapshot to JSONL and Markdown.
+- [x] Acceptance gate: clean rebuild from exported receipts creates the same node
       IDs and source links.
 
 ### Phase 1 Walking Notes
@@ -64,6 +64,9 @@ not because the goal is a disposable prototype.
       not HTML-escaped script text.
 - [x] Add local Neo4j Docker Compose harness with schema, idempotent projection
       import, and smoke queries for receipts/watermarks/provenance.
+- [x] Add graph snapshot export/rebuild proof with stable node IDs and edge
+      links.
+- [x] Document Neo4j Browser visual queries for interactive graph exploration.
 - [ ] Add promotion/review actions to the visual workbench once promotion
       workflow exists.
 - [ ] Add run/candidate/provenance nodes to the graph after collapse/write-back
@@ -72,7 +75,7 @@ not because the goal is a disposable prototype.
 ## Phase 2 - Run Event Ingestion
 
 - [~] Add ordered run-event export reader.
-- [ ] Mirror `Run`, `Generation`, `Agenome`, `Candidate`, `CriticReview`,
+- [x] Mirror `Run`, `Generation`, `Agenome`, `Candidate`, `CriticReview`,
       `CheckResult`, `FitnessScore`, and `NoveltyScore` into graph nodes.
 - [ ] Link mirrored graph nodes back to authoritative `run_events`.
 - [x] Preserve raw event payload receipt hashes.
@@ -97,6 +100,8 @@ not because the goal is a disposable prototype.
 - [x] Add sequence watermarks to the run-event reader.
 - [x] Detect missing sequence gaps and expose watermark nodes in graph HTML and
       Neo4j Cypher.
+- [x] Add richer whole-run projection from `fixtures/rich_run_export.json` for
+      generations, agenomes, checks, fitness, and novelty scoring.
 
 ## Phase 3 - Embedding And Retrieval
 
@@ -244,4 +249,4 @@ Current skeleton status:
 - [x] Collapse a mock culled agenome into searchable findings.
 - [x] Export graph projections to HTML and Neo4j Cypher.
 - [ ] Ingest one real saved run-event export from Doppl runtime.
-- [ ] Rebuild graph from exported receipts and prove stable IDs/source links.
+- [x] Rebuild graph from exported receipts and prove stable IDs/source links.

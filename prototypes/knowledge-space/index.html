@@ -30,6 +30,7 @@
             <p class="filter-label">View</p>
             <div class="segmented" id="viewMode">
               <button type="button" data-mode="graph" class="active">Graph</button>
+              <button type="button" data-mode="memory-flow">Memory Flow</button>
               <button type="button" data-mode="packet">Packet</button>
               <button type="button" data-mode="exclusions">Exclusions</button>
               <button type="button" data-mode="collapse">Collapse</button>
@@ -58,6 +59,7 @@
             </div>
             <svg id="graphSvg" role="img" aria-label="Knowledge graph"></svg>
           </div>
+          <div id="memoryFlowView" class="memory-flow-view hidden"></div>
           <div id="explanationView" class="explanation-view hidden"></div>
           <div id="packetView" class="list-view hidden"></div>
           <div id="exclusionsView" class="list-view hidden"></div>

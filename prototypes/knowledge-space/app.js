@@ -1,3 +1,5 @@
+import { buildMemoryFlowModel, layoutRadialNodes, memoryFlowSteps } from "./flow-model.mjs";
+
 const colors = {
   Case: "#0f766e",
   KnowledgeRecord: "#2563eb",
@@ -14,6 +16,11 @@ const labels = {
     eyebrow: "Graph",
     title: "Operational memory map",
     note: "Graph-filtered knowledge records, cases, receipts, and run provenance. Click any visible node to inspect it.",
+  },
+  "memory-flow": {
+    eyebrow: "Memory Flow",
+    title: "Radial architecture proof",
+    note: "Shows how prior case memory is retrieved, injected, cited, credited, and preserved for later Doppl runs.",
   },
   packet: {
     eyebrow: "Packet",
@@ -43,6 +50,7 @@ const state = {
   search: "",
   activeTypes: new Set(["Case", "KnowledgeRecord", "Embedding", "RunEventReceipt", "Candidate", "CriticReview", "Run"]),
   mode: "graph",
+  flowLayoutMode: "relevance",
 };
 
 const els = {
@@ -55,6 +63,7 @@ const els = {
   modeTitle: document.querySelector("#modeTitle"),
   modeNote: document.querySelector("#modeNote"),
   graphView: document.querySelector("#graphView"),
+  memoryFlowView: document.querySelector("#memoryFlowView"),
   explanationView: document.querySelector("#explanationView"),
   packetView: document.querySelector("#packetView"),
   exclusionsView: document.querySelector("#exclusionsView"),
@@ -98,6 +107,7 @@ function render() {
   renderTypeFilters();
   setMode(state.mode);
   renderGraph();
+  renderMemoryFlow();
   renderPacket();
   renderExclusions();
   renderCollapse();
@@ -145,6 +155,7 @@ function setMode(mode) {
   els.modeTitle.textContent = copy.title;
   els.modeNote.textContent = copy.note;
   els.graphView.classList.toggle("hidden", mode !== "graph");
+  els.memoryFlowView.classList.toggle("hidden", mode !== "memory-flow");
   els.explanationView.classList.toggle("hidden", mode !== "packet" && mode !== "exclusions");
   els.packetView.classList.toggle("hidden", mode !== "packet");
   els.exclusionsView.classList.toggle("hidden", mode !== "exclusions");
@@ -302,6 +313,76 @@ function renderCollapse() {
     .join("");
 }
 
+function renderMemoryFlow() {
+  const packet = activePacket();
+  const model = buildMemoryFlowModel({
+    activeCase: state.activeCase,
+    graph: state.graph,
+    packet,
+    mode: state.flowLayoutMode,
+  });
+  const width = Math.max(760, els.memoryFlowView.clientWidth - 2 || 900);
+  const height = 680;
+  const laidOut = layoutRadialNodes(model, { width, height });
+  const byId = new Map(laidOut.nodes.map((node) => [node.id, node]));
+  const steps = memoryFlowSteps({ activeCase: state.activeCase, packet });
+
+  els.memoryFlowView.innerHTML = `
+    <div class="flow-layout">
+      <aside class="flow-steps">
+        <div class="flow-toggle" role="group" aria-label="Memory flow layout">
+          <button type="button" data-flow-mode="relevance" class="${state.flowLayoutMode === "relevance" ? "active" : ""}">Relevance</button>
+          <button type="button" data-flow-mode="process" class="${state.flowLayoutMode === "process" ? "active" : ""}">Process</button>
+        </div>
+        ${steps.map((step, index) => `
+          <article class="flow-step">
+            <span>${index + 1}</span>
+            <h3>${escapeHtml(step.title)}</h3>
+            <p>${escapeHtml(step.body)}</p>
+          </article>
+        `).join("")}
+      </aside>
+      <div class="flow-graph" aria-label="Radial memory flow graph">
+        <svg class="flow-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Radial knowledge graph">
+          ${renderFlowRings(laidOut)}
+          ${laidOut.edges.map((edge) => renderFlowEdge(edge, byId)).join("")}
+          ${laidOut.nodes.map(renderFlowNode).join("")}
+        </svg>
+      </div>
+    </div>
+  `;
+}
+
+function renderFlowRings(model) {
+  const maxRing = Math.max(...model.nodes.map((node) => node.ring), 1);
+  return Array.from({ length: maxRing }, (_, index) => {
+    const ring = index + 1;
+    const radius = Math.round(model.ringStep * ring);
+    const label = model.rings[ring] || `ring ${ring}`;
+    return `
+      <circle class="flow-ring" cx="${model.centerX}" cy="${model.centerY}" r="${radius}"></circle>
+      <text class="flow-ring-label" x="${model.centerX + 8}" y="${model.centerY - radius + 16}">${escapeHtml(label)}</text>
+    `;
+  }).join("");
+}
+
+function renderFlowEdge(edge, byId) {
+  const source = byId.get(edge.source);
+  const target = byId.get(edge.target);
+  if (!source || !target) return "";
+  return `<line class="flow-edge ${edge.status || ""}" x1="${source.x}" y1="${source.y}" x2="${target.x}" y2="${target.y}" style="stroke-width:${1 + Number(edge.weight || 0) * 3}"></line>`;
+}
+
+function renderFlowNode(node) {
+  const label = truncate(node.label || node.id, node.ring === 0 ? 26 : 20);
+  return `
+    <g class="flow-node-group" tabindex="0" role="button" data-flow-id="${escapeAttr(node.id)}">
+      <circle class="flow-node ${escapeAttr(node.status || "")} theme-${escapeAttr(node.theme || "general")}" cx="${node.x}" cy="${node.y}" r="${node.radius}"></circle>
+      <text class="flow-node-label" x="${node.x + node.radius + 6}" y="${node.y + 4}">${escapeHtml(label)}</text>
+    </g>
+  `;
+}
+
 function filteredNodes() {
   const query = state.search.trim().toLowerCase();
   return state.graph.nodes
@@ -340,6 +421,19 @@ function inspectNode(id) {
     node.runId ? kv("Run", node.runId) : "",
     node.text ? `<p class="body-text">${escapeHtml(node.text)}</p>` : "",
   ].join("");
+}
+
+function inspectFlowNode(id) {
+  if (id.startsWith("record:")) {
+    const recordId = id.replace(/^record:/, "");
+    if (activePacket().items.some((item) => item.record.id === recordId)) {
+      inspectPacketRecord(recordId);
+      return;
+    }
+    inspectNode(id);
+    return;
+  }
+  inspectNode(id);
 }
 
 function inspectExclusion(reason, index) {
@@ -499,6 +593,7 @@ els.caseSelect.addEventListener("change", (event) => {
   state.selectedRecordId = "";
   renderStatus();
   renderGraph();
+  renderMemoryFlow();
   renderPacket();
   renderExclusions();
   updatePermalink();
@@ -520,6 +615,23 @@ els.viewMode.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-mode]");
   if (!button) return;
   setMode(button.dataset.mode);
+});
+
+els.memoryFlowView.addEventListener("click", (event) => {
+  const modeButton = event.target.closest("button[data-flow-mode]");
+  if (modeButton) {
+    state.flowLayoutMode = modeButton.dataset.flowMode;
+    renderMemoryFlow();
+    return;
+  }
+  const group = event.target.closest(".flow-node-group");
+  if (group) inspectFlowNode(group.dataset.flowId);
+});
+
+els.memoryFlowView.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const group = event.target.closest(".flow-node-group");
+  if (group) inspectFlowNode(group.dataset.flowId);
 });
 
 els.graphSvg.addEventListener("click", (event) => {
@@ -549,7 +661,10 @@ els.collapseView.addEventListener("click", (event) => {
 });
 
 window.addEventListener("resize", () => {
-  if (state.graph.nodes.length) renderGraph();
+  if (state.graph.nodes.length) {
+    renderGraph();
+    renderMemoryFlow();
+  }
 });
 
 loadData()

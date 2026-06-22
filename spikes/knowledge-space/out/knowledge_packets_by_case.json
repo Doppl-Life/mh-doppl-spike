@@ -488,6 +488,13 @@
       "role": "candidate",
       "source_case_prefixes": [],
       "target_case": "fsd-accident-economy"
+    },
+    "retrieval_summary": {
+      "average_vector_similarity": 0.178,
+      "embedded_items": 10,
+      "item_count": 10,
+      "lexical_only_items": 0,
+      "retrieval_mode": "hybrid"
     }
   },
   "fsd-enforcement-economy": {
@@ -1011,6 +1018,13 @@
       "role": "candidate",
       "source_case_prefixes": [],
       "target_case": "fsd-enforcement-economy"
+    },
+    "retrieval_summary": {
+      "average_vector_similarity": 0.1442,
+      "embedded_items": 10,
+      "item_count": 10,
+      "lexical_only_items": 0,
+      "retrieval_mode": "hybrid"
     }
   },
   "fsd-mobility-and-time": {
@@ -1547,6 +1561,13 @@
       "role": "candidate",
       "source_case_prefixes": [],
       "target_case": "fsd-mobility-and-time"
+    },
+    "retrieval_summary": {
+      "average_vector_similarity": 0.1836,
+      "embedded_items": 10,
+      "item_count": 10,
+      "lexical_only_items": 0,
+      "retrieval_mode": "hybrid"
     }
   },
   "fsd-ownership-unwind": {
@@ -1976,6 +1997,13 @@
       "role": "candidate",
       "source_case_prefixes": [],
       "target_case": "fsd-ownership-unwind"
+    },
+    "retrieval_summary": {
+      "average_vector_similarity": 0.2183,
+      "embedded_items": 10,
+      "item_count": 10,
+      "lexical_only_items": 0,
+      "retrieval_mode": "hybrid"
     }
   }
 }

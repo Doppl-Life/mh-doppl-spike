@@ -411,6 +411,7 @@ class KnowledgePacket:
     def to_json(self) -> dict[str, Any]:
         return {
             "request": self.request.to_json() if self.request else None,
+            "retrieval_summary": self.retrieval_summary(),
             "query_tags": self.query_tags,
             "items": [
                 {
@@ -429,6 +430,22 @@ class KnowledgePacket:
                 for item in self.items
             ],
             "excluded": [item.to_json() for item in self.excluded],
+        }
+
+    def retrieval_summary(self) -> dict[str, Any]:
+        embedded_items = [item for item in self.items if item.embedding_model_id]
+        lexical_only_items = len(self.items) - len(embedded_items)
+        average_vector_similarity = (
+            sum(item.vector_similarity for item in embedded_items) / len(embedded_items)
+            if embedded_items
+            else 0.0
+        )
+        return {
+            "retrieval_mode": "hybrid" if embedded_items else "lexical",
+            "item_count": len(self.items),
+            "embedded_items": len(embedded_items),
+            "lexical_only_items": lexical_only_items,
+            "average_vector_similarity": round(average_vector_similarity, 4),
         }
 
     def to_run_event(self, run_id: str, sequence: int) -> dict[str, Any]:

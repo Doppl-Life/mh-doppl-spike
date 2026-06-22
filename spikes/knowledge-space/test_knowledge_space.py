@@ -444,6 +444,11 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertGreaterEqual(first_item["vector_similarity"], 0)
             self.assertEqual(first_item["score"], first_item["final_score"])
             self.assertEqual(first_item["embedding_model_id"], "deterministic-token-hash-v1")
+            self.assertGreater(packet.to_json()["retrieval_summary"]["embedded_items"], 0)
+            self.assertEqual(
+                packet.to_json()["retrieval_summary"]["retrieval_mode"],
+                "hybrid",
+            )
 
     def test_gateway_keeps_lexical_fallback_without_embeddings(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -464,6 +469,10 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertEqual(first_item["vector_similarity"], 0)
             self.assertEqual(first_item["embedding_model_id"], "")
             self.assertEqual(first_item["score"], first_item["lexical_score"])
+            self.assertEqual(
+                packet.to_json()["retrieval_summary"]["retrieval_mode"],
+                "lexical",
+            )
 
     def test_validate_packet_event_rejects_missing_provenance_and_leakage(self) -> None:
         valid_event = {

@@ -105,11 +105,13 @@ function render() {
 
 function renderStatus() {
   const counts = state.summary.counts;
+  const retrievalSummary = activePacket().retrieval_summary || {};
   els.statusStrip.innerHTML = [
     ["Nodes", counts.nodes],
     ["Edges", counts.edges],
     ["Records", counts.records],
     ["Embedded", `${counts.embeddingCoverage || 0}%`],
+    ["Mode", retrievalSummary.retrieval_mode || "n/a"],
     ["Cases", counts.casePackets || state.summary.cases.length],
     ["Packet", activePacket().items.length],
   ]
@@ -247,6 +249,7 @@ function renderPacketExplanation(packet) {
   const warningCount = packet.items.filter((item) => item.record.kind === "warning").length;
   const sourceCases = new Set(packet.items.map((item) => item.record.source_case)).size;
   const selected = selectedPacketItem();
+  const retrievalSummary = packet.retrieval_summary || {};
   els.explanationView.innerHTML = [
     ["Target", request.target_case || state.activeCase],
     ["Items", `${packet.items.length}/${request.max_items || packet.items.length}`],
@@ -257,6 +260,7 @@ function renderPacketExplanation(packet) {
     ["Trust", request.min_trust_tier || "draft"],
     ["Role", request.role || "candidate"],
     ["Selected", selected ? selected.cite_handle : "none"],
+    ["Avg vector", formatScore(retrievalSummary.average_vector_similarity)],
   ]
     .map(([label, value]) => `<div class="explain-tile"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`)
     .join("");

@@ -426,6 +426,13 @@
       "role": "candidate",
       "source_case_prefixes": [],
       "target_case": "fsd-ownership-unwind"
+    },
+    "retrieval_summary": {
+      "average_vector_similarity": 0.2183,
+      "embedded_items": 10,
+      "item_count": 10,
+      "lexical_only_items": 0,
+      "retrieval_mode": "hybrid"
     }
   },
   "runId": "demo-knowledge-space",

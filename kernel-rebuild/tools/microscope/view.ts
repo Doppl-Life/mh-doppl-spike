@@ -345,6 +345,57 @@ function renderRunState(trace: RunTrace): string {
     </section>`;
 }
 
+function renderMemoryPanel(trace: RunTrace): string {
+  const packet = trace.knowledgePacket;
+  const injections = trace.events.filter((event) => event.type === 'knowledge.item_injected');
+  const replayCheck = trace.goalChecks.find((check) => check.id === 'replay-uses-persisted-knowledge');
+  const freshRetrievals = replayCheck?.passed && replayCheck.detail.includes('replayKnowledgeEvents=')
+    ? 0
+    : trace.events.some((event) => event.type === 'knowledge.packet_requested')
+      ? 1
+      : 0;
+  const citationText = packet?.items.map((item) => item.citeHandle).join(', ') || 'none';
+  const recipients = [...new Set(injections.map((event) => String(event.payload?.recipient_role || 'unknown')))].join(', ') || 'none';
+  const exclusionRows = packet?.excluded.length
+    ? packet.excluded.map((item) => `<li>${escapeHtml(item.reason)}${item.recordId ? ` · ${escapeHtml(item.recordId)}` : ''}</li>`).join('')
+    : '<li>none</li>';
+  const itemRows = packet?.items.length
+    ? packet.items.map((item) => `
+      <article class="memory-item">
+        <strong>${escapeHtml(item.citeHandle)} · ${escapeHtml(item.kind)}</strong>
+        <p>${escapeHtml(item.text)}</p>
+        <code>${escapeHtml(item.citation)}</code>
+      </article>`).join('')
+    : '<p class="caption">No packet selected for this run.</p>';
+
+  return `
+    <section class="memory-panel" aria-label="Knowledge memory packet">
+      <div class="run-state-head">
+        <div>
+          <h2>Knowledge Memory</h2>
+          <p>Packet selected before generation and replayed from persisted events.</p>
+        </div>
+        <div class="verdict ${freshRetrievals === 0 ? 'good' : 'warn'}">fresh retrievals ${freshRetrievals}</div>
+      </div>
+      <div class="memory-grid">
+        ${proofTile('Mode', trace.memoryMode, 'run configuration memory policy', trace.memoryMode === 'off' ? 'plain' : 'good')}
+        ${proofTile('Packet', packet?.id || 'none', `${packet?.items.length || 0} item(s), ${packet?.excluded.length || 0} exclusion(s)`, packet ? 'good' : 'plain')}
+        ${proofTile('Citations', citationText, 'handles available to generated candidates', packet?.items.length ? 'good' : 'plain')}
+        ${proofTile('Recipients', recipients, `${injections.length} item injection event(s)`, injections.length ? 'good' : 'plain')}
+      </div>
+      <div class="memory-detail-grid">
+        <div>
+          <h3>Injected Items</h3>
+          <div class="memory-list">${itemRows}</div>
+        </div>
+        <div>
+          <h3>Exclusions</h3>
+          <ul class="memory-exclusions">${exclusionRows}</ul>
+        </div>
+      </div>
+    </section>`;
+}
+
 export function renderHtml(trace: RunTrace): string {
   return `<!doctype html>
 <html lang="en">
@@ -611,6 +662,62 @@ export function renderHtml(trace: RunTrace): string {
       margin: 0;
       color: #415047;
       font-size: 12px;
+    }
+    .memory-panel {
+      margin: 18px 0;
+      border: 2px solid #26332b;
+      border-radius: 8px;
+      background: #f9fbff;
+      box-shadow: 3px 3px 0 rgba(23,32,27,.16);
+      padding: 16px;
+    }
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .memory-detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr);
+      gap: 14px;
+    }
+    .memory-detail-grid h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+    .memory-list {
+      display: grid;
+      gap: 8px;
+    }
+    .memory-item {
+      border: 1px solid #c9d5e8;
+      border-radius: 7px;
+      background: #fff;
+      padding: 10px;
+    }
+    .memory-item strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+    .memory-item p {
+      margin: 0 0 6px;
+      color: #415047;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .memory-item code {
+      color: #4b5e73;
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+    .memory-exclusions {
+      margin: 0;
+      padding-left: 18px;
+      color: #415047;
+      font-size: 13px;
+      line-height: 1.45;
     }
     .pipeline {
       display: grid;
@@ -971,7 +1078,7 @@ export function renderHtml(trace: RunTrace): string {
     .swatch.swap { background: var(--swap); border-color: var(--swap-line); }
     .swatch.reject { background: var(--reject); }
     @media (max-width: 900px) {
-      .pipeline, .summary, .proof-grid, .brief-grid, .stage-strip { grid-template-columns: 1fr; }
+      .pipeline, .summary, .proof-grid, .brief-grid, .stage-strip, .memory-grid, .memory-detail-grid { grid-template-columns: 1fr; }
       .run-state-head, .brief-head { display: block; }
       .verdict { display: inline-block; margin-top: 10px; }
       .section-title { display: block; }
@@ -995,6 +1102,8 @@ export function renderHtml(trace: RunTrace): string {
     ${renderReaderBrief(trace)}
 
     ${renderRunState(trace)}
+
+    ${renderMemoryPanel(trace)}
 
     <section class="pipeline" aria-label="Kernel flow">
       <div class="box">

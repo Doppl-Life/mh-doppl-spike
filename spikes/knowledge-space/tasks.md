@@ -159,7 +159,7 @@ not because the goal is a disposable prototype.
 - [x] Persist `knowledge.packet_requested` and `knowledge.packet_selected`.
 - [x] Include packet slices in agenome prompt construction.
 - [x] Emit `knowledge.item_injected` per agenome/candidate role.
-- [ ] Show selected packet in operator/debug UI or run summary.
+- [x] Show selected packet in operator/debug UI or run summary.
 - [x] Acceptance gate: replay uses persisted packet events and performs no fresh
       knowledge retrieval.
 
@@ -173,6 +173,12 @@ not because the goal is a disposable prototype.
       the kernel's prompt-construction surface.
 - [x] Add replay coverage proving persisted knowledge events are reused without
       calling the gateway.
+- [x] Add proof-board memory summary fields for packet ID, citation handles,
+      recipients, exclusions, and fresh retrieval count.
+- [x] Add microscope memory panel for selected packets, injected items,
+      exclusions, and replay proof.
+- [x] Add JSON knowledge gateway adapter for kernel runs backed by hosted/local
+      knowledge-space packet exports.
 
 ## Phase 5 - Influence Tracking
 

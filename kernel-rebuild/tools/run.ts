@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Dial, RunTrace, SeedFixture, SelectionResult } from '../src/contracts/index.ts';
 import { assertSeedFixture } from '../src/contracts/index.ts';
+import { createJsonKnowledgeGateway } from '../src/knowledge-gateway.ts';
 import { buildRunTrace } from '../src/trace.ts';
 import { capstoneDemoLens } from './lens-config.ts';
 
@@ -15,6 +16,12 @@ type ProofCaseSummary = {
   seed: string;
   generated: number;
   rejected: number;
+  memoryMode: string;
+  knowledgePacketId: string;
+  citationHandles: string[];
+  memoryRecipients: string[];
+  exclusions: number;
+  freshKnowledgeRetrievals: number;
   exploreKeeps: string[];
   proofKeeps: string[];
   swap: string;
@@ -38,6 +45,9 @@ type Args = {
   fixturesDir: string;
   outDir: string;
   exportProofBoard: boolean;
+  memoryMode: 'off' | 'auto' | 'pinned';
+  knowledgePacketsFile?: string;
+  knowledgeTargetCase?: string;
 };
 
 function parseArgs(argv: string[]): Args {
@@ -46,6 +56,7 @@ function parseArgs(argv: string[]): Args {
     fixturesDir: path.join(root, 'fixtures'),
     outDir: path.join(root, 'out', 'proof-board'),
     exportProofBoard: false,
+    memoryMode: 'off',
   };
 
   for (const arg of argv) {
@@ -63,6 +74,16 @@ function parseArgs(argv: string[]): Args {
       args.outDir = path.resolve(root, arg.slice('--out-dir='.length));
     } else if (arg === '--export-proof-board') {
       args.exportProofBoard = true;
+    } else if (arg.startsWith('--memory-mode=')) {
+      const memoryMode = arg.slice('--memory-mode='.length);
+      if (memoryMode !== 'off' && memoryMode !== 'auto' && memoryMode !== 'pinned') {
+        throw new Error(`Bad --memory-mode value: ${memoryMode}`);
+      }
+      args.memoryMode = memoryMode;
+    } else if (arg.startsWith('--knowledge-packets-file=')) {
+      args.knowledgePacketsFile = path.resolve(root, arg.slice('--knowledge-packets-file='.length));
+    } else if (arg.startsWith('--knowledge-target-case=')) {
+      args.knowledgeTargetCase = arg.slice('--knowledge-target-case='.length);
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -102,6 +123,23 @@ function selectedTitles(selection: SelectionResult): string[] {
   return selection.selected.map((candidate) => `${candidate.title} (g${candidate.generation})`);
 }
 
+function memoryRecipients(trace: RunTrace): string[] {
+  return [
+    ...new Set(
+      trace.events
+        .filter((event) => event.type === 'knowledge.item_injected')
+        .map((event) => String(event.payload?.recipient_role || 'unknown')),
+    ),
+  ].sort();
+}
+
+function freshKnowledgeRetrievals(trace: RunTrace): number {
+  const replayCheck = trace.goalChecks.find((check) => check.id === 'replay-uses-persisted-knowledge');
+  if (replayCheck?.passed && replayCheck.detail.includes('replayKnowledgeEvents=')) return 0;
+  if (replayCheck?.detail.includes('freshKnowledgeRetrievals=0')) return 0;
+  return trace.events.some((event) => event.type === 'knowledge.packet_requested') ? 1 : 0;
+}
+
 function titleFor(trace: RunTrace, id: string): string {
   const candidates = [
     ...trace.comparison.focus.selected,
@@ -137,6 +175,12 @@ function summarize(trace: RunTrace): ProofCaseSummary {
     seed: trace.seed.title,
     generated: trace.lineage.generated.length,
     rejected: trace.lineage.rejected.length,
+    memoryMode: trace.memoryMode,
+    knowledgePacketId: trace.knowledgePacket?.id || 'none',
+    citationHandles: trace.knowledgePacket?.items.map((item) => item.citeHandle) || [],
+    memoryRecipients: memoryRecipients(trace),
+    exclusions: trace.knowledgePacket?.excluded.length || 0,
+    freshKnowledgeRetrievals: freshKnowledgeRetrievals(trace),
     exploreKeeps: selectedTitles(explore),
     proofKeeps: selectedTitles(proof),
     swap: swap(trace),
@@ -144,7 +188,7 @@ function summarize(trace: RunTrace): ProofCaseSummary {
   };
 }
 
-function buildSnapshot(traces: RunTrace[]): ProofBoardSnapshot {
+export function buildSnapshot(traces: RunTrace[]): ProofBoardSnapshot {
   const cases = traces.map(summarize);
   return {
     schemaVersion: PROOF_BOARD_SCHEMA_VERSION,
@@ -163,14 +207,15 @@ function compactList(items: string[]): string {
   return items.join('; ');
 }
 
-function renderBoard(snapshot: ProofBoardSnapshot): string {
+export function renderBoard(snapshot: ProofBoardSnapshot): string {
   const lines = [
-    'seed -> generated -> rejected -> Explore keeps -> Proof keeps -> swap -> failed checks',
-    '| seed | generated | rejected | Explore keeps | Proof keeps | swap | failed checks |',
+    'seed -> generated -> rejected -> memory -> Explore keeps -> Proof keeps -> swap -> failed checks',
+    '| seed | generated | rejected | memory | Explore keeps | Proof keeps | swap | failed checks |',
     '| --- | ---: | ---: | --- | --- | --- | --- |',
   ];
   for (const row of snapshot.cases) {
-    lines.push(`| ${row.seed} | ${row.generated} | ${row.rejected} | ${compactList(row.exploreKeeps)} | ${compactList(row.proofKeeps)} | ${row.swap} | ${compactList(row.failedChecks)} |`);
+    const memory = `${row.memoryMode}; ${row.knowledgePacketId}; citations ${compactList(row.citationHandles)}; recipients ${compactList(row.memoryRecipients)}; exclusions ${row.exclusions}; fresh retrievals ${row.freshKnowledgeRetrievals}`;
+    lines.push(`| ${row.seed} | ${row.generated} | ${row.rejected} | ${memory} | ${compactList(row.exploreKeeps)} | ${compactList(row.proofKeeps)} | ${row.swap} | ${compactList(row.failedChecks)} |`);
   }
   lines.push(`aggregate: seeds=${snapshot.aggregate.seeds}; generated=${snapshot.aggregate.generated}; rejected=${snapshot.aggregate.rejected}; failedChecks=${snapshot.aggregate.failedChecks}`);
   return lines.join('\n');
@@ -194,7 +239,15 @@ async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const paths = await fixturePaths(args);
   const fixtures = await Promise.all(paths.map(loadFixture));
-  const traces = fixtures.map((fixture) => buildRunTrace(fixture, args.dial, { lenses: [capstoneDemoLens] }));
+  const knowledgeGateway = args.knowledgePacketsFile
+    ? await createJsonKnowledgeGateway(args.knowledgePacketsFile)
+    : undefined;
+  const traces = fixtures.map((fixture) => buildRunTrace(fixture, args.dial, {
+    lenses: [capstoneDemoLens],
+    memoryMode: args.memoryMode,
+    knowledgeGateway,
+    knowledgeTargetCase: args.knowledgeTargetCase,
+  }));
   const snapshot = buildSnapshot(traces);
 
   console.log(renderBoard(snapshot));
@@ -209,7 +262,9 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}

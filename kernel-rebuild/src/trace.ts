@@ -143,6 +143,7 @@ function resolveKnowledge(
   fixture: SeedFixture,
   runId: string,
   memoryMode: MemoryMode,
+  targetCase: string,
   gateway?: KnowledgeGateway,
   pinnedPacket?: KnowledgePacket,
   replayEvents?: TraceEvent[],
@@ -162,7 +163,7 @@ function resolveKnowledge(
   const request: KnowledgePacketRequest = {
     requestId: `kreq:${runId}`,
     runId,
-    targetCase: fixture.seed.id,
+    targetCase,
     problemSummary: fixture.seed.prompt,
     memoryMode,
     role: 'candidate',
@@ -311,6 +312,7 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: {
   knowledgeGateway?: KnowledgeGateway;
   pinnedKnowledgePacket?: KnowledgePacket;
   replayEvents?: TraceEvent[];
+  knowledgeTargetCase?: string;
 } = {}): RunTrace {
   const caps = mergeCaps(options.caps);
   const events: TraceEvent[] = [];
@@ -346,6 +348,7 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: {
     fixture,
     id,
     memoryMode,
+    options.knowledgeTargetCase || fixture.seed.id,
     options.knowledgeGateway,
     options.pinnedKnowledgePacket,
     options.replayEvents,

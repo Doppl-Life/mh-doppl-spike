@@ -15,7 +15,7 @@ not because the goal is a disposable prototype.
       `ExcludedKnowledgeItem`.
 - [~] Define `CollapseRequest`, `CollapsePacket`, `ExtractedKnowledgeItem`, and
       `PromotionProposal`.
-- [ ] Define knowledge event payloads for the Doppl event log:
+- [x] Define knowledge event payloads for the Doppl event log:
       `knowledge.packet_requested`, `knowledge.packet_selected`,
       `knowledge.item_injected`, `knowledge.item_excluded`,
       `knowledge.influence_recorded`, `knowledge.collapse_requested`,

@@ -33,6 +33,56 @@ COLLAPSE_KINDS = {
     "CaseInsight",
 }
 TRUST_TIERS = {"draft", "candidate", "validated", "canonical", "deprecated"}
+KNOWLEDGE_EVENT_CONTRACTS = {
+    "knowledge.packet_requested": {
+        "request_id",
+        "target_case",
+        "memory_mode",
+        "role",
+        "max_items",
+    },
+    "knowledge.packet_selected": {"request", "items", "excluded"},
+    "knowledge.item_injected": {
+        "packet_id",
+        "record_id",
+        "cite_handle",
+        "recipient_role",
+        "injected_text",
+    },
+    "knowledge.item_excluded": {"request_id", "record_id", "reason"},
+    "knowledge.influence_recorded": {
+        "record_id",
+        "cite_handle",
+        "artifact_id",
+        "influence",
+    },
+    "knowledge.collapse_requested": {
+        "collapse_id",
+        "target_case",
+        "source_run_id",
+        "source_event_count",
+    },
+    "knowledge.item_extracted": {
+        "collapse_id",
+        "record_id",
+        "kind",
+        "trust_tier",
+        "citation",
+    },
+    "knowledge.promotion_proposed": {
+        "record_id",
+        "proposal",
+        "from_trust_tier",
+        "to_trust_tier",
+    },
+    "knowledge.promotion_decided": {
+        "record_id",
+        "decision",
+        "from_trust_tier",
+        "to_trust_tier",
+        "decider",
+    },
+}
 
 STOPWORDS = {
     "a",
@@ -1178,6 +1228,27 @@ def validate_packet_event(event: dict[str, Any]) -> list[str]:
             errors.append(f"item {index} record missing trust_tier")
         if record.get("visibility") == "withheld_evaluator":
             errors.append(f"item {index} has evaluator-only visibility")
+    return errors
+
+
+def validate_knowledge_event_contract(event: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    event_type = str(event.get("type", ""))
+    required_payload_keys = KNOWLEDGE_EVENT_CONTRACTS.get(event_type)
+    if required_payload_keys is None:
+        return [f"unknown knowledge event type: {event_type}"]
+    if not event.get("runId"):
+        errors.append(f"{event_type} missing runId")
+    if not isinstance(event.get("sequence"), int):
+        errors.append(f"{event_type} missing integer sequence")
+    payload = event.get("payload")
+    if not isinstance(payload, dict):
+        return errors + [f"{event_type} missing payload"]
+    for key in sorted(required_payload_keys):
+        if key not in payload or payload.get(key) in ("", None):
+            errors.append(f"{event_type} payload missing {key}")
+    if event_type == "knowledge.packet_selected":
+        errors.extend(validate_packet_event(event))
     return errors
 
 

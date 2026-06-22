@@ -17,6 +17,7 @@ from knowledge_space import (
     load_graph_snapshot,
     load_run_events,
     load_openrouter_key,
+    validate_knowledge_event_contract,
     validate_collapse_packet,
     validate_packet_event,
 )
@@ -591,6 +592,81 @@ class KnowledgeSpaceTest(unittest.TestCase):
         self.assertIn(
             "item 1 has evaluator-only visibility",
             validate_packet_event(withheld),
+        )
+
+    def test_validate_knowledge_event_contracts_cover_runtime_lifecycle(self) -> None:
+        valid_events = [
+            {
+                "type": "knowledge.packet_requested",
+                "runId": "demo-run-1",
+                "sequence": 1,
+                "payload": {
+                    "request_id": "kreq-1",
+                    "target_case": "fsd-next-case",
+                    "memory_mode": "auto",
+                    "role": "candidate",
+                    "max_items": 4,
+                },
+            },
+            {
+                "type": "knowledge.item_injected",
+                "runId": "demo-run-1",
+                "sequence": 2,
+                "payload": {
+                    "packet_id": "packet-1",
+                    "record_id": "ks_public_runtime",
+                    "cite_handle": "KPUBLIC",
+                    "recipient_role": "candidate",
+                    "injected_text": "FSD insurance finance prior.",
+                },
+            },
+            {
+                "type": "knowledge.influence_recorded",
+                "runId": "demo-run-1",
+                "sequence": 3,
+                "payload": {
+                    "record_id": "ks_public_runtime",
+                    "cite_handle": "KPUBLIC",
+                    "artifact_id": "candidate-1",
+                    "influence": "cited",
+                },
+            },
+            {
+                "type": "knowledge.promotion_decided",
+                "runId": "demo-run-1",
+                "sequence": 4,
+                "payload": {
+                    "record_id": "ks_public_runtime",
+                    "decision": "promote",
+                    "from_trust_tier": "candidate",
+                    "to_trust_tier": "validated",
+                    "decider": "human",
+                },
+            },
+        ]
+
+        for event in valid_events:
+            self.assertEqual(validate_knowledge_event_contract(event), [])
+
+        missing = dict(valid_events[0])
+        missing["payload"] = dict(valid_events[0]["payload"])
+        missing["payload"].pop("request_id")
+
+        self.assertIn(
+            "knowledge.packet_requested payload missing request_id",
+            validate_knowledge_event_contract(missing),
+        )
+
+        self.assertIn(
+            "unknown knowledge event type: knowledge.unknown",
+            validate_knowledge_event_contract(
+                {
+                    "type": "knowledge.unknown",
+                    "runId": "demo-run-1",
+                    "sequence": 5,
+                    "payload": {},
+                }
+            ),
         )
 
     def test_exports_neo4j_projection_without_replacing_ledger(self) -> None:

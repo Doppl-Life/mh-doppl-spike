@@ -112,6 +112,22 @@ test('buildRunTrace selects and injects a knowledge packet before generation', (
   assert.equal(influence.payload?.cite_handle, 'KACCID');
   assert.equal(influence.payload?.artifact_id, generated.id);
   assert.equal(influence.payload?.influence, 'cited');
+
+  const survivor = trace.comparison.focus.selected.find((candidate) => (
+    candidate.evidence.some((item) => item.includes('[KACCID]'))
+  ));
+  assert.ok(survivor);
+  const credit = trace.events.find((event) => (
+    event.type === 'knowledge.credit_recorded' &&
+    event.payload?.artifact_id === survivor.id
+  ));
+  assert.ok(credit);
+  assert.equal(credit.payload?.record_id, 'ks_prior_accident');
+  assert.equal(credit.payload?.cite_handle, 'KACCID');
+  assert.equal(credit.payload?.selection_status, 'selected');
+  assert.equal(credit.payload?.credit, 'positive');
+  assert.equal(typeof credit.payload?.novelty, 'number');
+  assert.equal(typeof credit.payload?.grounding, 'number');
 });
 
 test('memoryMode off emits no packet and does not call the gateway', () => {

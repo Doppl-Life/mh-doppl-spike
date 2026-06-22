@@ -18,9 +18,9 @@ not because the goal is a disposable prototype.
 - [x] Define knowledge event payloads for the Doppl event log:
       `knowledge.packet_requested`, `knowledge.packet_selected`,
       `knowledge.item_injected`, `knowledge.item_excluded`,
-      `knowledge.influence_recorded`, `knowledge.collapse_requested`,
-      `knowledge.item_extracted`, `knowledge.promotion_proposed`,
-      `knowledge.promotion_decided`.
+      `knowledge.influence_recorded`, `knowledge.credit_recorded`,
+      `knowledge.collapse_requested`, `knowledge.item_extracted`,
+      `knowledge.promotion_proposed`, `knowledge.promotion_decided`.
 - [x] Write explicit rule: runtime imports `KnowledgeGateway` port only, never a
       Neo4j driver.
 - [x] Write leakage policy for `public`, `internal`, `withheld_evaluator`, and
@@ -187,7 +187,7 @@ not because the goal is a disposable prototype.
       memory.
 - [x] Record `knowledge.influence_recorded` for cited items.
 - [ ] Detect ignored warnings when a candidate repeats a known negative finding.
-- [ ] Update source/item credit ledgers after fitness scoring.
+- [~] Update source/item credit ledgers after fitness scoring.
 - [ ] Acceptance gate: a source can earn positive or negative credit independent
       of whether the agenome survives.
 
@@ -200,6 +200,10 @@ not because the goal is a disposable prototype.
 - [x] Replay preserves persisted influence events without querying the live
       knowledge gateway.
 - [x] Proof board and microscope surfaces expose memory influence counts.
+- [x] Add `knowledge.credit_recorded` events with cited item, candidate artifact,
+      novelty/grounding scores, focus/alternate selection status, and
+      positive/neutral/negative credit bucket.
+- [x] Show memory credit buckets in proof board and microscope surfaces.
 
 ## Phase 6 - Collapse And Distillation
 

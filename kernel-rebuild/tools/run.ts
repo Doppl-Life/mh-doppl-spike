@@ -22,6 +22,11 @@ type ProofCaseSummary = {
   memoryRecipients: string[];
   exclusions: number;
   influences: number;
+  memoryCredits: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
   freshKnowledgeRetrievals: number;
   exploreKeeps: string[];
   proofKeeps: string[];
@@ -138,6 +143,21 @@ function influenceCount(trace: RunTrace): number {
   return trace.events.filter((event) => event.type === 'knowledge.influence_recorded').length;
 }
 
+function isCreditBucket(value: unknown): value is keyof ProofCaseSummary['memoryCredits'] {
+  return value === 'positive' || value === 'neutral' || value === 'negative';
+}
+
+function memoryCredits(trace: RunTrace): ProofCaseSummary['memoryCredits'] {
+  const credits = { positive: 0, neutral: 0, negative: 0 };
+  for (const event of trace.events.filter((item) => item.type === 'knowledge.credit_recorded')) {
+    const credit = event.payload?.credit;
+    if (isCreditBucket(credit)) {
+      credits[credit] += 1;
+    }
+  }
+  return credits;
+}
+
 function freshKnowledgeRetrievals(trace: RunTrace): number {
   const replayCheck = trace.goalChecks.find((check) => check.id === 'replay-uses-persisted-knowledge');
   if (replayCheck?.passed && replayCheck.detail.includes('replayKnowledgeEvents=')) return 0;
@@ -186,6 +206,7 @@ function summarize(trace: RunTrace): ProofCaseSummary {
     memoryRecipients: memoryRecipients(trace),
     exclusions: trace.knowledgePacket?.excluded.length || 0,
     influences: influenceCount(trace),
+    memoryCredits: memoryCredits(trace),
     freshKnowledgeRetrievals: freshKnowledgeRetrievals(trace),
     exploreKeeps: selectedTitles(explore),
     proofKeeps: selectedTitles(proof),
@@ -220,7 +241,8 @@ export function renderBoard(snapshot: ProofBoardSnapshot): string {
     '| --- | ---: | ---: | --- | --- | --- | --- |',
   ];
   for (const row of snapshot.cases) {
-    const memory = `${row.memoryMode}; ${row.knowledgePacketId}; citations ${compactList(row.citationHandles)}; recipients ${compactList(row.memoryRecipients)}; exclusions ${row.exclusions}; influences ${row.influences}; fresh retrievals ${row.freshKnowledgeRetrievals}`;
+    const credit = `+${row.memoryCredits.positive}/${row.memoryCredits.neutral}/${row.memoryCredits.negative}`;
+    const memory = `${row.memoryMode}; ${row.knowledgePacketId}; citations ${compactList(row.citationHandles)}; recipients ${compactList(row.memoryRecipients)}; exclusions ${row.exclusions}; influences ${row.influences}; credits ${credit}; fresh retrievals ${row.freshKnowledgeRetrievals}`;
     lines.push(`| ${row.seed} | ${row.generated} | ${row.rejected} | ${memory} | ${compactList(row.exploreKeeps)} | ${compactList(row.proofKeeps)} | ${row.swap} | ${compactList(row.failedChecks)} |`);
   }
   lines.push(`aggregate: seeds=${snapshot.aggregate.seeds}; generated=${snapshot.aggregate.generated}; rejected=${snapshot.aggregate.rejected}; failedChecks=${snapshot.aggregate.failedChecks}`);

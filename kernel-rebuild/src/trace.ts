@@ -15,6 +15,7 @@ import type {
   RunTrace,
   ScoredCandidate,
   ScoredCandidatePool,
+  SelectionComparison,
   SeedFixture,
   TraceEvent,
 } from './contracts/index.ts';
@@ -178,6 +179,69 @@ function influenceEvents(packet: KnowledgePacket | undefined, candidates: Candid
             label: 'Cited memory items produce influence records for downstream credit.',
             passed: Boolean(item.recordId && item.citeHandle && candidate.id),
             detail: `${item.citeHandle} -> ${candidate.id}`,
+          },
+        ],
+      });
+    }
+  }
+  return events;
+}
+
+function creditForCandidate(candidate: ScoredCandidate, comparison: SelectionComparison): {
+  credit: 'positive' | 'neutral' | 'negative';
+  selectionStatus: 'selected' | 'rejected';
+  alternateStatus: 'selected' | 'rejected';
+} {
+  const focusSelected = comparison.focus.selected.some((item) => item.id === candidate.id);
+  const alternateSelected = comparison.alternate.selected.some((item) => item.id === candidate.id);
+  return {
+    credit: focusSelected ? 'positive' : alternateSelected ? 'neutral' : 'negative',
+    selectionStatus: focusSelected ? 'selected' : 'rejected',
+    alternateStatus: alternateSelected ? 'selected' : 'rejected',
+  };
+}
+
+function creditEvents(
+  packet: KnowledgePacket | undefined,
+  candidates: ScoredCandidate[],
+  comparison: SelectionComparison,
+): TraceEvent[] {
+  if (!packet) return [];
+  const events: TraceEvent[] = [];
+  const seen = new Set<string>();
+  for (const candidate of candidates) {
+    for (const item of packet.items) {
+      if (!candidateCitesItem(candidate, item)) continue;
+      const key = `${candidate.id}:${item.recordId}:${item.citeHandle}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const credit = creditForCandidate(candidate, comparison);
+      events.push({
+        type: 'knowledge.credit_recorded',
+        stage: 'knowledge',
+        input: `${candidate.id}:${item.recordId}`,
+        decision: `Record ${credit.credit} credit for ${item.citeHandle} on ${candidate.id}.`,
+        reason: 'Post-selection credit links cited memory to candidate fitness and survival outcome.',
+        output: `${item.recordId}:${credit.credit}`,
+        payload: {
+          packet_id: packet.id,
+          record_id: item.recordId,
+          cite_handle: item.citeHandle,
+          artifact_id: candidate.id,
+          candidate_id: candidate.id,
+          credit: credit.credit,
+          selection_status: credit.selectionStatus,
+          alternate_selection_status: credit.alternateStatus,
+          novelty: candidate.fitness.novelty,
+          grounding: candidate.fitness.grounding,
+          fitness_policy_id: candidate.fitness.policyId,
+        },
+        goalChecks: [
+          {
+            id: 'knowledge-credit-recorded',
+            label: 'Cited memory receives post-selection credit context.',
+            passed: Boolean(item.recordId && item.citeHandle && candidate.fitness.policyId),
+            detail: `${item.citeHandle} -> ${candidate.id}:${credit.credit}`,
           },
         ],
       });
@@ -444,6 +508,9 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: {
   }
   const selected = compareSelections(combinedScored, dial);
   events.push(selected.event);
+  if (!knowledge.replayed) {
+    events.push(...creditEvents(knowledge.packet, combinedScored.candidates, selected.comparison));
+  }
 
   const selectedIds = new Set(selected.comparison.focus.selected.map((candidate) => candidate.id));
   const finalGenerationSummaries = generationSummaries.map((summary) => ({

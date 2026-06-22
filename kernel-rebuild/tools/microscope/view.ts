@@ -163,6 +163,17 @@ function proofTile(label: string, value: string, detail: string, tone: 'good' | 
     </article>`;
 }
 
+function memoryCreditCounts(trace: RunTrace): { positive: number; neutral: number; negative: number } {
+  const counts = { positive: 0, neutral: 0, negative: 0 };
+  for (const event of trace.events.filter((item) => item.type === 'knowledge.credit_recorded')) {
+    const credit = event.payload?.credit;
+    if (credit === 'positive' || credit === 'neutral' || credit === 'negative') {
+      counts[credit as keyof typeof counts] += 1;
+    }
+  }
+  return counts;
+}
+
 function runConclusion(trace: RunTrace): { tone: 'good' | 'warn'; title: string; detail: string } {
   const failed = trace.goalChecks.filter((check) => !check.passed);
   const generation = trace.generations.find((item) => item.index === 2);
@@ -349,6 +360,8 @@ function renderMemoryPanel(trace: RunTrace): string {
   const packet = trace.knowledgePacket;
   const injections = trace.events.filter((event) => event.type === 'knowledge.item_injected');
   const influences = trace.events.filter((event) => event.type === 'knowledge.influence_recorded');
+  const credits = trace.events.filter((event) => event.type === 'knowledge.credit_recorded');
+  const creditCounts = memoryCreditCounts(trace);
   const replayCheck = trace.goalChecks.find((check) => check.id === 'replay-uses-persisted-knowledge');
   const freshRetrievals = replayCheck?.passed && replayCheck.detail.includes('replayKnowledgeEvents=')
     ? 0
@@ -362,6 +375,9 @@ function renderMemoryPanel(trace: RunTrace): string {
     : '<li>none</li>';
   const influenceRows = influences.length
     ? influences.map((event) => `<li>${escapeHtml(String(event.payload?.cite_handle || 'unknown'))} -> ${escapeHtml(String(event.payload?.artifact_id || 'unknown'))}</li>`).join('')
+    : '<li>none</li>';
+  const creditRows = credits.length
+    ? credits.map((event) => `<li>${escapeHtml(String(event.payload?.cite_handle || 'unknown'))} -> ${escapeHtml(String(event.payload?.artifact_id || 'unknown'))}: ${escapeHtml(String(event.payload?.credit || 'unknown'))}</li>`).join('')
     : '<li>none</li>';
   const itemRows = packet?.items.length
     ? packet.items.map((item) => `
@@ -387,6 +403,7 @@ function renderMemoryPanel(trace: RunTrace): string {
         ${proofTile('Citations', citationText, 'handles available to generated candidates', packet?.items.length ? 'good' : 'plain')}
         ${proofTile('Recipients', recipients, `${injections.length} item injection event(s)`, injections.length ? 'good' : 'plain')}
         ${proofTile('Influence', String(influences.length), 'candidate artifacts citing memory', influences.length ? 'good' : 'plain')}
+        ${proofTile('Credit', `+${creditCounts.positive}/${creditCounts.neutral}/${creditCounts.negative}`, 'positive / neutral / negative memory outcomes', credits.length ? 'good' : 'plain')}
       </div>
       <div class="memory-detail-grid">
         <div>
@@ -398,6 +415,8 @@ function renderMemoryPanel(trace: RunTrace): string {
           <ul class="memory-exclusions">${exclusionRows}</ul>
           <h3>Influence</h3>
           <ul class="memory-exclusions">${influenceRows}</ul>
+          <h3>Credit</h3>
+          <ul class="memory-exclusions">${creditRows}</ul>
         </div>
       </div>
     </section>`;

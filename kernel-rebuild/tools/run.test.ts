@@ -104,6 +104,12 @@ test('proof board summary exposes memory packet, citations, injections, exclusio
   assert.deepEqual(snapshot.cases[0].memoryRecipients, ['candidate']);
   assert.equal(snapshot.cases[0].exclusions, 1);
   assert.equal(snapshot.cases[0].influences, 1);
+  assert.equal(
+    snapshot.cases[0].memoryCredits.positive +
+      snapshot.cases[0].memoryCredits.neutral +
+      snapshot.cases[0].memoryCredits.negative,
+    1,
+  );
   assert.equal(snapshot.cases[0].freshKnowledgeRetrievals, 0);
 
   const board = renderBoard(snapshot);
@@ -111,5 +117,6 @@ test('proof board summary exposes memory packet, citations, injections, exclusio
   assert.match(board, /packet-fsd/);
   assert.match(board, /KACCID/);
   assert.match(board, /influences 1/);
+  assert.match(board, /credits \+\d+\/\d+\/\d+/);
   assert.match(board, /fresh retrievals 0/);
 });

@@ -21,9 +21,9 @@ not because the goal is a disposable prototype.
       `knowledge.influence_recorded`, `knowledge.collapse_requested`,
       `knowledge.item_extracted`, `knowledge.promotion_proposed`,
       `knowledge.promotion_decided`.
-- [ ] Write explicit rule: runtime imports `KnowledgeGateway` port only, never a
+- [x] Write explicit rule: runtime imports `KnowledgeGateway` port only, never a
       Neo4j driver.
-- [ ] Write leakage policy for `public`, `internal`, `withheld_evaluator`, and
+- [x] Write leakage policy for `public`, `internal`, `withheld_evaluator`, and
       `secret_forbidden` visibility.
 - [x] Acceptance gate: schema tests reject missing provenance, missing trust tier,
       and evaluator-only retrieval into candidate-producing roles.

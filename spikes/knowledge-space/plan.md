@@ -44,6 +44,44 @@ flowchart TD
 
 ## Integration Into A Real Doppl Run
 
+### Runtime Boundary Rule
+
+The Doppl runtime imports a `KnowledgeGateway` port and knowledge event schemas
+only. It must not import a Neo4j driver, Cypher query builder, local embedding
+adapter, or file-backed ledger implementation.
+
+This boundary keeps three production properties intact:
+
+- **Replay safety:** replay uses the persisted packet events from the original
+  run, not a fresh graph query against a changed knowledge store.
+- **Storage replaceability:** local JSONL, Neo4j, pgvector, or a later managed
+  graph can all sit behind the same gateway.
+- **Permission enforcement:** visibility filtering happens before prompt
+  construction, at the gateway boundary, not through natural-language
+  instructions to an agenome.
+
+The gateway is responsible for selecting, excluding, and explaining knowledge.
+The runtime is responsible for persisting `knowledge.packet_requested`,
+`knowledge.packet_selected`, `knowledge.item_injected`, and later influence
+events into the authoritative run log.
+
+### Visibility And Leakage Policy
+
+Knowledge visibility is an access-control property:
+
+| Visibility | Candidate-producing roles | Evaluator / operator roles | Notes |
+|---|---:|---:|---|
+| `public` | Allowed | Allowed | Default for source-backed case docs and reviewed public findings. |
+| `internal` | Allowed when same workspace/project policy permits | Allowed | Product-private memory that is not an eval answer. |
+| `withheld_evaluator` | Denied | Allowed only for evaluator/debug roles | Held-out answers, rubrics, or solution notes for eval cases. |
+| `secret_forbidden` | Denied | Denied by default | Credentials, private keys, raw secrets, or data that should never enter prompts. |
+
+Candidate-producing roles include agenomes, candidate generators, councils,
+critics that can feed candidate evolution, and generation-level synthesis. Those
+roles receive no `withheld_evaluator` or `secret_forbidden` records, even when a
+record is semantically relevant. Exclusions are emitted as structured audit data
+without exposing the protected text.
+
 ### Pre-Run: Knowledge Packet Selection
 
 1. Operator configures a run.

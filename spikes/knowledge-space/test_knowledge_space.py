@@ -386,6 +386,54 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertGreaterEqual(len(collapse["items"]), 1)
             self.assertIn("cand-cold", {item["candidate_id"] for item in collapse["items"]})
 
+    def test_import_run_event_receipts_is_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            events = load_run_events(FIXTURES / "raw_run_events.json")
+
+            first = space.ingest_run_events(events, source_path="fixtures/raw_run_events.json")
+            second = space.ingest_run_events(events, source_path="fixtures/raw_run_events.json")
+            reloaded = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+
+            self.assertEqual(len(first), 3)
+            self.assertEqual(second, [])
+            self.assertEqual(len(reloaded.run_event_receipts), 3)
+            self.assertEqual(first[0].run_id, "ks-demo-run-raw-1")
+            self.assertEqual(first[0].sequence, 1)
+            self.assertEqual(first[0].event_type, "run.configured")
+            self.assertEqual(first[0].source_path, "fixtures/raw_run_events.json")
+            self.assertTrue(first[0].event_hash.startswith("evt_"))
+            self.assertTrue(first[0].payload_hash.startswith("payload_"))
+            self.assertEqual(first[0].event_hash, reloaded.run_event_receipts[first[0].id].event_hash)
+
+    def test_graph_projection_links_receipts_to_run_entities_and_records(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            events = load_run_events(FIXTURES / "raw_run_events.json")
+
+            space.ingest_run_events(events, source_path="fixtures/raw_run_events.json")
+            records = space.ingest_collapse_packet(
+                space.request_collapse(events, extractor="heuristic")
+            )
+            graph = space.graph_projection()
+            node_ids = {node["id"] for node in graph["nodes"]}
+            edge_types = {edge["type"] for edge in graph["edges"]}
+            cypher = space.to_cypher()
+            html_path = Path(tmp) / "graph.html"
+            space.write_graph_html(html_path)
+            html = html_path.read_text(encoding="utf-8")
+
+            self.assertGreaterEqual(len(records), 1)
+            self.assertIn("receipt:ks-demo-run-raw-1:1", node_ids)
+            self.assertIn("receipt:ks-demo-run-raw-1:2", node_ids)
+            self.assertIn("receipt:ks-demo-run-raw-1:3", node_ids)
+            self.assertIn("RECEIPT_OF_RUN", edge_types)
+            self.assertIn("RECEIPT_OF_CANDIDATE", edge_types)
+            self.assertIn("RECEIPT_OF_CRITIC", edge_types)
+            self.assertIn("DERIVED_FROM_RECEIPT", edge_types)
+            self.assertIn("MERGE (receipt:RunEventReceipt", cypher)
+            self.assertIn('data-filter="RunEventReceipt"', html)
+
     def test_graph_projection_includes_run_candidate_and_critic_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")

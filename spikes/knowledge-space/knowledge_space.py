@@ -194,6 +194,56 @@ class KnowledgeRecord:
 
 
 @dataclass(frozen=True)
+class RunEventReceipt:
+    id: str
+    run_id: str
+    sequence: int
+    event_type: str
+    source_path: str
+    event_hash: str
+    payload_hash: str
+    payload: dict[str, Any]
+    entity_type: str = ""
+    entity_id: str = ""
+    candidate_id: str = ""
+    critic_id: str = ""
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "row_type": "run_event_receipt",
+            "id": self.id,
+            "run_id": self.run_id,
+            "sequence": self.sequence,
+            "event_type": self.event_type,
+            "source_path": self.source_path,
+            "event_hash": self.event_hash,
+            "payload_hash": self.payload_hash,
+            "payload": self.payload,
+            "entity_type": self.entity_type,
+            "entity_id": self.entity_id,
+            "candidate_id": self.candidate_id,
+            "critic_id": self.critic_id,
+        }
+
+    @classmethod
+    def from_json(cls, data: dict[str, Any]) -> "RunEventReceipt":
+        return cls(
+            id=str(data["id"]),
+            run_id=str(data["run_id"]),
+            sequence=int(data["sequence"]),
+            event_type=str(data["event_type"]),
+            source_path=str(data["source_path"]),
+            event_hash=str(data["event_hash"]),
+            payload_hash=str(data["payload_hash"]),
+            payload=dict(data.get("payload") or {}),
+            entity_type=str(data.get("entity_type", "")),
+            entity_id=str(data.get("entity_id", "")),
+            candidate_id=str(data.get("candidate_id", "")),
+            critic_id=str(data.get("critic_id", "")),
+        )
+
+
+@dataclass(frozen=True)
 class PacketItem:
     record: KnowledgeRecord
     score: float
@@ -327,6 +377,19 @@ def record_id(kind: str, source_case: str, source_path: str, text: str) -> str:
         f"{kind}\n{source_case}\n{source_path}\n{text}".encode("utf-8")
     ).hexdigest()[:16]
     return f"ks_{digest}"
+
+
+def canonical_json(data: Any) -> str:
+    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
+def stable_hash(prefix: str, data: Any) -> str:
+    digest = hashlib.sha1(canonical_json(data).encode("utf-8")).hexdigest()[:16]
+    return f"{prefix}_{digest}"
+
+
+def receipt_id(run_id: str, sequence: int) -> str:
+    return f"receipt:{run_id}:{sequence}"
 
 
 def source_chunk_id(source_path: str, line_start: int, line_end: int, text: str) -> str:
@@ -901,6 +964,7 @@ class KnowledgeSpace:
     def __init__(self, ledger_path: Path = DEFAULT_LEDGER) -> None:
         self.ledger_path = ledger_path
         self.records: dict[str, KnowledgeRecord] = {}
+        self.run_event_receipts: dict[str, RunEventReceipt] = {}
         self._load()
 
     def _load(self) -> None:
@@ -910,8 +974,48 @@ class KnowledgeSpace:
             for line in f:
                 if not line.strip():
                     continue
-                record = KnowledgeRecord.from_json(json.loads(line))
+                data = json.loads(line)
+                if data.get("row_type") == "run_event_receipt":
+                    receipt = RunEventReceipt.from_json(data)
+                    self.run_event_receipts[receipt.id] = receipt
+                    continue
+                record = KnowledgeRecord.from_json(data)
                 self.records[record.id] = record
+
+    def ingest_run_events(
+        self,
+        events: list[dict[str, Any]],
+        *,
+        source_path: str,
+    ) -> list[RunEventReceipt]:
+        created: list[RunEventReceipt] = []
+        existing_ids = set(self.run_event_receipts)
+        for index, event in enumerate(events, start=1):
+            run_id = str(event.get("runId") or event.get("run_id") or "unknown-run")
+            sequence = int(event.get("sequence") or index)
+            current_id = receipt_id(run_id, sequence)
+            if current_id in existing_ids:
+                continue
+            payload = dict(event.get("payload") or {})
+            receipt = RunEventReceipt(
+                id=current_id,
+                run_id=run_id,
+                sequence=sequence,
+                event_type=str(event.get("type", "unknown")),
+                source_path=source_path,
+                event_hash=stable_hash("evt", event),
+                payload_hash=stable_hash("payload", payload),
+                payload=payload,
+                entity_type=str(event.get("entityType", "")),
+                entity_id=str(event.get("entityId", "")),
+                candidate_id=str(payload.get("candidate_id") or payload.get("candidateId") or ""),
+                critic_id=str(payload.get("critic_id") or payload.get("criticId") or ""),
+            )
+            self.run_event_receipts[receipt.id] = receipt
+            created.append(receipt)
+            existing_ids.add(receipt.id)
+        self._append_receipts(created)
+        return created
 
     def ingest_case(self, case_dir: Path, include_evaluator: bool = False) -> list[KnowledgeRecord]:
         if not case_dir.exists():
@@ -1172,6 +1276,50 @@ class KnowledgeSpace:
         nodes: dict[str, dict[str, Any]] = {}
         edges: list[dict[str, str]] = []
 
+        for receipt in sorted(
+            self.run_event_receipts.values(),
+            key=lambda item: (item.run_id, item.sequence),
+        ):
+            receipt_node_id = receipt.id
+            run_id = f"run:{receipt.run_id}"
+            nodes[receipt_node_id] = {
+                "id": receipt_node_id,
+                "label": f"{receipt.event_type} #{receipt.sequence}",
+                "type": "RunEventReceipt",
+                "runId": receipt.run_id,
+                "sequence": receipt.sequence,
+                "eventType": receipt.event_type,
+                "eventHash": receipt.event_hash,
+                "payloadHash": receipt.payload_hash,
+                "sourcePath": receipt.source_path,
+                "candidateId": receipt.candidate_id,
+                "criticId": receipt.critic_id,
+            }
+            nodes.setdefault(run_id, {"id": run_id, "label": receipt.run_id, "type": "Run"})
+            edges.append({"source": receipt_node_id, "target": run_id, "type": "RECEIPT_OF_RUN"})
+            if receipt.event_type == "candidate.produced" and receipt.candidate_id:
+                candidate_id = f"candidate:{receipt.candidate_id}"
+                nodes.setdefault(
+                    candidate_id,
+                    {"id": candidate_id, "label": receipt.candidate_id, "type": "Candidate"},
+                )
+                edges.append({"source": receipt_node_id, "target": candidate_id, "type": "RECEIPT_OF_CANDIDATE"})
+                edges.append({"source": candidate_id, "target": run_id, "type": "PART_OF_RUN"})
+            if receipt.event_type == "critic.review" and receipt.critic_id:
+                critic_id = f"critic:{receipt.critic_id}"
+                nodes.setdefault(
+                    critic_id,
+                    {"id": critic_id, "label": receipt.critic_id, "type": "CriticReview"},
+                )
+                edges.append({"source": receipt_node_id, "target": critic_id, "type": "RECEIPT_OF_CRITIC"})
+                if receipt.candidate_id:
+                    candidate_id = f"candidate:{receipt.candidate_id}"
+                    nodes.setdefault(
+                        candidate_id,
+                        {"id": candidate_id, "label": receipt.candidate_id, "type": "Candidate"},
+                    )
+                    edges.append({"source": critic_id, "target": candidate_id, "type": "REVIEWED_CANDIDATE"})
+
         for record in sorted(self.records.values(), key=lambda item: item.id):
             case_id = f"case:{record.source_case}"
             source_id = f"source:{record.source_path}"
@@ -1205,6 +1353,9 @@ class KnowledgeSpace:
             }
             edges.append({"source": record_id_value, "target": case_id, "type": "FROM_CASE"})
             edges.append({"source": record_id_value, "target": source_id, "type": "SUPPORTED_BY"})
+            matching_receipt = receipt_id(record.run_id, record.origin_event_sequence) if record.run_id else ""
+            if matching_receipt in self.run_event_receipts:
+                edges.append({"source": record_id_value, "target": matching_receipt, "type": "DERIVED_FROM_RECEIPT"})
 
             if record.run_id:
                 run_id = f"run:{record.run_id}"
@@ -1255,8 +1406,61 @@ class KnowledgeSpace:
             "CREATE CONSTRAINT run_id IF NOT EXISTS FOR (run:Run) REQUIRE run.id IS UNIQUE;",
             "CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.id IS UNIQUE;",
             "CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;",
+            "CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;",
             "",
         ]
+        for receipt in sorted(
+            self.run_event_receipts.values(),
+            key=lambda item: (item.run_id, item.sequence),
+        ):
+            lines.extend(
+                [
+                    f"MERGE (run:Run {{id: {cypher_value(receipt.run_id)}}}) SET run.title = {cypher_value(receipt.run_id)};",
+                    f"MERGE (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}})",
+                    "  SET "
+                    + ", ".join(
+                        [
+                            f"receipt.runId = {cypher_value(receipt.run_id)}",
+                            f"receipt.sequence = {receipt.sequence}",
+                            f"receipt.eventType = {cypher_value(receipt.event_type)}",
+                            f"receipt.eventHash = {cypher_value(receipt.event_hash)}",
+                            f"receipt.payloadHash = {cypher_value(receipt.payload_hash)}",
+                            f"receipt.sourcePath = {cypher_value(receipt.source_path)}",
+                            f"receipt.candidateId = {cypher_value(receipt.candidate_id)}",
+                            f"receipt.criticId = {cypher_value(receipt.critic_id)}",
+                        ]
+                    )
+                    + ";",
+                    f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (run:Run {{id: {cypher_value(receipt.run_id)}}})",
+                    "MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);",
+                ]
+            )
+            if receipt.event_type == "candidate.produced" and receipt.candidate_id:
+                lines.extend(
+                    [
+                        f"MERGE (cand:Candidate {{id: {cypher_value(receipt.candidate_id)}}});",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (cand:Candidate {{id: {cypher_value(receipt.candidate_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_CANDIDATE]->(cand);",
+                        f"MATCH (cand:Candidate {{id: {cypher_value(receipt.candidate_id)}}}), (run:Run {{id: {cypher_value(receipt.run_id)}}})",
+                        "MERGE (cand)-[:PART_OF_RUN]->(run);",
+                    ]
+                )
+            if receipt.event_type == "critic.review" and receipt.critic_id:
+                lines.extend(
+                    [
+                        f"MERGE (critic:CriticReview {{id: {cypher_value(receipt.critic_id)}}}) SET critic.title = {cypher_value(receipt.critic_id)};",
+                        f"MATCH (receipt:RunEventReceipt {{id: {cypher_value(receipt.id)}}}), (critic:CriticReview {{id: {cypher_value(receipt.critic_id)}}})",
+                        "MERGE (receipt)-[:RECEIPT_OF_CRITIC]->(critic);",
+                    ]
+                )
+                if receipt.candidate_id:
+                    lines.extend(
+                        [
+                            f"MATCH (critic:CriticReview {{id: {cypher_value(receipt.critic_id)}}}), (cand:Candidate {{id: {cypher_value(receipt.candidate_id)}}})",
+                            "MERGE (critic)-[:REVIEWED_CANDIDATE]->(cand);",
+                        ]
+                    )
+            lines.append("")
         for record in sorted(self.records.values(), key=lambda item: item.id):
             case_id = record.source_case
             source_id = record.source_path
@@ -1292,6 +1496,14 @@ class KnowledgeSpace:
                     "MERGE (r)-[:SUPPORTED_BY]->(s);",
                 ]
             )
+            matching_receipt = receipt_id(record.run_id, record.origin_event_sequence) if record.run_id else ""
+            if matching_receipt in self.run_event_receipts:
+                lines.extend(
+                    [
+                        f"MATCH (r:KnowledgeRecord {{id: {cypher_value(record.id)}}}), (receipt:RunEventReceipt {{id: {cypher_value(matching_receipt)}}})",
+                        "MERGE (r)-[:DERIVED_FROM_RECEIPT]->(receipt);",
+                    ]
+                )
             if record.run_id:
                 lines.extend(
                     [
@@ -1357,6 +1569,14 @@ class KnowledgeSpace:
             for record in records:
                 f.write(json.dumps(record.to_json(), sort_keys=True) + "\n")
 
+    def _append_receipts(self, receipts: list[RunEventReceipt]) -> None:
+        if not receipts:
+            return
+        self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.ledger_path.open("a", encoding="utf-8") as f:
+            for receipt in receipts:
+                f.write(json.dumps(receipt.to_json(), sort_keys=True) + "\n")
+
     def _research_sentences(self, text: str) -> list[str]:
         selected: list[str] = []
         for sentence in split_sentences(text):
@@ -1397,6 +1617,7 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
         exclude_cases={target_case.name},
     )
     mock_events = json.loads((FIXTURE_DIR / "mock_run_events.json").read_text(encoding="utf-8"))
+    receipt_records = space.ingest_run_events(mock_events, source_path="fixtures/mock_run_events.json")
     collapse_packet = space.request_collapse(mock_events)
     collapse_records = space.ingest_collapse_packet(collapse_packet)
     packet = space.select_packet(
@@ -1453,6 +1674,7 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     print(f"Packet event: {(OUT_DIR / 'knowledge_packet_event.json').relative_to(ROOT)}")
     print(f"Graph: {(OUT_DIR / 'graph.html').relative_to(ROOT)}")
     print(f"Neo4j import: {(OUT_DIR / 'neo4j.cypher').relative_to(ROOT)}")
+    print(f"Imported {len(receipt_records)} run-event receipt(s)")
     print(f"Collapsed {len(collapse_records)} run-derived memory item(s)")
     print(f"Retrieved {len(packet.items)} memory item(s) for {target_case.name}")
 
@@ -1834,6 +2056,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
           <button type="button" data-filter="Run">Runs</button>
           <button type="button" data-filter="Candidate">Candidates</button>
           <button type="button" data-filter="CriticReview">Critics</button>
+          <button type="button" data-filter="RunEventReceipt">Receipts</button>
           <button type="button" data-filter="Case">Cases</button>
           <button type="button" data-filter="Source">Sources</button>
           <button type="button" data-filter="Tag">Tags</button>
@@ -1868,6 +2091,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       CriticReview: "#be123c",
       KnowledgeRecord: "#7c3aed",
       Run: "#0f172a",
+      RunEventReceipt: "#0891b2",
       Source: "#475569",
       Tag: "#c2410c"
     }};
@@ -1894,12 +2118,16 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         node.runId,
         node.candidateId,
         node.criticId,
-        node.agenomeId
+        node.agenomeId,
+        node.eventType,
+        node.eventHash,
+        node.payloadHash,
+        node.sourcePath
       ].filter(Boolean).join(" ").toLowerCase().includes(term);
     }}
 
     function layoutNodes(width, height) {{
-      const buckets = ["Run", "Candidate", "CriticReview", "Case", "Source", "KnowledgeRecord", "Tag"];
+      const buckets = ["Run", "RunEventReceipt", "Candidate", "CriticReview", "Case", "Source", "KnowledgeRecord", "Tag"];
       const byType = Object.fromEntries(buckets.map((type) => [type, []]));
       graphData.nodes.forEach((node) => {{
         (byType[node.type] || byType.KnowledgeRecord).push(node);
@@ -1933,11 +2161,15 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       const candidate = node.candidateId ? `<div class="detail-kv"><strong>Candidate:</strong> ${{escapeHtml(node.candidateId)}}</div>` : "";
       const critic = node.criticId ? `<div class="detail-kv"><strong>Critic:</strong> ${{escapeHtml(node.criticId)}}</div>` : "";
       const agenome = node.agenomeId ? `<div class="detail-kv"><strong>Agenome:</strong> ${{escapeHtml(node.agenomeId)}}</div>` : "";
+      const eventType = node.eventType ? `<div class="detail-kv"><strong>Event:</strong> ${{escapeHtml(node.eventType)}} #${{escapeHtml(node.sequence || "")}}</div>` : "";
+      const eventHash = node.eventHash ? `<div class="detail-kv"><strong>Event hash:</strong> ${{escapeHtml(node.eventHash)}}</div>` : "";
+      const payloadHash = node.payloadHash ? `<div class="detail-kv"><strong>Payload hash:</strong> ${{escapeHtml(node.payloadHash)}}</div>` : "";
+      const sourcePath = node.sourcePath ? `<div class="detail-kv"><strong>Source path:</strong> ${{escapeHtml(node.sourcePath)}}</div>` : "";
       const text = node.text ? `<div class="detail-text">${{escapeHtml(node.text)}}</div>` : "";
       detail.innerHTML = `
         <h2>${{escapeHtml(node.label)}}</h2>
         <div class="detail-kv"><strong>Type:</strong> ${{escapeHtml(node.type)}}</div>
-        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{text}}
+        ${{citation}}${{chunk}}${{heading}}${{run}}${{candidate}}${{critic}}${{agenome}}${{eventType}}${{eventHash}}${{payloadHash}}${{sourcePath}}${{text}}
         <div class="detail-kv"><strong>Outgoing:</strong></div>
         <ul>${{outgoing || "<li>None</li>"}}</ul>
       `;
@@ -2049,6 +2281,7 @@ def main() -> None:
     space = KnowledgeSpace(DEFAULT_LEDGER)
     if args.collapse_events_file:
         events = load_run_events(Path(args.collapse_events_file))
+        receipts = space.ingest_run_events(events, source_path=args.collapse_events_file)
         collapse = space.request_collapse(
             events,
             extractor=args.collapse_extractor,
@@ -2060,7 +2293,7 @@ def main() -> None:
             json.dumps(collapse, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-        print(f"collapsed {len(records)} record(s) from {len(events)} event(s)")
+        print(f"imported {len(receipts)} receipt(s); collapsed {len(records)} record(s) from {len(events)} event(s)")
     if args.research_problem_file:
         problem = Path(args.research_problem_file).read_text(encoding="utf-8")
         report = space.research_problem(

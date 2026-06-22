@@ -73,8 +73,8 @@ not because the goal is a disposable prototype.
 - [ ] Mirror `Run`, `Generation`, `Agenome`, `Candidate`, `CriticReview`,
       `CheckResult`, `FitnessScore`, and `NoveltyScore` into graph nodes.
 - [ ] Link mirrored graph nodes back to authoritative `run_events`.
-- [ ] Preserve raw event payload receipt hashes.
-- [ ] Add idempotent ingestion by `(runId, sequence)`.
+- [x] Preserve raw event payload receipt hashes.
+- [x] Add idempotent ingestion by `(runId, sequence)`.
 - [ ] Add sequence watermark per ingested run.
 - [ ] Acceptance gate: ingesting the same run twice creates no duplicate nodes or
       edges.
@@ -88,8 +88,11 @@ not because the goal is a disposable prototype.
       Neo4j Cypher.
 - [x] Add JSON array, `{ events: [...] }`, JSONL, and current `my-doppl` whole-run
       import support for collapse writeback.
-- [ ] Add sequence watermarks and raw-event receipt hashes to the run-event
-      reader.
+- [x] Store imported run events as `RunEventReceipt` ledger rows with stable
+      event and payload hashes.
+- [x] Link receipt nodes to runs, candidates, critics, and collapse-derived
+      knowledge in graph HTML and Neo4j Cypher.
+- [ ] Add sequence watermarks to the run-event reader.
 
 ## Phase 3 - Embedding And Retrieval
 

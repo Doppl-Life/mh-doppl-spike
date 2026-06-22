@@ -7,6 +7,35 @@ CREATE CONSTRAINT source_id IF NOT EXISTS FOR (s:Source) REQUIRE s.id IS UNIQUE;
 CREATE CONSTRAINT run_id IF NOT EXISTS FOR (run:Run) REQUIRE run.id IS UNIQUE;
 CREATE CONSTRAINT candidate_id IF NOT EXISTS FOR (cand:Candidate) REQUIRE cand.id IS UNIQUE;
 CREATE CONSTRAINT critic_id IF NOT EXISTS FOR (critic:CriticReview) REQUIRE critic.id IS UNIQUE;
+CREATE CONSTRAINT run_event_receipt_id IF NOT EXISTS FOR (receipt:RunEventReceipt) REQUIRE receipt.id IS UNIQUE;
+
+MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:1"})
+  SET receipt.runId = "ks-demo-run-culled-1", receipt.sequence = 1, receipt.eventType = "run.configured", receipt.eventHash = "evt_3696171a7372cb48", receipt.payloadHash = "payload_eebfce9f3810708b", receipt.sourcePath = "fixtures/mock_run_events.json", receipt.candidateId = "", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:1"}), (run:Run {id: "ks-demo-run-culled-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+
+MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:2"})
+  SET receipt.runId = "ks-demo-run-culled-1", receipt.sequence = 2, receipt.eventType = "candidate.produced", receipt.eventHash = "evt_c51c87acd1c18bb1", receipt.payloadHash = "payload_1da4a55270e8bf5c", receipt.sourcePath = "fixtures/mock_run_events.json", receipt.candidateId = "candidate-cold-ownership-1", receipt.criticId = "";
+MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:2"}), (run:Run {id: "ks-demo-run-culled-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (cand:Candidate {id: "candidate-cold-ownership-1"});
+MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:2"}), (cand:Candidate {id: "candidate-cold-ownership-1"})
+MERGE (receipt)-[:RECEIPT_OF_CANDIDATE]->(cand);
+MATCH (cand:Candidate {id: "candidate-cold-ownership-1"}), (run:Run {id: "ks-demo-run-culled-1"})
+MERGE (cand)-[:PART_OF_RUN]->(run);
+
+MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
+MERGE (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"})
+  SET receipt.runId = "ks-demo-run-culled-1", receipt.sequence = 3, receipt.eventType = "critic.review", receipt.eventHash = "evt_2513a7b9da4120c7", receipt.payloadHash = "payload_b87e0f22075dda7b", receipt.sourcePath = "fixtures/mock_run_events.json", receipt.candidateId = "candidate-cold-ownership-1", receipt.criticId = "critic-market-structure";
+MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"}), (run:Run {id: "ks-demo-run-culled-1"})
+MERGE (receipt)-[:RECEIPT_OF_RUN]->(run);
+MERGE (critic:CriticReview {id: "critic-market-structure"}) SET critic.title = "critic-market-structure";
+MATCH (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"}), (critic:CriticReview {id: "critic-market-structure"})
+MERGE (receipt)-[:RECEIPT_OF_CRITIC]->(critic);
+MATCH (critic:CriticReview {id: "critic-market-structure"}), (cand:Candidate {id: "candidate-cold-ownership-1"})
+MERGE (critic)-[:REVIEWED_CANDIDATE]->(cand);
 
 MERGE (c:Case {id: "fsd-enforcement-economy"})
   SET c.title = "fsd-enforcement-economy";
@@ -341,6 +370,8 @@ MATCH (r:KnowledgeRecord {id: "ks_790a6a42a3e0d827"}), (c:Case {id: "fsd-ownersh
 MERGE (r)-[:FROM_CASE]->(c);
 MATCH (r:KnowledgeRecord {id: "ks_790a6a42a3e0d827"}), (s:Source {id: "run-events/ks-demo-run-culled-1.json"})
 MERGE (r)-[:SUPPORTED_BY]->(s);
+MATCH (r:KnowledgeRecord {id: "ks_790a6a42a3e0d827"}), (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"})
+MERGE (r)-[:DERIVED_FROM_RECEIPT]->(receipt);
 MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
 MATCH (r:KnowledgeRecord {id: "ks_790a6a42a3e0d827"}), (run:Run {id: "ks-demo-run-culled-1"})
 MERGE (r)-[:DERIVED_FROM_RUN]->(run);
@@ -885,6 +916,8 @@ MATCH (r:KnowledgeRecord {id: "ks_ee78a17aedd6a531"}), (c:Case {id: "fsd-ownersh
 MERGE (r)-[:FROM_CASE]->(c);
 MATCH (r:KnowledgeRecord {id: "ks_ee78a17aedd6a531"}), (s:Source {id: "run-events/ks-demo-run-culled-1.json"})
 MERGE (r)-[:SUPPORTED_BY]->(s);
+MATCH (r:KnowledgeRecord {id: "ks_ee78a17aedd6a531"}), (receipt:RunEventReceipt {id: "receipt:ks-demo-run-culled-1:3"})
+MERGE (r)-[:DERIVED_FROM_RECEIPT]->(receipt);
 MERGE (run:Run {id: "ks-demo-run-culled-1"}) SET run.title = "ks-demo-run-culled-1";
 MATCH (r:KnowledgeRecord {id: "ks_ee78a17aedd6a531"}), (run:Run {id: "ks-demo-run-culled-1"})
 MERGE (r)-[:DERIVED_FROM_RUN]->(run);

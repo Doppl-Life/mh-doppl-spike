@@ -119,7 +119,7 @@ not because the goal is a disposable prototype.
 
 - [ ] Install/configure local embedding adapter using `Qwen/Qwen3-Embedding-0.6B`
       or a drop-in compatible local embedding model.
-- [ ] Store embedding model ID, dimension, instruction, and vector with each
+- [x] Store embedding model ID, dimension, instruction, and vector with each
       embedded node.
 - [~] Implement hybrid retrieval:
       graph filters first, vector search second, rerank third.
@@ -141,6 +141,10 @@ not because the goal is a disposable prototype.
 - [x] Add excluded-record audit metadata for withheld and over-budget items.
 - [x] Add graph-first local retrieval filters for target case, source-case
       prefix, kind, required tags, visibility, and minimum trust tier.
+- [x] Add deterministic local embedding adapter and durable `EmbeddingRecord`
+      rows for model-free retrieval tests.
+- [x] Expose embedding nodes, model/dimension metadata, and hosted coverage
+      summary.
 - [ ] Add stale item metadata and enforce `max_stale_items`.
 - [ ] Replace graph-filtered lexical ranking with vector retrieval and rerank.
 

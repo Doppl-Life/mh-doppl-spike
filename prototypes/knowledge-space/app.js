@@ -5,6 +5,7 @@ const colors = {
   Candidate: "#be123c",
   CriticReview: "#b45309",
   Run: "#172033",
+  Embedding: "#7c3aed",
   default: "#64748b",
 };
 
@@ -40,7 +41,7 @@ const state = {
   activeCase: "",
   selectedRecordId: "",
   search: "",
-  activeTypes: new Set(["Case", "KnowledgeRecord", "RunEventReceipt", "Candidate", "CriticReview", "Run"]),
+  activeTypes: new Set(["Case", "KnowledgeRecord", "Embedding", "RunEventReceipt", "Candidate", "CriticReview", "Run"]),
   mode: "graph",
 };
 
@@ -108,6 +109,7 @@ function renderStatus() {
     ["Nodes", counts.nodes],
     ["Edges", counts.edges],
     ["Records", counts.records],
+    ["Embedded", `${counts.embeddingCoverage || 0}%`],
     ["Cases", counts.casePackets || state.summary.cases.length],
     ["Packet", activePacket().items.length],
   ]
@@ -124,7 +126,7 @@ function renderCaseSelect() {
 }
 
 function renderTypeFilters() {
-  const types = ["Case", "KnowledgeRecord", "RunEventReceipt", "Candidate", "CriticReview", "Run"];
+  const types = ["Case", "KnowledgeRecord", "Embedding", "RunEventReceipt", "Candidate", "CriticReview", "Run"];
   els.typeFilters.innerHTML = types
     .map(
       (type) =>
@@ -174,7 +176,7 @@ function renderGraph() {
 }
 
 function layoutNodes(nodes, width, height) {
-  const lanes = ["Case", "KnowledgeRecord", "RunEventReceipt", "Run", "Candidate", "CriticReview", "Agenome", "Generation"];
+  const lanes = ["Case", "KnowledgeRecord", "Embedding", "RunEventReceipt", "Run", "Candidate", "CriticReview", "Agenome", "Generation"];
   const grouped = new Map(lanes.map((lane) => [lane, []]));
   nodes.forEach((node) => {
     const lane = grouped.has(node.type) ? node.type : "KnowledgeRecord";
@@ -190,7 +192,7 @@ function layoutNodes(nodes, width, height) {
         ...node,
         x: Math.round(laneGap * (laneIndex + 1)),
         y: Math.round(yGap * (index + 1)),
-        radius: node.type === "KnowledgeRecord" ? 8 : 10,
+        radius: node.type === "KnowledgeRecord" || node.type === "Embedding" ? 8 : 10,
         lane,
       };
     });
@@ -321,6 +323,9 @@ function inspectNode(id) {
     node.sourceChunkId ? kv("Chunk", node.sourceChunkId) : "",
     node.trustTier ? kv("Trust", node.trustTier) : "",
     node.visibility ? kv("Visibility", node.visibility) : "",
+    node.modelId ? kv("Embedding model", node.modelId) : "",
+    node.dimension ? kv("Dimension", node.dimension) : "",
+    node.sourceRecordId ? kv("Source record", node.sourceRecordId) : "",
     node.runId ? kv("Run", node.runId) : "",
     node.text ? `<p class="body-text">${escapeHtml(node.text)}</p>` : "",
   ].join("");

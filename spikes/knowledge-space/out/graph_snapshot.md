@@ -1,7 +1,7 @@
 # Knowledge Graph Snapshot
 
-Nodes: `101`
-Edges: `268`
+Nodes: `150`
+Edges: `317`
 
 ## Node Types
 
@@ -10,6 +10,7 @@ Edges: `268`
 - `Case`: `4`
 - `CheckResult`: `1`
 - `CriticReview`: `2`
+- `Embedding`: `49`
 - `FitnessScore`: `1`
 - `Generation`: `1`
 - `KnowledgeRecord`: `49`
@@ -55,16 +56,16 @@ Edges: `268`
 - `check:check:cand-rich-accident:grounded` [CheckResult] check:cand-rich-accident:grounded
 - `critic:critic-market-structure` [CriticReview] critic-market-structure
 - `critic:factual-grounding` [CriticReview] factual-grounding
-- `fitness:fit-rich-accident` [FitnessScore] fit-rich-accident
-- `generation:run-rich-runtime-1:generation:0` [Generation] generation 0
-- `novelty:novelty:cand-rich-accident` [NoveltyScore] novelty:cand-rich-accident
-- `receipt:ks-demo-run-culled-1:1` [RunEventReceipt] run.configured #1
-- `receipt:ks-demo-run-culled-1:2` [RunEventReceipt] candidate.produced #2
-- `receipt:ks-demo-run-culled-1:3` [RunEventReceipt] critic.review #3
-- `receipt:run-rich-runtime-1:1` [RunEventReceipt] run.configured #1
-- `receipt:run-rich-runtime-1:2` [RunEventReceipt] generation.created #2
-- `receipt:run-rich-runtime-1:3` [RunEventReceipt] agenome.spawned #3
-- `receipt:run-rich-runtime-1:4` [RunEventReceipt] candidate.produced #4
-- `receipt:run-rich-runtime-1:5` [RunEventReceipt] check.completed #5
-- `receipt:run-rich-runtime-1:6` [RunEventReceipt] fitness.scored #6
-- `receipt:run-rich-runtime-1:7` [RunEventReceipt] novelty.scored #7
+- `embedding:04113c7113de3c45` [Embedding] deterministic-token-hash-v1
+- `embedding:07d2806fe143ad30` [Embedding] deterministic-token-hash-v1
+- `embedding:07fcecc0fb09f519` [Embedding] deterministic-token-hash-v1
+- `embedding:0c01fd4d8ed6d066` [Embedding] deterministic-token-hash-v1
+- `embedding:18ae2e69957b51b2` [Embedding] deterministic-token-hash-v1
+- `embedding:1f4093adc5668204` [Embedding] deterministic-token-hash-v1
+- `embedding:2533a7e3735d1303` [Embedding] deterministic-token-hash-v1
+- `embedding:254e51c1a3e9706e` [Embedding] deterministic-token-hash-v1
+- `embedding:294a536219ae7b10` [Embedding] deterministic-token-hash-v1
+- `embedding:39ea5fc8b8d1b7d9` [Embedding] deterministic-token-hash-v1
+- `embedding:40a07a9298d6738b` [Embedding] deterministic-token-hash-v1
+- `embedding:40ceb9dc01784845` [Embedding] deterministic-token-hash-v1
+- `embedding:459596e96fecc30d` [Embedding] deterministic-token-hash-v1

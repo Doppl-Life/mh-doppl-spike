@@ -38,6 +38,8 @@ const researchReport = readJson("research_report.json");
 const records = graph.nodes.filter((node) => node.type === "KnowledgeRecord");
 const cases = graph.nodes.filter((node) => node.type === "Case");
 const receipts = graph.nodes.filter((node) => node.type === "RunEventReceipt");
+const embeddings = graph.nodes.filter((node) => node.type === "Embedding");
+const embeddedRecordIds = new Set(embeddings.map((node) => node.sourceRecordId));
 
 writeJson("graph.json", graph);
 writeJson("knowledge_packet.json", packet);
@@ -52,6 +54,8 @@ writeJson("summary.json", {
     nodes: graph.nodes.length,
     edges: graph.edges.length,
     records: records.length,
+    embeddings: embeddings.length,
+    embeddingCoverage: records.length ? Math.round((embeddedRecordIds.size / records.length) * 100) : 0,
     cases: cases.length,
     receipts: receipts.length,
     packetItems: packet.items.length,
@@ -59,6 +63,7 @@ writeJson("summary.json", {
     collapsedItems: collapsePacket.items.length,
   },
   kinds: [...new Set(records.map((record) => record.kind))].sort(),
+  embeddingModels: [...new Set(embeddings.map((node) => `${node.modelId}:${node.dimension}`))].sort(),
   cases: cases.map((item) => item.label).sort(),
 });
 

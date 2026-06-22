@@ -5,6 +5,7 @@ import argparse
 import html
 import hashlib
 import json
+import math
 import os
 import re
 import urllib.request
@@ -276,6 +277,62 @@ class RunEventWatermark:
             missing_sequences=[int(item) for item in data.get("missing_sequences", [])],
             source_paths=list(data.get("source_paths") or []),
         )
+
+
+@dataclass(frozen=True)
+class EmbeddingRecord:
+    id: str
+    source_record_id: str
+    model_id: str
+    dimension: int
+    instruction: str
+    vector: list[float]
+    embedded_at: str
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "row_type": "embedding_record",
+            "id": self.id,
+            "source_record_id": self.source_record_id,
+            "model_id": self.model_id,
+            "dimension": self.dimension,
+            "instruction": self.instruction,
+            "vector": self.vector,
+            "embedded_at": self.embedded_at,
+        }
+
+    @classmethod
+    def from_json(cls, data: dict[str, Any]) -> "EmbeddingRecord":
+        return cls(
+            id=str(data["id"]),
+            source_record_id=str(data["source_record_id"]),
+            model_id=str(data["model_id"]),
+            dimension=int(data["dimension"]),
+            instruction=str(data.get("instruction", "")),
+            vector=[float(value) for value in data.get("vector", [])],
+            embedded_at=str(data.get("embedded_at", "")),
+        )
+
+
+class DeterministicEmbeddingAdapter:
+    model_id = "deterministic-token-hash-v1"
+
+    def __init__(self, dimension: int = 32) -> None:
+        if dimension <= 0:
+            raise ValueError("dimension must be positive")
+        self.dimension = dimension
+
+    def embed(self, text: str, instruction: str = "") -> list[float]:
+        vector = [0.0 for _ in range(self.dimension)]
+        for token in sorted(tokenize(f"{instruction} {text}")):
+            digest = hashlib.sha1(token.encode("utf-8")).digest()
+            index = int.from_bytes(digest[:4], "big") % self.dimension
+            sign = 1.0 if digest[4] % 2 == 0 else -1.0
+            vector[index] += sign
+        norm = math.sqrt(sum(value * value for value in vector))
+        if norm == 0:
+            return vector
+        return [round(value / norm, 8) for value in vector]
 
 
 @dataclass(frozen=True)
@@ -1141,6 +1198,7 @@ class KnowledgeSpace:
         self.records: dict[str, KnowledgeRecord] = {}
         self.run_event_receipts: dict[str, RunEventReceipt] = {}
         self.run_event_watermarks: dict[str, RunEventWatermark] = {}
+        self.embeddings: dict[str, EmbeddingRecord] = {}
         self._load()
 
     def _load(self) -> None:
@@ -1159,8 +1217,49 @@ class KnowledgeSpace:
                     watermark = RunEventWatermark.from_json(data)
                     self.run_event_watermarks[watermark.id] = watermark
                     continue
+                if data.get("row_type") == "embedding_record":
+                    embedding = EmbeddingRecord.from_json(data)
+                    self.embeddings[embedding.id] = embedding
+                    continue
                 record = KnowledgeRecord.from_json(data)
                 self.records[record.id] = record
+
+    def embed_records(
+        self,
+        *,
+        adapter: DeterministicEmbeddingAdapter,
+        instruction: str,
+    ) -> list[EmbeddingRecord]:
+        created: list[EmbeddingRecord] = []
+        for record in sorted(self.records.values(), key=lambda item: item.id):
+            embedding_id = self._embedding_id(record.id, adapter.model_id, instruction, adapter.dimension)
+            if embedding_id in self.embeddings:
+                continue
+            embedding = EmbeddingRecord(
+                id=embedding_id,
+                source_record_id=record.id,
+                model_id=adapter.model_id,
+                dimension=adapter.dimension,
+                instruction=instruction,
+                vector=adapter.embed(record.text, instruction=instruction),
+                embedded_at="deterministic",
+            )
+            self.embeddings[embedding.id] = embedding
+            created.append(embedding)
+        self._append_embeddings(created)
+        return created
+
+    def _embedding_id(
+        self,
+        record_id_value: str,
+        model_id: str,
+        instruction: str,
+        dimension: int,
+    ) -> str:
+        digest = hashlib.sha1(
+            f"{record_id_value}\n{model_id}\n{instruction}\n{dimension}".encode("utf-8")
+        ).hexdigest()[:16]
+        return f"embedding:{digest}"
 
     def ingest_run_events(
         self,
@@ -1714,6 +1813,22 @@ class KnowledgeSpace:
                 nodes.setdefault(tag_id, {"id": tag_id, "label": tag, "type": "Tag"})
                 edges.append({"source": record_id_value, "target": tag_id, "type": "HAS_TAG"})
 
+        for embedding in sorted(self.embeddings.values(), key=lambda item: item.id):
+            embedding_id_value = embedding.id
+            record_id_value = f"record:{embedding.source_record_id}"
+            nodes[embedding_id_value] = {
+                "id": embedding_id_value,
+                "label": embedding.model_id,
+                "type": "Embedding",
+                "sourceRecordId": embedding.source_record_id,
+                "modelId": embedding.model_id,
+                "dimension": embedding.dimension,
+                "instruction": embedding.instruction,
+                "embeddedAt": embedding.embedded_at,
+            }
+            if record_id_value in nodes:
+                edges.append({"source": embedding_id_value, "target": record_id_value, "type": "EMBEDS_RECORD"})
+
         return {"nodes": list(nodes.values()), "edges": edges}
 
     def to_cypher(self) -> str:
@@ -2037,6 +2152,14 @@ class KnowledgeSpace:
             for watermark in watermarks:
                 f.write(json.dumps(watermark.to_json(), sort_keys=True) + "\n")
 
+    def _append_embeddings(self, embeddings: list[EmbeddingRecord]) -> None:
+        if not embeddings:
+            return
+        self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.ledger_path.open("a", encoding="utf-8") as f:
+            for embedding in embeddings:
+                f.write(json.dumps(embedding.to_json(), sort_keys=True) + "\n")
+
     def _research_sentences(self, text: str) -> list[str]:
         selected: list[str] = []
         for sentence in split_sentences(text):
@@ -2290,6 +2413,10 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
     rich_receipt_records = space.ingest_run_events(rich_events, source_path="fixtures/rich_run_export.json")
     collapse_packet = space.request_collapse(mock_events)
     collapse_records = space.ingest_collapse_packet(collapse_packet)
+    embedding_records = space.embed_records(
+        adapter=DeterministicEmbeddingAdapter(dimension=32),
+        instruction="Represent Doppl knowledge records for retrieval.",
+    )
     packet = space.select_packet(
         query,
         target_case=target_case.name,
@@ -2370,6 +2497,7 @@ def demo(use_openrouter: bool = False, model: str = DEFAULT_OPENROUTER_MODEL) ->
             f"(missing: {missing})"
         )
     print(f"Collapsed {len(collapse_records)} run-derived memory item(s)")
+    print(f"Embedded {len(embedding_records)} knowledge record(s)")
     print(f"Retrieved {len(packet.items)} memory item(s) for {target_case.name}")
 
 

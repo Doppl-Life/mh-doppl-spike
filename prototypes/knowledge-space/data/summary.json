@@ -2,9 +2,11 @@
   "generatedFrom": "spikes/knowledge-space/out",
   "url": "https://doppl-life.github.io/mh-doppl-spike/prototypes/knowledge-space/",
   "counts": {
-    "nodes": 101,
-    "edges": 268,
+    "nodes": 150,
+    "edges": 317,
     "records": 49,
+    "embeddings": 49,
+    "embeddingCoverage": 100,
     "cases": 4,
     "receipts": 11,
     "packetItems": 10,
@@ -19,6 +21,9 @@
     "hidden_variable",
     "signal",
     "warning"
+  ],
+  "embeddingModels": [
+    "deterministic-token-hash-v1:32"
   ],
   "cases": [
     "fsd-accident-economy",

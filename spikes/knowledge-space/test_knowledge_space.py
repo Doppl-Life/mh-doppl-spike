@@ -11,6 +11,7 @@ from knowledge_space import (
     KnowledgePacketRequest,
     KnowledgeRecord,
     LocalKnowledgeGateway,
+    DeterministicEmbeddingAdapter,
     approximate_token_count,
     build_case_packets,
     load_graph_snapshot,
@@ -374,6 +375,46 @@ class KnowledgeSpaceTest(unittest.TestCase):
                     case_name,
                     {item["case"] for item in packet_json["excluded"]},
                 )
+
+    def test_deterministic_embedding_adapter_is_stable_and_sized(self) -> None:
+        adapter = DeterministicEmbeddingAdapter(dimension=12)
+
+        first = adapter.embed("FSD insurance finance crash memory")
+        second = adapter.embed("FSD insurance finance crash memory")
+        different = adapter.embed("municipal enforcement revenue memory")
+
+        self.assertEqual(first, second)
+        self.assertEqual(len(first), 12)
+        self.assertNotEqual(first, different)
+        self.assertAlmostEqual(sum(value * value for value in first), 1.0, places=6)
+
+    def test_embedding_records_persist_reload_and_project_to_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = Path(tmp) / "knowledge.jsonl"
+            writer = KnowledgeSpace(ledger)
+            records = writer.ingest_case(CASES / "fsd-accident-economy")
+            embeddings = writer.embed_records(
+                adapter=DeterministicEmbeddingAdapter(dimension=8),
+                instruction="Represent Doppl knowledge records for retrieval.",
+            )
+
+            self.assertEqual(len(embeddings), len(records))
+            first = embeddings[0]
+            self.assertEqual(first.dimension, 8)
+            self.assertEqual(len(first.vector), 8)
+            self.assertTrue(first.id.startswith("embedding:"))
+            self.assertIn(first.source_record_id, writer.records)
+
+            reader = KnowledgeSpace(ledger)
+            self.assertEqual(set(reader.embeddings), set(writer.embeddings))
+            graph = reader.graph_projection()
+            embedding_nodes = [node for node in graph["nodes"] if node["type"] == "Embedding"]
+            edge_types = {edge["type"] for edge in graph["edges"]}
+
+            self.assertEqual(len(embedding_nodes), len(records))
+            self.assertIn("EMBEDS_RECORD", edge_types)
+            self.assertEqual(embedding_nodes[0]["dimension"], 8)
+            self.assertEqual(embedding_nodes[0]["modelId"], "deterministic-token-hash-v1")
 
     def test_validate_packet_event_rejects_missing_provenance_and_leakage(self) -> None:
         valid_event = {

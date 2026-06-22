@@ -226,6 +226,52 @@ h3 {
   background-size: 42px 42px;
 }
 
+.graph-legend {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+}
+
+.graph-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 8px;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.graph-legend i {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: white;
+}
+
+.legend-active {
+  border: 3px solid var(--rose);
+}
+
+.legend-source {
+  border: 3px solid var(--accent);
+}
+
+.legend-record {
+  border: 3px solid var(--blue);
+}
+
+.legend-selected {
+  border: 3px solid var(--amber);
+}
+
 svg {
   display: block;
   width: 100%;
@@ -238,10 +284,36 @@ svg {
   opacity: 0.46;
 }
 
+.edge.focused {
+  stroke: var(--accent);
+  stroke-width: 2.4;
+  opacity: 0.9;
+}
+
 .node {
   stroke: #ffffff;
   stroke-width: 2;
   filter: drop-shadow(0 2px 4px rgba(23, 32, 51, 0.22));
+}
+
+.node.active-case {
+  stroke: var(--rose);
+  stroke-width: 4;
+}
+
+.node.source-case {
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+.node.packet-record {
+  stroke: var(--blue);
+  stroke-width: 4;
+}
+
+.node.selected {
+  stroke: var(--amber);
+  stroke-width: 6;
 }
 
 .node-label {
@@ -294,11 +366,16 @@ svg {
 }
 
 .row:hover,
-.row:focus {
+.row:focus,
+.row.selected {
   border-color: var(--accent);
   background: #f0fdfa;
   transform: translateY(-1px);
   outline: none;
+}
+
+.row.selected {
+  border-left: 5px solid var(--amber);
 }
 
 .row small,

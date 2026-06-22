@@ -33,6 +33,7 @@ const state = {
   collapse: null,
   summary: null,
   activeCase: "",
+  selectedRecordId: "",
   search: "",
   activeTypes: new Set(["Case", "KnowledgeRecord", "RunEventReceipt", "Candidate", "CriticReview", "Run"]),
   mode: "graph",
@@ -75,6 +76,7 @@ async function loadData() {
   state.activeCase = packetsByCase[caseParam] ? caseParam : Object.keys(packetsByCase).sort()[0];
   const viewParam = params.get("view");
   if (labels[viewParam]) state.mode = viewParam;
+  state.selectedRecordId = params.get("record") || "";
 }
 
 async function fetchJson(url) {
@@ -144,6 +146,7 @@ function renderGraph() {
   const visibleNodes = filteredNodes();
   const visibleIds = new Set(visibleNodes.map((node) => node.id));
   const visibleEdges = state.graph.edges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
+  const focus = focusIds();
   const width = Math.max(760, els.graphView.clientWidth - 2);
   const height = Number.parseInt(getComputedStyle(els.graphSvg).height, 10) || 650;
   const positioned = layoutNodes(visibleNodes, width, height);
@@ -155,9 +158,10 @@ function renderGraph() {
       const source = byId.get(edge.source);
       const target = byId.get(edge.target);
       if (!source || !target) return "";
-      return `<line class="edge" x1="${source.x}" y1="${source.y}" x2="${target.x}" y2="${target.y}"></line>`;
+      const focused = focus.edgeIds.has(edgeKey(edge));
+      return `<line class="edge ${focused ? "focused" : ""}" x1="${source.x}" y1="${source.y}" x2="${target.x}" y2="${target.y}"></line>`;
     }),
-    ...positioned.map((node) => renderNode(node)),
+    ...positioned.map((node) => renderNode(node, focus)),
   ].join("");
 }
 
@@ -185,11 +189,20 @@ function layoutNodes(nodes, width, height) {
   });
 }
 
-function renderNode(node) {
+function renderNode(node, focus) {
   const label = truncate(node.label || node.id, node.type === "KnowledgeRecord" ? 18 : 22);
+  const classes = [
+    "node",
+    focus.activeCaseId === node.id ? "active-case" : "",
+    focus.sourceCaseIds.has(node.id) ? "source-case" : "",
+    focus.packetRecordIds.has(node.id) ? "packet-record" : "",
+    focus.selectedRecordNodeId === node.id ? "selected" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
   return `
     <g class="node-group" tabindex="0" role="button" data-id="${escapeAttr(node.id)}">
-      <circle class="node" cx="${node.x}" cy="${node.y}" r="${node.radius}" fill="${colors[node.type] || colors.default}"></circle>
+      <circle class="${classes}" cx="${node.x}" cy="${node.y}" r="${node.radius}" fill="${colors[node.type] || colors.default}"></circle>
       <text class="node-label" x="${node.x + 13}" y="${node.y + 4}">${escapeHtml(label)}</text>
     </g>
   `;
@@ -202,7 +215,7 @@ function renderPacket() {
     .map((item, index) => {
       const record = item.record;
       return `
-        <button type="button" class="row" data-record-id="${escapeAttr(record.id)}">
+        <button type="button" class="row ${state.selectedRecordId === record.id ? "selected" : ""}" data-record-id="${escapeAttr(record.id)}">
           <small>${index + 1}. ${escapeHtml(item.cite_handle)} / ${escapeHtml(record.kind)} / ${escapeHtml(record.source_case)}</small>
           <h3>${escapeHtml(record.heading || record.citation)}</h3>
           <p>${escapeHtml(item.reason)}</p>
@@ -218,6 +231,7 @@ function renderPacketExplanation(packet) {
   const excludedRecords = packet.excluded.filter((item) => item.record_id).length;
   const warningCount = packet.items.filter((item) => item.record.kind === "warning").length;
   const sourceCases = new Set(packet.items.map((item) => item.record.source_case)).size;
+  const selected = selectedPacketItem();
   els.explanationView.innerHTML = [
     ["Target", request.target_case || state.activeCase],
     ["Items", `${packet.items.length}/${request.max_items || packet.items.length}`],
@@ -227,6 +241,7 @@ function renderPacketExplanation(packet) {
     ["Budget", request.max_tokens || "n/a"],
     ["Trust", request.min_trust_tier || "draft"],
     ["Role", request.role || "candidate"],
+    ["Selected", selected ? selected.cite_handle : "none"],
   ]
     .map(([label, value]) => `<div class="explain-tile"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`)
     .join("");
@@ -264,6 +279,12 @@ function filteredNodes() {
 function inspectNode(id) {
   const node = state.graph.nodes.find((item) => item.id === id);
   if (!node) return;
+  if (node.id.startsWith("record:")) {
+    state.selectedRecordId = node.id.replace(/^record:/, "");
+    renderPacket();
+    renderGraph();
+    updatePermalink();
+  }
   els.inspectorTitle.textContent = node.label || node.id;
   els.inspectorMeta.textContent = `${typeLabel(node.type)}${node.kind ? ` / ${node.kind}` : ""}`;
   els.inspectorBody.innerHTML = [
@@ -280,6 +301,7 @@ function inspectNode(id) {
 function inspectPacketRecord(recordId) {
   const item = activePacket().items.find((packetItem) => packetItem.record.id === recordId);
   if (!item) return;
+  state.selectedRecordId = recordId;
   const record = item.record;
   els.inspectorTitle.textContent = `${item.cite_handle} ${record.kind}`;
   els.inspectorMeta.textContent = `${record.source_case} / score ${item.score}`;
@@ -291,6 +313,9 @@ function inspectPacketRecord(recordId) {
     kv("Visibility", record.visibility),
     `<p class="body-text">${escapeHtml(record.text)}</p>`,
   ].join("");
+  renderPacket();
+  renderGraph();
+  updatePermalink();
 }
 
 function inspectCollapse(index) {
@@ -315,11 +340,43 @@ function activePacket() {
   return state.packetsByCase[state.activeCase] || state.packet;
 }
 
+function selectedPacketItem() {
+  return activePacket().items.find((item) => item.record.id === state.selectedRecordId) || null;
+}
+
+function focusIds() {
+  const packet = activePacket();
+  const activeCaseId = `case:${state.activeCase}`;
+  const packetRecordIds = new Set(packet.items.map((item) => `record:${item.record.id}`));
+  const sourceCaseIds = new Set(packet.items.map((item) => `case:${item.record.source_case}`));
+  const edgeIds = new Set();
+  state.graph.edges.forEach((edge) => {
+    if (
+      (packetRecordIds.has(edge.source) && (sourceCaseIds.has(edge.target) || edge.target === activeCaseId)) ||
+      (packetRecordIds.has(edge.target) && (sourceCaseIds.has(edge.source) || edge.source === activeCaseId))
+    ) {
+      edgeIds.add(edgeKey(edge));
+    }
+  });
+  return {
+    activeCaseId,
+    sourceCaseIds,
+    packetRecordIds,
+    selectedRecordNodeId: state.selectedRecordId ? `record:${state.selectedRecordId}` : "",
+    edgeIds,
+  };
+}
+
+function edgeKey(edge) {
+  return `${edge.source}->${edge.target}:${edge.type}`;
+}
+
 function updatePermalink() {
   if (!state.activeCase) return;
   const params = new URLSearchParams();
   params.set("case", state.activeCase);
   params.set("view", state.mode);
+  if (state.selectedRecordId) params.set("record", state.selectedRecordId);
   window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
 }
 
@@ -352,6 +409,7 @@ els.searchInput.addEventListener("input", (event) => {
 
 els.caseSelect.addEventListener("change", (event) => {
   state.activeCase = event.target.value;
+  state.selectedRecordId = "";
   renderStatus();
   renderGraph();
   renderPacket();
@@ -404,8 +462,10 @@ window.addEventListener("resize", () => {
 loadData()
   .then(() => {
     render();
+    const linkedPacketItem = selectedPacketItem();
     const firstPacket = activePacket().items[0];
-    if (firstPacket) inspectPacketRecord(firstPacket.record.id);
+    if (linkedPacketItem) inspectPacketRecord(linkedPacketItem.record.id);
+    else if (firstPacket) inspectPacketRecord(firstPacket.record.id);
   })
   .catch((error) => {
     els.modeTitle.textContent = "Problem loading knowledge data";

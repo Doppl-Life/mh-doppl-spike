@@ -66,6 +66,8 @@ not because the goal is a disposable prototype.
       the hosted workbench.
 - [x] Add hosted case-study switching with permalink state and per-case gateway
       packet explanations.
+- [x] Add graph focus highlighting for active case, source cases, selected packet
+      records, connecting edges, and record-level permalinks.
 - [x] Add regression coverage that embedded graph data is raw parseable JSON,
       not HTML-escaped script text.
 - [x] Add local Neo4j Docker Compose harness with schema, idempotent projection

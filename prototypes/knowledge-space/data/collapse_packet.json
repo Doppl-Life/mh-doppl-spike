@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "agenome_id": "cold-scout",
+      "candidate_id": "candidate-cold-ownership-1",
+      "candidate_survived": false,
+      "citation": "run-events/ks-demo-run-culled-1.json#sequence-3",
+      "critic_id": "critic-market-structure",
+      "kind": "ResearchFinding",
+      "origin_event_sequence": 3,
+      "run_id": "ks-demo-run-culled-1",
+      "source_path": "run-events/ks-demo-run-culled-1.json",
+      "tags": [
+        "fsd",
+        "ownership",
+        "finance",
+        "inventory",
+        "dealer"
+      ],
+      "target_case": "fsd-ownership-unwind",
+      "text": "Dealer finance inventory risk is an early ownership-unwind signal: floorplan lenders, used-car inventory marks, and warranty reserve assumptions may move before households fully abandon cars.",
+      "trust_tier": "candidate"
+    },
+    {
+      "agenome_id": "cold-scout",
+      "candidate_id": "candidate-cold-ownership-1",
+      "candidate_survived": false,
+      "citation": "run-events/ks-demo-run-culled-1.json#sequence-3",
+      "critic_id": "critic-market-structure",
+      "kind": "NegativeFinding",
+      "origin_event_sequence": 3,
+      "run_id": "ks-demo-run-culled-1",
+      "source_path": "run-events/ks-demo-run-culled-1.json",
+      "tags": [
+        "fsd",
+        "ownership",
+        "warning",
+        "finance"
+      ],
+      "target_case": "fsd-ownership-unwind",
+      "text": "Do not model ownership unwind as only an insurance or household-demand collapse; the dealer financing stack can fail first.",
+      "trust_tier": "candidate"
+    }
+  ],
+  "run_id": "ks-demo-run-culled-1",
+  "source_event_count": 3,
+  "target_case": "fsd-ownership-unwind",
+  "type": "knowledge.collapse_packet"
+}

@@ -1,0 +1,28 @@
+{
+  "generatedFrom": "spikes/knowledge-space/out",
+  "url": "https://doppl-life.github.io/mh-doppl-spike/prototypes/knowledge-space/",
+  "counts": {
+    "nodes": 101,
+    "edges": 268,
+    "records": 49,
+    "cases": 4,
+    "receipts": 11,
+    "packetItems": 10,
+    "collapsedItems": 2
+  },
+  "kinds": [
+    "NegativeFinding",
+    "ResearchFinding",
+    "case_frame",
+    "claim",
+    "hidden_variable",
+    "signal",
+    "warning"
+  ],
+  "cases": [
+    "fsd-accident-economy",
+    "fsd-enforcement-economy",
+    "fsd-mobility-and-time",
+    "fsd-ownership-unwind"
+  ]
+}

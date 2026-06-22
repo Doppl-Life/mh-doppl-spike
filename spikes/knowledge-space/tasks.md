@@ -60,6 +60,10 @@ not because the goal is a disposable prototype.
 - [x] Add a local visual graph workbench projection in `out/graph.html`.
 - [x] Support search, node-type filters, SVG graph inspection, and a details
       panel with citation/chunk metadata.
+- [x] Add GitHub Pages-ready knowledge-space workbench at
+      `prototypes/knowledge-space/`.
+- [x] Export web-ready graph, packet, collapse, research, and summary JSON for
+      the hosted workbench.
 - [x] Add regression coverage that embedded graph data is raw parseable JSON,
       not HTML-escaped script text.
 - [x] Add local Neo4j Docker Compose harness with schema, idempotent projection

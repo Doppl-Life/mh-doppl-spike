@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doppl Knowledge Space</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Doppl Life</p>
+          <h1>Knowledge Space</h1>
+        </div>
+        <div class="status-strip" id="statusStrip" aria-label="Knowledge graph status"></div>
+      </header>
+
+      <section class="workspace" aria-label="Knowledge graph workspace">
+        <aside class="filters" aria-label="Filters">
+          <label class="search">
+            <span>Search memory</span>
+            <input id="searchInput" type="search" placeholder="case, claim, citation, source..." />
+          </label>
+          <div>
+            <p class="filter-label">View</p>
+            <div class="segmented" id="viewMode">
+              <button type="button" data-mode="graph" class="active">Graph</button>
+              <button type="button" data-mode="packet">Packet</button>
+              <button type="button" data-mode="collapse">Collapse</button>
+            </div>
+          </div>
+          <div>
+            <p class="filter-label">Node layer</p>
+            <div class="button-grid" id="typeFilters"></div>
+          </div>
+        </aside>
+
+        <section class="main-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow" id="modeEyebrow">Graph</p>
+              <h2 id="modeTitle">Operational memory map</h2>
+            </div>
+            <p id="modeNote"></p>
+          </div>
+          <div id="graphView" class="graph-view">
+            <svg id="graphSvg" role="img" aria-label="Knowledge graph"></svg>
+          </div>
+          <div id="packetView" class="list-view hidden"></div>
+          <div id="collapseView" class="list-view hidden"></div>
+        </section>
+
+        <aside class="inspector" aria-label="Selection inspector">
+          <p class="eyebrow">Selection</p>
+          <h2 id="inspectorTitle">Choose a memory item</h2>
+          <p id="inspectorMeta">Click a graph node or packet row to inspect provenance, trust, and source text.</p>
+          <div id="inspectorBody" class="inspector-body"></div>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

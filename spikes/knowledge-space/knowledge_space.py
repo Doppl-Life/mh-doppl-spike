@@ -340,6 +340,9 @@ class PacketItem:
     record: KnowledgeRecord
     score: float
     reason: str
+    lexical_score: float = 0.0
+    vector_similarity: float = 0.0
+    embedding_model_id: str = ""
 
     @property
     def cite_handle(self) -> str:
@@ -413,6 +416,10 @@ class KnowledgePacket:
                 {
                     "cite_handle": item.cite_handle,
                     "score": item.score,
+                    "final_score": item.score,
+                    "lexical_score": item.lexical_score,
+                    "vector_similarity": item.vector_similarity,
+                    "embedding_model_id": item.embedding_model_id,
                     "reason": item.reason,
                     "record_id": item.record.id,
                     "source_chunk_id": item.record.source_chunk_id,
@@ -2261,6 +2268,8 @@ class LocalKnowledgeGateway(KnowledgeGateway):
         include_kinds = {kind.lower() for kind in request.include_kinds}
         required_tags = {tag.lower() for tag in request.required_tags}
         source_case_prefixes = tuple(request.source_case_prefixes)
+        embedding_index = self._latest_embedding_by_record()
+        query_embeddings = self._query_embeddings(request, embedding_index)
         ranked: list[PacketItem] = []
         for record in self.space.records.values():
             if record.source_case == request.target_case:
@@ -2298,18 +2307,30 @@ class LocalKnowledgeGateway(KnowledgeGateway):
             tag_overlap = set(query_tags) & set(record.tags)
             if not overlap and not tag_overlap:
                 continue
-            score = len(overlap) + (2.0 * len(tag_overlap))
+            lexical_score = len(overlap) + (2.0 * len(tag_overlap))
             if self._is_warning(record):
-                score += 1.0
+                lexical_score += 1.0
             if "sibling" in record.text.lower() or "sibling" in request.problem_summary.lower():
-                score += 1.5
+                lexical_score += 1.5
             if "substrate" in record.text.lower() and "substrate" in request.problem_summary.lower():
-                score += 1.0
+                lexical_score += 1.0
+            embedding = embedding_index.get(record.id)
+            vector_similarity = 0.0
+            embedding_model_id = ""
+            if embedding:
+                query_vector = query_embeddings.get(self._embedding_signature(embedding))
+                if query_vector:
+                    vector_similarity = self._cosine_similarity(query_vector, embedding.vector)
+                    embedding_model_id = embedding.model_id
+            final_score = lexical_score + (vector_similarity * 4.0)
             ranked.append(
                 PacketItem(
                     record=record,
-                    score=round(score, 2),
+                    score=round(final_score, 2),
                     reason=self.space._reason(overlap, tag_overlap, record),
+                    lexical_score=round(lexical_score, 2),
+                    vector_similarity=round(vector_similarity, 4),
+                    embedding_model_id=embedding_model_id,
                 )
             )
 
@@ -2370,6 +2391,35 @@ class LocalKnowledgeGateway(KnowledgeGateway):
 
     def _trust_rank(self, trust_tier: str) -> int:
         return self.TRUST_RANK.get(trust_tier, -1)
+
+    def _latest_embedding_by_record(self) -> dict[str, EmbeddingRecord]:
+        latest: dict[str, EmbeddingRecord] = {}
+        for embedding in sorted(self.space.embeddings.values(), key=lambda item: item.id):
+            latest[embedding.source_record_id] = embedding
+        return latest
+
+    def _query_embeddings(
+        self,
+        request: KnowledgePacketRequest,
+        embedding_index: dict[str, EmbeddingRecord],
+    ) -> dict[str, list[float]]:
+        query_text = request.retrieval_text or request.problem_summary
+        vectors: dict[str, list[float]] = {}
+        for embedding in embedding_index.values():
+            signature = self._embedding_signature(embedding)
+            if signature in vectors:
+                continue
+            adapter = DeterministicEmbeddingAdapter(dimension=embedding.dimension)
+            vectors[signature] = adapter.embed(query_text, instruction=embedding.instruction)
+        return vectors
+
+    def _embedding_signature(self, embedding: EmbeddingRecord) -> str:
+        return f"{embedding.model_id}:{embedding.dimension}:{embedding.instruction}"
+
+    def _cosine_similarity(self, left: list[float], right: list[float]) -> float:
+        if len(left) != len(right) or not left:
+            return 0.0
+        return max(0.0, sum(left_value * right_value for left_value, right_value in zip(left, right)))
 
 
 def build_case_packets(

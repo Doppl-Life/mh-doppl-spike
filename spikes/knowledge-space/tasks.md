@@ -145,6 +145,8 @@ not because the goal is a disposable prototype.
       rows for model-free retrieval tests.
 - [x] Expose embedding nodes, model/dimension metadata, and hosted coverage
       summary.
+- [x] Add hybrid packet scoring components: lexical score, vector similarity,
+      final score, and embedding model ID.
 - [ ] Add stale item metadata and enforce `max_stale_items`.
 - [ ] Replace graph-filtered lexical ranking with vector retrieval and rerank.
 

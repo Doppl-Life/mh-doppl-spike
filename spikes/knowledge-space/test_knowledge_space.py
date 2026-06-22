@@ -416,6 +416,55 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertEqual(embedding_nodes[0]["dimension"], 8)
             self.assertEqual(embedding_nodes[0]["modelId"], "deterministic-token-hash-v1")
 
+    def test_gateway_exposes_hybrid_score_components_when_embeddings_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            space.ingest_case(CASES / "fsd-mobility-and-time")
+            space.embed_records(
+                adapter=DeterministicEmbeddingAdapter(dimension=16),
+                instruction="Represent Doppl knowledge records for retrieval.",
+            )
+            query = (CASES / "fsd-ownership-unwind" / "problem-statement.md").read_text(
+                encoding="utf-8"
+            )
+
+            packet = space.select_packet(
+                query,
+                target_case="fsd-ownership-unwind",
+                limit=5,
+                exclude_cases={"fsd-ownership-unwind"},
+            )
+            first_item = packet.to_json()["items"][0]
+
+            self.assertIn("lexical_score", first_item)
+            self.assertIn("vector_similarity", first_item)
+            self.assertIn("final_score", first_item)
+            self.assertIn("embedding_model_id", first_item)
+            self.assertGreaterEqual(first_item["vector_similarity"], 0)
+            self.assertEqual(first_item["score"], first_item["final_score"])
+            self.assertEqual(first_item["embedding_model_id"], "deterministic-token-hash-v1")
+
+    def test_gateway_keeps_lexical_fallback_without_embeddings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            query = (CASES / "fsd-ownership-unwind" / "problem-statement.md").read_text(
+                encoding="utf-8"
+            )
+
+            packet = space.select_packet(
+                query,
+                target_case="fsd-ownership-unwind",
+                limit=3,
+                exclude_cases={"fsd-ownership-unwind"},
+            )
+            first_item = packet.to_json()["items"][0]
+
+            self.assertEqual(first_item["vector_similarity"], 0)
+            self.assertEqual(first_item["embedding_model_id"], "")
+            self.assertEqual(first_item["score"], first_item["lexical_score"])
+
     def test_validate_packet_event_rejects_missing_provenance_and_leakage(self) -> None:
         valid_event = {
             "type": "knowledge.packet_selected",

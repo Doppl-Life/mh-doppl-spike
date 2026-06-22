@@ -94,6 +94,9 @@
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:10-19",
         "cite_handle": "K5B8103",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 33.98,
+        "lexical_score": 33.5,
         "reason": "shared tags: accident, autonomy, cluster, crash, economy, fsd, sibling, substrate; shared terms: accident, asks, autonomy, crash, different, economy, obvious, one; sibling-cluster reference; warning memory",
         "record": {
           "agenome_id": "",
@@ -126,12 +129,16 @@
           "visibility": "public"
         },
         "record_id": "ks_5b8103df7f2521c5",
-        "score": 33.5,
-        "source_chunk_id": "chunk:d00210b74196"
+        "score": 33.98,
+        "source_chunk_id": "chunk:d00210b74196",
+        "vector_similarity": 0.1198
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:46-49",
         "cite_handle": "K3939F5",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 25.61,
+        "lexical_score": 25,
         "reason": "shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, effects, enforcement, game; hidden_variable memory",
         "record": {
           "agenome_id": "",
@@ -158,12 +165,16 @@
           "visibility": "public"
         },
         "record_id": "ks_3939f5a0799cd8bc",
-        "score": 25,
-        "source_chunk_id": "chunk:8867ed267356"
+        "score": 25.61,
+        "source_chunk_id": "chunk:8867ed267356",
+        "vector_similarity": 0.1536
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:1-3",
         "cite_handle": "KE810E1",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 18.2,
+        "lexical_score": 18,
         "reason": "shared tags: autonomy, economy, enforcement, fsd; shared terms: autonomy, doppl, economy, enforcement, problem, statement, subtype, subtype-index",
         "record": {
           "agenome_id": "",
@@ -191,72 +202,16 @@
           "visibility": "public"
         },
         "record_id": "ks_e810e181edfba949",
-        "score": 18,
-        "source_chunk_id": "chunk:dcc6f431d4e8"
-      },
-      {
-        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:51-54",
-        "cite_handle": "K58A24E",
-        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
-        "record": {
-          "agenome_id": "",
-          "candidate_id": "",
-          "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:51-54",
-          "critic_id": "",
-          "heading": "Source Notes",
-          "id": "ks_58a24eaeebb5f84c",
-          "kind": "signal",
-          "line_end": 54,
-          "line_start": 51,
-          "origin_event_sequence": 0,
-          "run_id": "",
-          "source_case": "fsd-enforcement-economy",
-          "source_chunk_id": "chunk:4a528ada7014",
-          "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
-          "tags": [
-            "fsd"
-          ],
-          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
-          "trust_tier": "candidate",
-          "visibility": "public"
-        },
-        "record_id": "ks_58a24eaeebb5f84c",
-        "score": 16,
-        "source_chunk_id": "chunk:4a528ada7014"
-      },
-      {
-        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:61-64",
-        "cite_handle": "K98A75E",
-        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
-        "record": {
-          "agenome_id": "",
-          "candidate_id": "",
-          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:61-64",
-          "critic_id": "",
-          "heading": "Source Notes",
-          "id": "ks_98a75e563469dec5",
-          "kind": "signal",
-          "line_end": 64,
-          "line_start": 61,
-          "origin_event_sequence": 0,
-          "run_id": "",
-          "source_case": "fsd-mobility-and-time",
-          "source_chunk_id": "chunk:bb32010902ae",
-          "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
-          "tags": [
-            "fsd"
-          ],
-          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
-          "trust_tier": "candidate",
-          "visibility": "public"
-        },
-        "record_id": "ks_98a75e563469dec5",
-        "score": 16,
-        "source_chunk_id": "chunk:bb32010902ae"
+        "score": 18.2,
+        "source_chunk_id": "chunk:dcc6f431d4e8",
+        "vector_similarity": 0.0508
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:52-54",
         "cite_handle": "KDE6275",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 17.15,
+        "lexical_score": 16,
         "reason": "shared tags: autonomy, driver, fsd; shared terms: ago, autonomy, car, consensus, driver, five, out, there",
         "record": {
           "agenome_id": "",
@@ -284,43 +239,84 @@
           "visibility": "public"
         },
         "record_id": "ks_de6275f81d0cd314",
-        "score": 16,
-        "source_chunk_id": "chunk:8bae22477761"
+        "score": 17.15,
+        "source_chunk_id": "chunk:8bae22477761",
+        "vector_similarity": 0.2868
       },
       {
-        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:40-42",
-        "cite_handle": "K7B5B0F",
-        "reason": "shared tags: autonomy, fsd; shared terms: autonomy, crossing, full-self-driving-unlock, legal-deployment, load-bearing, solved-demo, synthesis, timing",
+        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:51-54",
+        "cite_handle": "K58A24E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.53,
+        "lexical_score": 16,
+        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
         "record": {
           "agenome_id": "",
           "candidate_id": "",
-          "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:40-42",
+          "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:51-54",
           "critic_id": "",
-          "heading": "Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\")",
-          "id": "ks_7b5b0fa1c63b8e70",
+          "heading": "Source Notes",
+          "id": "ks_58a24eaeebb5f84c",
           "kind": "signal",
-          "line_end": 42,
-          "line_start": 40,
+          "line_end": 54,
+          "line_start": 51,
           "origin_event_sequence": 0,
           "run_id": "",
           "source_case": "fsd-enforcement-economy",
-          "source_chunk_id": "chunk:c6e5687ff4f1",
+          "source_chunk_id": "chunk:4a528ada7014",
           "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
           "tags": [
-            "autonomy",
             "fsd"
           ],
-          "text": "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing from solved-demo to legal-deployment in 2025–2026 (the umbrella `full-self-driving-unlock` case).",
+          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
           "trust_tier": "candidate",
           "visibility": "public"
         },
-        "record_id": "ks_7b5b0fa1c63b8e70",
-        "score": 15,
-        "source_chunk_id": "chunk:c6e5687ff4f1"
+        "record_id": "ks_58a24eaeebb5f84c",
+        "score": 16.53,
+        "source_chunk_id": "chunk:4a528ada7014",
+        "vector_similarity": 0.133
+      },
+      {
+        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:61-64",
+        "cite_handle": "K98A75E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.53,
+        "lexical_score": 16,
+        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
+        "record": {
+          "agenome_id": "",
+          "candidate_id": "",
+          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:61-64",
+          "critic_id": "",
+          "heading": "Source Notes",
+          "id": "ks_98a75e563469dec5",
+          "kind": "signal",
+          "line_end": 64,
+          "line_start": 61,
+          "origin_event_sequence": 0,
+          "run_id": "",
+          "source_case": "fsd-mobility-and-time",
+          "source_chunk_id": "chunk:bb32010902ae",
+          "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+          "tags": [
+            "fsd"
+          ],
+          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
+          "trust_tier": "candidate",
+          "visibility": "public"
+        },
+        "record_id": "ks_98a75e563469dec5",
+        "score": 16.53,
+        "source_chunk_id": "chunk:bb32010902ae",
+        "vector_similarity": 0.133
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:42-44",
         "cite_handle": "KC29339",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.38,
+        "lexical_score": 15,
         "reason": "shared tags: driver, fsd; shared terms: ago, consensus, credible, driver, five, out, removal, there",
         "record": {
           "agenome_id": "",
@@ -346,46 +342,51 @@
           "visibility": "public"
         },
         "record_id": "ks_c29339ea5782e73b",
-        "score": 15,
-        "source_chunk_id": "chunk:d8477c40d068"
+        "score": 16.38,
+        "source_chunk_id": "chunk:d8477c40d068",
+        "vector_similarity": 0.3453
       },
       {
-        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:1-3",
-        "cite_handle": "K24A61E",
-        "reason": "shared tags: autonomy, driver, fsd; shared terms: autonomy, doppl, driver, problem, statement, subtype, subtype-index, synthesis",
+        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:40-42",
+        "cite_handle": "K7B5B0F",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 15.86,
+        "lexical_score": 15,
+        "reason": "shared tags: autonomy, fsd; shared terms: autonomy, crossing, full-self-driving-unlock, legal-deployment, load-bearing, solved-demo, synthesis, timing",
         "record": {
           "agenome_id": "",
           "candidate_id": "",
-          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:1-3",
+          "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:40-42",
           "critic_id": "",
-          "heading": "Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock)",
-          "id": "ks_24a61e27c77ae552",
-          "kind": "case_frame",
-          "line_end": 3,
-          "line_start": 1,
+          "heading": "Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\")",
+          "id": "ks_7b5b0fa1c63b8e70",
+          "kind": "signal",
+          "line_end": 42,
+          "line_start": 40,
           "origin_event_sequence": 0,
           "run_id": "",
-          "source_case": "fsd-mobility-and-time",
-          "source_chunk_id": "chunk:c549d560683d",
-          "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+          "source_case": "fsd-enforcement-economy",
+          "source_chunk_id": "chunk:c6e5687ff4f1",
+          "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
           "tags": [
             "autonomy",
-            "driver",
-            "fsd",
-            "mobility",
-            "time"
+            "fsd"
           ],
-          "text": "# Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock) > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).",
+          "text": "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing from solved-demo to legal-deployment in 2025–2026 (the umbrella `full-self-driving-unlock` case).",
           "trust_tier": "candidate",
           "visibility": "public"
         },
-        "record_id": "ks_24a61e27c77ae552",
-        "score": 15,
-        "source_chunk_id": "chunk:c549d560683d"
+        "record_id": "ks_7b5b0fa1c63b8e70",
+        "score": 15.86,
+        "source_chunk_id": "chunk:c6e5687ff4f1",
+        "vector_similarity": 0.2142
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:5-7",
         "cite_handle": "K11109A",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 15.44,
+        "lexical_score": 14.5,
         "reason": "shared tags: accident, economy, fsd, sibling; shared terms: accident, economy, sibling, unwind; sibling-cluster reference; warning memory",
         "record": {
           "agenome_id": "",
@@ -416,8 +417,47 @@
           "visibility": "public"
         },
         "record_id": "ks_11109aa0df49ddaf",
-        "score": 14.5,
-        "source_chunk_id": "chunk:2ea36f550288"
+        "score": 15.44,
+        "source_chunk_id": "chunk:2ea36f550288",
+        "vector_similarity": 0.2353
+      },
+      {
+        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:1-3",
+        "cite_handle": "K24A61E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 15.43,
+        "lexical_score": 15,
+        "reason": "shared tags: autonomy, driver, fsd; shared terms: autonomy, doppl, driver, problem, statement, subtype, subtype-index, synthesis",
+        "record": {
+          "agenome_id": "",
+          "candidate_id": "",
+          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:1-3",
+          "critic_id": "",
+          "heading": "Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock)",
+          "id": "ks_24a61e27c77ae552",
+          "kind": "case_frame",
+          "line_end": 3,
+          "line_start": 1,
+          "origin_event_sequence": 0,
+          "run_id": "",
+          "source_case": "fsd-mobility-and-time",
+          "source_chunk_id": "chunk:c549d560683d",
+          "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+          "tags": [
+            "autonomy",
+            "driver",
+            "fsd",
+            "mobility",
+            "time"
+          ],
+          "text": "# Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock) > **Doppl subtype:** `zeitgeist_synthesis` (see `../subtype-index.md`).",
+          "trust_tier": "candidate",
+          "visibility": "public"
+        },
+        "record_id": "ks_24a61e27c77ae552",
+        "score": 15.43,
+        "source_chunk_id": "chunk:c549d560683d",
+        "vector_similarity": 0.1086
       }
     ],
     "query_tags": [
@@ -573,6 +613,9 @@
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:24-32",
         "cite_handle": "KC9B4E9",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 42.96,
+        "lexical_score": 41.5,
         "reason": "shared tags: accident, autonomy, cluster, driver, economy, fsd, sibling, substrate; shared terms: accident, autonomy, crossing, different, driver, economy, fines, forfeiture; sibling-cluster reference",
         "record": {
           "agenome_id": "",
@@ -604,12 +647,16 @@
           "visibility": "public"
         },
         "record_id": "ks_c9b4e98f2fe4425f",
-        "score": 41.5,
-        "source_chunk_id": "chunk:e119a8478d26"
+        "score": 42.96,
+        "source_chunk_id": "chunk:e119a8478d26",
+        "vector_similarity": 0.3662
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:10-19",
         "cite_handle": "K5B8103",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 34.03,
+        "lexical_score": 33.5,
         "reason": "shared tags: accident, autonomy, cluster, crash, economy, fsd, sibling, substrate; shared terms: accident, already, autonomy, crash, different, economy, one, same; sibling-cluster reference; warning memory",
         "record": {
           "agenome_id": "",
@@ -642,12 +689,16 @@
           "visibility": "public"
         },
         "record_id": "ks_5b8103df7f2521c5",
-        "score": 33.5,
-        "source_chunk_id": "chunk:d00210b74196"
+        "score": 34.03,
+        "source_chunk_id": "chunk:d00210b74196",
+        "vector_similarity": 0.1337
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:35-38",
         "cite_handle": "K8A4644",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 26.24,
+        "lexical_score": 25,
         "reason": "shared tags: accident, fsd, substrate; shared terms: accident, actual, ask, breadth, converges, depth, effects, game; hidden_variable memory",
         "record": {
           "agenome_id": "",
@@ -674,12 +725,16 @@
           "visibility": "public"
         },
         "record_id": "ks_8a464491ea6290ab",
-        "score": 25,
-        "source_chunk_id": "chunk:0536290b6198"
+        "score": 26.24,
+        "source_chunk_id": "chunk:0536290b6198",
+        "vector_similarity": 0.3103
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:1-3",
         "cite_handle": "K24A61E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 21.66,
+        "lexical_score": 21,
         "reason": "shared tags: autonomy, driver, fsd, mobility, time; shared terms: autonomy, doppl, driver, mobility, problem, statement, subtype, subtype-index",
         "record": {
           "agenome_id": "",
@@ -708,12 +763,16 @@
           "visibility": "public"
         },
         "record_id": "ks_24a61e27c77ae552",
-        "score": 21,
-        "source_chunk_id": "chunk:c549d560683d"
+        "score": 21.66,
+        "source_chunk_id": "chunk:c549d560683d",
+        "vector_similarity": 0.1658
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:52-54",
         "cite_handle": "KDE6275",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 19.04,
+        "lexical_score": 19,
         "reason": "shared tags: autonomy, driver, fsd, time; shared terms: ago, autonomy, car, consensus, driver, five, out, there",
         "record": {
           "agenome_id": "",
@@ -741,12 +800,16 @@
           "visibility": "public"
         },
         "record_id": "ks_de6275f81d0cd314",
-        "score": 19,
-        "source_chunk_id": "chunk:8bae22477761"
+        "score": 19.04,
+        "source_chunk_id": "chunk:8bae22477761",
+        "vector_similarity": 0.01
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:4-6",
         "cite_handle": "K5D4E25",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 18.1,
+        "lexical_score": 18,
         "reason": "shared tags: cluster, fsd, mobility, time; shared terms: cluster, convergence, family, full-self-driving-unlock, mobility, pepsis, perfect, sub-cluster",
         "record": {
           "agenome_id": "",
@@ -774,12 +837,16 @@
           "visibility": "public"
         },
         "record_id": "ks_5d4e25516970c8bf",
-        "score": 18,
-        "source_chunk_id": "chunk:83abb5fa65f3"
+        "score": 18.1,
+        "source_chunk_id": "chunk:83abb5fa65f3",
+        "vector_similarity": 0.0251
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:40-43",
         "cite_handle": "K7A9590",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.68,
+        "lexical_score": 16,
         "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
         "record": {
           "agenome_id": "",
@@ -804,43 +871,50 @@
           "visibility": "public"
         },
         "record_id": "ks_7a95906b90ef92b9",
-        "score": 16,
-        "source_chunk_id": "chunk:6412a984d853"
+        "score": 16.68,
+        "source_chunk_id": "chunk:6412a984d853",
+        "vector_similarity": 0.1693
       },
       {
-        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:49-52",
-        "cite_handle": "K5E2DEC",
-        "reason": "shared tags: autonomy, fsd; shared terms: already, autonomy, crossing, deployment, full-self-driving-unlock, load-bearing, synthesis, system",
+        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:61-64",
+        "cite_handle": "K98A75E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.68,
+        "lexical_score": 16,
+        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
         "record": {
           "agenome_id": "",
           "candidate_id": "",
-          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:49-52",
+          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:61-64",
           "critic_id": "",
-          "heading": "Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock)",
-          "id": "ks_5e2dec158c8d0cc5",
-          "kind": "case_frame",
-          "line_end": 52,
-          "line_start": 49,
+          "heading": "Source Notes",
+          "id": "ks_98a75e563469dec5",
+          "kind": "signal",
+          "line_end": 64,
+          "line_start": 61,
           "origin_event_sequence": 0,
           "run_id": "",
           "source_case": "fsd-mobility-and-time",
-          "source_chunk_id": "chunk:c093fefc6ecb",
+          "source_chunk_id": "chunk:bb32010902ae",
           "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
           "tags": [
-            "autonomy",
             "fsd"
           ],
-          "text": "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing to deployment (see the umbrella `full-self-driving-unlock` case) colliding with a short-haul air system already in secular decline and a commute/work pattern reverting to pre-pandemic norms.",
+          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
           "trust_tier": "candidate",
           "visibility": "public"
         },
-        "record_id": "ks_5e2dec158c8d0cc5",
-        "score": 16,
-        "source_chunk_id": "chunk:c093fefc6ecb"
+        "record_id": "ks_98a75e563469dec5",
+        "score": 16.68,
+        "source_chunk_id": "chunk:bb32010902ae",
+        "vector_similarity": 0.1693
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:68-72",
         "cite_handle": "K5FB704",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.29,
+        "lexical_score": 16,
         "reason": "shared tags: driver, fsd, time; shared terms: car, census, cited, driver, file, set, signal, sources",
         "record": {
           "agenome_id": "",
@@ -867,41 +941,44 @@
           "visibility": "public"
         },
         "record_id": "ks_5fb704a2bef3e119",
-        "score": 16,
-        "source_chunk_id": "chunk:c527bf4d12c6"
+        "score": 16.29,
+        "source_chunk_id": "chunk:c527bf4d12c6",
+        "vector_similarity": 0.0718
       },
       {
-        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:56-59",
-        "cite_handle": "K946863",
-        "reason": "shared tags: fsd, mobility, time; shared terms: actual, ask, convergence, game, mobility, out, problem, recover",
+        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:49-52",
+        "cite_handle": "K5E2DEC",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.08,
+        "lexical_score": 16,
+        "reason": "shared tags: autonomy, fsd; shared terms: already, autonomy, crossing, deployment, full-self-driving-unlock, load-bearing, synthesis, system",
         "record": {
           "agenome_id": "",
           "candidate_id": "",
-          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:56-59",
+          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:49-52",
           "critic_id": "",
           "heading": "Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock)",
-          "id": "ks_94686333cdbee8bb",
+          "id": "ks_5e2dec158c8d0cc5",
           "kind": "case_frame",
-          "line_end": 59,
-          "line_start": 56,
+          "line_end": 52,
+          "line_start": 49,
           "origin_event_sequence": 0,
           "run_id": "",
           "source_case": "fsd-mobility-and-time",
-          "source_chunk_id": "chunk:6423549a15cd",
+          "source_chunk_id": "chunk:c093fefc6ecb",
           "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
           "tags": [
-            "fsd",
-            "mobility",
-            "time",
-            "travel"
+            "autonomy",
+            "fsd"
           ],
-          "text": "Ask the system to recover the actual problem (a convergence re-pricing mobility and time across travel/labor/geography, mis-narrated as \"robotaxis in cities\" or as three unrelated trends), then game out the multi-chapter cascade into a `ZeitgeistSynthesisPayload`.",
+          "text": "This is `zeitgeist_synthesis` because the timing is load-bearing: the trigger is autonomy crossing to deployment (see the umbrella `full-self-driving-unlock` case) colliding with a short-haul air system already in secular decline and a commute/work pattern reverting to pre-pandemic norms.",
           "trust_tier": "candidate",
           "visibility": "public"
         },
-        "record_id": "ks_94686333cdbee8bb",
-        "score": 16,
-        "source_chunk_id": "chunk:6423549a15cd"
+        "record_id": "ks_5e2dec158c8d0cc5",
+        "score": 16.08,
+        "source_chunk_id": "chunk:c093fefc6ecb",
+        "vector_similarity": 0.0203
       }
     ],
     "query_tags": [
@@ -1080,6 +1157,9 @@
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:24-32",
         "cite_handle": "KC9B4E9",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 33.71,
+        "lexical_score": 33.5,
         "reason": "shared tags: accident, autonomy, cluster, driver, economy, fsd, sibling, substrate; shared terms: accident, asks, autonomy, crossing, different, driver, economy, load-bearing; sibling-cluster reference",
         "record": {
           "agenome_id": "",
@@ -1111,12 +1191,16 @@
           "visibility": "public"
         },
         "record_id": "ks_c9b4e98f2fe4425f",
-        "score": 33.5,
-        "source_chunk_id": "chunk:e119a8478d26"
+        "score": 33.71,
+        "source_chunk_id": "chunk:e119a8478d26",
+        "vector_similarity": 0.0522
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:5-7",
         "cite_handle": "K11109A",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 20.62,
+        "lexical_score": 20.5,
         "reason": "shared tags: accident, economy, fsd, mobility, sibling, time; shared terms: accident, economy, mobility, sibling, time, unwind; sibling-cluster reference; warning memory",
         "record": {
           "agenome_id": "",
@@ -1147,42 +1231,16 @@
           "visibility": "public"
         },
         "record_id": "ks_11109aa0df49ddaf",
-        "score": 20.5,
-        "source_chunk_id": "chunk:2ea36f550288"
-      },
-      {
-        "citation": "case-studies/fsd-accident-economy/problem-statement.md:40-43",
-        "cite_handle": "K7A9590",
-        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
-        "record": {
-          "agenome_id": "",
-          "candidate_id": "",
-          "citation": "case-studies/fsd-accident-economy/problem-statement.md:40-43",
-          "critic_id": "",
-          "heading": "Source Notes",
-          "id": "ks_7a95906b90ef92b9",
-          "kind": "signal",
-          "line_end": 43,
-          "line_start": 40,
-          "origin_event_sequence": 0,
-          "run_id": "",
-          "source_case": "fsd-accident-economy",
-          "source_chunk_id": "chunk:6412a984d853",
-          "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
-          "tags": [
-            "fsd"
-          ],
-          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
-          "trust_tier": "candidate",
-          "visibility": "public"
-        },
-        "record_id": "ks_7a95906b90ef92b9",
-        "score": 16,
-        "source_chunk_id": "chunk:6412a984d853"
+        "score": 20.62,
+        "source_chunk_id": "chunk:2ea36f550288",
+        "vector_similarity": 0.0298
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:35-38",
         "cite_handle": "K8A4644",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 17.75,
+        "lexical_score": 16,
         "reason": "shared tags: accident, fsd, substrate; shared terms: accident, actual, ask, game, out, problem, recover, substrate; hidden_variable memory",
         "record": {
           "agenome_id": "",
@@ -1209,12 +1267,50 @@
           "visibility": "public"
         },
         "record_id": "ks_8a464491ea6290ab",
-        "score": 16,
-        "source_chunk_id": "chunk:0536290b6198"
+        "score": 17.75,
+        "source_chunk_id": "chunk:0536290b6198",
+        "vector_similarity": 0.4372
+      },
+      {
+        "citation": "case-studies/fsd-accident-economy/problem-statement.md:40-43",
+        "cite_handle": "K7A9590",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.24,
+        "lexical_score": 16,
+        "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
+        "record": {
+          "agenome_id": "",
+          "candidate_id": "",
+          "citation": "case-studies/fsd-accident-economy/problem-statement.md:40-43",
+          "critic_id": "",
+          "heading": "Source Notes",
+          "id": "ks_7a95906b90ef92b9",
+          "kind": "signal",
+          "line_end": 43,
+          "line_start": 40,
+          "origin_event_sequence": 0,
+          "run_id": "",
+          "source_case": "fsd-accident-economy",
+          "source_chunk_id": "chunk:6412a984d853",
+          "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
+          "tags": [
+            "fsd"
+          ],
+          "text": "## Source Notes - Synthetic case built from public reporting; the thesis is an analytical projection for use as an eval fixture, not an audited forecast.",
+          "trust_tier": "candidate",
+          "visibility": "public"
+        },
+        "record_id": "ks_7a95906b90ef92b9",
+        "score": 16.24,
+        "source_chunk_id": "chunk:6412a984d853",
+        "vector_similarity": 0.0609
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:51-54",
         "cite_handle": "K58A24E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.24,
+        "lexical_score": 16,
         "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
         "record": {
           "agenome_id": "",
@@ -1239,43 +1335,16 @@
           "visibility": "public"
         },
         "record_id": "ks_58a24eaeebb5f84c",
-        "score": 16,
-        "source_chunk_id": "chunk:4a528ada7014"
-      },
-      {
-        "citation": "case-studies/fsd-accident-economy/problem-statement.md:48-51",
-        "cite_handle": "K1E6E46",
-        "reason": "shared tags: crash, fsd; shared terms: cited, cost, counts, crash, file, pool, set, signal",
-        "record": {
-          "agenome_id": "",
-          "candidate_id": "",
-          "citation": "case-studies/fsd-accident-economy/problem-statement.md:48-51",
-          "critic_id": "",
-          "heading": "Source Notes",
-          "id": "ks_1e6e46b941caf62e",
-          "kind": "signal",
-          "line_end": 51,
-          "line_start": 48,
-          "origin_event_sequence": 0,
-          "run_id": "",
-          "source_case": "fsd-accident-economy",
-          "source_chunk_id": "chunk:07b6c1180de8",
-          "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
-          "tags": [
-            "crash",
-            "fsd"
-          ],
-          "text": "Signal sources (cited in the with-solution file and `../sources.md` Signal Set D6): NHTSA crash counts/cost; US Treasury FIO + IBISWorld on the auto-insurance pool; AutoInsurance.com / AM Best on insurer ad spend; SRTR / trauma-donor literature on organ supply.",
-          "trust_tier": "candidate",
-          "visibility": "public"
-        },
-        "record_id": "ks_1e6e46b941caf62e",
-        "score": 15,
-        "source_chunk_id": "chunk:07b6c1180de8"
+        "score": 16.24,
+        "source_chunk_id": "chunk:4a528ada7014",
+        "vector_similarity": 0.0609
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:1-3",
         "cite_handle": "KFFE2BB",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 16.01,
+        "lexical_score": 15,
         "reason": "shared tags: autonomy, economy, fsd; shared terms: autonomy, doppl, economy, problem, statement, subtype, subtype-index, synthesis",
         "record": {
           "agenome_id": "",
@@ -1302,12 +1371,51 @@
           "visibility": "public"
         },
         "record_id": "ks_ffe2bb2bd9b115d7",
-        "score": 15,
-        "source_chunk_id": "chunk:e9fbca8e1c79"
+        "score": 16.01,
+        "source_chunk_id": "chunk:e9fbca8e1c79",
+        "vector_similarity": 0.2536
+      },
+      {
+        "citation": "case-studies/fsd-accident-economy/problem-statement.md:48-51",
+        "cite_handle": "K1E6E46",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 15.23,
+        "lexical_score": 15,
+        "reason": "shared tags: crash, fsd; shared terms: cited, cost, counts, crash, file, pool, set, signal",
+        "record": {
+          "agenome_id": "",
+          "candidate_id": "",
+          "citation": "case-studies/fsd-accident-economy/problem-statement.md:48-51",
+          "critic_id": "",
+          "heading": "Source Notes",
+          "id": "ks_1e6e46b941caf62e",
+          "kind": "signal",
+          "line_end": 51,
+          "line_start": 48,
+          "origin_event_sequence": 0,
+          "run_id": "",
+          "source_case": "fsd-accident-economy",
+          "source_chunk_id": "chunk:07b6c1180de8",
+          "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
+          "tags": [
+            "crash",
+            "fsd"
+          ],
+          "text": "Signal sources (cited in the with-solution file and `../sources.md` Signal Set D6): NHTSA crash counts/cost; US Treasury FIO + IBISWorld on the auto-insurance pool; AutoInsurance.com / AM Best on insurer ad spend; SRTR / trauma-donor literature on organ supply.",
+          "trust_tier": "candidate",
+          "visibility": "public"
+        },
+        "record_id": "ks_1e6e46b941caf62e",
+        "score": 15.23,
+        "source_chunk_id": "chunk:07b6c1180de8",
+        "vector_similarity": 0.0574
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:1-3",
         "cite_handle": "KE810E1",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 15,
+        "lexical_score": 15,
         "reason": "shared tags: autonomy, economy, fsd; shared terms: autonomy, doppl, economy, problem, statement, subtype, subtype-index, synthesis",
         "record": {
           "agenome_id": "",
@@ -1336,11 +1444,50 @@
         },
         "record_id": "ks_e810e181edfba949",
         "score": 15,
-        "source_chunk_id": "chunk:dcc6f431d4e8"
+        "source_chunk_id": "chunk:dcc6f431d4e8",
+        "vector_similarity": 0
+      },
+      {
+        "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:42-44",
+        "cite_handle": "KC29339",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 14.84,
+        "lexical_score": 13,
+        "reason": "shared tags: driver, fsd; shared terms: ago, consensus, driver, five, out, there, unwind, was",
+        "record": {
+          "agenome_id": "",
+          "candidate_id": "",
+          "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:42-44",
+          "critic_id": "",
+          "heading": "Problem Statement: The Enforcement & Compliance Economy After Autonomy (the \"Traffic-State\")",
+          "id": "ks_c29339ea5782e73b",
+          "kind": "claim",
+          "line_end": 44,
+          "line_start": 42,
+          "origin_event_sequence": 0,
+          "run_id": "",
+          "source_case": "fsd-enforcement-economy",
+          "source_chunk_id": "chunk:d8477c40d068",
+          "source_path": "case-studies/fsd-enforcement-economy/problem-statement.md",
+          "tags": [
+            "driver",
+            "fsd"
+          ],
+          "text": "Five years ago there was no credible removal of the violating driver; five years out the unwind — and the metering regime that replaces it — is consensus.",
+          "trust_tier": "candidate",
+          "visibility": "public"
+        },
+        "record_id": "ks_c29339ea5782e73b",
+        "score": 14.84,
+        "source_chunk_id": "chunk:d8477c40d068",
+        "vector_similarity": 0.4597
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:32-33",
         "cite_handle": "K582356",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 14.7,
+        "lexical_score": 13,
         "reason": "shared tags: crash, fsd; shared terms: ago, consensus, crash, five, out, there, unwind, was",
         "record": {
           "agenome_id": "",
@@ -1366,39 +1513,9 @@
           "visibility": "public"
         },
         "record_id": "ks_5823561ddc53b2c9",
-        "score": 13,
-        "source_chunk_id": "chunk:ce901162b1de"
-      },
-      {
-        "citation": "case-studies/fsd-accident-economy/problem-statement.md:4-5",
-        "cite_handle": "K9F8F27",
-        "reason": "shared tags: cluster, fsd; shared terms: cluster, convergence, family, full-self-driving-unlock, one, pepsis, perfect, within",
-        "record": {
-          "agenome_id": "",
-          "candidate_id": "",
-          "citation": "case-studies/fsd-accident-economy/problem-statement.md:4-5",
-          "critic_id": "",
-          "heading": "Problem Statement: The Accident-Dependent Economy After Autonomy",
-          "id": "ks_9f8f2741ae730d9d",
-          "kind": "case_frame",
-          "line_end": 5,
-          "line_start": 4,
-          "origin_event_sequence": 0,
-          "run_id": "",
-          "source_case": "fsd-accident-economy",
-          "source_chunk_id": "chunk:8f8511febaf8",
-          "source_path": "case-studies/fsd-accident-economy/problem-statement.md",
-          "tags": [
-            "cluster",
-            "fsd"
-          ],
-          "text": "> **Cluster:** one convergence within the `full-self-driving-unlock` family (the > \"perfect Pepsis\" — see `../zeitgeist-synthesis-notes.md`).",
-          "trust_tier": "candidate",
-          "visibility": "public"
-        },
-        "record_id": "ks_9f8f2741ae730d9d",
-        "score": 13,
-        "source_chunk_id": "chunk:8f8511febaf8"
+        "score": 14.7,
+        "source_chunk_id": "chunk:ce901162b1de",
+        "vector_similarity": 0.4243
       }
     ],
     "query_tags": [
@@ -1457,6 +1574,9 @@
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:10-19",
         "cite_handle": "K5B8103",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 31.63,
+        "lexical_score": 31.5,
         "reason": "shared tags: accident, autonomy, cluster, crash, economy, fsd, sibling, substrate; shared terms: accident, autonomy, collapses, crash, economy, fertile, mile, obvious; sibling-cluster reference; warning memory",
         "record": {
           "agenome_id": "",
@@ -1489,12 +1609,16 @@
           "visibility": "public"
         },
         "record_id": "ks_5b8103df7f2521c5",
-        "score": 31.5,
-        "source_chunk_id": "chunk:d00210b74196"
+        "score": 31.63,
+        "source_chunk_id": "chunk:d00210b74196",
+        "vector_similarity": 0.0321
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:24-32",
         "cite_handle": "KC9B4E9",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 28.72,
+        "lexical_score": 28.5,
         "reason": "shared tags: accident, autonomy, cluster, economy, fsd, sibling, substrate; shared terms: accident, autonomy, crossing, economy, load-bearing, sibling, sub-cluster, substrate; sibling-cluster reference",
         "record": {
           "agenome_id": "",
@@ -1526,12 +1650,16 @@
           "visibility": "public"
         },
         "record_id": "ks_c9b4e98f2fe4425f",
-        "score": 28.5,
-        "source_chunk_id": "chunk:e119a8478d26"
+        "score": 28.72,
+        "source_chunk_id": "chunk:e119a8478d26",
+        "vector_similarity": 0.0552
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:5-7",
         "cite_handle": "K11109A",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 27.7,
+        "lexical_score": 26.5,
         "reason": "shared tags: accident, economy, fsd, mobility, ownership, sibling, time; shared terms: accident, adoption-asymmetry, economy, governed, lens, mobility, ownership, sibling; sibling-cluster reference; warning memory",
         "record": {
           "agenome_id": "",
@@ -1562,12 +1690,16 @@
           "visibility": "public"
         },
         "record_id": "ks_11109aa0df49ddaf",
-        "score": 26.5,
-        "source_chunk_id": "chunk:2ea36f550288"
+        "score": 27.7,
+        "source_chunk_id": "chunk:2ea36f550288",
+        "vector_similarity": 0.2997
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:46-49",
         "cite_handle": "K3939F5",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 25.65,
+        "lexical_score": 24,
         "reason": "shared tags: enforcement, fsd, substrate; shared terms: actual, ask, breadth, converges, depth, enforcement, fight, game; hidden_variable memory",
         "record": {
           "agenome_id": "",
@@ -1594,12 +1726,16 @@
           "visibility": "public"
         },
         "record_id": "ks_3939f5a0799cd8bc",
-        "score": 24,
-        "source_chunk_id": "chunk:8867ed267356"
+        "score": 25.65,
+        "source_chunk_id": "chunk:8867ed267356",
+        "vector_similarity": 0.4127
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:35-38",
         "cite_handle": "K8A4644",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 23.05,
+        "lexical_score": 21,
         "reason": "shared tags: accident, fsd, substrate; shared terms: accident, actual, ask, breadth, converges, depth, game, map; hidden_variable memory",
         "record": {
           "agenome_id": "",
@@ -1626,12 +1762,16 @@
           "visibility": "public"
         },
         "record_id": "ks_8a464491ea6290ab",
-        "score": 21,
-        "source_chunk_id": "chunk:0536290b6198"
+        "score": 23.05,
+        "source_chunk_id": "chunk:0536290b6198",
+        "vector_similarity": 0.5116
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:1-3",
         "cite_handle": "KE810E1",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 18.24,
+        "lexical_score": 18,
         "reason": "shared tags: autonomy, economy, enforcement, fsd; shared terms: autonomy, doppl, economy, enforcement, problem, statement, subtype, subtype-index",
         "record": {
           "agenome_id": "",
@@ -1659,12 +1799,53 @@
           "visibility": "public"
         },
         "record_id": "ks_e810e181edfba949",
-        "score": 18,
-        "source_chunk_id": "chunk:dcc6f431d4e8"
+        "score": 18.24,
+        "source_chunk_id": "chunk:dcc6f431d4e8",
+        "vector_similarity": 0.059
+      },
+      {
+        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:4-6",
+        "cite_handle": "K5D4E25",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 18.09,
+        "lexical_score": 17,
+        "reason": "shared tags: cluster, fsd, mobility, time; shared terms: cluster, family, full-self-driving-unlock, mobility, pepsis, perfect, sub-cluster, time",
+        "record": {
+          "agenome_id": "",
+          "candidate_id": "",
+          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:4-6",
+          "critic_id": "",
+          "heading": "Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock)",
+          "id": "ks_5d4e25516970c8bf",
+          "kind": "case_frame",
+          "line_end": 6,
+          "line_start": 4,
+          "origin_event_sequence": 0,
+          "run_id": "",
+          "source_case": "fsd-mobility-and-time",
+          "source_chunk_id": "chunk:83abb5fa65f3",
+          "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
+          "tags": [
+            "cluster",
+            "fsd",
+            "mobility",
+            "time"
+          ],
+          "text": "> **Cluster:** this is **Sub-cluster B** of the `full-self-driving-unlock` family > — the \"mobility & time\" convergence (\"perfect Pepsis\" — see > `../zeitgeist-synthesis-notes.md`).",
+          "trust_tier": "candidate",
+          "visibility": "public"
+        },
+        "record_id": "ks_5d4e25516970c8bf",
+        "score": 18.09,
+        "source_chunk_id": "chunk:83abb5fa65f3",
+        "vector_similarity": 0.272
       },
       {
         "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:1-3",
         "cite_handle": "K24A61E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 18,
+        "lexical_score": 18,
         "reason": "shared tags: autonomy, fsd, mobility, time; shared terms: autonomy, doppl, mobility, problem, statement, subtype, subtype-index, synthesis",
         "record": {
           "agenome_id": "",
@@ -1694,44 +1875,15 @@
         },
         "record_id": "ks_24a61e27c77ae552",
         "score": 18,
-        "source_chunk_id": "chunk:c549d560683d"
-      },
-      {
-        "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:4-6",
-        "cite_handle": "K5D4E25",
-        "reason": "shared tags: cluster, fsd, mobility, time; shared terms: cluster, family, full-self-driving-unlock, mobility, pepsis, perfect, sub-cluster, time",
-        "record": {
-          "agenome_id": "",
-          "candidate_id": "",
-          "citation": "case-studies/fsd-mobility-and-time/problem-statement.md:4-6",
-          "critic_id": "",
-          "heading": "Problem Statement: Autonomy Re-Prices Mobility & Time (the Driver/Friction Unlock)",
-          "id": "ks_5d4e25516970c8bf",
-          "kind": "case_frame",
-          "line_end": 6,
-          "line_start": 4,
-          "origin_event_sequence": 0,
-          "run_id": "",
-          "source_case": "fsd-mobility-and-time",
-          "source_chunk_id": "chunk:83abb5fa65f3",
-          "source_path": "case-studies/fsd-mobility-and-time/problem-statement.md",
-          "tags": [
-            "cluster",
-            "fsd",
-            "mobility",
-            "time"
-          ],
-          "text": "> **Cluster:** this is **Sub-cluster B** of the `full-self-driving-unlock` family > — the \"mobility & time\" convergence (\"perfect Pepsis\" — see > `../zeitgeist-synthesis-notes.md`).",
-          "trust_tier": "candidate",
-          "visibility": "public"
-        },
-        "record_id": "ks_5d4e25516970c8bf",
-        "score": 17,
-        "source_chunk_id": "chunk:83abb5fa65f3"
+        "source_chunk_id": "chunk:c549d560683d",
+        "vector_similarity": 0
       },
       {
         "citation": "case-studies/fsd-accident-economy/problem-statement.md:40-43",
         "cite_handle": "K7A9590",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 17.08,
+        "lexical_score": 16,
         "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
         "record": {
           "agenome_id": "",
@@ -1756,12 +1908,16 @@
           "visibility": "public"
         },
         "record_id": "ks_7a95906b90ef92b9",
-        "score": 16,
-        "source_chunk_id": "chunk:6412a984d853"
+        "score": 17.08,
+        "source_chunk_id": "chunk:6412a984d853",
+        "vector_similarity": 0.2705
       },
       {
         "citation": "case-studies/fsd-enforcement-economy/problem-statement.md:51-54",
         "cite_handle": "K58A24E",
+        "embedding_model_id": "deterministic-token-hash-v1",
+        "final_score": 17.08,
+        "lexical_score": 16,
         "reason": "shared tags: fsd; shared terms: analytical, audited, built, eval, fixture, forecast, notes, projection",
         "record": {
           "agenome_id": "",
@@ -1786,8 +1942,9 @@
           "visibility": "public"
         },
         "record_id": "ks_58a24eaeebb5f84c",
-        "score": 16,
-        "source_chunk_id": "chunk:4a528ada7014"
+        "score": 17.08,
+        "source_chunk_id": "chunk:4a528ada7014",
+        "vector_similarity": 0.2705
       }
     ],
     "query_tags": [

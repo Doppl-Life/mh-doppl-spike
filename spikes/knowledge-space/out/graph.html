@@ -28,7 +28,7 @@
     }
     .workbench {
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 320px;
+      grid-template-columns: 280px minmax(0, 1fr) 340px;
       gap: 16px;
       align-items: stretch;
     }
@@ -71,6 +71,16 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
+    .quick-views {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr;
+    }
+    .control-note {
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.45;
+    }
     button {
       background: #f8fafc;
       border: 1px solid #cbd5e1;
@@ -86,7 +96,7 @@
       color: white;
     }
     .graph-panel {
-      min-height: 520px;
+      min-height: 620px;
       overflow: hidden;
       position: relative;
     }
@@ -97,7 +107,7 @@
         #f8fafc;
       background-size: 32px 32px;
       border: 1px solid #cbd5e1;
-      height: 520px;
+      height: 620px;
       width: 100%;
     }
     .graph-edge {
@@ -159,6 +169,18 @@
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 14px;
     }
+    .cards-shell {
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 14px;
+    }
+    .cards-shell summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .cards-shell[open] .cards {
+      margin-top: 14px;
+    }
     .node-card {
       background: white;
       border: 1px solid #e2e8f0;
@@ -217,6 +239,9 @@
       #graph-canvas {
         height: 440px;
       }
+      .graph-panel {
+        min-height: 440px;
+      }
     }
   </style>
 </head>
@@ -229,6 +254,7 @@
     <section class="summary">
       <div class="metric"><strong>101</strong><br>nodes</div>
       <div class="metric"><strong>268</strong><br>edges</div>
+      <div class="metric"><strong>12</strong><br>runtime nodes</div>
       <div class="metric"><strong>49</strong><br>KnowledgeRecord nodes</div>
     </section>
     <section class="workbench" aria-label="Interactive knowledge graph workbench">
@@ -236,10 +262,16 @@
         <h2>Filter</h2>
         <label for="graph-search">
           Search nodes
-          <input id="graph-search" type="search" placeholder="case, tag, citation, text">
+          <input id="graph-search" type="search" placeholder="label, type, citation, hash">
         </label>
+        <div class="quick-views" role="group" aria-label="Graph view presets">
+          <button type="button" class="active" data-filter="runtime">Runtime graph</button>
+          <button type="button" data-filter="memory">Memory records</button>
+          <button type="button" data-filter="provenance">Provenance trail</button>
+          <button type="button" data-filter="all">All nodes</button>
+        </div>
+        <div class="control-note">Start with the run structure, then open memory or provenance when you need the deeper ledger.</div>
         <div class="filter-grid" role="group" aria-label="Node type filter">
-          <button type="button" class="active" data-filter="all">All</button>
           <button type="button" data-filter="KnowledgeRecord">Records</button>
           <button type="button" data-filter="Run">Runs</button>
           <button type="button" data-filter="Candidate">Candidates</button>
@@ -257,21 +289,23 @@
         </div>
       </aside>
       <section class="panel graph-panel">
-        <h2>Graph</h2>
+        <h2>Graph Workbench</h2>
         <svg id="graph-canvas" role="img" aria-label="Knowledge graph projection"></svg>
       </section>
       <aside class="panel" id="node-detail">
         <h2>Selection</h2>
-        <div class="detail-empty">Select a node to inspect its text, source citation, and outgoing relationships.</div>
+        <div class="detail-empty">Select a node to inspect provenance, scores, citations, and outgoing relationships.</div>
       </aside>
     </section>
-    <section class="cards">
-      <article class="node-card" style="border-left-color:#334155">
+    <details class="cards-shell">
+      <summary>Node list (101)</summary>
+      <section class="cards">
+        <article class="node-card" style="border-left-color:#4f46e5">
   <div class="node-type">[Agenome]</div>
   <h2>Cold Scout</h2>
   <p></p>
   <ul><li>AGENOME_IN_GENERATION -> generation 0</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#4f46e5">
   <div class="node-type">[Agenome]</div>
   <h2>cold-scout</h2>
   <p></p>
@@ -306,7 +340,7 @@
   <h2>fsd-ownership-unwind</h2>
   <p></p>
   <ul></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#65a30d">
   <div class="node-type">[CheckResult]</div>
   <h2>check:cand-rich-accident:grounded</h2>
   <p></p>
@@ -321,12 +355,12 @@
   <h2>factual-grounding</h2>
   <p></p>
   <ul><li>REVIEWED_CANDIDATE -> cand-rich-accident</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#ca8a04">
   <div class="node-type">[FitnessScore]</div>
   <h2>fit-rich-accident</h2>
   <p></p>
   <ul><li>SCORES_CANDIDATE -> cand-rich-accident</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0369a1">
   <div class="node-type">[Generation]</div>
   <h2>generation 0</h2>
   <p></p>
@@ -625,7 +659,7 @@
   <p>These read like separate topics but they are **chapters of one story** — different forces acting on the same puck — so this case holds them together and asks: *what does it all add up to?* (The sibling story, **Sub-cluster A — the accident economy**, removes a *different* substrate, the crash; it is `fsd-accident-economy`, not part of this case.) **Chapter 1 — door-to-door travel (the 200–700-mile band).** The obvious travel story is &quot;robotaxis in cities.&quot; The fertile one is *intercity*: autonomy collapses **door-to-door** travel economics in the band where the existing system is already weakest.</p>
   <div class="node-meta"><strong>Citation:</strong> case-studies/fsd-mobility-and-time/problem-statement.md:10-19<br><strong>Chunk:</strong> chunk:d00210b74196<br><strong>Heading:</strong> Problem Statement: Autonomy Re-Prices Mobility &amp; Time (the Driver/Friction Unlock)</div>
   <ul><li>FROM_CASE -> fsd-mobility-and-time</li><li>SUPPORTED_BY -> case-studies/fsd-mobility-and-time/problem-statement.md</li><li>HAS_TAG -> accident</li><li>HAS_TAG -> autonomy</li><li>HAS_TAG -> cluster</li><li>HAS_TAG -> crash</li><li>HAS_TAG -> economy</li><li>HAS_TAG -> fsd</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#db2777">
   <div class="node-type">[NoveltyScore]</div>
   <h2>novelty:cand-rich-accident</h2>
   <p></p>
@@ -640,67 +674,67 @@
   <h2>run-rich-runtime-1</h2>
   <p></p>
   <ul></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>agenome.spawned #3</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_AGENOME -> Cold Scout</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>candidate.produced #2</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> ks-demo-run-culled-1</li><li>RECEIPT_OF_CANDIDATE -> candidate-cold-ownership-1</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>candidate.produced #4</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_CANDIDATE -> cand-rich-accident</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>check.completed #5</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_CHECK -> check:cand-rich-accident:grounded</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>critic.review #3</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> ks-demo-run-culled-1</li><li>RECEIPT_OF_CRITIC -> critic-market-structure</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>critic.review #8</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_CRITIC -> factual-grounding</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>fitness.scored #6</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_FITNESS -> fit-rich-accident</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>generation.created #2</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_GENERATION -> generation 0</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>novelty.scored #7</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li><li>RECEIPT_OF_NOVELTY -> novelty:cand-rich-accident</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>run.configured #1</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> ks-demo-run-culled-1</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#0891b2">
   <div class="node-type">[RunEventReceipt]</div>
   <h2>run.configured #1</h2>
   <p></p>
   <ul><li>RECEIPT_OF_RUN -> run-rich-runtime-1</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#16a34a">
   <div class="node-type">[RunEventWatermark]</div>
   <h2>watermark 3/3</h2>
   <p></p>
   <ul><li>WATERMARK_FOR_RUN -> ks-demo-run-culled-1</li></ul>
-</article><article class="node-card" style="border-left-color:#334155">
+</article><article class="node-card" style="border-left-color:#16a34a">
   <div class="node-type">[RunEventWatermark]</div>
   <h2>watermark 8/8</h2>
   <p></p>
@@ -821,7 +855,8 @@
   <p></p>
   <ul></ul>
 </article>
-    </section>
+      </section>
+    </details>
     <section>
       <h2>Edges</h2>
       <table>
@@ -1119,12 +1154,18 @@
     const svg = document.getElementById("graph-canvas");
     const detail = document.getElementById("node-detail");
     const search = document.getElementById("graph-search");
-    let activeFilter = "all";
+    const filterGroups = {
+      runtime: new Set(["Run", "Generation", "Agenome", "Candidate", "CriticReview", "FitnessScore", "NoveltyScore", "CheckResult"]),
+      memory: new Set(["KnowledgeRecord", "Case", "Source", "Tag"]),
+      provenance: new Set(["Run", "Candidate", "CriticReview", "RunEventReceipt", "RunEventWatermark", "KnowledgeRecord"])
+    };
+    let activeFilter = "runtime";
     let selectedNodeId = null;
 
     function nodeMatches(node) {
       const term = search.value.trim().toLowerCase();
-      const typeMatches = activeFilter === "all" || node.type === activeFilter;
+      const group = filterGroups[activeFilter];
+      const typeMatches = activeFilter === "all" || (group ? group.has(node.type) : node.type === activeFilter);
       if (!typeMatches) return false;
       if (!term) return true;
       return [
@@ -1225,11 +1266,12 @@
 
     function renderGraph() {
       const width = svg.clientWidth || 900;
-      const height = svg.clientHeight || 520;
+      const height = svg.clientHeight || 620;
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
       svg.innerHTML = "";
       const positions = layoutNodes(width, height);
       const visible = new Set(graphData.nodes.filter(nodeMatches).map((node) => node.id));
+      const dense = visible.size > 60 || activeFilter === "all";
       graphData.edges.forEach((edge) => {
         const from = positions.get(edge.source);
         const to = positions.get(edge.target);
@@ -1261,14 +1303,17 @@
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", position.x);
         circle.setAttribute("cy", position.y);
-        circle.setAttribute("r", node.type === "KnowledgeRecord" ? 12 : 10);
+        circle.setAttribute("r", dense ? (node.type === "KnowledgeRecord" ? 6 : 8) : (node.type === "KnowledgeRecord" ? 11 : 10));
         circle.setAttribute("fill", colors[node.type] || "#334155");
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", position.x + 15);
-        label.setAttribute("y", position.y + 4);
-        label.textContent = String(node.label).slice(0, 34);
         group.appendChild(circle);
-        group.appendChild(label);
+        const shouldLabel = matched && (visible.size <= 42 || selectedNodeId === node.id || ["Run", "Generation"].includes(node.type));
+        if (shouldLabel) {
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", position.x + 15);
+          label.setAttribute("y", position.y + 4);
+          label.textContent = String(node.label).slice(0, 34);
+          group.appendChild(label);
+        }
         svg.appendChild(group);
       });
     }

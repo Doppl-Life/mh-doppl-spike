@@ -623,6 +623,27 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertIn("MERGE (fitness:FitnessScore", cypher)
             self.assertIn("MERGE (check:CheckResult", cypher)
 
+    def test_graph_html_defaults_to_readable_runtime_workbench(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            space = KnowledgeSpace(Path(tmp) / "knowledge.jsonl")
+            space.ingest_case(CASES / "fsd-accident-economy")
+            space.ingest_run_events(
+                load_run_events(FIXTURES / "rich_run_export.json"),
+                source_path="fixtures/rich_run_export.json",
+            )
+            html_path = Path(tmp) / "graph.html"
+            space.write_graph_html(html_path)
+            html = html_path.read_text(encoding="utf-8")
+
+            self.assertIn('class="active" data-filter="runtime"', html)
+            self.assertIn('let activeFilter = "runtime";', html)
+            self.assertIn("const filterGroups = {", html)
+            self.assertIn('data-filter="memory"', html)
+            self.assertIn('data-filter="provenance"', html)
+            self.assertIn("visible.size <= 42", html)
+            self.assertIn('<details class="cards-shell">', html)
+            self.assertIn("Runtime graph", html)
+
 
 def json_fixture(name: str) -> list[dict]:
     return json.loads((FIXTURES / name).read_text(encoding="utf-8"))

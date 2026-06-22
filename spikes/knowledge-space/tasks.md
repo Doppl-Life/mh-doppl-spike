@@ -67,9 +67,11 @@ not because the goal is a disposable prototype.
 - [x] Add graph snapshot export/rebuild proof with stable node IDs and edge
       links.
 - [x] Document Neo4j Browser visual queries for interactive graph exploration.
+- [x] Make the local graph workbench default to a readable runtime view with
+      memory and provenance layers available on demand.
 - [ ] Add promotion/review actions to the visual workbench once promotion
       workflow exists.
-- [ ] Add run/candidate/provenance nodes to the graph after collapse/write-back
+- [x] Add run/candidate/provenance nodes to the graph after collapse/write-back
       exists.
 
 ## Phase 2 - Run Event Ingestion

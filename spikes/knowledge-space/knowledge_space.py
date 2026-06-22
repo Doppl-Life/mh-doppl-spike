@@ -2250,11 +2250,18 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     nodes = graph["nodes"]
     edges = graph["edges"]
     type_colors = {
+        "Agenome": "#4f46e5",
         "Case": "#0f766e",
         "Candidate": "#2563eb",
+        "CheckResult": "#65a30d",
         "CriticReview": "#be123c",
+        "FitnessScore": "#ca8a04",
+        "Generation": "#0369a1",
         "KnowledgeRecord": "#7c3aed",
+        "NoveltyScore": "#db2777",
         "Run": "#0f172a",
+        "RunEventReceipt": "#0891b2",
+        "RunEventWatermark": "#16a34a",
         "Source": "#475569",
         "Tag": "#c2410c",
     }
@@ -2310,6 +2317,18 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         .replace("<", "\\u003c")
         .replace("</", "<\\/")
     )
+    runtime_types = {
+        "Run",
+        "Generation",
+        "Agenome",
+        "Candidate",
+        "CriticReview",
+        "FitnessScore",
+        "NoveltyScore",
+        "CheckResult",
+    }
+    runtime_node_count = sum(1 for node in nodes if node["type"] in runtime_types)
+    record_node_count = sum(1 for node in nodes if node["type"] == "KnowledgeRecord")
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -2340,7 +2359,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     }}
     .workbench {{
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 320px;
+      grid-template-columns: 280px minmax(0, 1fr) 340px;
       gap: 16px;
       align-items: stretch;
     }}
@@ -2383,6 +2402,16 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }}
+    .quick-views {{
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr;
+    }}
+    .control-note {{
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.45;
+    }}
     button {{
       background: #f8fafc;
       border: 1px solid #cbd5e1;
@@ -2398,7 +2427,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       color: white;
     }}
     .graph-panel {{
-      min-height: 520px;
+      min-height: 620px;
       overflow: hidden;
       position: relative;
     }}
@@ -2409,7 +2438,7 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         #f8fafc;
       background-size: 32px 32px;
       border: 1px solid #cbd5e1;
-      height: 520px;
+      height: 620px;
       width: 100%;
     }}
     .graph-edge {{
@@ -2471,6 +2500,18 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 14px;
     }}
+    .cards-shell {{
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 14px;
+    }}
+    .cards-shell summary {{
+      cursor: pointer;
+      font-weight: 700;
+    }}
+    .cards-shell[open] .cards {{
+      margin-top: 14px;
+    }}
     .node-card {{
       background: white;
       border: 1px solid #e2e8f0;
@@ -2529,6 +2570,9 @@ def render_graph_html(graph: dict[str, Any]) -> str:
       #graph-canvas {{
         height: 440px;
       }}
+      .graph-panel {{
+        min-height: 440px;
+      }}
     }}
   </style>
 </head>
@@ -2541,17 +2585,24 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     <section class="summary">
       <div class="metric"><strong>{len(nodes)}</strong><br>nodes</div>
       <div class="metric"><strong>{len(edges)}</strong><br>edges</div>
-      <div class="metric"><strong>{sum(1 for node in nodes if node['type'] == 'KnowledgeRecord')}</strong><br>KnowledgeRecord nodes</div>
+      <div class="metric"><strong>{runtime_node_count}</strong><br>runtime nodes</div>
+      <div class="metric"><strong>{record_node_count}</strong><br>KnowledgeRecord nodes</div>
     </section>
     <section class="workbench" aria-label="Interactive knowledge graph workbench">
       <aside class="panel controls">
         <h2>Filter</h2>
         <label for="graph-search">
           Search nodes
-          <input id="graph-search" type="search" placeholder="case, tag, citation, text">
+          <input id="graph-search" type="search" placeholder="label, type, citation, hash">
         </label>
+        <div class="quick-views" role="group" aria-label="Graph view presets">
+          <button type="button" class="active" data-filter="runtime">Runtime graph</button>
+          <button type="button" data-filter="memory">Memory records</button>
+          <button type="button" data-filter="provenance">Provenance trail</button>
+          <button type="button" data-filter="all">All nodes</button>
+        </div>
+        <div class="control-note">Start with the run structure, then open memory or provenance when you need the deeper ledger.</div>
         <div class="filter-grid" role="group" aria-label="Node type filter">
-          <button type="button" class="active" data-filter="all">All</button>
           <button type="button" data-filter="KnowledgeRecord">Records</button>
           <button type="button" data-filter="Run">Runs</button>
           <button type="button" data-filter="Candidate">Candidates</button>
@@ -2569,17 +2620,20 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         </div>
       </aside>
       <section class="panel graph-panel">
-        <h2>Graph</h2>
+        <h2>Graph Workbench</h2>
         <svg id="graph-canvas" role="img" aria-label="Knowledge graph projection"></svg>
       </section>
       <aside class="panel" id="node-detail">
         <h2>Selection</h2>
-        <div class="detail-empty">Select a node to inspect its text, source citation, and outgoing relationships.</div>
+        <div class="detail-empty">Select a node to inspect provenance, scores, citations, and outgoing relationships.</div>
       </aside>
     </section>
-    <section class="cards">
-      {''.join(rows)}
-    </section>
+    <details class="cards-shell">
+      <summary>Node list ({len(nodes)})</summary>
+      <section class="cards">
+        {''.join(rows)}
+      </section>
+    </details>
     <section>
       <h2>Edges</h2>
       <table>
@@ -2610,12 +2664,18 @@ def render_graph_html(graph: dict[str, Any]) -> str:
     const svg = document.getElementById("graph-canvas");
     const detail = document.getElementById("node-detail");
     const search = document.getElementById("graph-search");
-    let activeFilter = "all";
+    const filterGroups = {{
+      runtime: new Set(["Run", "Generation", "Agenome", "Candidate", "CriticReview", "FitnessScore", "NoveltyScore", "CheckResult"]),
+      memory: new Set(["KnowledgeRecord", "Case", "Source", "Tag"]),
+      provenance: new Set(["Run", "Candidate", "CriticReview", "RunEventReceipt", "RunEventWatermark", "KnowledgeRecord"])
+    }};
+    let activeFilter = "runtime";
     let selectedNodeId = null;
 
     function nodeMatches(node) {{
       const term = search.value.trim().toLowerCase();
-      const typeMatches = activeFilter === "all" || node.type === activeFilter;
+      const group = filterGroups[activeFilter];
+      const typeMatches = activeFilter === "all" || (group ? group.has(node.type) : node.type === activeFilter);
       if (!typeMatches) return false;
       if (!term) return true;
       return [
@@ -2716,11 +2776,12 @@ def render_graph_html(graph: dict[str, Any]) -> str:
 
     function renderGraph() {{
       const width = svg.clientWidth || 900;
-      const height = svg.clientHeight || 520;
+      const height = svg.clientHeight || 620;
       svg.setAttribute("viewBox", `0 0 ${{width}} ${{height}}`);
       svg.innerHTML = "";
       const positions = layoutNodes(width, height);
       const visible = new Set(graphData.nodes.filter(nodeMatches).map((node) => node.id));
+      const dense = visible.size > 60 || activeFilter === "all";
       graphData.edges.forEach((edge) => {{
         const from = positions.get(edge.source);
         const to = positions.get(edge.target);
@@ -2752,14 +2813,17 @@ def render_graph_html(graph: dict[str, Any]) -> str:
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", position.x);
         circle.setAttribute("cy", position.y);
-        circle.setAttribute("r", node.type === "KnowledgeRecord" ? 12 : 10);
+        circle.setAttribute("r", dense ? (node.type === "KnowledgeRecord" ? 6 : 8) : (node.type === "KnowledgeRecord" ? 11 : 10));
         circle.setAttribute("fill", colors[node.type] || "#334155");
-        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", position.x + 15);
-        label.setAttribute("y", position.y + 4);
-        label.textContent = String(node.label).slice(0, 34);
         group.appendChild(circle);
-        group.appendChild(label);
+        const shouldLabel = matched && (visible.size <= 42 || selectedNodeId === node.id || ["Run", "Generation"].includes(node.type));
+        if (shouldLabel) {{
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("x", position.x + 15);
+          label.setAttribute("y", position.y + 4);
+          label.textContent = String(node.label).slice(0, 34);
+          group.appendChild(label);
+        }}
         svg.appendChild(group);
       }});
     }}

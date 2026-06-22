@@ -416,6 +416,7 @@
     ],
     "include_kinds": [],
     "max_items": 10,
+    "max_stale_items": 0,
     "max_tokens": 1200,
     "memory_mode": "auto",
     "min_trust_tier": "draft",
@@ -431,6 +432,7 @@
     "embedded_items": 10,
     "item_count": 10,
     "lexical_only_items": 0,
-    "retrieval_mode": "hybrid"
+    "retrieval_mode": "hybrid",
+    "stale_items": 0
   }
 }

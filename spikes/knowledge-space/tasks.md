@@ -148,6 +148,7 @@ not because the goal is a disposable prototype.
 - [x] Add hybrid packet scoring components: lexical score, vector similarity,
       final score, and embedding model ID.
 - [x] Add stale item metadata and enforce `max_stale_items`.
+- [x] Expose stale item usage and stale budget in the hosted packet workbench.
 - [ ] Replace graph-filtered lexical ranking with vector retrieval and rerank.
 
 ## Phase 4 - Runtime Read Integration

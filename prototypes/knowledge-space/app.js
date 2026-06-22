@@ -112,6 +112,7 @@ function renderStatus() {
     ["Records", counts.records],
     ["Embedded", `${counts.embeddingCoverage || 0}%`],
     ["Mode", retrievalSummary.retrieval_mode || "n/a"],
+    ["Stale", retrievalSummary.stale_items || 0],
     ["Cases", counts.casePackets || state.summary.cases.length],
     ["Packet", activePacket().items.length],
   ]
@@ -257,6 +258,7 @@ function renderPacketExplanation(packet) {
     ["Warnings", warningCount],
     ["Excluded", excludedRecords],
     ["Budget", request.max_tokens || "n/a"],
+    ["Stale", `${retrievalSummary.stale_items || 0}/${request.max_stale_items ?? 0}`],
     ["Trust", request.min_trust_tier || "draft"],
     ["Role", request.role || "candidate"],
     ["Selected", selected ? selected.cite_handle : "none"],

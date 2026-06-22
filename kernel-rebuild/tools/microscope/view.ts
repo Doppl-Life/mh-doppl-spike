@@ -348,6 +348,7 @@ function renderRunState(trace: RunTrace): string {
 function renderMemoryPanel(trace: RunTrace): string {
   const packet = trace.knowledgePacket;
   const injections = trace.events.filter((event) => event.type === 'knowledge.item_injected');
+  const influences = trace.events.filter((event) => event.type === 'knowledge.influence_recorded');
   const replayCheck = trace.goalChecks.find((check) => check.id === 'replay-uses-persisted-knowledge');
   const freshRetrievals = replayCheck?.passed && replayCheck.detail.includes('replayKnowledgeEvents=')
     ? 0
@@ -358,6 +359,9 @@ function renderMemoryPanel(trace: RunTrace): string {
   const recipients = [...new Set(injections.map((event) => String(event.payload?.recipient_role || 'unknown')))].join(', ') || 'none';
   const exclusionRows = packet?.excluded.length
     ? packet.excluded.map((item) => `<li>${escapeHtml(item.reason)}${item.recordId ? ` · ${escapeHtml(item.recordId)}` : ''}</li>`).join('')
+    : '<li>none</li>';
+  const influenceRows = influences.length
+    ? influences.map((event) => `<li>${escapeHtml(String(event.payload?.cite_handle || 'unknown'))} -> ${escapeHtml(String(event.payload?.artifact_id || 'unknown'))}</li>`).join('')
     : '<li>none</li>';
   const itemRows = packet?.items.length
     ? packet.items.map((item) => `
@@ -382,6 +386,7 @@ function renderMemoryPanel(trace: RunTrace): string {
         ${proofTile('Packet', packet?.id || 'none', `${packet?.items.length || 0} item(s), ${packet?.excluded.length || 0} exclusion(s)`, packet ? 'good' : 'plain')}
         ${proofTile('Citations', citationText, 'handles available to generated candidates', packet?.items.length ? 'good' : 'plain')}
         ${proofTile('Recipients', recipients, `${injections.length} item injection event(s)`, injections.length ? 'good' : 'plain')}
+        ${proofTile('Influence', String(influences.length), 'candidate artifacts citing memory', influences.length ? 'good' : 'plain')}
       </div>
       <div class="memory-detail-grid">
         <div>
@@ -391,6 +396,8 @@ function renderMemoryPanel(trace: RunTrace): string {
         <div>
           <h3>Exclusions</h3>
           <ul class="memory-exclusions">${exclusionRows}</ul>
+          <h3>Influence</h3>
+          <ul class="memory-exclusions">${influenceRows}</ul>
         </div>
       </div>
     </section>`;

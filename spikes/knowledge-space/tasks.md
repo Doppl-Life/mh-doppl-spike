@@ -183,13 +183,23 @@ not because the goal is a disposable prototype.
 ## Phase 5 - Influence Tracking
 
 - [x] Add citation handles to packet items.
-- [ ] Require candidate/council outputs to cite packet handles when relying on
+- [x] Require candidate/council outputs to cite packet handles when relying on
       memory.
-- [ ] Record `knowledge.influence_recorded` for cited items.
+- [x] Record `knowledge.influence_recorded` for cited items.
 - [ ] Detect ignored warnings when a candidate repeats a known negative finding.
 - [ ] Update source/item credit ledgers after fitness scoring.
 - [ ] Acceptance gate: a source can earn positive or negative credit independent
       of whether the agenome survives.
+
+### Phase 5 Walking Notes
+
+- [x] Kernel candidates now carry cited packet handles in evidence and
+      `knowledgeContext`.
+- [x] Kernel traces emit `knowledge.influence_recorded` for each cited packet
+      item and candidate artifact pair.
+- [x] Replay preserves persisted influence events without querying the live
+      knowledge gateway.
+- [x] Proof board and microscope surfaces expose memory influence counts.
 
 ## Phase 6 - Collapse And Distillation
 

@@ -1,5 +1,6 @@
 // Builds a complete machine trace for one kernel run.
 import type {
+  Candidate,
   CandidatePool,
   Dial,
   GenerationQuality,
@@ -137,6 +138,52 @@ function packetFromSelectedEvent(event: TraceEvent): KnowledgePacket | undefined
 
 function persistedKnowledgeEvents(replayEvents: TraceEvent[] | undefined): TraceEvent[] {
   return (replayEvents || []).filter((event) => event.type?.startsWith('knowledge.'));
+}
+
+function candidateCitesItem(candidate: Candidate, item: KnowledgePacketItem): boolean {
+  const contextHandles = candidate.knowledgeContext?.citeHandles || [];
+  if (contextHandles.includes(item.citeHandle)) return true;
+  return candidate.evidence.some((evidence) => evidence.includes(`[${item.citeHandle}]`));
+}
+
+function influenceEvents(packet: KnowledgePacket | undefined, candidates: Candidate[]): TraceEvent[] {
+  if (!packet) return [];
+  const events: TraceEvent[] = [];
+  const seen = new Set<string>();
+  for (const candidate of candidates) {
+    for (const item of packet.items) {
+      if (!candidateCitesItem(candidate, item)) continue;
+      const key = `${candidate.id}:${item.recordId}:${item.citeHandle}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      events.push({
+        type: 'knowledge.influence_recorded',
+        stage: 'knowledge',
+        input: packet.id,
+        decision: `Record ${item.citeHandle} influence on ${candidate.id}.`,
+        reason: 'Candidate artifact cited an injected knowledge handle.',
+        output: `${candidate.id}:${item.recordId}`,
+        payload: {
+          packet_id: packet.id,
+          record_id: item.recordId,
+          cite_handle: item.citeHandle,
+          artifact_id: candidate.id,
+          candidate_id: candidate.id,
+          influence: 'cited',
+          role: 'candidate',
+        },
+        goalChecks: [
+          {
+            id: 'knowledge-influence-recorded',
+            label: 'Cited memory items produce influence records for downstream credit.',
+            passed: Boolean(item.recordId && item.citeHandle && candidate.id),
+            detail: `${item.citeHandle} -> ${candidate.id}`,
+          },
+        ],
+      });
+    }
+  }
+  return events;
 }
 
 function resolveKnowledge(
@@ -392,6 +439,9 @@ export function buildRunTrace(fixture: SeedFixture, dial: Dial, options: {
 
   const combinedPool = mergePools(fixture.seed, pools);
   const combinedScored = mergeScoredPools(fixture.seed, scoredPools);
+  if (!knowledge.replayed) {
+    events.push(...influenceEvents(knowledge.packet, combinedPool.candidates));
+  }
   const selected = compareSelections(combinedScored, dial);
   events.push(selected.event);
 

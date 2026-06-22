@@ -30,3 +30,5 @@ The workbench keeps case and view state in the URL:
 `?case=fsd-accident-economy&view=packet`
 
 `?case=fsd-accident-economy&view=exclusions`
+
+`?case=fsd-ownership-unwind&view=memory-flow`

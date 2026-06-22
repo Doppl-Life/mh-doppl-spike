@@ -79,6 +79,8 @@ not because the goal is a disposable prototype.
 - [x] Document Neo4j Browser visual queries for interactive graph exploration.
 - [x] Make the local graph workbench default to a readable runtime view with
       memory and provenance layers available on demand.
+- [x] Add hosted Memory Flow mode with radial relevance layout proving
+      cross-problem knowledge reuse.
 - [ ] Add promotion/review actions to the visual workbench once promotion
       workflow exists.
 - [x] Add run/candidate/provenance nodes to the graph after collapse/write-back
@@ -204,6 +206,8 @@ not because the goal is a disposable prototype.
       novelty/grounding scores, focus/alternate selection status, and
       positive/neutral/negative credit bucket.
 - [x] Show memory credit buckets in proof board and microscope surfaces.
+- [x] Surface influence/credit architecture in the hosted Memory Flow view when
+      exported runtime events are available.
 
 ## Phase 6 - Collapse And Distillation
 

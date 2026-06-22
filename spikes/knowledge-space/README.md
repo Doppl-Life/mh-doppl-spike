@@ -62,6 +62,9 @@ Neo4j is intentionally a projection at this stage. Import `out/neo4j.cypher` int
 Neo4j when you want graph queries, but keep `data/knowledge.jsonl` as the portable
 ledger the projection is generated from.
 
+For a local Neo4j harness with Docker Compose, constraints, import script, and
+smoke queries, see [neo4j/README.md](./neo4j/README.md).
+
 Run tests:
 
 ```bash

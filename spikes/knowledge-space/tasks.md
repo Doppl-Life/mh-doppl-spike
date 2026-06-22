@@ -43,8 +43,8 @@ not because the goal is a disposable prototype.
 
 ## Phase 1 - Local Graph Repository
 
-- [ ] Add local Neo4j dev setup: Docker compose or documented local install.
-- [ ] Create constraints and indexes for IDs, content hashes, run IDs, case IDs,
+- [x] Add local Neo4j dev setup: Docker compose or documented local install.
+- [x] Create constraints and indexes for IDs, content hashes, run IDs, case IDs,
       trust tiers, and visibility.
 - [ ] Create vector index for embedded receipt/claim/finding text.
 - [ ] Implement `Receipt` ingestion from Markdown files.
@@ -62,6 +62,8 @@ not because the goal is a disposable prototype.
       panel with citation/chunk metadata.
 - [x] Add regression coverage that embedded graph data is raw parseable JSON,
       not HTML-escaped script text.
+- [x] Add local Neo4j Docker Compose harness with schema, idempotent projection
+      import, and smoke queries for receipts/watermarks/provenance.
 - [ ] Add promotion/review actions to the visual workbench once promotion
       workflow exists.
 - [ ] Add run/candidate/provenance nodes to the graph after collapse/write-back

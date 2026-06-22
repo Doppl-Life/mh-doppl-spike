@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CASES = ROOT / "case-studies"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 SNAPSHOT = Path(__file__).resolve().parent / "snapshots" / "2026-06-22-receipt-watermark-skeleton"
+NEO4J = Path(__file__).resolve().parent / "neo4j"
 
 
 class KnowledgeSpaceTest(unittest.TestCase):
@@ -507,6 +508,32 @@ class KnowledgeSpaceTest(unittest.TestCase):
         self.assertIn("receipt/watermark skeleton", readme)
         self.assertIn("run_event_watermark", ledger)
         self.assertIn("RunEventWatermark", graph)
+
+    def test_neo4j_dev_harness_documents_local_projection_import(self) -> None:
+        expected = [
+            "README.md",
+            "docker-compose.yml",
+            "import.sh",
+            "schema.cypher",
+            "smoke.cypher",
+        ]
+
+        for name in expected:
+            self.assertTrue((NEO4J / name).exists(), name)
+
+        compose = (NEO4J / "docker-compose.yml").read_text(encoding="utf-8")
+        readme = (NEO4J / "README.md").read_text(encoding="utf-8")
+        schema = (NEO4J / "schema.cypher").read_text(encoding="utf-8")
+        smoke = (NEO4J / "smoke.cypher").read_text(encoding="utf-8")
+        importer = (NEO4J / "import.sh").read_text(encoding="utf-8")
+
+        self.assertIn("neo4j:5", compose)
+        self.assertIn("NEO4J_AUTH=neo4j/doppl-local-dev", compose)
+        self.assertIn("JSONL remains the source of truth", readme)
+        self.assertIn("RunEventReceipt", schema)
+        self.assertIn("RunEventWatermark", schema)
+        self.assertIn("DERIVED_FROM_RECEIPT", smoke)
+        self.assertIn("spikes/knowledge-space/out/neo4j.cypher", importer)
 
 
 def json_fixture(name: str) -> list[dict]:

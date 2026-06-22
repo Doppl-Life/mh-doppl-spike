@@ -1,4 +1,5 @@
 import { buildMemoryFlowModel, layoutRadialNodes, memoryFlowLegend, memoryFlowSteps } from "./flow-model.mjs";
+import { buildUsedFocusScope, edgeKey, filterGraphToFocusScope } from "./focus-model.mjs";
 
 const colors = {
   Case: "#0f766e",
@@ -51,12 +52,15 @@ const state = {
   activeTypes: new Set(["Case", "KnowledgeRecord", "Embedding", "RunEventReceipt", "Candidate", "CriticReview", "Run"]),
   mode: "graph",
   flowLayoutMode: "relevance",
+  focusUsedOnly: false,
 };
 
 const els = {
   statusStrip: document.querySelector("#statusStrip"),
   caseSelect: document.querySelector("#caseSelect"),
   searchInput: document.querySelector("#searchInput"),
+  focusToggle: document.querySelector("#focusToggle"),
+  focusState: document.querySelector("#focusState"),
   typeFilters: document.querySelector("#typeFilters"),
   viewMode: document.querySelector("#viewMode"),
   viewState: document.querySelector("#viewState"),
@@ -95,6 +99,7 @@ async function loadData() {
   const viewParam = params.get("view");
   if (labels[viewParam]) state.mode = viewParam;
   state.selectedRecordId = params.get("record") || "";
+  state.focusUsedOnly = params.get("focus") === "used";
 }
 
 async function fetchJson(url) {
@@ -106,6 +111,7 @@ async function fetchJson(url) {
 function render() {
   renderStatus();
   renderCaseSelect();
+  renderFocusToggle();
   renderTypeFilters();
   setMode(state.mode);
   renderGraph();
@@ -113,6 +119,14 @@ function render() {
   renderPacket();
   renderExclusions();
   renderCollapse();
+}
+
+function renderFocusToggle() {
+  els.focusToggle.checked = state.focusUsedOnly;
+  const packet = activePacket();
+  els.focusState.textContent = state.focusUsedOnly
+    ? `Showing ${packet.items.length} used memory item${packet.items.length === 1 ? "" : "s"} for this case`
+    : "Showing the full knowledge graph for comparison";
 }
 
 function renderStatus() {
@@ -176,7 +190,8 @@ function revealActivePanel() {
 function renderGraph() {
   const visibleNodes = filteredNodes();
   const visibleIds = new Set(visibleNodes.map((node) => node.id));
-  const visibleEdges = state.graph.edges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
+  const graphEdges = focusedGraphEdges();
+  const visibleEdges = graphEdges.filter((edge) => visibleIds.has(edge.source) && visibleIds.has(edge.target));
   const focus = focusIds();
   const width = Math.max(760, els.graphView.clientWidth - 2);
   const height = Number.parseInt(getComputedStyle(els.graphSvg).height, 10) || 650;
@@ -338,6 +353,7 @@ function renderMemoryFlow() {
     graph: state.graph,
     packet,
     mode: state.flowLayoutMode,
+    focusUsedOnly: state.focusUsedOnly,
   });
   const width = Math.max(760, els.memoryFlowView.clientWidth - 2 || 900);
   const height = 680;
@@ -414,7 +430,7 @@ function renderFlowNode(node) {
 
 function filteredNodes() {
   const query = state.search.trim().toLowerCase();
-  return state.graph.nodes
+  return focusedGraphNodes()
     .filter((node) => state.activeTypes.has(node.type) || node.type === "Agenome" || node.type === "Generation")
     .filter((node) => {
       if (!query) return true;
@@ -424,6 +440,19 @@ function filteredNodes() {
         .toLowerCase()
         .includes(query);
     });
+}
+
+function focusedGraphNodes() {
+  return focusedGraph().nodes;
+}
+
+function focusedGraphEdges() {
+  return focusedGraph().edges;
+}
+
+function focusedGraph() {
+  if (!state.focusUsedOnly) return state.graph;
+  return filterGraphToFocusScope(state.graph, focusScope());
 }
 
 function inspectNode(id) {
@@ -555,30 +584,28 @@ function selectedPacketItem() {
 }
 
 function focusIds() {
-  const packet = activePacket();
-  const activeCaseId = `case:${state.activeCase}`;
-  const packetRecordIds = new Set(packet.items.map((item) => `record:${item.record.id}`));
-  const sourceCaseIds = new Set(packet.items.map((item) => `case:${item.record.source_case}`));
+  const scope = focusScope();
   const edgeIds = new Set();
-  state.graph.edges.forEach((edge) => {
-    if (
-      (packetRecordIds.has(edge.source) && (sourceCaseIds.has(edge.target) || edge.target === activeCaseId)) ||
-      (packetRecordIds.has(edge.target) && (sourceCaseIds.has(edge.source) || edge.source === activeCaseId))
-    ) {
+  focusedGraphEdges().forEach((edge) => {
+    if (scope.visibleEdgeIds.has(edgeKey(edge))) {
       edgeIds.add(edgeKey(edge));
     }
   });
   return {
-    activeCaseId,
-    sourceCaseIds,
-    packetRecordIds,
+    activeCaseId: scope.activeCaseId,
+    sourceCaseIds: scope.sourceCaseIds,
+    packetRecordIds: scope.packetRecordIds,
     selectedRecordNodeId: state.selectedRecordId ? `record:${state.selectedRecordId}` : "",
     edgeIds,
   };
 }
 
-function edgeKey(edge) {
-  return `${edge.source}->${edge.target}:${edge.type}`;
+function focusScope() {
+  return buildUsedFocusScope({
+    graph: state.graph,
+    packet: activePacket(),
+    activeCase: state.activeCase,
+  });
 }
 
 function updatePermalink() {
@@ -587,6 +614,7 @@ function updatePermalink() {
   params.set("case", state.activeCase);
   params.set("view", state.mode);
   if (state.selectedRecordId) params.set("record", state.selectedRecordId);
+  if (state.focusUsedOnly) params.set("focus", "used");
   window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
 }
 
@@ -617,10 +645,19 @@ els.searchInput.addEventListener("input", (event) => {
   renderGraph();
 });
 
+els.focusToggle.addEventListener("change", (event) => {
+  state.focusUsedOnly = event.target.checked;
+  renderFocusToggle();
+  renderGraph();
+  renderMemoryFlow();
+  updatePermalink();
+});
+
 els.caseSelect.addEventListener("change", (event) => {
   state.activeCase = event.target.value;
   state.selectedRecordId = "";
   renderStatus();
+  renderFocusToggle();
   renderGraph();
   renderMemoryFlow();
   renderPacket();

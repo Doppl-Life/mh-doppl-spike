@@ -102,7 +102,7 @@ function relatedNodes(graph, packet, selectedIds, excludedIds) {
     }));
 }
 
-function flowEdges(activeCase, packet) {
+function flowEdges(activeCase, packet, { includeExcluded = true } = {}) {
   const centerId = caseNodeId(activeCase);
   const selectedEdges = (packet.items || []).flatMap((item) => [
     {
@@ -120,7 +120,7 @@ function flowEdges(activeCase, packet) {
       weight: 0.55,
     },
   ]);
-  const excludedEdges = (packet.excluded || [])
+  const excludedEdges = includeExcluded ? (packet.excluded || [])
     .filter((item) => item.record_id)
     .map((item) => ({
       source: centerId,
@@ -128,7 +128,7 @@ function flowEdges(activeCase, packet) {
       type: "EXCLUDES",
       status: "excluded",
       weight: 0.25,
-    }));
+    })) : [];
   return [...selectedEdges, ...excludedEdges];
 }
 
@@ -141,7 +141,7 @@ export function themeForFlowNode(node) {
   return match ? match[0] : "general";
 }
 
-export function buildMemoryFlowModel({ activeCase, graph, packet, mode = "relevance" }) {
+export function buildMemoryFlowModel({ activeCase, graph, packet, mode = "relevance", focusUsedOnly = false }) {
   const byId = graphNodeById(graph);
   const center = {
     ...(byId.get(caseNodeId(activeCase)) || {}),
@@ -156,10 +156,10 @@ export function buildMemoryFlowModel({ activeCase, graph, packet, mode = "releva
   };
   const selected = packetRecords(packet);
   const sourceCases = sourceCaseNodes(packet);
-  const excluded = excludedNodes(packet, byId);
+  const excluded = focusUsedOnly ? [] : excludedNodes(packet, byId);
   const selectedIds = new Set(selected.map((node) => node.id));
   const excludedIds = new Set(excluded.map((node) => node.id));
-  const related = relatedNodes(graph, packet, selectedIds, excludedIds);
+  const related = focusUsedOnly ? [] : relatedNodes(graph, packet, selectedIds, excludedIds);
   const nodes = uniqueById([center, ...selected, ...sourceCases, ...related, ...excluded]).map((node) => (
     mode === "process" ? { ...node, ring: node.status === "active" ? 0 : STAGE_RING[node.stage] || 7 } : node
   ));
@@ -168,10 +168,12 @@ export function buildMemoryFlowModel({ activeCase, graph, packet, mode = "releva
     activeCase,
     center,
     nodes,
-    edges: flowEdges(activeCase, packet),
+    edges: flowEdges(activeCase, packet, { includeExcluded: !focusUsedOnly }),
     rings: mode === "process"
       ? ["center", "ingest", "extract", "retrieve", "inject", "cite", "credit", "promote"]
-      : ["center", "selected memory", "source cases", "related run artifacts", "excluded/distant memory"],
+      : focusUsedOnly
+        ? ["center", "selected memory", "source cases"]
+        : ["center", "selected memory", "source cases", "related run artifacts", "excluded/distant memory"],
   };
 }
 

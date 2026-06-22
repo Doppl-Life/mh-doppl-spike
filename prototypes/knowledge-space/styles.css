@@ -173,6 +173,71 @@ h3 {
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
 }
 
+.focus-switch {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  border: 1px solid #cbd5e1;
+  background: #fbfdff;
+  padding: 12px;
+}
+
+.focus-switch input {
+  appearance: none;
+  position: relative;
+  width: 42px;
+  height: 24px;
+  margin: 0;
+  border: 1px solid #94a3b8;
+  border-radius: 999px;
+  background: #e2e8f0;
+  outline: none;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.focus-switch input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(23, 32, 51, 0.25);
+  transition: transform 140ms ease;
+}
+
+.focus-switch input:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.focus-switch input:checked::after {
+  transform: translateX(18px);
+}
+
+.focus-switch input:focus {
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.focus-switch strong {
+  display: block;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.focus-switch small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .segmented,
 .button-grid {
   display: grid;

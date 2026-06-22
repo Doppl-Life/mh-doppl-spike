@@ -81,6 +81,8 @@ not because the goal is a disposable prototype.
       memory and provenance layers available on demand.
 - [x] Add hosted Memory Flow mode with radial relevance layout proving
       cross-problem knowledge reuse.
+- [x] Add hosted focus toggle to isolate graph and memory-flow views to the
+      records actually used by the selected case packet.
 - [ ] Add promotion/review actions to the visual workbench once promotion
       workflow exists.
 - [x] Add run/candidate/provenance nodes to the graph after collapse/write-back

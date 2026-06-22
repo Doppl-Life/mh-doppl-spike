@@ -32,3 +32,8 @@ The workbench keeps case and view state in the URL:
 `?case=fsd-accident-economy&view=exclusions`
 
 `?case=fsd-ownership-unwind&view=memory-flow`
+
+Add `&focus=used` to isolate the graph and memory flow to the information
+actually selected for the active case packet:
+
+`?case=fsd-ownership-unwind&view=graph&focus=used`

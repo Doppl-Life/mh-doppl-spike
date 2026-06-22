@@ -87,3 +87,26 @@ test("memory flow legend explains radial distance and excluded memory", () => {
   assert.match(legend[1].detail, /selected packet/i);
   assert.match(legend[3].detail, /excluded/i);
 });
+
+test("focus-only memory flow hides excluded and distant related nodes", () => {
+  const model = buildMemoryFlowModel({
+    activeCase: "fsd-ownership-unwind",
+    graph: {
+      nodes: [
+        ...graph.nodes,
+        { id: "candidate:distant", type: "Candidate", label: "Distant candidate" },
+      ],
+      edges: graph.edges,
+    },
+    packet,
+    mode: "relevance",
+    focusUsedOnly: true,
+  });
+  const nodeIds = model.nodes.map((node) => node.id).sort();
+
+  assert.deepEqual(nodeIds, [
+    "case:fsd-accident-economy",
+    "case:fsd-ownership-unwind",
+    "record:ks_accident_warning",
+  ]);
+});

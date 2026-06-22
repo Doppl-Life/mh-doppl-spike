@@ -18,6 +18,7 @@ from knowledge_space import (
 ROOT = Path(__file__).resolve().parents[2]
 CASES = ROOT / "case-studies"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
+SNAPSHOT = Path(__file__).resolve().parent / "snapshots" / "2026-06-22-receipt-watermark-skeleton"
 
 
 class KnowledgeSpaceTest(unittest.TestCase):
@@ -483,6 +484,29 @@ class KnowledgeSpaceTest(unittest.TestCase):
             self.assertIn("MERGE (cand:Candidate", cypher)
             self.assertIn('data-filter="Run"', html)
             self.assertIn("ks-demo-run-culled-1", html)
+
+    def test_receipt_watermark_snapshot_is_preserved(self) -> None:
+        expected = [
+            "README.md",
+            "knowledge.jsonl",
+            "graph.html",
+            "neo4j.cypher",
+            "collapse_packet.json",
+            "knowledge_packet.json",
+            "knowledge_packet_event.json",
+            "report.md",
+        ]
+
+        for name in expected:
+            self.assertTrue((SNAPSHOT / name).exists(), name)
+
+        readme = (SNAPSHOT / "README.md").read_text(encoding="utf-8")
+        ledger = (SNAPSHOT / "knowledge.jsonl").read_text(encoding="utf-8")
+        graph = (SNAPSHOT / "graph.html").read_text(encoding="utf-8")
+
+        self.assertIn("receipt/watermark skeleton", readme)
+        self.assertIn("run_event_watermark", ledger)
+        self.assertIn("RunEventWatermark", graph)
 
 
 def json_fixture(name: str) -> list[dict]:

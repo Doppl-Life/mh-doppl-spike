@@ -1,4 +1,4 @@
-import { buildMemoryFlowModel, layoutRadialNodes, memoryFlowSteps } from "./flow-model.mjs";
+import { buildMemoryFlowModel, layoutRadialNodes, memoryFlowLegend, memoryFlowSteps } from "./flow-model.mjs";
 
 const colors = {
   Case: "#0f766e",
@@ -59,6 +59,7 @@ const els = {
   searchInput: document.querySelector("#searchInput"),
   typeFilters: document.querySelector("#typeFilters"),
   viewMode: document.querySelector("#viewMode"),
+  viewState: document.querySelector("#viewState"),
   modeEyebrow: document.querySelector("#modeEyebrow"),
   modeTitle: document.querySelector("#modeTitle"),
   modeNote: document.querySelector("#modeNote"),
@@ -69,6 +70,7 @@ const els = {
   exclusionsView: document.querySelector("#exclusionsView"),
   collapseView: document.querySelector("#collapseView"),
   graphSvg: document.querySelector("#graphSvg"),
+  mainPanel: document.querySelector(".main-panel"),
   inspectorTitle: document.querySelector("#inspectorTitle"),
   inspectorMeta: document.querySelector("#inspectorMeta"),
   inspectorBody: document.querySelector("#inspectorBody"),
@@ -163,7 +165,12 @@ function setMode(mode) {
   els.viewMode.querySelectorAll("button").forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === mode);
   });
+  els.viewState.textContent = `Viewing ${copy.eyebrow}`;
   updatePermalink();
+}
+
+function revealActivePanel() {
+  els.mainPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function renderGraph() {
@@ -215,6 +222,7 @@ function layoutNodes(nodes, width, height) {
 
 function renderNode(node, focus) {
   const label = truncate(node.label || node.id, node.type === "KnowledgeRecord" ? 18 : 22);
+  const showLabel = shouldShowNodeLabel(node, focus);
   const classes = [
     "node",
     focus.activeCaseId === node.id ? "active-case" : "",
@@ -226,10 +234,20 @@ function renderNode(node, focus) {
     .join(" ");
   return `
     <g class="node-group" tabindex="0" role="button" data-id="${escapeAttr(node.id)}">
+      <title>${escapeHtml(node.label || node.id)}</title>
       <circle class="${classes}" cx="${node.x}" cy="${node.y}" r="${node.radius}" fill="${colors[node.type] || colors.default}"></circle>
-      <text class="node-label" x="${node.x + 13}" y="${node.y + 4}">${escapeHtml(label)}</text>
+      ${showLabel ? `<text class="node-label" x="${node.x + 13}" y="${node.y + 4}">${escapeHtml(label)}</text>` : ""}
     </g>
   `;
+}
+
+function shouldShowNodeLabel(node, focus) {
+  return node.type === "Case" ||
+    node.type === "Run" ||
+    focus.activeCaseId === node.id ||
+    focus.sourceCaseIds.has(node.id) ||
+    focus.packetRecordIds.has(node.id) ||
+    focus.selectedRecordNodeId === node.id;
 }
 
 function renderPacket() {
@@ -326,6 +344,7 @@ function renderMemoryFlow() {
   const laidOut = layoutRadialNodes(model, { width, height });
   const byId = new Map(laidOut.nodes.map((node) => [node.id, node]));
   const steps = memoryFlowSteps({ activeCase: state.activeCase, packet });
+  const legend = memoryFlowLegend(state.flowLayoutMode);
 
   els.memoryFlowView.innerHTML = `
     <div class="flow-layout">
@@ -343,6 +362,14 @@ function renderMemoryFlow() {
         `).join("")}
       </aside>
       <div class="flow-graph" aria-label="Radial memory flow graph">
+        <div class="flow-legend" aria-label="Memory flow legend">
+          ${legend.map((item) => `
+            <span>
+              <strong>${escapeHtml(item.label)}</strong>
+              ${escapeHtml(item.detail)}
+            </span>
+          `).join("")}
+        </div>
         <svg class="flow-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Radial knowledge graph">
           ${renderFlowRings(laidOut)}
           ${laidOut.edges.map((edge) => renderFlowEdge(edge, byId)).join("")}
@@ -375,10 +402,12 @@ function renderFlowEdge(edge, byId) {
 
 function renderFlowNode(node) {
   const label = truncate(node.label || node.id, node.ring === 0 ? 26 : 20);
+  const showLabel = node.ring <= 2 || node.status === "excluded" || node.status === "active";
   return `
     <g class="flow-node-group" tabindex="0" role="button" data-flow-id="${escapeAttr(node.id)}">
+      <title>${escapeHtml(node.label || node.id)}</title>
       <circle class="flow-node ${escapeAttr(node.status || "")} theme-${escapeAttr(node.theme || "general")}" cx="${node.x}" cy="${node.y}" r="${node.radius}"></circle>
-      <text class="flow-node-label" x="${node.x + node.radius + 6}" y="${node.y + 4}">${escapeHtml(label)}</text>
+      ${showLabel ? `<text class="flow-node-label" x="${node.x + node.radius + 6}" y="${node.y + 4}">${escapeHtml(label)}</text>` : ""}
     </g>
   `;
 }
@@ -615,6 +644,7 @@ els.viewMode.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-mode]");
   if (!button) return;
   setMode(button.dataset.mode);
+  revealActivePanel();
 });
 
 els.memoryFlowView.addEventListener("click", (event) => {

@@ -137,6 +137,16 @@ h3 {
   gap: 22px;
 }
 
+@media (min-width: 1121px) {
+  .filters,
+  .inspector {
+    position: sticky;
+    top: 18px;
+    max-height: calc(100vh - 36px);
+    overflow: auto;
+  }
+}
+
 .search span,
 .filter-label {
   display: block;
@@ -187,6 +197,12 @@ h3 {
   padding: 10px 12px;
 }
 
+.segmented button:hover,
+.button-grid button:hover {
+  border-color: var(--accent);
+  background: #f0fdfa;
+}
+
 .segmented button.active,
 .button-grid button.active {
   border-color: var(--accent);
@@ -194,9 +210,21 @@ h3 {
   color: white;
 }
 
+.view-state {
+  margin: 10px 0 0;
+  border: 1px solid #cbd5e1;
+  background: #fbfdff;
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .main-panel {
   min-width: 0;
   padding: 22px;
+  scroll-margin-top: 18px;
 }
 
 .panel-heading {
@@ -294,6 +322,17 @@ svg {
   stroke: #ffffff;
   stroke-width: 2;
   filter: drop-shadow(0 2px 4px rgba(23, 32, 51, 0.22));
+  transition: r 140ms ease, stroke-width 140ms ease, opacity 140ms ease;
+}
+
+.node-group {
+  cursor: pointer;
+}
+
+.node-group:hover .node,
+.node-group:focus .node {
+  stroke: var(--amber);
+  stroke-width: 5;
 }
 
 .node.active-case {
@@ -530,6 +569,11 @@ svg {
   color: white;
 }
 
+.flow-toggle button:hover {
+  border-color: var(--accent);
+  background: #f0fdfa;
+}
+
 .flow-step {
   border: 1px solid var(--line);
   background: #fbfdff;
@@ -555,12 +599,42 @@ svg {
 }
 
 .flow-graph {
+  position: relative;
   min-height: 680px;
   border: 1px solid var(--line);
   overflow: hidden;
   background:
     radial-gradient(circle at center, rgba(15, 118, 110, 0.06), transparent 42%),
     #fbfdff;
+}
+
+.flow-legend {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.flow-legend span {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.94);
+  padding: 8px 9px;
+  color: #344054;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.flow-legend strong {
+  display: block;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .flow-svg {
@@ -602,6 +676,17 @@ svg {
   stroke: white;
   stroke-width: 2.5;
   filter: drop-shadow(0 2px 5px rgba(23, 32, 51, 0.22));
+  transition: stroke-width 140ms ease, opacity 140ms ease;
+}
+
+.flow-node-group {
+  cursor: pointer;
+}
+
+.flow-node-group:hover .flow-node,
+.flow-node-group:focus .flow-node {
+  stroke: var(--amber);
+  stroke-width: 5;
 }
 
 .flow-node.active {
@@ -663,6 +748,10 @@ svg {
   .explanation-view {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .flow-legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -690,5 +779,11 @@ svg {
   .flow-svg {
     min-height: 560px;
     height: 560px;
+  }
+
+  .flow-legend {
+    position: static;
+    grid-template-columns: 1fr;
+    padding: 10px;
   }
 }

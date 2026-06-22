@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildMemoryFlowModel, layoutRadialNodes, memoryFlowSteps } from "./flow-model.mjs";
+import { buildMemoryFlowModel, layoutRadialNodes, memoryFlowLegend, memoryFlowSteps } from "./flow-model.mjs";
 
 const graph = {
   nodes: [
@@ -77,4 +77,13 @@ test("narrative steps describe prior learning, retrieval, injection, citation, a
   assert.match(steps[0].title, /learns/i);
   assert.match(steps[1].title, /retrieves/i);
   assert.match(steps[3].body, /cite/i);
+});
+
+test("memory flow legend explains radial distance and excluded memory", () => {
+  const legend = memoryFlowLegend("relevance");
+
+  assert.equal(legend.length, 4);
+  assert.equal(legend[0].label, "Center");
+  assert.match(legend[1].detail, /selected packet/i);
+  assert.match(legend[3].detail, /excluded/i);
 });

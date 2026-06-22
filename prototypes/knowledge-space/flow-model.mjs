@@ -232,3 +232,21 @@ export function memoryFlowSteps({ activeCase, packet }) {
     },
   ];
 }
+
+export function memoryFlowLegend(mode = "relevance") {
+  if (mode === "process") {
+    return [
+      { label: "Ingest", detail: "Source cases, chunks, receipts, and raw run events enter memory." },
+      { label: "Retrieve", detail: "The gateway selects packet memory and records exclusions." },
+      { label: "Cite", detail: "Candidate artifacts cite injected packet handles." },
+      { label: "Credit", detail: "Influence and credit events tell the graph what mattered." },
+    ];
+  }
+
+  return [
+    { label: "Center", detail: "The active problem or run." },
+    { label: "Near", detail: "Selected packet memory retrieved for this problem." },
+    { label: "Middle", detail: "Source cases and related run artifacts." },
+    { label: "Outer", detail: "Excluded, withheld, stale, or distant memory." },
+  ];
+}

@@ -16,9 +16,15 @@ Do not replace this with real hosted credentials in Git. If the project later
 uses Neo4j Aura or another hosted database, keep `NEO4J_URI`, `NEO4J_USERNAME`,
 and `NEO4J_PASSWORD` in environment variables or an ignored local file.
 
-The local Browser is also configured with `browser.post_connect_cmd`, so after
-the graph is imported, opening `http://localhost:7474` lands directly on the
-rich runtime graph query:
+Neo4j Browser still requires a Browser-side connection action before it will run
+queries. For a true zero-click local view, use the live Query API page instead:
+
+```bash
+spikes/knowledge-space/neo4j/open-live.sh
+```
+
+That script rebuilds/imports the projection and opens
+`spikes/knowledge-space/neo4j/live.html`, which automatically runs:
 
 ```cypher
 MATCH path = (:Run {id: "run-rich-runtime-1"})-[*1..3]-()
@@ -42,6 +48,8 @@ The script:
 3. Applies `schema.cypher` constraints and indexes.
 4. Imports `spikes/knowledge-space/out/neo4j.cypher`.
 5. Runs `smoke.cypher`.
+
+`open-live.sh` wraps the import and opens the auto-query graph page.
 
 ## Manual Commands
 
@@ -67,10 +75,29 @@ docker compose -f spikes/knowledge-space/neo4j/docker-compose.yml exec -T neo4j 
 - Tag/trust/provenance queries can be run against the projection without making
   Neo4j authoritative.
 
+## Zero-Click Live Graph
+
+Run:
+
+```bash
+spikes/knowledge-space/neo4j/open-live.sh
+```
+
+The page calls Neo4j's local HTTP Query API at
+`http://localhost:7474/db/neo4j/query/v2`, parses returned paths, and renders the
+runtime graph without a login prompt, paste step, or manual query run.
+
 ## Visual Graph In Neo4j Browser
 
-Open `http://localhost:7474`. The local dev harness has auth disabled and should
-auto-open the richer runtime fixture query. If you want the broader graph, run:
+Open `http://localhost:7474`. The local dev harness has auth disabled, but the
+Browser UI may still ask you to connect to `neo4j://localhost:7687`. Leave the
+password blank. To prefill the local connection modal, open:
+
+```text
+http://localhost:7474/browser/?connectURL=neo4j://localhost:7687&db=neo4j&instanceName=Doppl%20Knowledge%20Space
+```
+
+For the broader graph, run:
 
 ```cypher
 MATCH path = (:Run)-[*1..3]-()

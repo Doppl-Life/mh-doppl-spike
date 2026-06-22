@@ -515,6 +515,8 @@ class KnowledgeSpaceTest(unittest.TestCase):
             "README.md",
             "docker-compose.yml",
             "import.sh",
+            "live.html",
+            "open-live.sh",
             "schema.cypher",
             "smoke.cypher",
         ]
@@ -527,18 +529,24 @@ class KnowledgeSpaceTest(unittest.TestCase):
         schema = (NEO4J / "schema.cypher").read_text(encoding="utf-8")
         smoke = (NEO4J / "smoke.cypher").read_text(encoding="utf-8")
         importer = (NEO4J / "import.sh").read_text(encoding="utf-8")
+        live = (NEO4J / "live.html").read_text(encoding="utf-8")
+        live_opener = (NEO4J / "open-live.sh").read_text(encoding="utf-8")
 
         self.assertIn("neo4j:5", compose)
         self.assertIn("NEO4J_AUTH=none", compose)
-        self.assertIn("NEO4J_browser_post__connect__cmd", compose)
-        self.assertIn("run-rich-runtime-1", compose)
+        self.assertNotIn("NEO4J_browser_post__connect__cmd", compose)
         self.assertIn("JSONL remains the source of truth", readme)
         self.assertIn("auth disabled", readme)
+        self.assertIn("Zero-Click Live Graph", readme)
         self.assertIn("RunEventReceipt", schema)
         self.assertIn("RunEventWatermark", schema)
         self.assertIn("DERIVED_FROM_RECEIPT", smoke)
         self.assertIn("spikes/knowledge-space/out/neo4j.cypher", importer)
         self.assertNotIn("doppl-local-dev", importer)
+        self.assertIn("http://localhost:7474/db/neo4j/query/v2", live)
+        self.assertIn("run-rich-runtime-1", live)
+        self.assertIn("parsePaths", live)
+        self.assertIn("open \"$SCRIPT_DIR/live.html\"", live_opener)
 
     def test_graph_snapshot_export_rebuilds_stable_ids_and_links(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

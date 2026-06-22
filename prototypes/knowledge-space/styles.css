@@ -420,6 +420,22 @@ svg {
   line-height: 1.45;
 }
 
+.score-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+
+.score-strip span {
+  border: 1px solid #cbd5e1;
+  background: white;
+  padding: 4px 7px;
+  color: #344054;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .tagline {
   display: flex;
   flex-wrap: wrap;

@@ -228,6 +228,11 @@ function renderPacket() {
         <button type="button" class="row ${state.selectedRecordId === record.id ? "selected" : ""}" data-record-id="${escapeAttr(record.id)}">
           <small>${index + 1}. ${escapeHtml(item.cite_handle)} / ${escapeHtml(record.kind)} / ${escapeHtml(record.source_case)}</small>
           <h3>${escapeHtml(record.heading || record.citation)}</h3>
+          <div class="score-strip">
+            <span>final ${formatScore(item.final_score ?? item.score)}</span>
+            <span>lexical ${formatScore(item.lexical_score)}</span>
+            <span>vector ${formatScore(item.vector_similarity)}</span>
+          </div>
           <p>${escapeHtml(item.reason)}</p>
           <div class="tagline">${record.tags.slice(0, 8).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
         </button>
@@ -360,6 +365,10 @@ function inspectPacketRecord(recordId) {
   els.inspectorMeta.textContent = `${record.source_case} / score ${item.score}`;
   els.inspectorBody.innerHTML = [
     kv("Reason", item.reason),
+    kv("Final score", formatScore(item.final_score ?? item.score)),
+    kv("Lexical score", formatScore(item.lexical_score)),
+    kv("Vector similarity", formatScore(item.vector_similarity)),
+    item.embedding_model_id ? kv("Embedding model", item.embedding_model_id) : "",
     kv("Citation", item.citation),
     kv("Chunk", item.source_chunk_id),
     kv("Trust", record.trust_tier),
@@ -388,6 +397,11 @@ function inspectCollapse(index) {
 
 function kv(label, value) {
   return `<div class="kv"><span>${escapeHtml(label)}</span><code>${escapeHtml(String(value))}</code></div>`;
+}
+
+function formatScore(value) {
+  const number = Number(value || 0);
+  return Number.isInteger(number) ? String(number) : number.toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
 }
 
 function groupBy(items, keyFn) {

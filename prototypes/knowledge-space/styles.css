@@ -492,6 +492,154 @@ svg {
   line-height: 1.55;
 }
 
+.memory-flow-view {
+  min-height: 680px;
+}
+
+.flow-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.flow-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-content: start;
+  gap: 10px;
+}
+
+.flow-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.flow-toggle button {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  padding: 10px 12px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.flow-toggle button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.flow-step {
+  border: 1px solid var(--line);
+  background: #fbfdff;
+  padding: 14px;
+}
+
+.flow-step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  background: var(--ink);
+  color: white;
+  font-weight: 900;
+}
+
+.flow-step p {
+  margin-bottom: 0;
+  color: #344054;
+  line-height: 1.45;
+}
+
+.flow-graph {
+  min-height: 680px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(15, 118, 110, 0.06), transparent 42%),
+    #fbfdff;
+}
+
+.flow-svg {
+  height: 680px;
+}
+
+.flow-ring {
+  fill: none;
+  stroke: #d8dee8;
+  stroke-width: 1.2;
+  stroke-dasharray: 5 5;
+}
+
+.flow-ring-label {
+  fill: #667085;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.flow-edge {
+  stroke: #9aa8bd;
+  opacity: 0.42;
+}
+
+.flow-edge.selected,
+.flow-edge.source {
+  stroke: var(--accent);
+  opacity: 0.72;
+}
+
+.flow-edge.excluded {
+  stroke: var(--rose);
+  stroke-dasharray: 6 6;
+  opacity: 0.68;
+}
+
+.flow-node {
+  stroke: white;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 2px 5px rgba(23, 32, 51, 0.22));
+}
+
+.flow-node.active {
+  fill: var(--ink);
+  stroke: var(--rose);
+  stroke-width: 5;
+}
+
+.flow-node.selected {
+  fill: var(--blue);
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+.flow-node.source {
+  fill: var(--accent);
+}
+
+.flow-node.related {
+  fill: #64748b;
+}
+
+.flow-node.excluded {
+  fill: white;
+  stroke: var(--rose);
+  stroke-width: 4;
+}
+
+.flow-node-label {
+  fill: #172033;
+  font-size: 11px;
+  font-weight: 900;
+  paint-order: stroke;
+  stroke: #fbfdff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
 .hidden {
   display: none;
 }
@@ -536,5 +684,11 @@ svg {
   svg {
     min-height: 520px;
     height: 520px;
+  }
+
+  .flow-graph,
+  .flow-svg {
+    min-height: 560px;
+    height: 560px;
   }
 }
